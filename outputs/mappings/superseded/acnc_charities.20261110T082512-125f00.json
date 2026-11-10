@@ -1,0 +1,582 @@
+{
+  "status": "PENDING_REVIEW",
+  "run_id": "20261110T082512-125f00",
+  "prompt_version": "prompts-v5",
+  "model": "deepseek-v4-flash",
+  "ontology_sha256": "639b80ea6333146c7ac714cd940fcdf6b2945f451e95333b0be21174bedee5da",
+  "snapshot_sha256": "69be72862e8728bfda782fc8438d8f6b16bf00f2ef99089e9c4dc2d85a8f6833",
+  "config_digest": "687ff179bcb160c05546896f5dfb1ef1c1b6e3eccbe45e1fc5a2ba8db9cb4638",
+  "config": {
+    "source_id": "acnc_charities",
+    "record_grain": "legal_entity",
+    "grain_rationale": "One row per ACNC-registered charity; the record describes the registered legal entity plus the single contact address it lodged with the ACNC. ABN is not guaranteed unique (duplicates/blanks occur), so record identity is content-derived.",
+    "reader": {
+      "format": "xlsx",
+      "archive_member": null,
+      "encoding": "utf-8-sig",
+      "delimiter": null,
+      "skip_rows": 0,
+      "sheet": "Sheet1",
+      "record_path": null
+    },
+    "record_id": {
+      "strategy": "content_hash",
+      "source_paths": [],
+      "rationale": "ABN is blank in ~0.6% of rows and repeats for some entities, so it is not a reliable unique key; hash the full record content instead."
+    },
+    "observed_at": {
+      "source_path": null,
+      "steps": [],
+      "fallback": "resource_last_modified"
+    },
+    "fields": [
+      {
+        "source_paths": [
+          "Charity_Legal_Name"
+        ],
+        "join_with": " ",
+        "when": null,
+        "target": "entity.legal_name",
+        "valid_from_path": null,
+        "valid_to_path": null,
+        "validity_date_formats": null,
+        "steps": [
+          {
+            "op": "trim",
+            "args": {}
+          },
+          {
+            "op": "collapse_whitespace",
+            "args": {}
+          }
+        ],
+        "confidence": 0.93,
+        "rationale": "Column explicitly named Charity_Legal_Name on the ACNC register = registered legal name."
+      },
+      {
+        "source_paths": [
+          "Other_Organisation_Names"
+        ],
+        "join_with": " ",
+        "when": null,
+        "target": "entity.trading_name",
+        "valid_from_path": null,
+        "valid_to_path": null,
+        "validity_date_formats": null,
+        "steps": [
+          {
+            "op": "trim",
+            "args": {}
+          },
+          {
+            "op": "collapse_whitespace",
+            "args": {}
+          },
+          {
+            "op": "null_if",
+            "args": {
+              "values": [
+                "",
+                "-",
+                "N/A"
+              ]
+            }
+          }
+        ],
+        "confidence": 0.6,
+        "rationale": "Other names the charity is known by (trading/display names), explicitly separate from the legal name column."
+      },
+      {
+        "source_paths": [
+          "ABN"
+        ],
+        "join_with": " ",
+        "when": null,
+        "target": "entity.abn",
+        "valid_from_path": null,
+        "valid_to_path": null,
+        "validity_date_formats": null,
+        "steps": [
+          {
+            "op": "abn",
+            "args": {}
+          }
+        ],
+        "confidence": 0.98,
+        "rationale": "ABN column; 100% checksum-valid in discovery, 1173/1173 held-out values passed."
+      },
+      {
+        "source_paths": [
+          "Charity_Website"
+        ],
+        "join_with": " ",
+        "when": null,
+        "target": "entity.website",
+        "valid_from_path": null,
+        "valid_to_path": null,
+        "validity_date_formats": null,
+        "steps": [
+          {
+            "op": "trim",
+            "args": {}
+          },
+          {
+            "op": "collapse_whitespace",
+            "args": {}
+          },
+          {
+            "op": "null_if",
+            "args": {
+              "values": [
+                ""
+              ]
+            }
+          },
+          {
+            "op": "regex_extract",
+            "args": {
+              "pattern": "(?i)\\b((?:(?:https?://)?(?:[a-z0-9][a-z0-9-]*\\.)+[a-z]{2,})(?:/[\\w\\-./?%&=+#~]*)?)",
+              "group": 1
+            }
+          },
+          {
+            "op": "trim",
+            "args": {}
+          },
+          {
+            "op": "regex_extract",
+            "args": {
+              "pattern": "(?i)^(?:https?://)?(?:[a-z0-9][a-z0-9-]*\\.)+[a-z]{2,}(?:/[\\w\\-./?%&=+#~]*)?$",
+              "group": 0
+            }
+          },
+          {
+            "op": "website",
+            "args": {}
+          }
+        ],
+        "confidence": 0.85,
+        "rationale": "Charity_Website mixes bare domains, http(s) URLs and free text. Fix for hold-out WEBSITE_INVALID: extract the FIRST URL/domain token, then hard-validate that the token as a whole is a URL/domain, so multi-URL prose blobs drop instead of erroring."
+      },
+      {
+        "source_paths": [
+          "Registration_Date"
+        ],
+        "join_with": " ",
+        "when": null,
+        "target": "entity.date_registered",
+        "valid_from_path": null,
+        "valid_to_path": null,
+        "validity_date_formats": null,
+        "steps": [
+          {
+            "op": "parse_date",
+            "args": {
+              "formats": [
+                "%d/%m/%Y"
+              ]
+            }
+          }
+        ],
+        "confidence": 0.9,
+        "rationale": "ACNC registration date; DD/MM/YYYY confirmed by the 03/12/2012 ACNC-commencement spike. Does not fall back to Date_Organisation_Established."
+      },
+      {
+        "source_paths": [
+          "Address_Line_1",
+          "Address_Line_2",
+          "Address_Line_3",
+          "Town_City",
+          "State",
+          "Postcode"
+        ],
+        "join_with": ", ",
+        "when": null,
+        "target": "address.full",
+        "valid_from_path": null,
+        "valid_to_path": null,
+        "validity_date_formats": null,
+        "steps": [
+          {
+            "op": "trim",
+            "args": {}
+          },
+          {
+            "op": "null_if",
+            "args": {
+              "values": [
+                ""
+              ]
+            }
+          },
+          {
+            "op": "collapse_whitespace",
+            "args": {}
+          }
+        ],
+        "confidence": 0.55,
+        "rationale": "Address lines combined into ONE contact address. Address_Type is uniformly 'Business' and values include PO boxes ('Po Box 576'), venue names ('Egan Park', 'Community Centre') and locality-only entries, so this is a postal/contact address, not confirmed premises. Confidence lowered to 0.55 because postal-vs-premises is unresolvable from this source; structured locality/state/postcode are mapped separately from their own columns."
+      },
+      {
+        "source_paths": [
+          "Town_City"
+        ],
+        "join_with": " ",
+        "when": null,
+        "target": "address.locality",
+        "valid_from_path": null,
+        "valid_to_path": null,
+        "validity_date_formats": null,
+        "steps": [
+          {
+            "op": "trim",
+            "args": {}
+          },
+          {
+            "op": "collapse_whitespace",
+            "args": {}
+          }
+        ],
+        "confidence": 0.92,
+        "rationale": "Town/city (suburb) field; case preserved as sourced."
+      },
+      {
+        "source_paths": [
+          "State"
+        ],
+        "join_with": " ",
+        "when": null,
+        "target": "address.state",
+        "valid_from_path": null,
+        "valid_to_path": null,
+        "validity_date_formats": null,
+        "steps": [
+          {
+            "op": "trim",
+            "args": {}
+          },
+          {
+            "op": "state",
+            "args": {}
+          }
+        ],
+        "confidence": 0.95,
+        "rationale": "Australian state abbreviations; trimmed first so held-out 'SA ' normalises; unknown maps to OTHER."
+      },
+      {
+        "source_paths": [
+          "Postcode"
+        ],
+        "join_with": " ",
+        "when": null,
+        "target": "address.postcode",
+        "valid_from_path": null,
+        "valid_to_path": null,
+        "validity_date_formats": null,
+        "steps": [
+          {
+            "op": "trim",
+            "args": {}
+          },
+          {
+            "op": "regex_extract",
+            "args": {
+              "pattern": "(?<!\\d)(\\d{4})(?!\\d)",
+              "group": 1
+            }
+          },
+          {
+            "op": "postcode",
+            "args": {}
+          }
+        ],
+        "confidence": 0.9,
+        "rationale": "4-digit AU postcodes. Hold-out rejects were a 5-digit '80571' and a town name 'Cloverdale'; a strict 4-digit token extraction now drops those rows rather than erroring."
+      },
+      {
+        "source_paths": [
+          "Country"
+        ],
+        "join_with": " ",
+        "when": {
+          "source_path": "Country",
+          "op": "in",
+          "values": [
+            "Australia",
+            "AUSTRALIA",
+            "Australia.",
+            "AU",
+            "AUS",
+            "Australia, AU"
+          ]
+        },
+        "target": "address.country",
+        "valid_from_path": null,
+        "valid_to_path": null,
+        "validity_date_formats": null,
+        "steps": [
+          {
+            "op": "trim",
+            "args": {}
+          },
+          {
+            "op": "collapse_whitespace",
+            "args": {}
+          },
+          {
+            "op": "upper",
+            "args": {}
+          },
+          {
+            "op": "map_enum",
+            "args": {
+              "mapping": {
+                "AUSTRALIA": "AU",
+                "AUSTRALIA.": "AU",
+                "AU": "AU",
+                "AUS": "AU",
+                "AUSTRALIA, AU": "AU"
+              },
+              "default": "AU",
+              "passthrough": false
+            }
+          }
+        ],
+        "confidence": 0.95,
+        "rationale": "Critic fix: address.country emits ONLY 'AU'. The register is Australian (ACNC) and its non-AU Country values are demonstrably source errors (hold-out row 2: Country='Austria' on a VIC/3025/AUS record). A row-level 'when' gate restricts emission to recognised Australian spellings, so 'Austria', 'Singapore' and 'WA 6105' are left unmapped for that row instead of being emitted as a country or raising ENUM_UNMAPPED."
+      }
+    ],
+    "constants": [],
+    "unmapped": [
+      {
+        "source_path": "Address_Type",
+        "reason": "Single constant value 'Business' (480/480). No ontology target, but it is the evidence qualifier for address.full: it confirms the address block is a business/contact address, and with PO boxes/venue names it shows postal-vs-premises cannot be resolved."
+      },
+      {
+        "source_path": "Operating_Countries",
+        "reason": "ISO3 comma list of countries of OPERATION (AUS dominant; also IDN, PNG, NPL), 84.2% present. Critic suggested it as an address.country fallback. Deliberately not mapped: it describes where the charity operates, not where its address is; and since address.country is now AU-only, using an operation list as fallback would inject foreign values into an address field. Only 10/386 values are multi-country, so there is no reliable single-value mapping either."
+      },
+      {
+        "source_path": "Date_Organisation_Established",
+        "reason": "Near-miss flagged for lineage: date the organisation was founded, NOT ACNC registration. Rows with a missing Registration_Date must not be back-filled from this column, so it stays unmapped."
+      },
+      {
+        "source_path": "Charity_Size",
+        "reason": "ACNC revenue-size band (Small/Medium/Large). Explicit ontology gap: it is a genuine entity-classification attribute with no canonical home (entity.industry_code is a category error). Flagged for ontology extension rather than forced into a wrong target."
+      },
+      {
+        "source_path": "Number_of_Responsible_Persons",
+        "reason": "Governance headcount; no ontology target."
+      },
+      {
+        "source_path": "Financial_Year_End",
+        "reason": "Reporting period fit (e.g. 30-Jun); not a valid_from/valid_to date."
+      },
+      {
+        "source_path": "Operates_in_ACT",
+        "reason": "State operation flag; address.state comes from the registered address, not operation footprint."
+      },
+      {
+        "source_path": "Operates_in_NSW",
+        "reason": "State operation flag; not a canonical field."
+      },
+      {
+        "source_path": "Operates_in_NT",
+        "reason": "State operation flag; not a canonical field."
+      },
+      {
+        "source_path": "Operates_in_QLD",
+        "reason": "State operation flag; not a canonical field."
+      },
+      {
+        "source_path": "Operates_in_SA",
+        "reason": "State operation flag; not a canonical field."
+      },
+      {
+        "source_path": "Operates_in_TAS",
+        "reason": "State operation flag; not a canonical field."
+      },
+      {
+        "source_path": "Operates_in_VIC",
+        "reason": "State operation flag; not a canonical field."
+      },
+      {
+        "source_path": "Operates_in_WA",
+        "reason": "State operation flag; not a canonical field."
+      },
+      {
+        "source_path": "PBI",
+        "reason": "Tax concession flag; no ontology target."
+      },
+      {
+        "source_path": "HPC",
+        "reason": "Tax concession flag; no ontology target."
+      },
+      {
+        "source_path": "Preventing_or_relieving_suffering_of_animals",
+        "reason": "Charitable purpose Y/N indicator; no ontology target."
+      },
+      {
+        "source_path": "Advancing_Culture",
+        "reason": "Charitable purpose Y/N indicator; no ontology target."
+      },
+      {
+        "source_path": "Advancing_Education",
+        "reason": "Charitable purpose Y/N indicator; no ontology target."
+      },
+      {
+        "source_path": "Advancing_Health",
+        "reason": "Charitable purpose Y/N indicator; no ontology target."
+      },
+      {
+        "source_path": "Promote_or_oppose_a_change_to_law__government_poll_or_prac",
+        "reason": "Charitable purpose Y/N indicator; no ontology target."
+      },
+      {
+        "source_path": "Advancing_natual_environment",
+        "reason": "Charitable purpose Y/N indicator; no ontology target."
+      },
+      {
+        "source_path": "Promoting_or_protecting_human_rights",
+        "reason": "Charitable purpose Y/N indicator; no ontology target."
+      },
+      {
+        "source_path": "Purposes_beneficial_to_ther_general_public_and_other_analogous",
+        "reason": "Charitable purpose Y/N indicator; no ontology target."
+      },
+      {
+        "source_path": "Promoting_reconciliation__mutual_respect_and_tolerance",
+        "reason": "Charitable purpose Y/N indicator; no ontology target."
+      },
+      {
+        "source_path": "Advancing_Religion",
+        "reason": "Charitable purpose Y/N indicator; no ontology target."
+      },
+      {
+        "source_path": "Advancing_social_or_public_welfare",
+        "reason": "Charitable purpose Y/N indicator; no ontology target."
+      },
+      {
+        "source_path": "Advancing_security_or_safety_of_Australia_or_Australian_public",
+        "reason": "Charitable purpose Y/N indicator; no ontology target."
+      },
+      {
+        "source_path": "Aboriginal_or_TSI",
+        "reason": "Beneficiary-type Y/N indicator; no ontology target."
+      },
+      {
+        "source_path": "Adults",
+        "reason": "Beneficiary-type Y/N indicator; no ontology target."
+      },
+      {
+        "source_path": "Aged_Persons",
+        "reason": "Beneficiary-type Y/N indicator; no ontology target."
+      },
+      {
+        "source_path": "Children",
+        "reason": "Beneficiary-type Y/N indicator; no ontology target."
+      },
+      {
+        "source_path": "Communities_Overseas",
+        "reason": "Beneficiary-type Y/N indicator; no ontology target."
+      },
+      {
+        "source_path": "Early_Childhood",
+        "reason": "Beneficiary-type Y/N indicator; no ontology target."
+      },
+      {
+        "source_path": "Ethnic_Groups",
+        "reason": "Beneficiary-type Y/N indicator; no ontology target."
+      },
+      {
+        "source_path": "Families",
+        "reason": "Beneficiary-type Y/N indicator; no ontology target."
+      },
+      {
+        "source_path": "Females",
+        "reason": "Beneficiary-type Y/N indicator; no ontology target."
+      },
+      {
+        "source_path": "Financially_Disadvantaged",
+        "reason": "Beneficiary-type Y/N indicator; no ontology target."
+      },
+      {
+        "source_path": "LGBTIQA+",
+        "reason": "Beneficiary-type Y/N indicator; no ontology target."
+      },
+      {
+        "source_path": "General_Community_in_Australia",
+        "reason": "Beneficiary-type Y/N indicator; no ontology target."
+      },
+      {
+        "source_path": "Males",
+        "reason": "Beneficiary-type Y/N indicator; no ontology target."
+      },
+      {
+        "source_path": "Migrants_Refugees_or_Asylum_Seekers",
+        "reason": "Beneficiary-type Y/N indicator; no ontology target."
+      },
+      {
+        "source_path": "Other_Beneficiaries",
+        "reason": "Beneficiary-type Y/N indicator; no ontology target."
+      },
+      {
+        "source_path": "Other_Charities",
+        "reason": "Beneficiary-type Y/N indicator; no ontology target."
+      },
+      {
+        "source_path": "People_at_risk_of_homelessness",
+        "reason": "Beneficiary-type Y/N indicator; no ontology target."
+      },
+      {
+        "source_path": "People_with_Chronic_Illness",
+        "reason": "Beneficiary-type Y/N indicator; no ontology target."
+      },
+      {
+        "source_path": "People_with_Disabilities",
+        "reason": "Beneficiary-type Y/N indicator; no ontology target."
+      },
+      {
+        "source_path": "Pre_Post_Release_Offenders",
+        "reason": "Beneficiary-type Y/N indicator; no ontology target."
+      },
+      {
+        "source_path": "Rural_Regional_Remote_Communities",
+        "reason": "Beneficiary-type Y/N indicator; no ontology target."
+      },
+      {
+        "source_path": "Unemployed_Person",
+        "reason": "Beneficiary-type Y/N indicator; no ontology target."
+      },
+      {
+        "source_path": "Veterans_or_their_families",
+        "reason": "Beneficiary-type Y/N indicator; no ontology target."
+      },
+      {
+        "source_path": "Victims_of_crime",
+        "reason": "Beneficiary-type Y/N indicator; no ontology target."
+      },
+      {
+        "source_path": "Victims_of_Disasters",
+        "reason": "Beneficiary-type Y/N indicator; no ontology target."
+      },
+      {
+        "source_path": "Youth",
+        "reason": "Beneficiary-type Y/N indicator; no ontology target."
+      },
+      {
+        "source_path": "animals",
+        "reason": "Beneficiary-type Y/N indicator; no ontology target."
+      },
+      {
+        "source_path": "environment",
+        "reason": "Beneficiary-type Y/N indicator; no ontology target."
+      },
+      {
+        "source_path": "other_gender_identities",
+        "reason": "Beneficiary-type Y/N indicator; no ontology target."
+      }
+    ],
+    "notes": "Hold-out fixes: (1) entity.website \u2014 the invalid value was a prose blob containing two URLs and a parenthesised domain; now the first URL/domain token is extracted and hard-validated, so blobs drop instead of erroring (no error observed on discovery). (2) address.postcode \u2014 hold-out rejects were '80571' (5 digits) and 'Cloverdale' (a town); a strict 4-digit token extraction now leaves those rows unmapped rather than erroring. (3) address.country \u2014 formerly passthrough, which emitted 'AUSTRIA' for a record whose State/Postcode/Operating_Countries are all Australian; now gated by a row-level 'when' on recognised Australian spellings and emitted only as 'AU', so non-AU values (source typos) are left unmapped for that row. Judgement calls I did NOT change: Operating_Countries stays unmapped (it is countries of operation, not address country \u2014 using it as an address fallback would be a category error and would re-inject foreign values now that the field is AU-only); Charity_Size stays unmapped as a stated ontology gap (no valid target; entity.industry_code would be wrong); Date_Organisation_Established flagged as a lineage near-miss so nobody back-fills date_registered from it; Address_Type documented as the postal-vs-premises qualifier explaining address.full's lowered confidence (0.55). entity.status not mapped: no per-row status column. entity_type not mapped: suffixes in the name are text, not a structured type field. No per-row observation date; fallback to resource last-modified."
+  }
+}

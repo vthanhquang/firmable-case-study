@@ -1,0 +1,87 @@
+{
+ "experiment": "v5b",
+ "baseline": "approved",
+ "sources": 2,
+ "same_reader": 2,
+ "same_grain": 2,
+ "key_rules_identical": 2,
+ "mean_rule_jaccard": 0.658,
+ "per_source": {
+  "asic_credit_licensees": {
+   "same_reader": true,
+   "same_grain": true,
+   "rule_jaccard": 0.538,
+   "key_rules_identical": true,
+   "only_in_approved": [
+    [
+     "address.country",
+     [
+      "<constant:AU>"
+     ],
+     ""
+    ],
+    [
+     "entity.entity_type",
+     [
+      "<constant:unknown>"
+     ],
+     ""
+    ],
+    [
+     "entity.status",
+     [
+      "<constant:unknown>"
+     ],
+     ""
+    ],
+    [
+     "observation.valid_from",
+     [
+      "CRED_LIC_START_DT"
+     ],
+     ""
+    ],
+    [
+     "observation.valid_to",
+     [
+      "CRED_LIC_END_DT"
+     ],
+     ""
+    ]
+   ],
+   "only_in_rerun": [
+    [
+     "entity.entity_type",
+     [
+      "CRED_LIC_NAME"
+     ],
+     ""
+    ]
+   ]
+  },
+  "qbcc_licensees": {
+   "same_reader": true,
+   "same_grain": true,
+   "rule_jaccard": 0.778,
+   "key_rules_identical": true,
+   "only_in_approved": [
+    [
+     "entity.entity_type",
+     [
+      "Licence Type CODE"
+     ],
+     ""
+    ]
+   ],
+   "only_in_rerun": [
+    [
+     "entity.entity_type",
+     [
+      "Licence Type DESC"
+     ],
+     ""
+    ]
+   ]
+  }
+ }
+}

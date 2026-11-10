@@ -1,0 +1,1033 @@
+{
+  "run_id": "20261110T034751-1d95e2",
+  "source_id": "asic_companies",
+  "status": "PENDING_REVIEW",
+  "started_at": "2026-11-09T20:47:51+00:00",
+  "prompt_version": "prompts-v1",
+  "model": "deepseek-v4-flash",
+  "critic_model": "deepseek-v4-flash",
+  "ontology_sha256": "639b80ea6333146c7ac714cd940fcdf6b2945f451e95333b0be21174bedee5da",
+  "snapshot_sha256": "bb7935a163292c6d195bd2d5788863164f191198b3f29257fb332785f998bcea",
+  "proposals": [
+    {
+      "round": 0,
+      "digest": "8cd83f61fa23105cacbd728bd589c962bce59a4eac6db19341dfb6aa934e7cac",
+      "config": {
+        "source_id": "asic_companies",
+        "record_grain": "legal_entity",
+        "grain_rationale": "Each row is one ASIC-registered company in a given registered-name state: the current-name row carries the company's present legal name and status, and historic-name rows carry superseded registered names for the same ACN. Map the business participant's own attributes (ACN, ABN, type, status, registration date); the row's name-history identity is not treated as a separate entity field.",
+        "reader": {
+          "format": "delimited",
+          "archive_member": "COMPANY_202611.csv",
+          "encoding": "utf-8-sig",
+          "delimiter": "\t",
+          "skip_rows": 0,
+          "sheet": null,
+          "record_path": null
+        },
+        "record_id": {
+          "strategy": "columns",
+          "source_paths": [
+            "ACN",
+            "Company Name"
+          ],
+          "rationale": "ACN alone is not unique per row (471 distinct in 473) because historic-name rows repeat an ACN; ACN + Company Name is unique and traceable."
+        },
+        "observed_at": {
+          "source_path": null,
+          "steps": [],
+          "fallback": "resource_last_modified"
+        },
+        "fields": [
+          {
+            "source_paths": [
+              "Company Name"
+            ],
+            "join_with": " ",
+            "target": "entity.legal_name",
+            "steps": [
+              {
+                "op": "trim",
+                "args": {}
+              },
+              {
+                "op": "collapse_whitespace",
+                "args": {}
+              },
+              {
+                "op": "null_if",
+                "args": {
+                  "values": [
+                    "",
+                    "NONE"
+                  ]
+                }
+              }
+            ],
+            "confidence": 0.85,
+            "rationale": "ASIC 'Company Name' is the registered name of the company (values are space-padded to fixed width, hence trim + collapse_whitespace)."
+          },
+          {
+            "source_paths": [
+              "Current Name"
+            ],
+            "join_with": " ",
+            "target": "entity.trading_name",
+            "steps": [
+              {
+                "op": "trim",
+                "args": {}
+              },
+              {
+                "op": "collapse_whitespace",
+                "args": {}
+              },
+              {
+                "op": "null_if",
+                "args": {
+                  "values": [
+                    "",
+                    "NONE"
+                  ]
+                }
+              }
+            ],
+            "confidence": 0.35,
+            "rationale": "Where populated, this is the company's newer current registered name, paired against the superseded name in Company Name on the same ACN (e.g. 'LOVINI HOLDINGS PTY LTD' -> 'MONAKA PTY LTD'). It is a registered name, not a trading name, so it is deliberately NOT mapped to legal_name (that would give one ACN two legal names); trading_name is the least-wrong available slot and confidence is kept low."
+          },
+          {
+            "source_paths": [
+              "ACN"
+            ],
+            "join_with": " ",
+            "target": "entity.acn",
+            "steps": [
+              {
+                "op": "acn",
+                "args": {}
+              }
+            ],
+            "confidence": 0.95,
+            "rationale": "9-digit ACN, 473/473 checksum-valid via the acn transform."
+          },
+          {
+            "source_paths": [
+              "ABN"
+            ],
+            "join_with": " ",
+            "target": "entity.abn",
+            "steps": [
+              {
+                "op": "null_if",
+                "args": {
+                  "values": [
+                    "0",
+                    "00000000000",
+                    ""
+                  ]
+                }
+              },
+              {
+                "op": "abn",
+                "args": {}
+              }
+            ],
+            "confidence": 0.9,
+            "rationale": "11-digit ABN; '0' is an explicit no-ABN placeholder (145/473 rows) and is nulled before the checksum transform. All remaining 11-digit values are checksum-valid (69.3% coverage, 0 errors)."
+          },
+          {
+            "source_paths": [
+              "Type"
+            ],
+            "join_with": " ",
+            "target": "entity.entity_type",
+            "steps": [
+              {
+                "op": "trim",
+                "args": {}
+              },
+              {
+                "op": "map_enum",
+                "args": {
+                  "mapping": {
+                    "APTY": "company",
+                    "APUB": "company"
+                  },
+                  "default": "unknown"
+                }
+              }
+            ],
+            "confidence": 0.6,
+            "rationale": "ASIC Type states corporate form: APTY = Australian Proprietary Company, APUB = Australian Public Company, both 'company'. Other ASIC Type codes (e.g. FNOS) are deliberately left to default 'unknown' rather than guessed."
+          },
+          {
+            "source_paths": [
+              "Status"
+            ],
+            "join_with": " ",
+            "target": "entity.status",
+            "steps": [
+              {
+                "op": "trim",
+                "args": {}
+              },
+              {
+                "op": "map_enum",
+                "args": {
+                  "mapping": {
+                    "REGD": "active",
+                    "DRGD": "deregistered",
+                    "SOFF": "suspended"
+                  },
+                  "default": "unknown"
+                }
+              }
+            ],
+            "confidence": 0.7,
+            "rationale": "REGD = registered/active; DRGD = deregistered; SOFF = strike-off action in progress -> suspended. EXAD (external administration) has no faithful enum value, so it is intentionally omitted and falls to 'unknown' rather than being mislabelled as deregistered. Unobserved codes also default to unknown."
+          },
+          {
+            "source_paths": [
+              "Date of Registration"
+            ],
+            "join_with": " ",
+            "target": "entity.date_registered",
+            "steps": [
+              {
+                "op": "parse_date",
+                "args": {
+                  "formats": [
+                    "%d/%m/%Y"
+                  ]
+                }
+              }
+            ],
+            "confidence": 0.9,
+            "rationale": "Day-first dd/mm/yyyy (473/473 match shape; values like 26/09/1887 confirm day-first)."
+          },
+          {
+            "source_paths": [
+              "Previous State of Registration"
+            ],
+            "join_with": " ",
+            "target": "address.state",
+            "steps": [
+              {
+                "op": "trim",
+                "args": {}
+              },
+              {
+                "op": "state",
+                "args": {}
+              }
+            ],
+            "confidence": 0.35,
+            "rationale": "AU state abbreviations (NSW/VIC/QLD/WA/SA/TAS/...), 100% present. Weak evidence for an address: this is the state in which the company was registered as a company, not a current business address. Only geographic attribute in the file, so included at low confidence."
+          },
+          {
+            "source_paths": [
+              "Current Name Start Date"
+            ],
+            "join_with": " ",
+            "target": "observation.valid_from",
+            "steps": [
+              {
+                "op": "parse_date",
+                "args": {
+                  "formats": [
+                    "%d/%m/%Y"
+                  ]
+                }
+              }
+            ],
+            "confidence": 0.45,
+            "rationale": "Date the current registered name commenced, used as the start of the name claim's validity window; dd/mm/yyyy, 169/169 present values parse. Moderate-low because it dates the name, not the whole entity record."
+          },
+          {
+            "source_paths": [
+              "Date of Deregistration"
+            ],
+            "join_with": " ",
+            "target": "observation.valid_to",
+            "steps": [
+              {
+                "op": "parse_date",
+                "args": {
+                  "formats": [
+                    "%d/%m/%Y"
+                  ]
+                }
+              }
+            ],
+            "confidence": 0.8,
+            "rationale": "Date the company ceased to exist; blank (null) on live records, i.e. still current. 19/19 present values parse."
+          }
+        ],
+        "constants": [
+          {
+            "target": "address.country",
+            "value": "AU",
+            "confidence": 0.8,
+            "rationale": "ASIC is the Australian company register; all rows are companies registered in Australia."
+          }
+        ],
+        "unmapped": [
+          {
+            "source_path": "Class",
+            "reason": "ASIC internal class codes (LMSH limited by shares, LMGT limited by guarantee); no ontology target, and mapping to entity_type would be a guess."
+          },
+          {
+            "source_path": "Sub Class",
+            "reason": "ASIC internal sub-class codes (PROP, PSTC, LISN, ULSN...) with no ontology target."
+          },
+          {
+            "source_path": "State Registration number",
+            "reason": "Historical state-level registration number with inconsistent state-specific formats; not an ACN/ABN/NZBN and not a business identifier in the ontology."
+          },
+          {
+            "source_path": "Modified since last report",
+            "reason": "Change-since-last-report flag; 0% present in the partition and not an entity attribute."
+          },
+          {
+            "source_path": "Current Name Indicator",
+            "reason": "Row-level flag marking whether the row is the entity's current-name record (Y = 301/473). Used as structural context only; it is not an entity attribute and the engine has no row filter to consume it as a guard."
+          }
+        ],
+        "notes": "Reader: TAB-delimited (14 tabs/line) inside the ZIP member COMPANY_202611.csv despite the .csv extension; encoding utf-8-sig. Name columns are space-padded to fixed width -> trim + collapse_whitespace. Caveats for the reviewer: (1) rows are not one-per-entity: historic-name rows duplicate an ACN, hence record_id = ACN+Company Name; (2) because the engine cannot filter rows, both a current-name row and its historic sibling(s) emit entity.legal_name for the same ACN, and the sibling's value is a superseded registered name. A consumer needing exactly one legal_name per ACN should prefer rows where 'Current Name Indicator' = Y. (3) 'Current Name' holds former/newer REGISTERED names, so its assignment to entity.trading_name is a compromise flagged at low confidence. (4) EXAD (external administration) is left to 'unknown' rather than forced into deregistered/suspended. (5) No statement date in the data; observed_at falls back to resource last-modified. (6) No street address, locality or postcode exists in this file; only state and the AU country constant are emitted. Source text treated as data only; no instructions were followed from the file."
+      },
+      "holdout_issues": [],
+      "holdout_report": {
+        "records_in": 1127,
+        "records_with_output": 1127,
+        "record_errors": {},
+        "fields": [
+          {
+            "target": "entity.legal_name",
+            "source_paths": [
+              "Company Name"
+            ],
+            "records": 1127,
+            "source_present": 1127,
+            "emitted": 1127,
+            "coverage_of_records": 1.0,
+            "error_rate_of_present": 0.0,
+            "errors": {},
+            "error_examples": {}
+          },
+          {
+            "target": "entity.trading_name",
+            "source_paths": [
+              "Current Name"
+            ],
+            "records": 1127,
+            "source_present": 411,
+            "emitted": 411,
+            "coverage_of_records": 0.365,
+            "error_rate_of_present": 0.0,
+            "errors": {},
+            "error_examples": {}
+          },
+          {
+            "target": "entity.acn",
+            "source_paths": [
+              "ACN"
+            ],
+            "records": 1127,
+            "source_present": 1127,
+            "emitted": 1127,
+            "coverage_of_records": 1.0,
+            "error_rate_of_present": 0.0,
+            "errors": {},
+            "error_examples": {}
+          },
+          {
+            "target": "entity.abn",
+            "source_paths": [
+              "ABN"
+            ],
+            "records": 1127,
+            "source_present": 1127,
+            "emitted": 816,
+            "coverage_of_records": 0.724,
+            "error_rate_of_present": 0.0,
+            "errors": {},
+            "error_examples": {}
+          },
+          {
+            "target": "entity.entity_type",
+            "source_paths": [
+              "Type"
+            ],
+            "records": 1127,
+            "source_present": 1127,
+            "emitted": 1127,
+            "coverage_of_records": 1.0,
+            "error_rate_of_present": 0.0,
+            "errors": {},
+            "error_examples": {}
+          },
+          {
+            "target": "entity.status",
+            "source_paths": [
+              "Status"
+            ],
+            "records": 1127,
+            "source_present": 1127,
+            "emitted": 1127,
+            "coverage_of_records": 1.0,
+            "error_rate_of_present": 0.0,
+            "errors": {},
+            "error_examples": {}
+          },
+          {
+            "target": "entity.date_registered",
+            "source_paths": [
+              "Date of Registration"
+            ],
+            "records": 1127,
+            "source_present": 1127,
+            "emitted": 1127,
+            "coverage_of_records": 1.0,
+            "error_rate_of_present": 0.0,
+            "errors": {},
+            "error_examples": {}
+          },
+          {
+            "target": "address.state",
+            "source_paths": [
+              "Previous State of Registration"
+            ],
+            "records": 1127,
+            "source_present": 1127,
+            "emitted": 1127,
+            "coverage_of_records": 1.0,
+            "error_rate_of_present": 0.0,
+            "errors": {},
+            "error_examples": {}
+          },
+          {
+            "target": "observation.valid_from",
+            "source_paths": [
+              "Current Name Start Date"
+            ],
+            "records": 1127,
+            "source_present": 408,
+            "emitted": 408,
+            "coverage_of_records": 0.362,
+            "error_rate_of_present": 0.0,
+            "errors": {},
+            "error_examples": {}
+          },
+          {
+            "target": "observation.valid_to",
+            "source_paths": [
+              "Date of Deregistration"
+            ],
+            "records": 1127,
+            "source_present": 35,
+            "emitted": 35,
+            "coverage_of_records": 0.031,
+            "error_rate_of_present": 0.0,
+            "errors": {},
+            "error_examples": {}
+          }
+        ]
+      },
+      "critic": {
+        "fields": [
+          {
+            "target": "entity.legal_name",
+            "source_paths": [
+              "Company Name"
+            ],
+            "verdict": "wrong",
+            "reason": "The mapping treats 'Company Name' as the legal name, but per the dataset's own grain rationale the row's identity is the name-history state: on non-current rows 'Company Name' is a superseded registered name and 'Current Name' holds the present legal name. In the heldout RICHFORD row (Current Name Indicator blank, Current Name = 'PETGRA PTY. LTD.'), the observed legal_name 'RICHFORD PTY. LIMITED' is a former name, not the company's legal name. The 'Current Name Indicator' guard is documented as unconsumeable, so legal_name is systematically wrong on historic rows."
+          },
+          {
+            "target": "entity.trading_name",
+            "source_paths": [
+              "Current Name"
+            ],
+            "verdict": "wrong",
+            "reason": "'Current Name' is the newer registered legal name of the same ACN, explicitly stated by the mapper to be 'a registered name, not a trading name'. Emitting it as trading_name produces a fictitious trading name: a legal name is not a trading name. RICHFORD gets trading_name 'PETGRA PTY. LTD.' which is really its legal name."
+          },
+          {
+            "target": "entity.acn",
+            "source_paths": [
+              "ACN"
+            ],
+            "verdict": "ok",
+            "reason": "ASIC ACN is the legal company identifier, 9 digits, checksum-validated. Correct target."
+          },
+          {
+            "target": "entity.abn",
+            "source_paths": [
+              "ABN"
+            ],
+            "verdict": "ok",
+            "reason": "ASIC ABN field, placeholder zero nulled and checksum validated; values match ^\\d{11}$ and pass checksum in the sample. Correct."
+          },
+          {
+            "target": "entity.entity_type",
+            "source_paths": [
+              "Type"
+            ],
+            "verdict": "ok",
+            "reason": "APTY/APUB are ASIC corporate-form codes for proprietary/public companies; mapping to 'company' with default 'unknown' is faithful and avoids guessing."
+          },
+          {
+            "target": "entity.status",
+            "source_paths": [
+              "Status"
+            ],
+            "verdict": "ok",
+            "reason": "REGD/DRGD/SOFF map to active/deregistered/suspended with EXAD intentionally left unknown; conservative and defensible. SOFF\u2192suspended is a slight stretch but reasonable and documented."
+          },
+          {
+            "target": "entity.date_registered",
+            "source_paths": [
+              "Date of Registration"
+            ],
+            "verdict": "ok",
+            "reason": "Day-first dd/mm/yyyy parsing is validated by values like 26/06/1967, 26/09/1887; dates in heldout are plausible. Correct."
+          },
+          {
+            "target": "address.state",
+            "source_paths": [
+              "Previous State of Registration"
+            ],
+            "verdict": "doubtful",
+            "reason": "This is the state in which the company was registered, not the company's address state. The mapper concedes it is 'weak evidence for an address'. Emitting it as address.state without qualification misrepresents a registration-jurisdiction attribute as a premises address."
+          },
+          {
+            "target": "observation.valid_from",
+            "source_paths": [
+              "Current Name Start Date"
+            ],
+            "verdict": "doubtful",
+            "reason": "This date is the commencement of the current registered name, not of the entity record as a whole. Using it as the entity claim's valid_from is only correct for the name claim; for legal_name/status/etc. it is misaligned. Also only populated on historic-name rows."
+          },
+          {
+            "target": "observation.valid_to",
+            "source_paths": [
+              "Date of Deregistration"
+            ],
+            "verdict": "ok",
+            "reason": "Date of deregistration as the end of validity, null when still live, is a reasonable reading. Acceptable."
+          },
+          {
+            "target": "address.country",
+            "source_paths": [
+              "(constant)"
+            ],
+            "verdict": "ok",
+            "reason": "ASIC register is Australian; AU default is correct for the dataset."
+          }
+        ],
+        "missed": [
+          {
+            "source_path": "Current Name Indicator",
+            "suggested_target": "(row filter / guard)",
+            "reason": "This flag is the critical disambiguator between current and superseded name rows. Without consuming it, legal_name (and the name-history decision) is wrong on historic rows. The engine should support a row filter or conditional target so current-name rows feed legal_name and non-current rows do not."
+          },
+          {
+            "source_path": "Current Name",
+            "suggested_target": "entity.legal_name",
+            "reason": "On non-current rows this is the company's present legal name per the dataset rationale; it belongs in legal_name (guarded by Current Name Indicator), not in trading_name. The current mapping both misses legal_name for these rows and pollutes trading_name."
+          }
+        ],
+        "summary": "The identifier, entity_type, status and date-registered mappings are sound and well-validated (checksums, day-first dates, conservative enums). The core structural problem is the name mapping: the dataset is a name-history register, and the mapper routed 'Current Name' into entity.trading_name despite explicitly acknowledging it is a registered legal name, while 'Company Name' on non-current rows is only a superseded name \u2014 as the heldout RICHFORD row shows (legal_name 'RICHFORD PTY. LIMITED' is a former name; 'PETGRA PTY. LTD.' is its current legal name but was emitted as a fake trading name). Because Current Name Indicator is declared unusable as a guard, legal_name is systematically wrong on historic rows and trading_name is fabricated. address.state from 'Previous State of Registration' and valid_from from 'Current Name Start Date' are also semantically stretched. Recommend adding a row filter on Current Name Indicator: current rows \u2192 legal_name from Company Name; non-current rows \u2192 legal_name from Current Name, and drop the trading_name mapping entirely."
+      }
+    },
+    {
+      "round": 1,
+      "digest": "1150051734c458d51725634cc2a404a753e1b2ae898afccb77725679c6f2ba0a",
+      "config": {
+        "source_id": "asic_companies",
+        "record_grain": "legal_entity",
+        "grain_rationale": "Each row is one ASIC-registered company in a given registered-name state. The row's own name (Company Name) is the company's current registered name on rows flagged Current Name Indicator = Y, and a superseded registered name on historic rows. Because the engine applies one declarative field mapping to every row and cannot branch on a row flag, only the row's own registered name is mapped; the cross-row present-name on historic rows is not reachable in this model.",
+        "reader": {
+          "format": "delimited",
+          "archive_member": "COMPANY_202611.csv",
+          "encoding": "utf-8-sig",
+          "delimiter": "\t",
+          "skip_rows": 0,
+          "sheet": null,
+          "record_path": null
+        },
+        "record_id": {
+          "strategy": "columns",
+          "source_paths": [
+            "ACN",
+            "Company Name"
+          ],
+          "rationale": "ACN alone is not unique per row (471 distinct in 473; heldout also contains ACNs appearing on both a current and a historic row) because the file keeps one row per registered name. ACN + Company Name is unique and traceable."
+        },
+        "observed_at": {
+          "source_path": null,
+          "steps": [],
+          "fallback": "resource_last_modified"
+        },
+        "fields": [
+          {
+            "source_paths": [
+              "Company Name"
+            ],
+            "join_with": " ",
+            "target": "entity.legal_name",
+            "steps": [
+              {
+                "op": "trim",
+                "args": {}
+              },
+              {
+                "op": "collapse_whitespace",
+                "args": {}
+              },
+              {
+                "op": "null_if",
+                "args": {
+                  "values": [
+                    "",
+                    "NONE"
+                  ]
+                }
+              }
+            ],
+            "confidence": 0.75,
+            "rationale": "ASIC 'Company Name' is a registered company name as recorded by ASIC (fixed-width padded, hence trim + collapse_whitespace) - the correct slot for a legal name rather than a trading name or a display name. Residual caveat: on historic rows it is a superseded registered name (e.g. heldout RICHFORD PTY. LIMITED is a former name of the ACN whose present name is PETGRA PTY. LTD.), so it can lag one name behind for companies that have renamed. Confidence is set to reflect that, and the limitation is stated in notes."
+          },
+          {
+            "source_paths": [
+              "ACN"
+            ],
+            "join_with": " ",
+            "target": "entity.acn",
+            "steps": [
+              {
+                "op": "acn",
+                "args": {}
+              }
+            ],
+            "confidence": 0.95,
+            "rationale": "9-digit ACN, 100% checksum-valid via the acn transform (473/473 discovery, 1127/1127 heldout, 0 errors)."
+          },
+          {
+            "source_paths": [
+              "ABN"
+            ],
+            "join_with": " ",
+            "target": "entity.abn",
+            "steps": [
+              {
+                "op": "null_if",
+                "args": {
+                  "values": [
+                    "0",
+                    "00000000000",
+                    ""
+                  ]
+                }
+              },
+              {
+                "op": "abn",
+                "args": {}
+              }
+            ],
+            "confidence": 0.9,
+            "rationale": "11-digit ABN; '0' is an explicit no-ABN placeholder (145/473 rows) nulled before the checksum transform. Remaining values are all checksum-valid; 0 errors in discovery and heldout."
+          },
+          {
+            "source_paths": [
+              "Type"
+            ],
+            "join_with": " ",
+            "target": "entity.entity_type",
+            "steps": [
+              {
+                "op": "trim",
+                "args": {}
+              },
+              {
+                "op": "map_enum",
+                "args": {
+                  "mapping": {
+                    "APTY": "company",
+                    "APUB": "company"
+                  },
+                  "default": "unknown"
+                }
+              }
+            ],
+            "confidence": 0.6,
+            "rationale": "ASIC Type states corporate form: APTY = Australian Proprietary Company, APUB = Australian Public Company, both 'company'. Other ASIC Type codes (e.g. FNOS) deliberately default to 'unknown' rather than being guessed."
+          },
+          {
+            "source_paths": [
+              "Status"
+            ],
+            "join_with": " ",
+            "target": "entity.status",
+            "steps": [
+              {
+                "op": "trim",
+                "args": {}
+              },
+              {
+                "op": "map_enum",
+                "args": {
+                  "mapping": {
+                    "REGD": "active",
+                    "DRGD": "deregistered",
+                    "SOFF": "suspended"
+                  },
+                  "default": "unknown"
+                }
+              }
+            ],
+            "confidence": 0.7,
+            "rationale": "REGD = registered/active; DRGD = deregistered; SOFF = strike-off action in progress -> suspended. EXAD (external administration) has no faithful enum value so it is omitted and falls to 'unknown' rather than being mislabelled. Unobserved codes also default to unknown."
+          },
+          {
+            "source_paths": [
+              "Date of Registration"
+            ],
+            "join_with": " ",
+            "target": "entity.date_registered",
+            "steps": [
+              {
+                "op": "parse_date",
+                "args": {
+                  "formats": [
+                    "%d/%m/%Y"
+                  ]
+                }
+              }
+            ],
+            "confidence": 0.9,
+            "rationale": "Day-first dd/mm/yyyy (473/473 match shape; 26/09/1887, 30/04/1907 confirm day-first); 0 errors on heldout."
+          },
+          {
+            "source_paths": [
+              "Date of Deregistration"
+            ],
+            "join_with": " ",
+            "target": "observation.valid_to",
+            "steps": [
+              {
+                "op": "parse_date",
+                "args": {
+                  "formats": [
+                    "%d/%m/%Y"
+                  ]
+                }
+              }
+            ],
+            "confidence": 0.8,
+            "rationale": "Date the company ceased to exist; blank (null) on live records, i.e. still current. Day-first dd/mm/yyyy; 0 errors on heldout."
+          }
+        ],
+        "constants": [
+          {
+            "target": "address.country",
+            "value": "AU",
+            "confidence": 0.8,
+            "rationale": "ASIC is the Australian company register; every row is a company registered in Australia."
+          }
+        ],
+        "unmapped": [
+          {
+            "source_path": "Current Name",
+            "reason": "Central to the file's name-history structure: it holds the company's present registered name on a row whose Company Name is a superseded name. It is a REGISTERED LEGAL name, not a trading name, so it must not be emitted as entity.trading_name (that fabricates a trading name, as flagged in review). It also cannot be routed to entity.legal_name jointly with Company Name because the engine has no row filter or conditional target to pick 'Current Name where Indicator != Y else Company Name', and emitting both would give one ACN two concurrent legal names. Left unmapped so no wrong values are produced; needs row-level guarding upstream."
+          },
+          {
+            "source_path": "Current Name Indicator",
+            "reason": "Row-level flag (Y = 301/473) marking the row as the entity's current-name record. It is the disambiguator between current and superseded name rows, but it is not an entity attribute and the engine offers no row filter to consume it; documented in notes so a consumer can post-filter to Indicator = Y for exactly one legal name per ACN."
+          },
+          {
+            "source_path": "Current Name Start Date",
+            "reason": "Commencement date of the registered name only, and present only on historic-name rows (169/473). Using it as observation.valid_from for the whole record (status, ACN, ABN, registration date) would misrepresent those claims' validity window, so it is not used as an envelope date."
+          },
+          {
+            "source_path": "Previous State of Registration",
+            "reason": "The state in which the company was registered as a company - a registration jurisdiction, not the entity's address. Emitting it as address.state would misrepresent a jurisdiction attribute as a premises address, and no street address, locality or postcode exists in this file to anchor it."
+          },
+          {
+            "source_path": "Class",
+            "reason": "ASIC internal class codes (LMSH limited by shares, LMGT limited by guarantee); no ontology target, and mapping to entity_type would be a guess."
+          },
+          {
+            "source_path": "Sub Class",
+            "reason": "ASIC internal sub-class codes (PROP, PSTC, LISN, ULSN...) with no ontology target."
+          },
+          {
+            "source_path": "State Registration number",
+            "reason": "Historical state-level registration number with inconsistent state-specific formats; not an ACN/ABN/NZBN and not a business identifier in the ontology."
+          },
+          {
+            "source_path": "Modified since last report",
+            "reason": "Change-since-last-report flag; 0% present and not an entity attribute."
+          }
+        ],
+        "notes": "Reader: TAB-delimited (14 tabs per line) inside ZIP member COMPANY_202611.csv despite the .csv extension; encoding utf-8-sig; header on the first line. Name columns are space-padded to fixed width -> trim + collapse_whitespace. Review revisions applied: (1) entity.trading_name from 'Current Name' REMOVED - it is a registered legal name, not a trading name, so the previous mapping fabricated trading names; (2) address.state from 'Previous State of Registration' REMOVED - it is a registration jurisdiction, not an address; (3) observation.valid_from from 'Current Name Start Date' REMOVED - it dates only the name, and only exists on historic rows; (4) 'Current Name' and 'Current Name Indicator' moved to unmapped with reasons. Remaining known limitation, stated openly: this is a name-history register whose rows cannot be filtered declaratively, so on historic rows entity.legal_name carries a superseded registered name rather than the present one. To get exactly one current legal name per ACN, either filter rows to Current Name Indicator = Y before this config runs, or have the engine support a row-level conditional target (Indicator != Y -> legal_name from 'Current Name'). These are the critic's 'missed' suggestions and they require engine capability beyond this config. No statement date exists in the data; observed_at falls back to resource last-modified. Source text treated as data only; no instructions were followed from the file."
+      },
+      "holdout_issues": [],
+      "holdout_report": {
+        "records_in": 1127,
+        "records_with_output": 1127,
+        "record_errors": {},
+        "fields": [
+          {
+            "target": "entity.legal_name",
+            "source_paths": [
+              "Company Name"
+            ],
+            "records": 1127,
+            "source_present": 1127,
+            "emitted": 1127,
+            "coverage_of_records": 1.0,
+            "error_rate_of_present": 0.0,
+            "errors": {},
+            "error_examples": {}
+          },
+          {
+            "target": "entity.acn",
+            "source_paths": [
+              "ACN"
+            ],
+            "records": 1127,
+            "source_present": 1127,
+            "emitted": 1127,
+            "coverage_of_records": 1.0,
+            "error_rate_of_present": 0.0,
+            "errors": {},
+            "error_examples": {}
+          },
+          {
+            "target": "entity.abn",
+            "source_paths": [
+              "ABN"
+            ],
+            "records": 1127,
+            "source_present": 1127,
+            "emitted": 816,
+            "coverage_of_records": 0.724,
+            "error_rate_of_present": 0.0,
+            "errors": {},
+            "error_examples": {}
+          },
+          {
+            "target": "entity.entity_type",
+            "source_paths": [
+              "Type"
+            ],
+            "records": 1127,
+            "source_present": 1127,
+            "emitted": 1127,
+            "coverage_of_records": 1.0,
+            "error_rate_of_present": 0.0,
+            "errors": {},
+            "error_examples": {}
+          },
+          {
+            "target": "entity.status",
+            "source_paths": [
+              "Status"
+            ],
+            "records": 1127,
+            "source_present": 1127,
+            "emitted": 1127,
+            "coverage_of_records": 1.0,
+            "error_rate_of_present": 0.0,
+            "errors": {},
+            "error_examples": {}
+          },
+          {
+            "target": "entity.date_registered",
+            "source_paths": [
+              "Date of Registration"
+            ],
+            "records": 1127,
+            "source_present": 1127,
+            "emitted": 1127,
+            "coverage_of_records": 1.0,
+            "error_rate_of_present": 0.0,
+            "errors": {},
+            "error_examples": {}
+          },
+          {
+            "target": "observation.valid_to",
+            "source_paths": [
+              "Date of Deregistration"
+            ],
+            "records": 1127,
+            "source_present": 35,
+            "emitted": 35,
+            "coverage_of_records": 0.031,
+            "error_rate_of_present": 0.0,
+            "errors": {},
+            "error_examples": {}
+          }
+        ]
+      },
+      "critic": {
+        "fields": [
+          {
+            "target": "entity.legal_name",
+            "source_paths": [
+              "Company Name"
+            ],
+            "verdict": "ok",
+            "reason": "ASIC 'Company Name' is the registered company name (legal name), not a trading or display name. Caveat noted: on historic rows (Current Name Indicator != Y) it is a superseded registered name, e.g. RICHFORD PTY. LIMITED for ACN 004697572 whose present name is PETGRA PTY. LTD. That is a documented staleness limitation of the grain, not a wrong target, so 'ok' with the caveat. The heldout RICHFORD row is correctly emitted as the row's own registered name."
+          },
+          {
+            "target": "entity.acn",
+            "source_paths": [
+              "ACN"
+            ],
+            "verdict": "ok",
+            "reason": "9-digit ASIC ACN, checksum-validated. Values in heldout all match the ACN pattern and are consistent with the ABN tail where ABN present (e.g. 002574352 / 99002574352)."
+          },
+          {
+            "target": "entity.abn",
+            "source_paths": [
+              "ABN"
+            ],
+            "verdict": "ok",
+            "reason": "11-digit ABN, '0' placeholder nulled before checksum. Observed ABNs are checksum-looking and consistent with the ACN (e.g. 48006880931 carries 006880931)."
+          },
+          {
+            "target": "entity.entity_type",
+            "source_paths": [
+              "Type"
+            ],
+            "verdict": "ok",
+            "reason": "ASIC 'Type' is an explicit corporate-form column (APTY/APUB -> company). Not guessed from the name; other codes fall to unknown. This satisfies the 'explicit source column' requirement for entity_type."
+          },
+          {
+            "target": "entity.status",
+            "source_paths": [
+              "Status"
+            ],
+            "verdict": "ok",
+            "reason": "ASIC 'Status' is an explicit status column; REGD->active, DRGD->deregistered, SOFF->suspended (?), EXAD->unknown. Mapping is plausible and default is unknown rather than guessed. SOFF=strike-off action in progress -> suspended is a reasonable but debatable enum choice; not enough to call wrong."
+          },
+          {
+            "target": "entity.date_registered",
+            "source_paths": [
+              "Date of Registration"
+            ],
+            "verdict": "ok",
+            "reason": "Day-first dd/mm/yyyy is evidenced by day>12 values (26/09/1887, 30/04/1907) in the discovery set; heldout dates parse consistently (19/02/1990 -> 1990-02-19, 02/03/1983 -> 1983-03-02). No month/day reversal."
+          },
+          {
+            "target": "observation.valid_to",
+            "source_paths": [
+              "Date of Deregistration"
+            ],
+            "verdict": "ok",
+            "reason": "Deregistration date is a reasonable 'valid_to' (null = still current). Day-first parsing consistent. No heldout row has a non-blank deregistration date to cross-check, but the source semantics fit."
+          },
+          {
+            "target": "address.country",
+            "constant": "AU",
+            "verdict": "ok",
+            "reason": "ASIC is the Australian company register; every row is an Australian-registered company. Constant AU is appropriate."
+          }
+        ],
+        "missed": [],
+        "summary": "The mapping is broadly sound: legal_name from 'Company Name', ACN/ABN from explicit checksummed columns, entity_type/status from explicit ASIC code columns (not guessed), day-first dates, and a stated caveat that on historic rows 'Company Name' is a superseded registered name (visible in the RICHFORD/PETGRA heldout row). No trading-name, contact-name, or identifier-confusion failures are present; unmapped 'Current Name'/'Current Name Indicator' are genuinely legal-name history columns that cannot be conditionally routed and are correctly left unmapped rather than misused as trading_name. Minor doubts only: SOFF->suspended is an interpretation, and observation.valid_to from deregistration date could not be exercised on heldout rows with non-blank dates. No clearly-matching unmapped source columns were found."
+      }
+    }
+  ],
+  "tool_calls": 11,
+  "stages": [
+    {
+      "stage": "INSPECTED",
+      "at": "2026-11-09T20:47:51+00:00"
+    },
+    {
+      "stage": "PROPOSED_v0",
+      "at": "2026-11-09T20:48:35+00:00"
+    },
+    {
+      "stage": "VALIDATED_v0",
+      "at": "2026-11-09T20:48:36+00:00"
+    },
+    {
+      "stage": "CRITIQUED_v0",
+      "at": "2026-11-09T20:48:45+00:00"
+    },
+    {
+      "stage": "REVISING_v1",
+      "at": "2026-11-09T20:48:45+00:00"
+    },
+    {
+      "stage": "PROPOSED_v1",
+      "at": "2026-11-09T20:49:11+00:00"
+    },
+    {
+      "stage": "VALIDATED_v1",
+      "at": "2026-11-09T20:49:11+00:00"
+    },
+    {
+      "stage": "CRITIQUED_v1",
+      "at": "2026-11-09T20:49:18+00:00"
+    },
+    {
+      "stage": "PENDING_REVIEW",
+      "at": "2026-11-09T20:49:18+00:00"
+    }
+  ],
+  "inspection": {
+    "file_name": "asic_companies__d6d03876",
+    "size_bytes": 79335223,
+    "magic_hex": "504b030414000000",
+    "container": "zip",
+    "members": [
+      {
+        "name": "COMPANY_202611.csv",
+        "size": 400937661
+      }
+    ],
+    "largest_member_preview": {
+      "name": "COMPANY_202611.csv",
+      "looks_like": "text",
+      "encoding_guess": "utf-8-sig",
+      "delimiter_counts_per_line": {
+        "comma": {
+          "min": 0,
+          "max": 2
+        },
+        "tab": {
+          "min": 14,
+          "max": 14
+        },
+        "pipe": {
+          "min": 0,
+          "max": 0
+        },
+        "semicolon": {
+          "min": 0,
+          "max": 0
+        }
+      },
+      "first_lines": [
+        "Company Name\tACN\tType\tClass\tSub Class\tStatus\tDate of Registration\tDate of Deregistration\tPrevious State of Registration\tState Registration number\tModified since last report\tCurrent Name Indicator\tABN\tCurrent Name\tCurrent Name Start Date",
+        "LOVINI HOLDINGS PTY LTD\t000000019\tAPTY\tLMSH\tPROP\tREGD\t08/01/1990\t\tNSW\t46869041\t\t\t89000000019\tMONAKA PTY LTD\t28/01/2016",
+        "MONAKA PTY LTD\t000000019\tAPTY\tLMSH\tPROP\tREGD\t08/01/1990\t\tNSW\t46869041\t\tY\t89000000019\t\t",
+        "CHRISTENSEN & ASSOCIATES PTY LTD\t000000028\tAPTY\tLMSH\tPSTC\tREGD\t15/09/1987\t\tNSW\t40398926\t\tY\t91000000028\t\t",
+        "TASDARK PTY LTD\t000000028\tAPTY\tLMSH\tPSTC\tREGD\t15/09/1987\t\tNSW\t40398926\t\t\t91000000028\tCHRISTENSEN & ASSOCIATES PTY LTD\t24/09/2007",
+        "DHATA HOLDINGS PTY. LTD.\t000000046\tAPTY\tLMSH\tPSTC\tREGD\t17/03/1988\t\tNSW\t41493048\t\tY\t95000000046\t\t",
+        "PATIA HOLDINGS PTY. LTD.\t000000055\tAPTY\tLMSH\tPROP\tREGD\t09/10/1989\t\tNSW\t46389303\t\tY\t97000000055\t\t",
+        "SAMOZI PTY LTD\t000000082\tAPTY\tLMSH\tPROP\tREGD\t13/02/1984\t\tNSW\t33121533\t\t\t14000000082\tW & L COMPUTER CONSULTANTS PTY LTD\t28/03/1984",
+        "W & L COMPUTER CONSULTANTS PTY LTD\t000000082\tAPTY\tLMSH\tPROP\tREGD\t13/02/1984\t\tNSW\t33121533\t\tY\t14000000082\t\t",
+        "BANQUE NATIONALE DE PARIS                                                                           \t000000117\tFNOS\tNONE\tNONE\tREGD\t30/04/1907\t\tNSW\t00002239  \t\t\t23000000117\tBNP PARIBAS                                                                                         \t02/06/2000",
+        "BNP PARIBAS                                                                                         \t000000117\tFNOS\tNONE\tNONE\tREGD\t30/04/1907\t\tNSW\t00002239  \t\tY\t23000000117\t\t",
+        "ROYAL ART SOCIETY OF NEW SOUTH WALES                                                                \t000000126\tAPUB\tLMGT\tLISN\tREGD\t26/09/1887\t\tNSW\t00002337  \t\tY\t25000000126\t\t"
+      ]
+    }
+  },
+  "finished_at": "2026-11-09T20:49:18+00:00",
+  "final_digest": "1150051734c458d51725634cc2a404a753e1b2ae898afccb77725679c6f2ba0a"
+}

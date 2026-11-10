@@ -1,0 +1,173 @@
+{
+ "experiment": "rerun-v3",
+ "baseline": "approved",
+ "sources": 7,
+ "same_reader": 6,
+ "same_grain": 6,
+ "key_rules_identical": 5,
+ "mean_rule_jaccard": 0.785,
+ "per_source": {
+  "acnc_charities": {
+   "same_reader": true,
+   "same_grain": true,
+   "rule_jaccard": 1.0,
+   "key_rules_identical": true,
+   "only_in_approved": [],
+   "only_in_rerun": []
+  },
+  "asic_companies": {
+   "same_reader": true,
+   "same_grain": false,
+   "rule_jaccard": 0.538,
+   "key_rules_identical": false,
+   "only_in_approved": [
+    [
+     "entity.legal_name",
+     [
+      "Company Name"
+     ],
+     "Current Name Indicator equals ['Y']"
+    ],
+    [
+     "entity.legal_name",
+     [
+      "Current Name"
+     ],
+     "Current Name Indicator not_equals ['Y']"
+    ],
+    [
+     "observation.valid_from",
+     [
+      "Current Name Start Date"
+     ],
+     "Current Name Start Date present []"
+    ],
+    [
+     "observation.valid_from",
+     [
+      "Date of Registration"
+     ],
+     "Current Name Start Date absent []"
+    ]
+   ],
+   "only_in_rerun": [
+    [
+     "entity.legal_name",
+     [
+      "Company Name"
+     ],
+     "Current Name Indicator present []"
+    ],
+    [
+     "entity.legal_name",
+     [
+      "Current Name"
+     ],
+     "Current Name Indicator absent []"
+    ]
+   ]
+  },
+  "asic_credit_licensees": {
+   "same_reader": true,
+   "same_grain": true,
+   "rule_jaccard": 0.769,
+   "key_rules_identical": true,
+   "only_in_approved": [
+    [
+     "entity.entity_type",
+     [
+      "<constant:unknown>"
+     ],
+     ""
+    ],
+    [
+     "entity.status",
+     [
+      "<constant:unknown>"
+     ],
+     ""
+    ]
+   ],
+   "only_in_rerun": [
+    [
+     "entity.status",
+     [
+      "CRED_LIC_STATUS"
+     ],
+     ""
+    ]
+   ]
+  },
+  "ato_tax_transparency": {
+   "same_reader": true,
+   "same_grain": true,
+   "rule_jaccard": 0.667,
+   "key_rules_identical": true,
+   "only_in_approved": [
+    [
+     "address.country",
+     [
+      "<constant:AU>"
+     ],
+     ""
+    ]
+   ],
+   "only_in_rerun": []
+  },
+  "dewr_employment_providers": {
+   "same_reader": true,
+   "same_grain": true,
+   "rule_jaccard": 1.0,
+   "key_rules_identical": true,
+   "only_in_approved": [],
+   "only_in_rerun": []
+  },
+  "qbcc_licensees": {
+   "same_reader": true,
+   "same_grain": true,
+   "rule_jaccard": 0.667,
+   "key_rules_identical": false,
+   "only_in_approved": [
+    [
+     "entity.entity_type",
+     [
+      "Licence Type CODE"
+     ],
+     ""
+    ],
+    [
+     "entity.legal_name",
+     [
+      "Licensee Name"
+     ],
+     ""
+    ]
+   ],
+   "only_in_rerun": [
+    [
+     "entity.trading_name",
+     [
+      "Licensee Name"
+     ],
+     "Licence Type CODE equals ['C']"
+    ]
+   ]
+  },
+  "vic_liquor": {
+   "same_reader": false,
+   "same_grain": true,
+   "rule_jaccard": 0.857,
+   "key_rules_identical": true,
+   "only_in_approved": [
+    [
+     "address.full",
+     [
+      "Street Address"
+     ],
+     ""
+    ]
+   ],
+   "only_in_rerun": []
+  }
+ }
+}

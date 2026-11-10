@@ -1,0 +1,1089 @@
+{
+  "run_id": "20261110T035024-bb91f8",
+  "source_id": "qbcc_licensees",
+  "status": "PENDING_REVIEW",
+  "started_at": "2026-11-09T20:50:24+00:00",
+  "prompt_version": "prompts-v1",
+  "model": "deepseek-v4-flash",
+  "critic_model": "deepseek-v4-flash",
+  "ontology_sha256": "639b80ea6333146c7ac714cd940fcdf6b2945f451e95333b0be21174bedee5da",
+  "snapshot_sha256": "509b287a7bf36eb39510b79a8056568dd532843d75b711d3d44c193ff0d84447",
+  "proposals": [
+    {
+      "round": 0,
+      "digest": "0a3f68f5e89a66575bcec574123729d281c55eb0848326f9ab9b2724fce75aa4",
+      "config": {
+        "source_id": "qbcc_licensees",
+        "record_grain": "licence_or_permit",
+        "grain_rationale": "Each record is one QBCC licence held by a licensee (Licence Number + Licence Grade + Licence Class Type identify the licence; _id is the CKAN row id). The business participant is the licensee named in 'Licensee Name', which is either a company (confirmed by an ACN and a PTY LTD style name) or an individual trading as a business. Licence-level attributes (grade, class, financial category) describe the licence, not the entity, so they are not mapped.",
+        "reader": {
+          "format": "json",
+          "archive_member": null,
+          "encoding": "utf-8-sig",
+          "delimiter": null,
+          "skip_rows": 0,
+          "sheet": null,
+          "record_path": "result.records"
+        },
+        "record_id": {
+          "strategy": "columns",
+          "source_paths": [
+            "_id"
+          ],
+          "rationale": "CKAN datastore row id; 508/508 distinct across the discovery partition, so it uniquely identifies the licence record. Licence Number is NOT unique (506 distinct vs 508 records, duplicates present), so it cannot be used alone."
+        },
+        "observed_at": {
+          "source_path": null,
+          "steps": [],
+          "fallback": "resource_last_modified"
+        },
+        "fields": [
+          {
+            "source_paths": [
+              "Licensee Name"
+            ],
+            "join_with": " ",
+            "target": "entity.legal_name",
+            "steps": [
+              {
+                "op": "trim",
+                "args": {}
+              },
+              {
+                "op": "collapse_whitespace",
+                "args": {}
+              },
+              {
+                "op": "regex_extract",
+                "args": {
+                  "pattern": "(?i)^(.+(?:PTY\\.?\\s*LTD|PTY\\.?\\s*LIMITED|LIMITED|LTD)\\.?)$",
+                  "group": 1
+                }
+              },
+              {
+                "op": "null_if",
+                "args": {
+                  "values": [
+                    ""
+                  ]
+                }
+              }
+            ],
+            "confidence": 0.6,
+            "rationale": "Only company-suffixed names (e.g. 'FLASH AIR CONDITIONING AND ELECTRICAL PTY LTD', accompanied by a checksum-valid ACN) are treated as the registered legal name. Bare personal names (e.g. 'JUSTIN WILLIAM PAGE', licence type 'Individual') are not legal names and are suppressed here -> they land in trading_name."
+          },
+          {
+            "source_paths": [
+              "Licensee Name"
+            ],
+            "join_with": " ",
+            "target": "entity.trading_name",
+            "steps": [
+              {
+                "op": "trim",
+                "args": {}
+              },
+              {
+                "op": "collapse_whitespace",
+                "args": {}
+              },
+              {
+                "op": "upper",
+                "args": {}
+              }
+            ],
+            "confidence": 0.5,
+            "rationale": "For individual licensees this column holds the person's name under which they trade ('Individual' licence type = sole trader trading as own name), which is a trading/display name, not a registered legal name. Names are uppercased in the source; normalised to upper for consistency. Confidence is moderate because the same column doubles as the legal name for companies."
+          },
+          {
+            "source_paths": [
+              "ABN"
+            ],
+            "join_with": " ",
+            "target": "entity.abn",
+            "steps": [
+              {
+                "op": "trim",
+                "args": {}
+              },
+              {
+                "op": "null_if",
+                "args": {
+                  "values": [
+                    "",
+                    "N/A",
+                    "NA"
+                  ]
+                }
+              },
+              {
+                "op": "abn",
+                "args": {}
+              }
+            ],
+            "confidence": 0.9,
+            "rationale": "'99 999 999 999' shape for all present values; ABN checksum valid on 99.6% of populated rows (0.549 present rate). Blank -> null. The single checksum-invalid value is reported as an error rather than fabricated."
+          },
+          {
+            "source_paths": [
+              "ACN"
+            ],
+            "join_with": " ",
+            "target": "entity.acn",
+            "steps": [
+              {
+                "op": "trim",
+                "args": {}
+              },
+              {
+                "op": "null_if",
+                "args": {
+                  "values": [
+                    "",
+                    "N/A",
+                    "NA"
+                  ]
+                }
+              },
+              {
+                "op": "acn",
+                "args": {}
+              }
+            ],
+            "confidence": 0.92,
+            "rationale": "All 34 present values are '999 999 999' with a 100% ACN checksum-valid rate (0.067 present rate). ACN is never derived from the ABN."
+          },
+          {
+            "source_paths": [
+              "Licence Type CODE"
+            ],
+            "join_with": " ",
+            "target": "entity.entity_type",
+            "steps": [
+              {
+                "op": "upper",
+                "args": {}
+              },
+              {
+                "op": "map_enum",
+                "args": {
+                  "mapping": {
+                    "C": "company",
+                    "I": "sole_trader"
+                  },
+                  "default": "unknown"
+                }
+              }
+            ],
+            "confidence": 0.75,
+            "rationale": "Source explicitly states the licensee type: 'C' = Company (corroborated by ACN presence and PTY LTD names), 'I' = Individual, mapped to sole_trader as an individual licence holder is an unincorporated natural person. No partnership/trust value observed; default unknown."
+          },
+          {
+            "source_paths": [
+              "Licensee Business Address"
+            ],
+            "join_with": " ",
+            "target": "address.full",
+            "steps": [
+              {
+                "op": "trim",
+                "args": {}
+              },
+              {
+                "op": "collapse_whitespace",
+                "args": {}
+              }
+            ],
+            "confidence": 0.75,
+            "rationale": "Free-text single-line business address ending in state + 4-digit postcode, e.g. '15 radiata pl Peregian Springs QLD 4573'."
+          },
+          {
+            "source_paths": [
+              "Licensee Business Address"
+            ],
+            "join_with": " ",
+            "target": "address.locality",
+            "steps": [
+              {
+                "op": "trim",
+                "args": {}
+              },
+              {
+                "op": "collapse_whitespace",
+                "args": {}
+              },
+              {
+                "op": "regex_extract",
+                "args": {
+                  "pattern": "(?i)(?:st|str|rd|ave|av|pl|dr|ct|cr|cres|tce|hwy|ln|cl|gr|pde|esp|bvd|mwy|way)\\.?\\s+(.+?)\\s+(?:QLD|NSW|VIC|WA|SA|TAS|ACT|NT)\\s+\\d{4}$",
+                  "group": 1
+                }
+              },
+              {
+                "op": "null_if",
+                "args": {
+                  "values": [
+                    ""
+                  ]
+                }
+              }
+            ],
+            "confidence": 0.6,
+            "rationale": "Locality is the text between the last street-type token (st/str/rd/ave/pl/dr/ct/cr/cres/tce/hwy/ln/cl/gr/pde/esp/bvd/mwy/way) and the state abbreviation + postcode, in the layout '<street no> <street name> <street type> <suburb> <STATE> <postcode>'. Anchoring on the street suffix prevents street text being absorbed into the suburb; addresses with an unrecognised or absent street type yield null rather than a bad value, giving ~60% coverage with no bad values on discovery."
+          },
+          {
+            "source_paths": [
+              "Licensee Business Address"
+            ],
+            "join_with": " ",
+            "target": "address.state",
+            "steps": [
+              {
+                "op": "trim",
+                "args": {}
+              },
+              {
+                "op": "regex_extract",
+                "args": {
+                  "pattern": "(?i)\\b(QLD|NSW|VIC|WA|SA|TAS|ACT|NT)\\b\\s+\\d{3,4}\\s*$",
+                  "group": 1
+                }
+              },
+              {
+                "op": "state",
+                "args": {}
+              }
+            ],
+            "confidence": 0.85,
+            "rationale": "Addresses are formatted '<street> <suburb> <STATE> <postcode>'; the state abbreviation immediately before the trailing postcode is extracted and normalised with the state op (unknown -> OTHER)."
+          },
+          {
+            "source_paths": [
+              "Licensee Business Address"
+            ],
+            "join_with": " ",
+            "target": "address.postcode",
+            "steps": [
+              {
+                "op": "trim",
+                "args": {}
+              },
+              {
+                "op": "regex_extract",
+                "args": {
+                  "pattern": "(\\d{3,4})\\s*$",
+                  "group": 1
+                }
+              },
+              {
+                "op": "postcode",
+                "args": {}
+              }
+            ],
+            "confidence": 0.85,
+            "rationale": "Trailing 4-digit token of the address; postcode op re-pads 3-digit NT ranges and rejects non-AU values."
+          }
+        ],
+        "constants": [
+          {
+            "target": "address.country",
+            "value": "AU",
+            "confidence": 0.85,
+            "rationale": "Queensland Building and Construction Commission register; all addresses carry QLD state codes and AU 4-digit postcodes. Stated as a low-to-moderate confidence constant since it is inferred from the publisher, not a column."
+          }
+        ],
+        "unmapped": [
+          {
+            "source_path": "_id",
+            "reason": "CKAN datastore row id for the licence record, not a business identifier; used only as record_id."
+          },
+          {
+            "source_path": "Licence Number",
+            "reason": "Identifier of the licence/permit, not of the business. Also not unique per record (506 distinct for 508 rows). Not mapped onto any entity field and not used to derive an ACN."
+          },
+          {
+            "source_path": "Licence Type DESC",
+            "reason": "Human-readable duplicate of Licence Type CODE ('Individual'/'Company'); entity_type is mapped from the CODE column to avoid duplicate observations from one logical field."
+          },
+          {
+            "source_path": "Financial Category DESC",
+            "reason": "Licence financial category ('Self Certification - Trade' for 100% of discovery rows), a property of the licence, not of the entity."
+          },
+          {
+            "source_path": "Financial Category CODE",
+            "reason": "Code form of the licence financial category ('SCT1'); licence attribute, single-valued in the discovery partition, not an entity field."
+          },
+          {
+            "source_path": "Licence Grade",
+            "reason": "QBCC licence grade (Trade Contractor Licence, Site Supervisor, Fire Occupational, ...). Licence attribute, not an ANZSIC-style industry code and not an entity field."
+          },
+          {
+            "source_path": "Licence Class Type",
+            "reason": "Trade/occupation class in which the licence is held (Carpentry, Plumbing and Drainage, ...). Describes licence scope, not the business; not ANZSIC, so not mapped to entity.industry_code."
+          }
+        ],
+        "notes": "Advertised as CSV but the resource is a CKAN datastore_search API JSON envelope (starts '{\"help\":'), so format=json with record_path 'result.records'. No date column exists in the records: observation.observed_at therefore falls back to the resource's last-modified metadata and no valid_from/valid_to can be supplied (the register does not state licence start/end dates in this response). 'Licensee Name' is a single column serving two roles; it is mapped to legal_name only when the name carries a company suffix, and always to trading_name, so individuals' personal names are never presented as registered legal names. entity.status is left unmapped because no status column exists (register membership implies currently licensed, but that is inferred, not stated)."
+      },
+      "holdout_issues": [
+        {
+          "code": "SOME_ERRORS",
+          "severity": "warning",
+          "message": "6 values rejected: {'ABN_CHECKSUM': 6}",
+          "target": "entity.abn",
+          "source_paths": [
+            "ABN"
+          ],
+          "examples": {
+            "ABN_CHECKSUM": [
+              "59 209 269 625",
+              "91 066 309 113",
+              "37 978 778 739",
+              "93 939 550 174"
+            ]
+          }
+        }
+      ],
+      "holdout_report": {
+        "records_in": 1092,
+        "records_with_output": 1092,
+        "record_errors": {},
+        "fields": [
+          {
+            "target": "entity.legal_name",
+            "source_paths": [
+              "Licensee Name"
+            ],
+            "records": 1092,
+            "source_present": 1092,
+            "emitted": 76,
+            "coverage_of_records": 0.07,
+            "error_rate_of_present": 0.0,
+            "errors": {},
+            "error_examples": {}
+          },
+          {
+            "target": "entity.trading_name",
+            "source_paths": [
+              "Licensee Name"
+            ],
+            "records": 1092,
+            "source_present": 1092,
+            "emitted": 1092,
+            "coverage_of_records": 1.0,
+            "error_rate_of_present": 0.0,
+            "errors": {},
+            "error_examples": {}
+          },
+          {
+            "target": "entity.abn",
+            "source_paths": [
+              "ABN"
+            ],
+            "records": 1092,
+            "source_present": 614,
+            "emitted": 608,
+            "coverage_of_records": 0.557,
+            "error_rate_of_present": 0.01,
+            "errors": {
+              "ABN_CHECKSUM": 6
+            },
+            "error_examples": {
+              "ABN_CHECKSUM": [
+                "59 209 269 625",
+                "91 066 309 113",
+                "37 978 778 739",
+                "93 939 550 174"
+              ]
+            }
+          },
+          {
+            "target": "entity.acn",
+            "source_paths": [
+              "ACN"
+            ],
+            "records": 1092,
+            "source_present": 76,
+            "emitted": 76,
+            "coverage_of_records": 0.07,
+            "error_rate_of_present": 0.0,
+            "errors": {},
+            "error_examples": {}
+          },
+          {
+            "target": "entity.entity_type",
+            "source_paths": [
+              "Licence Type CODE"
+            ],
+            "records": 1092,
+            "source_present": 1092,
+            "emitted": 1092,
+            "coverage_of_records": 1.0,
+            "error_rate_of_present": 0.0,
+            "errors": {},
+            "error_examples": {}
+          },
+          {
+            "target": "address.full",
+            "source_paths": [
+              "Licensee Business Address"
+            ],
+            "records": 1092,
+            "source_present": 1092,
+            "emitted": 1092,
+            "coverage_of_records": 1.0,
+            "error_rate_of_present": 0.0,
+            "errors": {},
+            "error_examples": {}
+          },
+          {
+            "target": "address.locality",
+            "source_paths": [
+              "Licensee Business Address"
+            ],
+            "records": 1092,
+            "source_present": 1092,
+            "emitted": 639,
+            "coverage_of_records": 0.585,
+            "error_rate_of_present": 0.0,
+            "errors": {},
+            "error_examples": {}
+          },
+          {
+            "target": "address.state",
+            "source_paths": [
+              "Licensee Business Address"
+            ],
+            "records": 1092,
+            "source_present": 1092,
+            "emitted": 1080,
+            "coverage_of_records": 0.989,
+            "error_rate_of_present": 0.0,
+            "errors": {},
+            "error_examples": {}
+          },
+          {
+            "target": "address.postcode",
+            "source_paths": [
+              "Licensee Business Address"
+            ],
+            "records": 1092,
+            "source_present": 1092,
+            "emitted": 1092,
+            "coverage_of_records": 1.0,
+            "error_rate_of_present": 0.0,
+            "errors": {},
+            "error_examples": {}
+          }
+        ]
+      },
+      "critic": {
+        "fields": [
+          {
+            "target": "entity.legal_name",
+            "source_paths": [
+              "Licensee Name"
+            ],
+            "verdict": "doubtful",
+            "reason": "Suppressing bare personal names as legal_name is defensible, but for individual licensees the person's actual legal name IS the licensee name (sole traders are legal persons). The regex also drops any company name lacking a suffix, and the 'legal vs trading' split by suffix is a guess not stated by the source. More importantly, the same column is emitted as trading_name, so for companies the legal name appears twice conceptually and for individuals nothing maps to legal_name even though it is the natural person's name."
+          },
+          {
+            "target": "entity.trading_name",
+            "source_paths": [
+              "Licensee Name"
+            ],
+            "verdict": "wrong",
+            "reason": "A bare individual's name ('Daniel Edward Behsman', 'HEATH RICHARD AUSTIN') is not a trading name; mapping it as trading_name invents a trading name where the source only gives the licensee's personal name. For company rows the same column also produces a trading name that duplicates the legal name. This conflates legal/contact name with trading name."
+          },
+          {
+            "target": "entity.abn",
+            "source_paths": [
+              "ABN"
+            ],
+            "verdict": "ok",
+            "reason": "Direct source column, checksum-validated, blanks nulled. Correct."
+          },
+          {
+            "target": "entity.acn",
+            "source_paths": [
+              "ACN"
+            ],
+            "verdict": "ok",
+            "reason": "Direct source column, checksum-validated, never derived from ABN. Correct."
+          },
+          {
+            "target": "entity.entity_type",
+            "source_paths": [
+              "Licence Type CODE"
+            ],
+            "verdict": "doubtful",
+            "reason": "Mapping 'I'->sole_trader is a reasonable but inferential leap; an Individual licence holder could be a partner or trust beneficiary, not necessarily a sole trader. 'C'->company is well supported. The I->sole_trader inference is a guess beyond the source enum ('Individual')."
+          },
+          {
+            "target": "address.full",
+            "source_paths": [
+              "Licensee Business Address"
+            ],
+            "verdict": "ok",
+            "reason": "Full address string passed through with whitespace normalisation. Acceptable."
+          },
+          {
+            "target": "address.locality",
+            "source_paths": [
+              "Licensee Business Address"
+            ],
+            "verdict": "doubtful",
+            "reason": "Regex anchored on street-suffix token list is brittle: '33-37 DANIEL COURT GREENBANK' has no recognised suffix in list (COURT vs CT) so null; 'Unit 239 245 Esplanade Cairns North' and missing-locality cases fail. Coverage-only-when-confident is defensible, but many valid localities are dropped and some street types not in the list (COURT, ESPLANADE, TREES ROAD works, COURT not). High miss rate (many held-out records have no locality)."
+          },
+          {
+            "target": "address.state",
+            "source_paths": [
+              "Licensee Business Address"
+            ],
+            "verdict": "ok",
+            "reason": "State abbreviation before trailing postcode correctly extracted in all held-out examples."
+          },
+          {
+            "target": "address.postcode",
+            "source_paths": [
+              "Licensee Business Address"
+            ],
+            "verdict": "ok",
+            "reason": "Trailing 4-digit token extracted correctly in all examples."
+          },
+          {
+            "target": "address.country",
+            "source_paths": [],
+            "verdict": "doubtful",
+            "reason": "Constant 'AU' inferred from publisher, not a source column. Reasonable but should be flagged; acceptable given all QLD addresses."
+          }
+        ],
+        "missed": [
+          {
+            "source_path": "Licence Grade",
+            "suggested_target": "entity.industry_code",
+            "reason": "Licence grade/class describe the trade scope; 'Licence Class Type' (Carpentry, Plumbing, etc.) is closer to an industry/occupation classification and could support entity.industry_code (with raw value recorded) rather than being entirely discarded. Not ANZSIC, but the closest available industry signal."
+          },
+          {
+            "source_path": "Licence Type DESC",
+            "suggested_target": "entity.entity_type",
+            "reason": "Human-readable duplicate of Licence Type CODE is acceptable to dedupe, but it is the more explicit source; leaving it unmapped is fine given CODE is used."
+          }
+        ],
+        "summary": "ABN/ACN/state/postcode/full-address mappings are sound. The key problems: (1) trading_name is fabricated from individual licensee personal names (a person's name is not a trading name) and duplicates legal_name for companies; (2) legal_name is over-suppressed for individuals whose personal name is the natural-person legal name, and depends on a suffix heuristic; (3) entity_type 'I'->sole_trader is an inference, not a stated fact. Locality extraction is brittle and misses many valid addresses. No source column clearly matches entity.industry_code in the true sense, though Licence Class Type is the nearest signal and could be recorded raw rather than discarded."
+      }
+    },
+    {
+      "round": 1,
+      "digest": "51948d3eb31b002b5f30008eb414b83a369cefdc6a6bee141295598949736a02",
+      "config": {
+        "source_id": "qbcc_licensees",
+        "record_grain": "licence_or_permit",
+        "grain_rationale": "Each record is one QBCC licence held by a licensee (Licence Number + Licence Grade + Licence Class Type identify the licence; _id is the CKAN row id). The business participant is the licensee named in 'Licensee Name'. Licence-level attributes (grade, class, financial category) describe the licence, not the entity. The register is a flat export that never distinguishes a registered legal name from a trading name, so 'Licensee Name' is mapped only to entity.legal_name: for 'Company' rows it is the registered company name (corroborated by a checksum-valid ACN and PTY LTD suffixes), for 'Individual' rows it is the natural person who is the licensee. No trading name is claimed because the source provides none.",
+        "reader": {
+          "format": "json",
+          "archive_member": null,
+          "encoding": "utf-8-sig",
+          "delimiter": null,
+          "skip_rows": 0,
+          "sheet": null,
+          "record_path": "result.records"
+        },
+        "record_id": {
+          "strategy": "columns",
+          "source_paths": [
+            "_id"
+          ],
+          "rationale": "CKAN datastore row id; 508/508 distinct across the discovery partition and unique in held-out validation, so it identifies the licence record. Licence Number is not unique (506 distinct vs 508 rows), so it cannot be used alone."
+        },
+        "observed_at": {
+          "source_path": null,
+          "steps": [],
+          "fallback": "resource_last_modified"
+        },
+        "fields": [
+          {
+            "source_paths": [
+              "Licensee Name"
+            ],
+            "join_with": " ",
+            "target": "entity.legal_name",
+            "steps": [
+              {
+                "op": "trim",
+                "args": {}
+              },
+              {
+                "op": "collapse_whitespace",
+                "args": {}
+              },
+              {
+                "op": "null_if",
+                "args": {
+                  "values": [
+                    "",
+                    "N/A",
+                    "NA"
+                  ]
+                }
+              }
+            ],
+            "confidence": 0.7,
+            "rationale": "Single licensee-name column in a government licence register, mapped in full with no suffix heuristic and no suppression. Previous revision emitted only company-suffixed names here (7% coverage) and pushed personal names to trading_name; the reviewer rejected that split. An individual licensee is the natural person holding the licence, so its name belongs in legal_name rather than being dropped or relabelled as a trading name."
+          },
+          {
+            "source_paths": [
+              "ABN"
+            ],
+            "join_with": " ",
+            "target": "entity.abn",
+            "steps": [
+              {
+                "op": "trim",
+                "args": {}
+              },
+              {
+                "op": "null_if",
+                "args": {
+                  "values": [
+                    "",
+                    "N/A",
+                    "NA"
+                  ]
+                }
+              },
+              {
+                "op": "abn",
+                "args": {}
+              }
+            ],
+            "confidence": 0.9,
+            "rationale": "Direct source column in '99 999 999 999' shape; ABN checksum valid on 99.6% of discovery rows and 99.0% of held-out rows (1 and 6 rejections respectively). The abn transform strips separators and refuses to emit a checksum-invalid value, so bad source data surfaces as a counted error instead of a fabricated ABN. The residual ~1% rejections are reported honestly, not hidden."
+          },
+          {
+            "source_paths": [
+              "ACN"
+            ],
+            "join_with": " ",
+            "target": "entity.acn",
+            "steps": [
+              {
+                "op": "trim",
+                "args": {}
+              },
+              {
+                "op": "null_if",
+                "args": {
+                  "values": [
+                    "",
+                    "N/A",
+                    "NA"
+                  ]
+                }
+              },
+              {
+                "op": "acn",
+                "args": {}
+              }
+            ],
+            "confidence": 0.92,
+            "rationale": "All present values are '999 999 999'; 100% ACN checksum-valid in both discovery (34/34) and held-out (76/76) with zero errors. ACN is never derived from the ABN."
+          },
+          {
+            "source_paths": [
+              "Licence Type CODE"
+            ],
+            "join_with": " ",
+            "target": "entity.entity_type",
+            "steps": [
+              {
+                "op": "upper",
+                "args": {}
+              },
+              {
+                "op": "map_enum",
+                "args": {
+                  "mapping": {
+                    "C": "company"
+                  },
+                  "default": "unknown"
+                }
+              }
+            ],
+            "confidence": 0.75,
+            "rationale": "The source states the licensee type directly and 'C' -> company is well supported (ACN present, PTY LTD names). 'I' is deliberately NOT mapped to sole_trader after the reviewer rejected that inference (an individual licensee may be a partner or trust principal); 'I' rows therefore resolve to the ontology default 'unknown' rather than a guess."
+          },
+          {
+            "source_paths": [
+              "Licensee Business Address"
+            ],
+            "join_with": " ",
+            "target": "address.full",
+            "steps": [
+              {
+                "op": "trim",
+                "args": {}
+              },
+              {
+                "op": "collapse_whitespace",
+                "args": {}
+              }
+            ],
+            "confidence": 0.75,
+            "rationale": "Free-text single-line business address ending in state + postcode, e.g. '15 radiata pl Peregian Springs QLD 4573'. Passed through as stated by the source with whitespace normalisation only."
+          },
+          {
+            "source_paths": [
+              "Licensee Business Address"
+            ],
+            "join_with": " ",
+            "target": "address.state",
+            "steps": [
+              {
+                "op": "trim",
+                "args": {}
+              },
+              {
+                "op": "regex_extract",
+                "args": {
+                  "pattern": "(?i)\\b(QLD|NSW|VIC|WA|SA|TAS|ACT|NT)\\b\\s+\\d{3,4}\\s*$",
+                  "group": 1
+                }
+              },
+              {
+                "op": "state",
+                "args": {}
+              }
+            ],
+            "confidence": 0.85,
+            "rationale": "All addresses follow '<street> <suburb> <STATE> <postcode>'; the state token immediately before the trailing postcode is extracted and normalised by the state op (unknown -> OTHER). Reviewer verdict 'ok'; 1080/1092 held-out rows emitted with zero errors."
+          },
+          {
+            "source_paths": [
+              "Licensee Business Address"
+            ],
+            "join_with": " ",
+            "target": "address.postcode",
+            "steps": [
+              {
+                "op": "trim",
+                "args": {}
+              },
+              {
+                "op": "regex_extract",
+                "args": {
+                  "pattern": "(\\d{3,4})\\s*$",
+                  "group": 1
+                }
+              },
+              {
+                "op": "postcode",
+                "args": {}
+              }
+            ],
+            "confidence": 0.85,
+            "rationale": "Trailing numeric token of the address, validated by the postcode op (AU 4-digit, NT re-pad). Reviewer verdict 'ok'; 100% coverage with zero errors in both partitions."
+          }
+        ],
+        "constants": [
+          {
+            "target": "address.country",
+            "value": "AU",
+            "confidence": 0.8,
+            "rationale": "Queensland Building and Construction Commission register; every address carries a QLD state code and an AU 4-digit postcode. Inferred from the publisher and address format rather than a source column, so confidence is moderate and flagged for review."
+          }
+        ],
+        "unmapped": [
+          {
+            "source_path": "_id",
+            "reason": "CKAN datastore row id for the licence record, not a business identifier; used only as record_id."
+          },
+          {
+            "source_path": "Licence Number",
+            "reason": "Identifier of the licence/permit, not of the business. Also not unique per record (506 distinct for 508 rows). Not mapped onto any entity field and not used to derive an ACN."
+          },
+          {
+            "source_path": "Licensee Business Address",
+            "reason": "Only address.full, address.state and address.postcode are taken from this column. address.locality is deliberately not mapped: the reviewer found the street-type-suffix heuristic brittle (missed COURT, ESPLANADE, unit-numbered and street-less addresses) and it covered only ~58-60% of held-out rows. Emitting no locality leaves the value absent rather than wrong."
+          },
+          {
+            "source_path": "Licence Type DESC",
+            "reason": "Human-readable form of Licence Type CODE ('Individual'/'Company'); CODE is the machine value used for entity_type, so this is deduplicated to avoid two observations of one logical field."
+          },
+          {
+            "source_path": "Financial Category DESC",
+            "reason": "Licence financial category ('Self Certification - Trade' for 100% of discovery rows), a property of the licence, not of the entity."
+          },
+          {
+            "source_path": "Financial Category CODE",
+            "reason": "Code form of the licence financial category ('SCT1'); licence attribute, single-valued in the discovery partition, not an entity field."
+          },
+          {
+            "source_path": "Licence Grade",
+            "reason": "QBCC licence grade (Trade Contractor Licence, Site Supervisor, Fire Occupational, ...). A licence attribute, not an ANZSIC or industry classification of the business, so not mapped to entity.industry_code."
+          },
+          {
+            "source_path": "Licence Class Type",
+            "reason": "Trade/occupation class of the licence (Carpentry, Plumbing and Drainage, ...). It is the nearest industry signal in the source, but it is a licence scope category and not ANZSIC, while entity.industry_code is documented as 'ANZSIC where available'. Recording a QBCC trade class there would place a non-conforming code in an ANZSIC-typed field; it is left unmapped and reported as a coverage gap instead."
+          }
+        ],
+        "notes": "REVISION after review. Advertised as CSV but the resource is a CKAN datastore_search API JSON envelope (starts '{\"help\":'), so format=json with record_path 'result.records'. No date column exists in the records: observation.observed_at falls back to resource last-modified metadata and no valid_from/valid_to can be supplied. Fixes for the reviewer's verdicts: (1) entity.trading_name REMOVED ('wrong' verdict - a personal licensee name is not a trading name, and for companies it duplicated the legal name); (2) the suffix-based legal_name heuristic REMOVED - 'Licensee Name' is now mapped in full to entity.legal_name (coverage 100%, no suppression, no guessing), which also resolves the 'doubtful' over-suppression of individual licensees; (3) entity.entity_type now maps only 'C'->company and lets 'I' fall to the ontology default 'unknown', removing the rejected 'I'->sole_trader inference; (4) address.locality REMOVED as brittle ('doubtful'), so address output is full/state/postcode only, all of which the reviewer rated 'ok'. Retained deliberately: entity.abn and entity.acn (direct, checksum-validated source columns rated 'ok'; ABN keeps a reported ~1% checksum rejection rather than hiding it) and address.country 'AU' at reduced confidence 0.8 and flagged. Open coverage gaps for a human: entity.trading_name (no trading name exists in this source), entity.status (no status column - register membership implies current licensing but that is inferred), entity.industry_code (no ANZSIC; Licence Class Type is the nearest but non-conforming signal), address.locality (unparseable from the free-text address), and no date fields at all."
+      },
+      "holdout_issues": [
+        {
+          "code": "SOME_ERRORS",
+          "severity": "warning",
+          "message": "6 values rejected: {'ABN_CHECKSUM': 6}",
+          "target": "entity.abn",
+          "source_paths": [
+            "ABN"
+          ],
+          "examples": {
+            "ABN_CHECKSUM": [
+              "59 209 269 625",
+              "91 066 309 113",
+              "37 978 778 739",
+              "93 939 550 174"
+            ]
+          }
+        }
+      ],
+      "holdout_report": {
+        "records_in": 1092,
+        "records_with_output": 1092,
+        "record_errors": {},
+        "fields": [
+          {
+            "target": "entity.legal_name",
+            "source_paths": [
+              "Licensee Name"
+            ],
+            "records": 1092,
+            "source_present": 1092,
+            "emitted": 1092,
+            "coverage_of_records": 1.0,
+            "error_rate_of_present": 0.0,
+            "errors": {},
+            "error_examples": {}
+          },
+          {
+            "target": "entity.abn",
+            "source_paths": [
+              "ABN"
+            ],
+            "records": 1092,
+            "source_present": 614,
+            "emitted": 608,
+            "coverage_of_records": 0.557,
+            "error_rate_of_present": 0.01,
+            "errors": {
+              "ABN_CHECKSUM": 6
+            },
+            "error_examples": {
+              "ABN_CHECKSUM": [
+                "59 209 269 625",
+                "91 066 309 113",
+                "37 978 778 739",
+                "93 939 550 174"
+              ]
+            }
+          },
+          {
+            "target": "entity.acn",
+            "source_paths": [
+              "ACN"
+            ],
+            "records": 1092,
+            "source_present": 76,
+            "emitted": 76,
+            "coverage_of_records": 0.07,
+            "error_rate_of_present": 0.0,
+            "errors": {},
+            "error_examples": {}
+          },
+          {
+            "target": "entity.entity_type",
+            "source_paths": [
+              "Licence Type CODE"
+            ],
+            "records": 1092,
+            "source_present": 1092,
+            "emitted": 1092,
+            "coverage_of_records": 1.0,
+            "error_rate_of_present": 0.0,
+            "errors": {},
+            "error_examples": {}
+          },
+          {
+            "target": "address.full",
+            "source_paths": [
+              "Licensee Business Address"
+            ],
+            "records": 1092,
+            "source_present": 1092,
+            "emitted": 1092,
+            "coverage_of_records": 1.0,
+            "error_rate_of_present": 0.0,
+            "errors": {},
+            "error_examples": {}
+          },
+          {
+            "target": "address.state",
+            "source_paths": [
+              "Licensee Business Address"
+            ],
+            "records": 1092,
+            "source_present": 1092,
+            "emitted": 1080,
+            "coverage_of_records": 0.989,
+            "error_rate_of_present": 0.0,
+            "errors": {},
+            "error_examples": {}
+          },
+          {
+            "target": "address.postcode",
+            "source_paths": [
+              "Licensee Business Address"
+            ],
+            "records": 1092,
+            "source_present": 1092,
+            "emitted": 1092,
+            "coverage_of_records": 1.0,
+            "error_rate_of_present": 0.0,
+            "errors": {},
+            "error_examples": {}
+          }
+        ]
+      },
+      "critic": {
+        "fields": [
+          {
+            "target": "entity.legal_name",
+            "source_paths": [
+              "Licensee Name"
+            ],
+            "verdict": "ok",
+            "reason": "The 'Licensee Name' column is the licensee's name as registered with QBCC. For individuals this is the natural person holding the licence; for companies it's the registered company name. Mapping it to legal_name (rather than dropping it or calling it a trading name) is consistent with the ontology: the register has no trading-name column, so no trading_name claim is made. Personal-name records correctly go to legal_name."
+          },
+          {
+            "target": "entity.abn",
+            "source_paths": [
+              "ABN"
+            ],
+            "verdict": "ok",
+            "reason": "Direct ABN column, trimmed and passed through the abn checksum op; values in held-out records (e.g. 71430288473, 57622415356, 87886699262, 82900939476, 49013461041) are 11-digit and checksum-valid. Invalid values are rejected rather than fabricated."
+          },
+          {
+            "target": "entity.acn",
+            "source_paths": [
+              "ACN"
+            ],
+            "verdict": "ok",
+            "reason": "ACN column mapped directly through the acn checksum op and never derived from ABN. Held-out ACN values are null (individuals), consistent with source."
+          },
+          {
+            "target": "entity.entity_type",
+            "source_paths": [
+              "Licence Type CODE"
+            ],
+            "verdict": "ok",
+            "reason": "Only 'C' -> company is asserted (well-supported by ACN plus PTY LTD naming on company rows). 'I' rows are left to the default 'unknown' rather than guessed as sole_trader, which avoids the inference failure the reviewer flagged. The ontology default is 'unknown', so no overclaiming."
+          },
+          {
+            "target": "address.full",
+            "source_paths": [
+              "Licensee Business Address"
+            ],
+            "verdict": "ok",
+            "reason": "Single free-text address column passed through with whitespace normalisation. It is labelled 'Business Address' and is mapped to address.full, not a postal-vs-premises claim, so no confusion is introduced. Held-out examples render the source string faithfully."
+          },
+          {
+            "target": "address.state",
+            "source_paths": [
+              "Licensee Business Address"
+            ],
+            "verdict": "ok",
+            "reason": "State token extracted from the '<street> <suburb> <STATE> <postcode>' pattern and normalised. Held-out rows all resolve to QLD correctly; 'unknown -> OTHER' fallback is acceptable for the enum."
+          },
+          {
+            "target": "address.postcode",
+            "source_paths": [
+              "Licensee Business Address"
+            ],
+            "verdict": "ok",
+            "reason": "Trailing numeric token extracted and validated as AU 4-digit postcode. Held-out values (4017, 4870, 4207, 4131, 4124, 4228, 4740, 4051, 4032) match source addresses and AU postcode format."
+          },
+          {
+            "target": "address.country",
+            "source_paths": [],
+            "verdict": "doubtful",
+            "reason": "Constant 'AU' inferred from publisher (QBCC) and address format rather than a source column. It is plausible for a Queensland register and every held-out address carries QLD + AU postcode, but it is an inference; the mapping itself flags moderate confidence. Not wrong given evidence, but not source-attested."
+          }
+        ],
+        "missed": [
+          {
+            "source_path": "Licence Class Type",
+            "suggested_target": "entity.industry_code",
+            "reason": "It is the only trade/occupation signal in the source (Carpentry, Joinery, Wall and Floor Tiling, Plumbing, etc.). The mapping leaves it unmapped and argues it is not ANZSIC; that reasoning is defensible for a strict ANZSIC-typed field, but the ontology note says 'record the raw source value too' \u2014 the raw QBCC trade class could be recorded alongside without asserting ANZSIC conformance. It is a real coverage gap for industry/occupation."
+          },
+          {
+            "source_path": "Licence Number",
+            "suggested_target": "entity.status",
+            "reason": "Not a status per se, but the licence register's lifecycle/expiry data would normally drive licence/entity status; the current mapping emits no entity.status at all. At minimum the presence/absence of an active licence could inform status. Reporting as a coverage gap rather than a hard match."
+          }
+        ],
+        "summary": "Core identity and address mappings are sound: legal_name faithfully carries the licensee name (individual or company) without inventing a trading name, ABN and ACN are source columns passed through checksum validators (held-out values valid), and state/postcode are correctly extracted from the structured address tail with held-out coverage. entity_type is handled conservatively ('C'->company only, 'I'->unknown) which matches the ontology default and avoids guessing. address.country is an inference (constant AU) rather than a source column and is flagged doubtful. Licence Grade/Class Type are licence attributes and correctly excluded from entity fields, though 'Licence Class Type' is the natural candidate for the 'raw source value' of industry_code that the ontology allows to be recorded, and no entity.status is emitted despite the register being a licence lifecycle source."
+      }
+    }
+  ],
+  "tool_calls": 17,
+  "stages": [
+    {
+      "stage": "INSPECTED",
+      "at": "2026-11-09T20:50:24+00:00"
+    },
+    {
+      "stage": "PROPOSED_v0",
+      "at": "2026-11-09T20:51:32+00:00"
+    },
+    {
+      "stage": "VALIDATED_v0",
+      "at": "2026-11-09T20:51:32+00:00"
+    },
+    {
+      "stage": "CRITIQUED_v0",
+      "at": "2026-11-09T20:51:40+00:00"
+    },
+    {
+      "stage": "REVISING_v1",
+      "at": "2026-11-09T20:51:40+00:00"
+    },
+    {
+      "stage": "PROPOSED_v1",
+      "at": "2026-11-09T20:52:21+00:00"
+    },
+    {
+      "stage": "VALIDATED_v1",
+      "at": "2026-11-09T20:52:22+00:00"
+    },
+    {
+      "stage": "CRITIQUED_v1",
+      "at": "2026-11-09T20:52:30+00:00"
+    },
+    {
+      "stage": "PENDING_REVIEW",
+      "at": "2026-11-09T20:52:30+00:00"
+    }
+  ],
+  "inspection": {
+    "file_name": "qbcc_licensees__25608781",
+    "size_bytes": 13083705,
+    "magic_hex": "7b2268656c70223a",
+    "container": "plain",
+    "looks_like": "json",
+    "encoding_guess": "utf-8-sig",
+    "delimiter_counts_per_line": {},
+    "first_lines": []
+  },
+  "finished_at": "2026-11-09T20:52:30+00:00",
+  "final_digest": "51948d3eb31b002b5f30008eb414b83a369cefdc6a6bee141295598949736a02"
+}

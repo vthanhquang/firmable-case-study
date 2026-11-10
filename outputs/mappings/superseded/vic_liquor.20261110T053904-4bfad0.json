@@ -1,0 +1,481 @@
+{
+  "status": "PENDING_REVIEW",
+  "run_id": "20261110T053904-4bfad0",
+  "prompt_version": "prompts-v4",
+  "model": "deepseek-v4-flash",
+  "ontology_sha256": "639b80ea6333146c7ac714cd940fcdf6b2945f451e95333b0be21174bedee5da",
+  "snapshot_sha256": "b0a00e0846f430dc3eb2bc32fde3e4136caa9142c60d127e8c1419fbc34fb36e",
+  "config_digest": "29d92eca1229e80a676c76b09fa848edc6237b3c833f8af2aa67e1ef2db6816e",
+  "config": {
+    "source_id": "vic_liquor",
+    "record_grain": "licence_or_permit",
+    "grain_rationale": "Each row is one current Victorian liquor licence (Licence Number unique per row) held by a licensee at licensed premises. Entity fields describe the licensee business; address fields describe the licensed premises, falling back to the licensee's postal address only when no premises address is recorded (explicitly flagged at low confidence).",
+    "reader": {
+      "format": "xlsx",
+      "archive_member": null,
+      "encoding": "utf-8-sig",
+      "delimiter": null,
+      "skip_rows": 4,
+      "sheet": "Current_Victorian_Licences_By_L",
+      "record_path": null
+    },
+    "record_id": {
+      "strategy": "columns",
+      "source_paths": [
+        "Licence Number"
+      ],
+      "rationale": "Licence Number: 465/465 present and 465 distinct (shape 99999999); identifies the licence record, not a business identifier."
+    },
+    "observed_at": {
+      "source_path": null,
+      "steps": [],
+      "fallback": "dataset_metadata_modified"
+    },
+    "fields": [
+      {
+        "source_paths": [
+          "Licensee"
+        ],
+        "join_with": " ",
+        "when": null,
+        "target": "entity.legal_name",
+        "valid_from_path": null,
+        "valid_to_path": null,
+        "validity_date_formats": null,
+        "steps": [
+          {
+            "op": "trim",
+            "args": {}
+          },
+          {
+            "op": "collapse_whitespace",
+            "args": {}
+          },
+          {
+            "op": "regex_extract",
+            "args": {
+              "pattern": "^(?!THE SECRETARY$)(?!SECRETARY$)(?!THE TRUSTEE$)(?!THE OWNER$)(?!THE LICENSEE$)(?!THE MANAGER$)(?!NOMINEES?$)(?!.*\\bC/-\\b).*$",
+              "group": 0
+            }
+          },
+          {
+            "op": "trim",
+            "args": {}
+          },
+          {
+            "op": "null_if",
+            "args": {
+              "values": [
+                "",
+                "-",
+                "--",
+                ".",
+                "..",
+                "...",
+                "N/A",
+                "NA",
+                "N.A.",
+                "N/A -",
+                "TBA",
+                "TBC",
+                "UNKNOWN",
+                "NOT APPLICABLE",
+                "NOT APPLICABLE -",
+                "[NOT APPLICABLE] -",
+                "[NOT APPLICABLE]",
+                "NONE",
+                "NULL",
+                "NIL"
+              ]
+            }
+          }
+        ],
+        "confidence": 0.6,
+        "rationale": "Column headed 'Licensee' = holder of the licence, mostly in legal-name form (PTY LTD / LIMITED / CITY OF X). Critic noted it also carries officer/contact-role strings such as 'THE SECRETARY' and bare personal names (sole traders). Role/contact strings are gated out to null; corporate and sole-trader licensee names are kept. Confidence lowered to 0.6 to reflect the mixed column."
+      },
+      {
+        "source_paths": [
+          "Trading As"
+        ],
+        "join_with": " ",
+        "when": null,
+        "target": "entity.trading_name",
+        "valid_from_path": null,
+        "valid_to_path": null,
+        "validity_date_formats": null,
+        "steps": [
+          {
+            "op": "trim",
+            "args": {}
+          },
+          {
+            "op": "collapse_whitespace",
+            "args": {}
+          },
+          {
+            "op": "null_if",
+            "args": {
+              "values": [
+                "",
+                "-",
+                "--",
+                ".",
+                "..",
+                "...",
+                "N/A",
+                "NA",
+                "N.A.",
+                "N/A -",
+                "TBA",
+                "TBC",
+                "UNKNOWN",
+                "NOT APPLICABLE",
+                "NOT APPLICABLE -",
+                "[NOT APPLICABLE] -",
+                "[NOT APPLICABLE]",
+                "NONE",
+                "NULL",
+                "NIL",
+                "SAME AS ABOVE"
+              ]
+            }
+          }
+        ],
+        "confidence": 0.85,
+        "rationale": "'Trading As' is explicitly the business/trading name (critic: ok). Placeholder strings nulled."
+      },
+      {
+        "source_paths": [
+          "Street Address"
+        ],
+        "join_with": " ",
+        "when": null,
+        "target": "address.full",
+        "valid_from_path": null,
+        "valid_to_path": null,
+        "validity_date_formats": null,
+        "steps": [
+          {
+            "op": "trim",
+            "args": {}
+          },
+          {
+            "op": "collapse_whitespace",
+            "args": {}
+          },
+          {
+            "op": "null_if",
+            "args": {
+              "values": [
+                "",
+                "-",
+                "--",
+                ".",
+                "..",
+                "...",
+                "N/A",
+                "NA",
+                "N.A.",
+                "N/A -",
+                "TBA",
+                "TBC",
+                "UNKNOWN",
+                "NOT APPLICABLE",
+                "NOT APPLICABLE -",
+                "[NOT APPLICABLE] -",
+                "[NOT APPLICABLE]",
+                "NONE",
+                "NULL",
+                "NIL"
+              ]
+            }
+          }
+        ],
+        "confidence": 0.8,
+        "rationale": "Street address of the licensed premises (present 94.2%). Premises address, not postal."
+      },
+      {
+        "source_paths": [
+          "Postal Address"
+        ],
+        "join_with": " ",
+        "when": {
+          "source_path": "Street Address",
+          "op": "absent",
+          "values": []
+        },
+        "target": "address.full",
+        "valid_from_path": null,
+        "valid_to_path": null,
+        "validity_date_formats": null,
+        "steps": [
+          {
+            "op": "trim",
+            "args": {}
+          },
+          {
+            "op": "collapse_whitespace",
+            "args": {}
+          },
+          {
+            "op": "null_if",
+            "args": {
+              "values": [
+                "",
+                "-",
+                "--",
+                ".",
+                "..",
+                "...",
+                "N/A",
+                "N.A.",
+                "N/A -",
+                "TBA",
+                "TBC",
+                "UNKNOWN",
+                "NOT APPLICABLE",
+                "NOT APPLICABLE -",
+                "[NOT APPLICABLE] -",
+                "NONE",
+                "NULL",
+                "NIL"
+              ]
+            }
+          }
+        ],
+        "confidence": 0.35,
+        "rationale": "FALLBACK only, per critic's 'missed' suggestion: emitted exclusively when Street Address is absent (e.g. pre-retail/remote sellers with no premises). This is the licensee's POSTAL mailing address (PO Box / Locked Bag / c/- forms), NOT a premises address - flagged by low confidence so downstream can distinguish it."
+      },
+      {
+        "source_paths": [
+          "Suburb"
+        ],
+        "join_with": " ",
+        "when": null,
+        "target": "address.locality",
+        "valid_from_path": null,
+        "valid_to_path": null,
+        "validity_date_formats": null,
+        "steps": [
+          {
+            "op": "trim",
+            "args": {}
+          },
+          {
+            "op": "collapse_whitespace",
+            "args": {}
+          },
+          {
+            "op": "upper",
+            "args": {}
+          },
+          {
+            "op": "null_if",
+            "args": {
+              "values": [
+                "",
+                "-",
+                "--",
+                ".",
+                "..",
+                "...",
+                "N/A",
+                "NA",
+                "N.A.",
+                "N/A -",
+                "TBA",
+                "TBC",
+                "UNKNOWN",
+                "NOT APPLICABLE",
+                "NOT APPLICABLE -",
+                "[NOT APPLICABLE] -",
+                "[NOT APPLICABLE]",
+                "NONE",
+                "NULL",
+                "NIL"
+              ]
+            }
+          }
+        ],
+        "confidence": 0.85,
+        "rationale": "Suburb of licensed premises (critic: ok). Reviewer's placeholders '[NOT APPLICABLE] -' / '[Not applicable] -' (remote sellers without premises) are upper-cased then gated to null, so no locality is emitted for them."
+      },
+      {
+        "source_paths": [
+          "Postal Suburb"
+        ],
+        "join_with": " ",
+        "when": {
+          "source_path": "Suburb",
+          "op": "absent",
+          "values": []
+        },
+        "target": "address.locality",
+        "valid_from_path": null,
+        "valid_to_path": null,
+        "validity_date_formats": null,
+        "steps": [
+          {
+            "op": "trim",
+            "args": {}
+          },
+          {
+            "op": "collapse_whitespace",
+            "args": {}
+          },
+          {
+            "op": "regex_extract",
+            "args": {
+              "pattern": "^(.+?)(?:\\s+(NSW|VIC|QLD|WA|SA|TAS|ACT|NT))?$",
+              "group": 1
+            }
+          },
+          {
+            "op": "trim",
+            "args": {}
+          },
+          {
+            "op": "null_if",
+            "args": {
+              "values": [
+                "",
+                "-",
+                "--",
+                ".",
+                "N/A",
+                "NA",
+                "N/A -",
+                "TBA",
+                "TBC",
+                "UNKNOWN",
+                "NOT APPLICABLE",
+                "NOT APPLICABLE -",
+                "[NOT APPLICABLE] -",
+                "NONE",
+                "NULL",
+                "NIL"
+              ]
+            }
+          }
+        ],
+        "confidence": 0.35,
+        "rationale": "FALLBACK only per critic's 'missed' suggestion: emitted only when the premises Suburb is absent. Source is the licensee's POSTAL suburb and sometimes carries an interstate state suffix (e.g. 'SYDNEY NSW'), which the trailing-state regex strips. Low confidence flags mailing-vs-premises distinction."
+      },
+      {
+        "source_paths": [
+          "Postcode"
+        ],
+        "join_with": " ",
+        "when": null,
+        "target": "address.postcode",
+        "valid_from_path": null,
+        "valid_to_path": null,
+        "validity_date_formats": null,
+        "steps": [
+          {
+            "op": "trim",
+            "args": {}
+          },
+          {
+            "op": "null_if",
+            "args": {
+              "values": [
+                "",
+                "0",
+                "0000",
+                "-",
+                ".",
+                "N/A",
+                "NA",
+                "N/A -",
+                "NOT APPLICABLE",
+                "NOT APPLICABLE -",
+                "[NOT APPLICABLE] -",
+                "TBA"
+              ]
+            }
+          },
+          {
+            "op": "postcode",
+            "args": {}
+          }
+        ],
+        "confidence": 0.85,
+        "rationale": "Premises postcode; 4-digit VIC values (438/445). 7 placeholder '0' values nulled. No postal fallback here: postal postcodes are interstate for some licensees and would contradict the constant address.state VIC."
+      }
+    ],
+    "constants": [
+      {
+        "target": "address.state",
+        "value": "VIC",
+        "confidence": 0.9,
+        "rationale": "Victorian liquor licence register published by Liquor Control Victoria; premises are in Victoria."
+      },
+      {
+        "target": "address.country",
+        "value": "AU",
+        "confidence": 0.9,
+        "rationale": "Australian (Victorian) register."
+      }
+    ],
+    "unmapped": [
+      {
+        "source_path": "Licence Number",
+        "reason": "Licence identifier, not a business identifier; used only as record_id."
+      },
+      {
+        "source_path": "Licence Category",
+        "reason": "Licence type (General/On-Premises/Packaged Liquor etc.); not an entity type or status in the ontology."
+      },
+      {
+        "source_path": "Trading Hours",
+        "reason": "Licence condition text; no ontology target."
+      },
+      {
+        "source_path": "Patron Capacity (if applicable)",
+        "reason": "Premises attribute; no ontology target."
+      },
+      {
+        "source_path": "Council",
+        "reason": "Local government area of premises; no ontology target for LGA."
+      },
+      {
+        "source_path": "Region",
+        "reason": "Administrative region; no ontology target."
+      },
+      {
+        "source_path": "Metro/Regional",
+        "reason": "Administrative classification; no ontology target."
+      },
+      {
+        "source_path": "Latitude",
+        "reason": "Coordinate; no ontology target."
+      },
+      {
+        "source_path": "Longitude",
+        "reason": "Coordinate; no ontology target."
+      },
+      {
+        "source_path": "Postal Postcode",
+        "reason": "Part of the licensee postal mailing address; not the premises postcode, and some are interstate so it cannot be used under the VIC constant."
+      },
+      {
+        "source_path": "column_7",
+        "reason": "Empty spacer column."
+      },
+      {
+        "source_path": "column_8",
+        "reason": "Empty spacer column."
+      },
+      {
+        "source_path": "column_13",
+        "reason": "Empty spacer column."
+      },
+      {
+        "source_path": "column_14",
+        "reason": "Empty spacer column."
+      }
+    ],
+    "notes": "XLSX: 4 title/branding rows precede the header (skip_rows=4); sheet 'Current_Victorian_Licences_By_L'. Header row contains two empty spacer columns. Sheet subtitle states 'Current Victorian Liquor Licences as of 31/08/2026' - a snapshot date, not per-record; observed_at falls back to dataset metadata. No ABN/ACN column: Licence Number is 8-digit and fails ABN/ACN checksums (ACN 9.2% = chance) - deliberately unmapped. entity_type unmapped (no column states legal entity type). REVISION 2, addressing every holdout issue: (1) ERROR PLACEHOLDER_VALUE_EMITTED at address.locality FIXED - '[NOT APPLICABLE] -' / '[Not applicable] -' are upper-cased then gated by null_if, so remote sellers without premises emit no locality (discovery 445 present -> 438 emitted; the 7 '[a a] -' shape rows dropped). Same gate applied to address.full and address.postcode. (2) entity.legal_name 'doubtful' ADDRESSED - officer/contact-role strings such as 'THE SECRETARY' are gated out, corporate and sole-trader licensee names kept, confidence lowered 0.7 -> 0.6 to reflect the mixed column. (3) Critic 'missed' ACTED ON - Postal Address / Postal Suburb are now address.full / address.locality FALLBACKS gated on 'when Street Address/Suburb absent', covering the pre-retail/remote-seller records that previously had no address at all. These are licensee POSTAL addresses, not premises addresses, so they carry confidence 0.35 as a deliberate mailing-vs-premises flag. Postal Postcode deliberately left unmapped: postal postcodes can be interstate ('SYDNEY NSW') and would contradict the constant address.state VIC. Fallback counts reconcile: 27 records lack Street Address -> 27 postal address.full; of those 20 lacked Suburb -> 20 postal locality, the other 7 being the gated placeholders."
+  }
+}

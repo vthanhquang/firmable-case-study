@@ -1,0 +1,29 @@
+{
+ "config_run_id": "20261110T035507-7a8095",
+ "holdout_records": 1169,
+ "rare_value_records": 49,
+ "country_values_emitted_on_rare_rows": [
+  "AU",
+  "__PASSTHROUGH__"
+ ],
+ "validator_errors": [],
+ "critic_on_address_country": [
+  {
+   "target": "address.country",
+   "source_paths": [
+    "Country"
+   ],
+   "verdict": "wrong",
+   "reason": "Enum map literal key matching (upper() then map_enum) fails on 'Australia.' (trailing period), emitting the literal placeholder '__PASSTHROUGH__' instead of 'AU'. Output '__PASSTHROUGH__' observed in holdout for Country 'Australia.' \u2014 the placeholder leaked into the data and is not a country. Should strip punctuation and default to 'AU'."
+  },
+  {
+   "target": "address.country",
+   "source_paths": [
+    "Country"
+   ],
+   "verdict": "doubtful",
+   "reason": "Mapping rationale claims ~89% present and non-AU values (e.g. Singapore) pass through as uppercase text; address.country has default AU but is a plain string, so passthrough is tolerable \u2014 but the observed placeholder bug above takes precedence; needs the enum default fixed."
+  }
+ ],
+ "critic_summary": "Most mappings are semantically sound: legal_name, abn, website, date_registered, address components and state all match their canonical targets, and date order (DD/MM) is correct. The one real defect is address.country: the enum map only recognises 'AUSTRALIA'/'AU'/'AUS' literally after upper(), so a punctuated value 'Australia.' leaves the placeholder '__PASSTHROUGH__' in output instead of 'AU' \u2014 observed in a holdout record. Secondary quality issues: locality/full retain trailing commas (e.g. 'Salisbury Plain,'), and no entity_type/acn/industry_code/status are mapped (correctly, absent source columns). No legal-name-as-trading-name or identifier-as-name confusions found. Trading_name untested (all null) but target is right."
+}

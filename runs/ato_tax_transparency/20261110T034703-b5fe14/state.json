@@ -1,0 +1,358 @@
+{
+  "run_id": "20261110T034703-b5fe14",
+  "source_id": "ato_tax_transparency",
+  "status": "PENDING_REVIEW",
+  "started_at": "2026-11-09T20:47:03+00:00",
+  "prompt_version": "prompts-v1",
+  "model": "deepseek-v4-flash",
+  "critic_model": "deepseek-v4-flash",
+  "ontology_sha256": "639b80ea6333146c7ac714cd940fcdf6b2945f451e95333b0be21174bedee5da",
+  "snapshot_sha256": "7cccd963cd4aad31c305b21d33272d3d99ff9c36258641622a28cd0028d65c45",
+  "proposals": [
+    {
+      "round": 0,
+      "digest": "4eaa881938cfbebabb230ee0430da8a02f6bc1addd97f2251dfa579fbd57e73a",
+      "config": {
+        "source_id": "ato_tax_transparency",
+        "record_grain": "legal_entity",
+        "grain_rationale": "One row per legal entity (identified by its ABN) per income year, reporting aggregate tax information (total income, taxable income, tax payable) on the ATO Corporate Tax Transparency register. The record is about the business itself, so entity attributes are mapped directly; the financial figures have no canonical ontology target and are recorded as unmapped.",
+        "reader": {
+          "format": "xlsx",
+          "archive_member": null,
+          "encoding": "utf-8-sig",
+          "delimiter": null,
+          "skip_rows": 0,
+          "sheet": "Income tax details",
+          "record_path": null
+        },
+        "record_id": {
+          "strategy": "content_hash",
+          "source_paths": [
+            "ABN",
+            "Income year"
+          ],
+          "rationale": "ABN is unique within the discovery partition (431 checksum-valid of 435 rows, no duplicates among distinct values) but several rows have a missing ABN and income year varies, so a content hash over ABN + Income year is traceable and stable across partitions."
+        },
+        "observed_at": {
+          "source_path": null,
+          "steps": [],
+          "fallback": "resource_last_modified"
+        },
+        "fields": [
+          {
+            "source_paths": [
+              "Name"
+            ],
+            "join_with": " ",
+            "target": "entity.legal_name",
+            "steps": [
+              {
+                "op": "trim",
+                "args": {}
+              },
+              {
+                "op": "collapse_whitespace",
+                "args": {}
+              },
+              {
+                "op": "null_if",
+                "args": {
+                  "values": [
+                    "",
+                    "n/a",
+                    "na",
+                    "-"
+                  ]
+                }
+              }
+            ],
+            "confidence": 0.82,
+            "rationale": "Column 'Name' holds registered-style entity names ('CHEVRON AUSTRALIA PTY LTD', 'MOBIL AUSTRALIA RESOURCES COMPANY PTY LIMITED'); the ATO transparency register publishes the legal/taxable-entity name, and company suffixes (PTY LTD / LIMITED) indicate legal rather than trading names. Note 'GOVE ALUMINIUM FINANCE LINITED' shows the source's own typos are preserved."
+          },
+          {
+            "source_paths": [
+              "ABN"
+            ],
+            "join_with": " ",
+            "target": "entity.abn",
+            "steps": [
+              {
+                "op": "abn",
+                "args": {}
+              }
+            ],
+            "confidence": 0.97,
+            "rationale": "Column 'ABN' is 11 digits in all present rows with a 100% checksum-valid rate (431/431) in discovery; the abn transform validates the checksum."
+          }
+        ],
+        "constants": [
+          {
+            "target": "address.country",
+            "value": "AU",
+            "confidence": 0.7,
+            "rationale": "The dataset is an Australian Taxation Office register of entities with Australian Business Numbers, so the entities are Australian for tax purposes. This is an inferred jurisdiction, not a stated address."
+          }
+        ],
+        "unmapped": [
+          {
+            "source_path": "Total income $",
+            "reason": "Financial reporting figure (total income in AUD); no canonical ontology target for financial amounts."
+          },
+          {
+            "source_path": "Taxable income $",
+            "reason": "Financial reporting figure (taxable income in AUD); no ontology target. Also null in ~24% of rows."
+          },
+          {
+            "source_path": "Tax payable $",
+            "reason": "Financial reporting figure (tax payable in AUD); no ontology target."
+          },
+          {
+            "source_path": "Income year",
+            "reason": "Income-year label (e.g. '2024-25'; 3 distinct values incl. 2023-24 and 2022-23 comparatives). It is used in record_id but does not itself state an entity attribute; not mapped to observation.valid_from because it is a fiscal-year label rather than a claim-effective date."
+          }
+        ],
+        "notes": "Workbook has an 'Information' sheet (title/guidance text, sheet name only), the main 'Income tax details' sheet (435 data rows; header in row 1) and a separate 'PRRT details' sheet (petroleum resource rent tax payers, 8 rows in discovery). Only the 'Income tax details' sheet is mapped here. 'PRRT details' has its own schema (Name, ABN, PRRT Payable $) and would need a second config. Income year mixes 2024-25 with a few prior-year comparatives. Column names contain a trailing ' $'."
+      },
+      "holdout_issues": [],
+      "holdout_report": {
+        "records_in": 1165,
+        "records_with_output": 1165,
+        "record_errors": {},
+        "fields": [
+          {
+            "target": "entity.legal_name",
+            "source_paths": [
+              "Name"
+            ],
+            "records": 1165,
+            "source_present": 1165,
+            "emitted": 1165,
+            "coverage_of_records": 1.0,
+            "error_rate_of_present": 0.0,
+            "errors": {},
+            "error_examples": {}
+          },
+          {
+            "target": "entity.abn",
+            "source_paths": [
+              "ABN"
+            ],
+            "records": 1165,
+            "source_present": 1155,
+            "emitted": 1155,
+            "coverage_of_records": 0.991,
+            "error_rate_of_present": 0.0,
+            "errors": {},
+            "error_examples": {}
+          }
+        ]
+      },
+      "critic": {
+        "fields": [
+          {
+            "target": "entity.legal_name",
+            "source_paths": [
+              "Name"
+            ],
+            "verdict": "ok",
+            "reason": "'Name' holds registered-style entity names with legal suffixes (PTY LTD / LIMITED / PTY LIMITED); the ATO Corporate Tax Transparency register publishes legal entity names, so this matches legal_name rather than trading_name."
+          },
+          {
+            "target": "entity.abn",
+            "source_paths": [
+              "ABN"
+            ],
+            "verdict": "ok",
+            "reason": "11-digit ABN column passed through the checksum-validating abn transform; held-out values are 11 digits. Correct target and value type."
+          },
+          {
+            "target": "address.country",
+            "source_paths": [],
+            "verdict": "doubtful",
+            "reason": "Constant 'AU' is inferred from the ATO publisher and ABN presence, not from any source address column. Reasonable inference but it is a constant, not an observed address; the mapping itself acknowledges this. Acceptable as a default per ontology (default 'AU') but flag as inferred."
+          }
+        ],
+        "missed": [
+          {
+            "source_path": "Income year",
+            "suggested_target": "observation.valid_from",
+            "reason": "Fiscal-year label (e.g. '2024-25') anchors each observation in time; while it does not state an entity attribute, it could set observation validity where the ontology supports it. The mapping's choice not to map is defensible but worth noting."
+          },
+          {
+            "source_path": "Name",
+            "suggested_target": "entity.trading_name",
+            "reason": "No trading name column exists; only legal name. No missed trading_name source. (No action needed.)"
+          }
+        ],
+        "summary": "The mapping is largely sound: 'Name' correctly yields legal_name (suffixed registered names, not trading names), and 'ABN' correctly yields a checksummed entity.abn. The only questionable mapping is the constant address.country='AU', which is an inference rather than an observed address, though the ontology permits an AU default. The income-year field is a reasonable non-mapping, though a future observation.valid_from target could use it. No trading-name, ACN, entity_type, or status columns exist in the source, so no enum guessing occurs."
+      }
+    }
+  ],
+  "tool_calls": 9,
+  "stages": [
+    {
+      "stage": "INSPECTED",
+      "at": "2026-11-09T20:47:03+00:00"
+    },
+    {
+      "stage": "PROPOSED_v0",
+      "at": "2026-11-09T20:47:37+00:00"
+    },
+    {
+      "stage": "VALIDATED_v0",
+      "at": "2026-11-09T20:47:37+00:00"
+    },
+    {
+      "stage": "CRITIQUED_v0",
+      "at": "2026-11-09T20:47:42+00:00"
+    },
+    {
+      "stage": "PENDING_REVIEW",
+      "at": "2026-11-09T20:47:42+00:00"
+    }
+  ],
+  "inspection": {
+    "file_name": "ato_tax_transparency__15bf4eaa",
+    "size_bytes": 290744,
+    "magic_hex": "504b030414000600",
+    "container": "xlsx",
+    "sheets_first_rows": {
+      "Information": [
+        [
+          "Corporate tax transparency: report of entity tax information"
+        ],
+        [
+          "To better inform public debate about tax policy, the Commiss"
+        ],
+        [
+          "Where can you find more information?"
+        ],
+        [
+          "1. Report of entity Tax Information 2013-14 to 2024-25 (data"
+        ],
+        [
+          "2. Corporate tax transparency reports (guidance material)"
+        ],
+        [
+          "3. Voluntary Tax Transparency Code (guidance)"
+        ],
+        [
+          "4. Voluntary Tax Transparency Code (reports)"
+        ],
+        [
+          null
+        ]
+      ],
+      "Income tax details": [
+        [
+          "Name",
+          "ABN",
+          "Total income $",
+          "Taxable income $",
+          "Tax payable $",
+          "Income year"
+        ],
+        [
+          "1 MENDS STREET PTY LTD",
+          "94600082111",
+          "108996236",
+          "10603699",
+          "3181110",
+          "2024-25"
+        ],
+        [
+          "1884 PTY LIMITED",
+          "83114980880",
+          "319135614",
+          "18129064",
+          "5438719",
+          "2024-25"
+        ],
+        [
+          "1ST ENERGY PTY LTD",
+          "71604999706",
+          "141699139",
+          "5741100",
+          "1722330",
+          "2024-25"
+        ],
+        [
+          "20 CASHEWS PTY LTD",
+          "16634403124",
+          "218132378",
+          "3954380",
+          "1124529",
+          "2024-25"
+        ],
+        [
+          "21ST CENTURY RESORTS HOLDINGS PTY LIMITED",
+          "33104201014",
+          "336737226",
+          "30968101",
+          "9290430",
+          "2024-25"
+        ],
+        [
+          "26 RYDE PTY LTD",
+          null,
+          "154334997",
+          "178056693",
+          "47989151",
+          "2024-25"
+        ],
+        [
+          "29METALS LIMITED",
+          "95650096094",
+          "602173980",
+          null,
+          null,
+          "2024-25"
+        ]
+      ],
+      "PRRT details": [
+        [
+          "Name",
+          "ABN",
+          "PRRT Payable $"
+        ],
+        [
+          "CHEVRON AUSTRALIA PTY LTD",
+          "29086197757",
+          "166500753"
+        ],
+        [
+          "ESSO AUSTRALIA RESOURCES PTY LTD",
+          "62091829819",
+          "319005502"
+        ],
+        [
+          "JERA GORGON PTY LTD",
+          "94140107464",
+          "1461846"
+        ],
+        [
+          "KANSAI ELECTRIC POWER AUSTRALIA PTY LTD",
+          "32126720732",
+          "6702736"
+        ],
+        [
+          "KUFPEC AUSTRALIA (JULIMAR) PTY LTD",
+          "38139500502",
+          "21190905"
+        ],
+        [
+          "MEPAU OTWAY BASIN PTY LTD",
+          "17009363820",
+          "1795594"
+        ],
+        [
+          "MIDOCEAN GORGON PTY LTD",
+          "16138592042",
+          "2959256"
+        ]
+      ]
+    }
+  },
+  "finished_at": "2026-11-09T20:47:42+00:00",
+  "final_digest": "4eaa881938cfbebabb230ee0430da8a02f6bc1addd97f2251dfa579fbd57e73a"
+}

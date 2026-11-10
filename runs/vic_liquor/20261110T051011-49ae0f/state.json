@@ -1,0 +1,934 @@
+{
+  "run_id": "20261110T051011-49ae0f",
+  "source_id": "vic_liquor",
+  "status": "PENDING_REVIEW",
+  "started_at": "2026-11-09T22:10:11+00:00",
+  "prompt_version": "prompts-v3",
+  "model": "deepseek-v4-flash",
+  "critic_model": "deepseek-v4-flash",
+  "ontology_sha256": "639b80ea6333146c7ac714cd940fcdf6b2945f451e95333b0be21174bedee5da",
+  "snapshot_sha256": "b0a00e0846f430dc3eb2bc32fde3e4136caa9142c60d127e8c1419fbc34fb36e",
+  "proposals": [
+    {
+      "round": 0,
+      "digest": "b111faa36cf3a108fa73d36979b0266bec859b83dd9732b74b2efc42b98cece2",
+      "config": {
+        "source_id": "vic_liquor",
+        "record_grain": "licence_or_permit",
+        "grain_rationale": "One record = one current Victorian liquor licence issued to a licensee at a licensed premises. The business participant (licensee) attributes and the licensed premises address are mapped; the licence number is a licence ID, not a business identifier.",
+        "reader": {
+          "format": "xlsx",
+          "archive_member": null,
+          "encoding": "utf-8-sig",
+          "delimiter": null,
+          "skip_rows": 4,
+          "sheet": null,
+          "record_path": null
+        },
+        "record_id": {
+          "strategy": "columns",
+          "source_paths": [
+            "Licence Number"
+          ],
+          "rationale": "Licence Number is present 100% and 465/465 distinct in the discovery partition; it identifies the licence record."
+        },
+        "observed_at": {
+          "source_path": null,
+          "steps": [],
+          "fallback": "resource_last_modified"
+        },
+        "fields": [
+          {
+            "source_paths": [
+              "Licensee"
+            ],
+            "join_with": " ",
+            "when": null,
+            "target": "entity.trading_name",
+            "steps": [
+              {
+                "op": "trim",
+                "args": {}
+              },
+              {
+                "op": "collapse_whitespace",
+                "args": {}
+              }
+            ],
+            "confidence": 0.45,
+            "rationale": "Values are mixed: some legal-form names ('ENDEAVOUR GROUP LIMITED', 'ALDI FOODS PTY LIMITED') and many personal names ('WOOD GERARD', 'LE VAN LUC') which are sole traders. Trading As is the premises/display name; Licensee is the registered holder, which for sole traders is the person's name. Mapped as trading_name to avoid claiming legal registration."
+          },
+          {
+            "source_paths": [
+              "Trading As"
+            ],
+            "join_with": " ",
+            "when": null,
+            "target": "entity.trading_name",
+            "steps": [
+              {
+                "op": "trim",
+                "args": {}
+              },
+              {
+                "op": "collapse_whitespace",
+                "args": {}
+              }
+            ],
+            "confidence": 0.85,
+            "rationale": "'Trading As' explicitly is the trading/display name of the premises (e.g. 'ALDI STORES', 'JKB BREWING')."
+          },
+          {
+            "source_paths": [
+              "Street Address"
+            ],
+            "join_with": " ",
+            "when": null,
+            "target": "address.full",
+            "steps": [
+              {
+                "op": "trim",
+                "args": {}
+              },
+              {
+                "op": "collapse_whitespace",
+                "args": {}
+              }
+            ],
+            "confidence": 0.8,
+            "rationale": "Licensed premises street address; 94% present."
+          },
+          {
+            "source_paths": [
+              "Suburb"
+            ],
+            "join_with": " ",
+            "when": null,
+            "target": "address.locality",
+            "steps": [
+              {
+                "op": "trim",
+                "args": {}
+              },
+              {
+                "op": "collapse_whitespace",
+                "args": {}
+              }
+            ],
+            "confidence": 0.85,
+            "rationale": "Premises suburb."
+          },
+          {
+            "source_paths": [
+              "Postcode"
+            ],
+            "join_with": " ",
+            "when": null,
+            "target": "address.postcode",
+            "steps": [
+              {
+                "op": "trim",
+                "args": {}
+              },
+              {
+                "op": "null_if",
+                "args": {
+                  "values": [
+                    "0",
+                    "0000",
+                    "",
+                    "n/a"
+                  ]
+                }
+              },
+              {
+                "op": "postcode",
+                "args": {}
+              }
+            ],
+            "confidence": 0.8,
+            "rationale": "Four-digit AU postcode; 7 rows hold the placeholder '0' which is treated as missing."
+          }
+        ],
+        "constants": [
+          {
+            "target": "address.state",
+            "value": "VIC",
+            "confidence": 0.95,
+            "rationale": "Victorian liquor licence register; all addresses are Victorian premises."
+          },
+          {
+            "target": "address.country",
+            "value": "AU",
+            "confidence": 0.95,
+            "rationale": "Australian (Victorian) regulator dataset."
+          }
+        ],
+        "unmapped": [
+          {
+            "source_path": "Licence Number",
+            "reason": "Licence identifier, not a business identifier; used only as record_id."
+          },
+          {
+            "source_path": "Licence Category",
+            "reason": "Licence type (e.g. General Licence, BYO Permit); no ontology target for licence class."
+          },
+          {
+            "source_path": "Trading Hours",
+            "reason": "Licence trading condition; no ontology target."
+          },
+          {
+            "source_path": "Patron Capacity (if applicable)",
+            "reason": "Premises capacity; no ontology target."
+          },
+          {
+            "source_path": "Council",
+            "reason": "Local government area of premises; no ontology target."
+          },
+          {
+            "source_path": "Region",
+            "reason": "Regulator administrative region; no ontology target."
+          },
+          {
+            "source_path": "Metro/Regional",
+            "reason": "Classification of location; no ontology target."
+          },
+          {
+            "source_path": "Latitude",
+            "reason": "Geocoordinate; no ontology target."
+          },
+          {
+            "source_path": "Longitude",
+            "reason": "Geocoordinate; no ontology target."
+          },
+          {
+            "source_path": "Postal Address",
+            "reason": "Postal address of licensee differs from licensed premises; ontology address fields are mapped to the premises address."
+          },
+          {
+            "source_path": "Postal Suburb",
+            "reason": "Postal suburb, secondary address; not mapped to avoid conflating with premises locality."
+          },
+          {
+            "source_path": "Postal Postcode",
+            "reason": "Postal postcode, secondary address."
+          },
+          {
+            "source_path": "column_7",
+            "reason": "Empty spacer column in the spreadsheet."
+          },
+          {
+            "source_path": "column_8",
+            "reason": "Empty spacer column in the spreadsheet."
+          },
+          {
+            "source_path": "column_13",
+            "reason": "Empty spacer column in the spreadsheet."
+          },
+          {
+            "source_path": "column_14",
+            "reason": "Empty spacer column in the spreadsheet."
+          }
+        ],
+        "notes": "Sheet has 3 title/blank rows above the header row: skip_rows=4. Title row states 'Current Victorian Liquor Licences as of 31/08/2026' - no explicit observed_at column, so envelope falls back to resource last-modified. No ABN/ACN is published (verified: Licence Number 8-digit shapes, 0% ABN checksum) so no business identifier is claimed. Licensee vs Trading As overlap for many sole traders. Legal name is left unmapped because Licensee mixes registered companies with sole-trader personal names and the file does not state which it is."
+      },
+      "holdout_issues": [
+        {
+          "code": "PLACEHOLDER_VALUE_EMITTED",
+          "severity": "error",
+          "message": "placeholder-like values emitted as data: ['.']",
+          "target": "entity.trading_name",
+          "examples": [
+            "."
+          ]
+        },
+        {
+          "code": "PLACEHOLDER_VALUE_EMITTED",
+          "severity": "error",
+          "message": "placeholder-like values emitted as data: ['-']",
+          "target": "address.full",
+          "examples": [
+            "-"
+          ]
+        }
+      ],
+      "holdout_report": {
+        "records_in": 1160,
+        "records_with_output": 1160,
+        "record_errors": {},
+        "fields": [
+          {
+            "target": "entity.trading_name",
+            "source_paths": [
+              "Licensee"
+            ],
+            "records": 1160,
+            "source_present": 1160,
+            "emitted": 1160,
+            "coverage_of_records": 1.0,
+            "error_rate_of_present": 0.0,
+            "errors": {},
+            "error_examples": {}
+          },
+          {
+            "target": "entity.trading_name",
+            "source_paths": [
+              "Trading As"
+            ],
+            "records": 1160,
+            "source_present": 1152,
+            "emitted": 1152,
+            "coverage_of_records": 0.993,
+            "error_rate_of_present": 0.0,
+            "errors": {},
+            "error_examples": {}
+          },
+          {
+            "target": "address.full",
+            "source_paths": [
+              "Street Address"
+            ],
+            "records": 1160,
+            "source_present": 1104,
+            "emitted": 1104,
+            "coverage_of_records": 0.952,
+            "error_rate_of_present": 0.0,
+            "errors": {},
+            "error_examples": {}
+          },
+          {
+            "target": "address.locality",
+            "source_paths": [
+              "Suburb"
+            ],
+            "records": 1160,
+            "source_present": 1114,
+            "emitted": 1114,
+            "coverage_of_records": 0.96,
+            "error_rate_of_present": 0.0,
+            "errors": {},
+            "error_examples": {}
+          },
+          {
+            "target": "address.postcode",
+            "source_paths": [
+              "Postcode"
+            ],
+            "records": 1160,
+            "source_present": 1115,
+            "emitted": 1102,
+            "coverage_of_records": 0.95,
+            "error_rate_of_present": 0.0,
+            "errors": {},
+            "error_examples": {}
+          }
+        ]
+      },
+      "critic": {
+        "fields": [
+          {
+            "target": "entity.trading_name",
+            "source_paths": [
+              "Licensee"
+            ],
+            "verdict": "wrong",
+            "reason": "'Licensee' is the registered holder (legal name) of the licence, e.g. 'LIQUORLAND (AUSTRALIA) PTY LTD', 'PRINCESS THEATRE PTY LTD', 'SETALADRA PTY LTD', 'HYLAND WINES PTY LTD' are clearly legal-form names, not trading names. Mapping it as trading_name mislabels legal names, and for sole traders ('ARNOLD BRUCE', 'THE SECRETARY') it is a person/office-holder name, not a business trading name. This is exactly the legal_name vs trading_name confusion the ontology warns about. At best this should be legal_name (for registered entities) or dropped; personal holder names should not become business names."
+          },
+          {
+            "target": "entity.trading_name",
+            "source_paths": [
+              "Trading As"
+            ],
+            "verdict": "ok",
+            "reason": "'Trading As' is explicitly the premises trading/display name (e.g. 'LIQUORLAND', 'THE COMEDY THEATRE', 'ICHIMI SAKE JAPANESE RESTAURANT'). Correct target. Note duplicates occur when Trading As equals Licensee, producing two identical observations (BENDIGO YACHT CLUB INC, ORIENTAL VODKA PTY LTD) \u2014 harmless but worth de-duplication."
+          },
+          {
+            "target": "address.full",
+            "source_paths": [
+              "Street Address"
+            ],
+            "verdict": "doubtful",
+            "reason": "Values are street-address fragments without locality ('240 EXHIBITION STREET', 'SUNSET DVE', 'U S C LODGE ALLOTMENTS 15 & 16 ALPINE VILL'), so 'full' is arguably not a complete address. It is clearly the premises address (correct vs postal), but completeness is overstated. Also empty Street Address rows still emit state/country-only observations with no address.full/locality, which is misleading."
+          },
+          {
+            "target": "address.locality",
+            "source_paths": [
+              "Suburb"
+            ],
+            "verdict": "ok",
+            "reason": "Premises suburb correctly mapped to locality."
+          },
+          {
+            "target": "address.postcode",
+            "source_paths": [
+              "Postcode"
+            ],
+            "verdict": "ok",
+            "reason": "Premises postcode, four-digit AU; placeholder '0' nulled correctly. Consistent with premises address."
+          },
+          {
+            "target": "address.state",
+            "source_paths": [],
+            "verdict": "ok",
+            "reason": "Constant VIC is sound for a Victorian liquor licence register; premises are all in VIC. Reasonable."
+          },
+          {
+            "target": "address.country",
+            "source_paths": [],
+            "verdict": "ok",
+            "reason": "Constant AU appropriate for an Australian regulator dataset."
+          }
+        ],
+        "missed": [
+          {
+            "source_path": "Licensee",
+            "suggested_target": "entity.legal_name",
+            "reason": "For registered entities ('LIQUORLAND (AUSTRALIA) PTY LTD', 'PRINCESS THEATRE PTY LTD', 'SETALADRA PTY LTD') this is the legal/registered name and belongs in legal_name, not trading_name. It should not be duplicated into trading_name."
+          },
+          {
+            "source_path": "Licensee",
+            "suggested_target": "entity.entity_type",
+            "reason": "Column contents signal entity type: '... PTY LTD' -> company, '... INC' -> incorporated_association, bare personal names -> sole_trader. Only emit where explicitly inferable from legal suffix; otherwise unknown. Currently nothing maps entity_type."
+          },
+          {
+            "source_path": "Postal Address",
+            "suggested_target": "address.full (secondary / licensee postal address)",
+            "reason": "Clearly a postal address that matches the address ontology; left unmapped. If premises vs postal matters, this should be modeled (or at least explicitly noted as a distinct address with its type), rather than silently dropped."
+          },
+          {
+            "source_path": "Postal Suburb",
+            "suggested_target": "address.locality (secondary / licensee postal address)",
+            "reason": "Postal suburb matching locality target; unmapped as part of the secondary address."
+          },
+          {
+            "source_path": "Postal Postcode",
+            "suggested_target": "address.postcode (secondary / licensee postal address)",
+            "reason": "Postal postcode matching postcode target; unmapped as part of the secondary address."
+          }
+        ],
+        "summary": "The main defect is the mapping of 'Licensee' to entity.trading_name: those values are registered legal names ('... PTY LTD', '... INC') and, for sole traders/office holders, personal or office-holder names like 'ARNOLD BRUCE' and 'THE SECRETARY'. That conflates legal_name with trading_name and should instead feed entity.legal_name (suffixes can also yield entity_type). 'Trading As' is correctly mapped to trading_name. The premises address mapping (Street Address/Suburb/Postcode, constant VIC/AU) targets the right address but 'full' is only a street fragment and rows with blank premises address still emit state/country-only observations. Postal Address/Suburb/Postcode clearly match the address ontology and were dropped without being modeled as a distinct (postal) address. No ABN/ACN/entity_type/status/website/industry/date fields present to map."
+      }
+    },
+    {
+      "round": 1,
+      "digest": "60e0f30553e61fded7b5401de8ece61960661e38c5a72b13ede38599eae2bf4b",
+      "config": {
+        "source_id": "vic_liquor",
+        "record_grain": "licence_or_permit",
+        "grain_rationale": "One record = one current Victorian liquor licence held by a licensee at a licensed premises. The business participant's registered-holder name ('Licensee') and the licensed premises locality/postcode are mapped; the licence number is a licence identifier, not a business identifier.",
+        "reader": {
+          "format": "xlsx",
+          "archive_member": null,
+          "encoding": "utf-8-sig",
+          "delimiter": null,
+          "skip_rows": 4,
+          "sheet": null,
+          "record_path": null
+        },
+        "record_id": {
+          "strategy": "columns",
+          "source_paths": [
+            "Licence Number"
+          ],
+          "rationale": "Licence Number is present on every record and fully distinct (465/465) in discovery; it identifies the licence record. Holdout showed no duplicate-key errors."
+        },
+        "observed_at": {
+          "source_path": null,
+          "steps": [],
+          "fallback": "resource_last_modified"
+        },
+        "fields": [
+          {
+            "source_paths": [
+              "Licensee"
+            ],
+            "join_with": " ",
+            "when": null,
+            "target": "entity.legal_name",
+            "steps": [
+              {
+                "op": "trim",
+                "args": {}
+              },
+              {
+                "op": "collapse_whitespace",
+                "args": {}
+              },
+              {
+                "op": "null_if",
+                "args": {
+                  "values": [
+                    ".",
+                    "-",
+                    "",
+                    "n/a"
+                  ]
+                }
+              }
+            ],
+            "confidence": 0.6,
+            "rationale": "Revising previous round: 'Licensee' is the registered holder/legal name recorded by the regulator ('LIQUORLAND (AUSTRALIA) PTY LTD', 'ENDEAVOUR GROUP LIMITED', 'ALDI FOODS PTY LIMITED', 'BENDIGO YACHT CLUB INC'), so it belongs in legal_name, not trading_name. Caveat: for sole traders the same column holds a personal name ('WOOD GERARD', 'LE VAN LUC'); the regulator does not publish entity type, so this is the regulator's own registered-holder name rather than a registry-verified legal name. Placeholder '.' / '-' nulled."
+          },
+          {
+            "source_paths": [
+              "Trading As"
+            ],
+            "join_with": " ",
+            "when": null,
+            "target": "entity.trading_name",
+            "steps": [
+              {
+                "op": "trim",
+                "args": {}
+              },
+              {
+                "op": "collapse_whitespace",
+                "args": {}
+              },
+              {
+                "op": "null_if",
+                "args": {
+                  "values": [
+                    ".",
+                    "-",
+                    "",
+                    "n/a"
+                  ]
+                }
+              }
+            ],
+            "confidence": 0.85,
+            "rationale": "'Trading As' is explicitly the trading/display name of the premises ('ALDI STORES', 'JKB BREWING', 'THE MAIN EMPORIUM'). Holdout placeholder '.' now nulled."
+          },
+          {
+            "source_paths": [
+              "Suburb"
+            ],
+            "join_with": " ",
+            "when": null,
+            "target": "address.locality",
+            "steps": [
+              {
+                "op": "trim",
+                "args": {}
+              },
+              {
+                "op": "collapse_whitespace",
+                "args": {}
+              },
+              {
+                "op": "null_if",
+                "args": {
+                  "values": [
+                    ".",
+                    "-",
+                    ""
+                  ]
+                }
+              }
+            ],
+            "confidence": 0.85,
+            "rationale": "Premises suburb; values are clean suburb names (MELBOURNE, EPPING, BAIRNSDALE)."
+          },
+          {
+            "source_paths": [
+              "Postcode"
+            ],
+            "join_with": " ",
+            "when": null,
+            "target": "address.postcode",
+            "steps": [
+              {
+                "op": "trim",
+                "args": {}
+              },
+              {
+                "op": "null_if",
+                "args": {
+                  "values": [
+                    "0",
+                    "0000",
+                    "",
+                    "n/a",
+                    "-"
+                  ]
+                }
+              },
+              {
+                "op": "postcode",
+                "args": {}
+              }
+            ],
+            "confidence": 0.8,
+            "rationale": "Four-digit AU postcode; placeholder '0' rows treated as missing."
+          }
+        ],
+        "constants": [
+          {
+            "target": "address.state",
+            "value": "VIC",
+            "confidence": 0.95,
+            "rationale": "Victorian liquor licence register; licensed premises are in Victoria."
+          },
+          {
+            "target": "address.country",
+            "value": "AU",
+            "confidence": 0.95,
+            "rationale": "Australian (Victorian) regulator dataset."
+          }
+        ],
+        "unmapped": [
+          {
+            "source_path": "Licence Number",
+            "reason": "Licence identifier, not a business identifier; used only as record_id."
+          },
+          {
+            "source_path": "Street Address",
+            "reason": "Street-address fragment without locality ('SUNSET DVE', 'PURCHES STREET') and sometimes just '-'/'', so it is not a complete address; emitting it as address.full overstates completeness (critic verdict: doubtful). Premises locality and postcode are mapped; state/country are constant VIC/AU."
+          },
+          {
+            "source_path": "Licence Category",
+            "reason": "Licence type (General Licence, BYO Permit, ...); no ontology target for licence class."
+          },
+          {
+            "source_path": "Trading Hours",
+            "reason": "Licence trading condition; no ontology target."
+          },
+          {
+            "source_path": "Patron Capacity (if applicable)",
+            "reason": "Premises capacity; no ontology target."
+          },
+          {
+            "source_path": "Council",
+            "reason": "Local government area of premises; no ontology target."
+          },
+          {
+            "source_path": "Region",
+            "reason": "Regulator administrative region; no ontology target."
+          },
+          {
+            "source_path": "Metro/Regional",
+            "reason": "Classification of location; no ontology target."
+          },
+          {
+            "source_path": "Latitude",
+            "reason": "Geocoordinate; no ontology target."
+          },
+          {
+            "source_path": "Longitude",
+            "reason": "Geocoordinate; no ontology target."
+          },
+          {
+            "source_path": "Postal Address",
+            "reason": "Licensee postal address is a secondary address distinct from the licensed premises; the ontology address.* block has no address-type discriminator, so emitting it would conflict with the premises address. Critic suggested modelling it as a secondary address, but the contract offers no way to label it - left unmapped deliberately."
+          },
+          {
+            "source_path": "Postal Suburb",
+            "reason": "Secondary (postal) suburb; cannot be distinguished from premises locality in the ontology address block."
+          },
+          {
+            "source_path": "Postal Postcode",
+            "reason": "Secondary (postal) postcode; cannot be distinguished from premises postcode in the ontology address block."
+          },
+          {
+            "source_path": "column_7",
+            "reason": "Empty spacer column in the spreadsheet."
+          },
+          {
+            "source_path": "column_8",
+            "reason": "Empty spacer column in the spreadsheet."
+          },
+          {
+            "source_path": "column_13",
+            "reason": "Empty spacer column in the spreadsheet."
+          },
+          {
+            "source_path": "column_14",
+            "reason": "Empty spacer column in the spreadsheet."
+          }
+        ],
+        "notes": "Reader: xlsx, skip_rows=4 (3 title/blank rows above the header row); 21 columns including 4 empty spacer columns. No ABN/ACN/NZBN published (Licence Number is 8-digit; 0% ABN checksum), so no business identifier is claimed. No column explicitly states entity_type or status, so both are left unmapped (entity_type defaults to unknown rather than being inferred from ' PTY LTD' suffixes, which also occur inside trading names such as 'MORIAC PTY LTD', and many holders are bare personal names). observed_at: the 'as of 31/08/2026' statement lives in a title row, not a data column, so the envelope falls back to resource_last_modified. Licensee and Trading As are frequently identical, producing parallel legal_name/trading_name observations."
+      },
+      "holdout_issues": [],
+      "holdout_report": {
+        "records_in": 1160,
+        "records_with_output": 1160,
+        "record_errors": {},
+        "fields": [
+          {
+            "target": "entity.legal_name",
+            "source_paths": [
+              "Licensee"
+            ],
+            "records": 1160,
+            "source_present": 1160,
+            "emitted": 1160,
+            "coverage_of_records": 1.0,
+            "error_rate_of_present": 0.0,
+            "errors": {},
+            "error_examples": {}
+          },
+          {
+            "target": "entity.trading_name",
+            "source_paths": [
+              "Trading As"
+            ],
+            "records": 1160,
+            "source_present": 1152,
+            "emitted": 1150,
+            "coverage_of_records": 0.991,
+            "error_rate_of_present": 0.0,
+            "errors": {},
+            "error_examples": {}
+          },
+          {
+            "target": "address.locality",
+            "source_paths": [
+              "Suburb"
+            ],
+            "records": 1160,
+            "source_present": 1114,
+            "emitted": 1114,
+            "coverage_of_records": 0.96,
+            "error_rate_of_present": 0.0,
+            "errors": {},
+            "error_examples": {}
+          },
+          {
+            "target": "address.postcode",
+            "source_paths": [
+              "Postcode"
+            ],
+            "records": 1160,
+            "source_present": 1115,
+            "emitted": 1102,
+            "coverage_of_records": 0.95,
+            "error_rate_of_present": 0.0,
+            "errors": {},
+            "error_examples": {}
+          }
+        ]
+      },
+      "critic": {
+        "fields": [
+          {
+            "target": "entity.legal_name",
+            "source_paths": [
+              "Licensee"
+            ],
+            "verdict": "doubtful",
+            "reason": "'Licensee' is generally the registered holder and fits legal_name for companies (LIQUORLAND (AUSTRALIA) PTY LTD, HYLAND WINES PTY LTD), but heldout shows it also carries non-legal-name values: sole traders (ARNOLD BRUCE) and role placeholders like 'THE SECRETARY' (Cowes Yacht Club). Mapping a contact/role holder name as legal_name is a known failure mode; the caveat acknowledges this but the mapping still emits it unconditionally as legal_name."
+          },
+          {
+            "target": "entity.trading_name",
+            "source_paths": [
+              "Trading As"
+            ],
+            "verdict": "ok",
+            "reason": "'Trading As' is genuinely the trading/display name; heldout values (UNIVERSITY SKI CLUB, LA PORCHETTA GEELONG CITY) are consistent. Duplicate when identical to Licensee (BENDIGO YACHT CLUB INC) is acceptable."
+          },
+          {
+            "target": "address.locality",
+            "source_paths": [
+              "Suburb"
+            ],
+            "verdict": "ok",
+            "reason": "Premises suburb is the correct source and clean; empty rows correctly nulled (ORIENTAL VODKA record)."
+          },
+          {
+            "target": "address.postcode",
+            "source_paths": [
+              "Postcode"
+            ],
+            "verdict": "ok",
+            "reason": "Four-digit AU premises postcode; placeholder handling plausible; blank correctly nulled."
+          },
+          {
+            "target": "address.state",
+            "source_paths": [],
+            "verdict": "ok",
+            "reason": "Victorian regulator; constant VIC is safe and explicit in rationale. Note it emits VIC even for records with no premises data (ORIENTAL VODKA), which is a robustness concern but not semantically wrong for this dataset."
+          },
+          {
+            "target": "address.country",
+            "source_paths": [],
+            "verdict": "ok",
+            "reason": "AU constant appropriate for this dataset."
+          }
+        ],
+        "missed": [],
+        "summary": "Address fields and trading_name are sound. The main risk is entity.legal_name: 'Licensee' mostly holds registered-holder names but also sole-trader personal names and role placeholders ('THE SECRETARY'), so it is a doubtful legal_name rather than a clean fit. Street/premises sub-address and postal address are deliberately unmapped, which is defensible given the ontology's single undiscriminated address block. The key gap remains: no entity_type is derivable, so entity_type is rightly left unmapped (not guessed), and no ABN/ACN exists in source. Dataset grain (licence_or_permit) and licence number treatment as licence ID are reasonable."
+      }
+    }
+  ],
+  "tool_calls": 12,
+  "stages": [
+    {
+      "stage": "INSPECTED",
+      "at": "2026-11-09T22:10:12+00:00"
+    },
+    {
+      "stage": "PROPOSED_v0",
+      "at": "2026-11-09T22:10:50+00:00"
+    },
+    {
+      "stage": "VALIDATED_v0",
+      "at": "2026-11-09T22:10:50+00:00"
+    },
+    {
+      "stage": "CRITIQUED_v0",
+      "at": "2026-11-09T22:10:59+00:00"
+    },
+    {
+      "stage": "REVISING_v1",
+      "at": "2026-11-09T22:10:59+00:00"
+    },
+    {
+      "stage": "PROPOSED_v1",
+      "at": "2026-11-09T22:11:20+00:00"
+    },
+    {
+      "stage": "VALIDATED_v1",
+      "at": "2026-11-09T22:11:20+00:00"
+    },
+    {
+      "stage": "CRITIQUED_v1",
+      "at": "2026-11-09T22:11:26+00:00"
+    },
+    {
+      "stage": "PENDING_REVIEW",
+      "at": "2026-11-09T22:11:26+00:00"
+    }
+  ],
+  "experiment": "rerun-v3",
+  "inspection": {
+    "file_name": "vic_liquor__3804ec54",
+    "size_bytes": 4936744,
+    "magic_hex": "504b030414000000",
+    "container": "xlsx",
+    "sheets_first_rows": {
+      "Current_Victorian_Licences_By_L": [
+        [
+          null,
+          null,
+          null,
+          null,
+          null,
+          null,
+          null,
+          null,
+          "\nGPO Box 4356, Melbourne VIC 3001\n1300 182 457\nLiquor.vic.go"
+        ],
+        [],
+        [
+          "Current Victorian Liquor Licences as of 31/08/2026"
+        ],
+        [],
+        [
+          "Licence Number",
+          "Licensee",
+          "Trading As",
+          "Licence Category",
+          "Trading Hours",
+          "Patron Capacity (if applicable)",
+          "Street Address",
+          null,
+          null,
+          "Suburb",
+          "Postcode",
+          "Council",
+          "Region",
+          null,
+          null,
+          "Metro/Regional",
+          "Latitude",
+          "Longitude",
+          "Postal Address",
+          "Postal Suburb",
+          "Postal Postcode"
+        ],
+        [
+          "31100099",
+          "ARNOLD BRUCE",
+          "UNIVERSITY SKI CLUB",
+          "BYO Permit",
+          "BYO Permit",
+          "",
+          "U S C LODGE ALLOTMENTS 15 & 16 ALPINE VILL",
+          null,
+          null,
+          "MT BULLER",
+          "3723",
+          "MANSFIELD SHIRE COUNCIL",
+          "Hume",
+          null,
+          null,
+          "Regional",
+          "-37.14630500",
+          "146.45227600",
+          "PO BOX 93",
+          "SANDOWN VILLAGE",
+          "3171"
+        ],
+        [
+          "31100138",
+          "C S I R SKI CLUB",
+          "C S I R SKI CLUB",
+          "BYO Permit",
+          "BYO Permit",
+          "",
+          "SITE 65 1 SCHUSS STREET",
+          null,
+          null,
+          "FALLS CREEK",
+          "3699",
+          "ALPINE SHIRE COUNCIL",
+          "Hume",
+          null,
+          null,
+          "Regional",
+          "-36.86488200",
+          "147.27841300",
+          "PO BOX 4077",
+          "NARRE WARREN SOUTH",
+          "3805"
+        ],
+        [
+          "31100154",
+          "SKILIB ALPINE CLUB",
+          "SKILIB ALPINE CLUB",
+          "BYO Permit",
+          "BYO Permit",
+          "",
+          "2 GOAL POSTS RD",
+          null,
+          null,
+          "MT BULLER",
+          "3723",
+          "MANSFIELD SHIRE COUNCIL",
+          "Hume",
+          null,
+          null,
+          "Regional",
+          "-37.14695700",
+          "146.45464800",
+          "PO BOX 140",
+          "CANTERBURY",
+          "3126"
+        ]
+      ]
+    }
+  },
+  "human_feedback": null,
+  "reader": {
+    "format": "xlsx",
+    "archive_member": null,
+    "encoding": "utf-8-sig",
+    "delimiter": null,
+    "skip_rows": 4,
+    "sheet": null,
+    "record_path": null
+  },
+  "finished_at": "2026-11-09T22:11:26+00:00",
+  "final_digest": "60e0f30553e61fded7b5401de8ece61960661e38c5a72b13ede38599eae2bf4b"
+}

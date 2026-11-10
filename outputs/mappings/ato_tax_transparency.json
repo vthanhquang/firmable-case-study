@@ -1,0 +1,110 @@
+{
+  "status": "PENDING_REVIEW",
+  "run_id": "20261110T034703-b5fe14",
+  "prompt_version": "prompts-v1",
+  "model": "deepseek-v4-flash",
+  "ontology_sha256": "639b80ea6333146c7ac714cd940fcdf6b2945f451e95333b0be21174bedee5da",
+  "snapshot_sha256": "7cccd963cd4aad31c305b21d33272d3d99ff9c36258641622a28cd0028d65c45",
+  "config_digest": "4eaa881938cfbebabb230ee0430da8a02f6bc1addd97f2251dfa579fbd57e73a",
+  "config": {
+    "source_id": "ato_tax_transparency",
+    "record_grain": "legal_entity",
+    "grain_rationale": "One row per legal entity (identified by its ABN) per income year, reporting aggregate tax information (total income, taxable income, tax payable) on the ATO Corporate Tax Transparency register. The record is about the business itself, so entity attributes are mapped directly; the financial figures have no canonical ontology target and are recorded as unmapped.",
+    "reader": {
+      "format": "xlsx",
+      "archive_member": null,
+      "encoding": "utf-8-sig",
+      "delimiter": null,
+      "skip_rows": 0,
+      "sheet": "Income tax details",
+      "record_path": null
+    },
+    "record_id": {
+      "strategy": "content_hash",
+      "source_paths": [
+        "ABN",
+        "Income year"
+      ],
+      "rationale": "ABN is unique within the discovery partition (431 checksum-valid of 435 rows, no duplicates among distinct values) but several rows have a missing ABN and income year varies, so a content hash over ABN + Income year is traceable and stable across partitions."
+    },
+    "observed_at": {
+      "source_path": null,
+      "steps": [],
+      "fallback": "resource_last_modified"
+    },
+    "fields": [
+      {
+        "source_paths": [
+          "Name"
+        ],
+        "join_with": " ",
+        "target": "entity.legal_name",
+        "steps": [
+          {
+            "op": "trim",
+            "args": {}
+          },
+          {
+            "op": "collapse_whitespace",
+            "args": {}
+          },
+          {
+            "op": "null_if",
+            "args": {
+              "values": [
+                "",
+                "n/a",
+                "na",
+                "-"
+              ]
+            }
+          }
+        ],
+        "confidence": 0.82,
+        "rationale": "Column 'Name' holds registered-style entity names ('CHEVRON AUSTRALIA PTY LTD', 'MOBIL AUSTRALIA RESOURCES COMPANY PTY LIMITED'); the ATO transparency register publishes the legal/taxable-entity name, and company suffixes (PTY LTD / LIMITED) indicate legal rather than trading names. Note 'GOVE ALUMINIUM FINANCE LINITED' shows the source's own typos are preserved."
+      },
+      {
+        "source_paths": [
+          "ABN"
+        ],
+        "join_with": " ",
+        "target": "entity.abn",
+        "steps": [
+          {
+            "op": "abn",
+            "args": {}
+          }
+        ],
+        "confidence": 0.97,
+        "rationale": "Column 'ABN' is 11 digits in all present rows with a 100% checksum-valid rate (431/431) in discovery; the abn transform validates the checksum."
+      }
+    ],
+    "constants": [
+      {
+        "target": "address.country",
+        "value": "AU",
+        "confidence": 0.7,
+        "rationale": "The dataset is an Australian Taxation Office register of entities with Australian Business Numbers, so the entities are Australian for tax purposes. This is an inferred jurisdiction, not a stated address."
+      }
+    ],
+    "unmapped": [
+      {
+        "source_path": "Total income $",
+        "reason": "Financial reporting figure (total income in AUD); no canonical ontology target for financial amounts."
+      },
+      {
+        "source_path": "Taxable income $",
+        "reason": "Financial reporting figure (taxable income in AUD); no ontology target. Also null in ~24% of rows."
+      },
+      {
+        "source_path": "Tax payable $",
+        "reason": "Financial reporting figure (tax payable in AUD); no ontology target."
+      },
+      {
+        "source_path": "Income year",
+        "reason": "Income-year label (e.g. '2024-25'; 3 distinct values incl. 2023-24 and 2022-23 comparatives). It is used in record_id but does not itself state an entity attribute; not mapped to observation.valid_from because it is a fiscal-year label rather than a claim-effective date."
+      }
+    ],
+    "notes": "Workbook has an 'Information' sheet (title/guidance text, sheet name only), the main 'Income tax details' sheet (435 data rows; header in row 1) and a separate 'PRRT details' sheet (petroleum resource rent tax payers, 8 rows in discovery). Only the 'Income tax details' sheet is mapped here. 'PRRT details' has its own schema (Name, ABN, PRRT Payable $) and would need a second config. Income year mixes 2024-25 with a few prior-year comparatives. Column names contain a trailing ' $'."
+  }
+}

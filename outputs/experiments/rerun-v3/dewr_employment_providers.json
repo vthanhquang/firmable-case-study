@@ -1,0 +1,287 @@
+{
+  "status": "PENDING_REVIEW",
+  "run_id": "20261110T051127-5871b9",
+  "prompt_version": "prompts-v3",
+  "model": "deepseek-v4-flash",
+  "ontology_sha256": "639b80ea6333146c7ac714cd940fcdf6b2945f451e95333b0be21174bedee5da",
+  "snapshot_sha256": "0034e176b580405064272e688c7bf51230f051880263cdeeb5107ac00bd7a979",
+  "config_digest": "0de7b51ee0b46e531eeab604979ec362fa52478475a468b298c170bb0f382816",
+  "config": {
+    "source_id": "dewr_employment_providers",
+    "record_grain": "establishment",
+    "grain_rationale": "Each row is one employment-services SITE (office/premises) operated by a provider under a specific employment services contract (CONTRACT_NAME, e.g. DESA/DESB/EPS5). The business participant is the provider organisation named in SITE_NAME; the row describes that provider's SITE PREMISES address (street address), plus website and phone contacts. DIS_SITE_CODE is the site identifier, not a business identifier, so it is not mapped to the entity.",
+    "reader": {
+      "format": "delimited",
+      "archive_member": null,
+      "encoding": "utf-8-sig",
+      "delimiter": ",",
+      "skip_rows": 0,
+      "sheet": null,
+      "record_path": null
+    },
+    "record_id": {
+      "strategy": "content_hash",
+      "source_paths": [],
+      "rationale": "DIS_SITE_CODE is not unique per record (489 distinct over 505 discovery rows) because the same site appears once per contract code. No other column or combination is guaranteed unique, so a content hash over all mapped source fields is used for traceability."
+    },
+    "observed_at": {
+      "source_path": null,
+      "steps": [],
+      "fallback": "resource_last_modified"
+    },
+    "fields": [
+      {
+        "source_paths": [
+          "SITE_NAME"
+        ],
+        "join_with": " ",
+        "when": null,
+        "target": "entity.trading_name",
+        "steps": [
+          {
+            "op": "trim",
+            "args": {}
+          },
+          {
+            "op": "collapse_whitespace",
+            "args": {}
+          },
+          {
+            "op": "null_if",
+            "args": {
+              "values": [
+                "",
+                "NULL",
+                "N/A",
+                "NA",
+                "TBA",
+                "TBC",
+                "-"
+              ]
+            }
+          }
+        ],
+        "confidence": 0.62,
+        "rationale": "SITE_NAME holds the provider's operating/brand name (e.g. 'MAX Employment', 'Advanced Personnel Management', 'CoAct/Community Solutions', 'Job Centre Australia'). These are trading/display names, not evidenced registered legal names, so trading_name (not legal_name). The same provider appears under several variants (e.g. 'Advanced Personnel Management' vs '(APM)')."
+      },
+      {
+        "source_paths": [
+          "SITE_URL"
+        ],
+        "join_with": " ",
+        "when": null,
+        "target": "entity.website",
+        "steps": [
+          {
+            "op": "trim",
+            "args": {}
+          },
+          {
+            "op": "null_if",
+            "args": {
+              "values": [
+                "",
+                "NULL",
+                "NA",
+                "N/A",
+                "TBA",
+                "TBC",
+                "-"
+              ]
+            }
+          },
+          {
+            "op": "regex_extract",
+            "args": {
+              "pattern": "(?i)(?:https?://)?(?:www\\.)?[A-Za-z][A-Za-z0-9-]*(?:\\.[A-Za-z0-9-]+)*\\.(?:com\\.au|net\\.au|org\\.au|asn\\.au|edu\\.au|gov\\.au|au|com|net|org)(?![0-9])",
+              "group": 0
+            }
+          },
+          {
+            "op": "website",
+            "args": {}
+          }
+        ],
+        "confidence": 0.75,
+        "rationale": "SITE_URL contains provider domains such as 'www.apm.net.au' or 'http://maxsolutions.com.au/'; present in ~58% of rows. Held-out data showed some non-URL junk in this field (a bare phone number '467027758', 'TTY: 03 96143062'), so a domain-shaped regex gates the value: values without a dotted domain are dropped rather than emitted as a website."
+      },
+      {
+        "source_paths": [
+          "SITE_ADDRESS_LN"
+        ],
+        "join_with": " ",
+        "when": null,
+        "target": "address.full",
+        "steps": [
+          {
+            "op": "trim",
+            "args": {}
+          },
+          {
+            "op": "collapse_whitespace",
+            "args": {}
+          },
+          {
+            "op": "null_if",
+            "args": {
+              "values": [
+                "",
+                "NULL",
+                "NA",
+                "N/A",
+                "TBA",
+                "TBC",
+                "-",
+                "UNKNOWN"
+              ]
+            }
+          }
+        ],
+        "confidence": 0.8,
+        "rationale": "SITE_ADDRESS_LN is the site's PREMISES street address (e.g. '2nd Floor 22 East Row', 'Shop 6 & 7 The HUB Wynyard Street'), which is what address.full represents here; it is not a postal address. Values are truncated at ~40 chars in the source. Held-out data contained the placeholder 'TBA', which is now nulled."
+      },
+      {
+        "source_paths": [
+          "SITE_LOCALITY_NAME"
+        ],
+        "join_with": " ",
+        "when": null,
+        "target": "address.locality",
+        "steps": [
+          {
+            "op": "trim",
+            "args": {}
+          },
+          {
+            "op": "collapse_whitespace",
+            "args": {}
+          },
+          {
+            "op": "upper",
+            "args": {}
+          },
+          {
+            "op": "null_if",
+            "args": {
+              "values": [
+                "",
+                "NULL",
+                "TBA",
+                "TBC"
+              ]
+            }
+          }
+        ],
+        "confidence": 0.9,
+        "rationale": "Suburb/town of the site, e.g. 'CANBERRA', 'WOY WOY'; same value domain as LOCATION_NAME (412 distinct each in discovery)."
+      },
+      {
+        "source_paths": [
+          "SITE_STATE_CD"
+        ],
+        "join_with": " ",
+        "when": null,
+        "target": "address.state",
+        "steps": [
+          {
+            "op": "trim",
+            "args": {}
+          },
+          {
+            "op": "upper",
+            "args": {}
+          },
+          {
+            "op": "state",
+            "args": {}
+          }
+        ],
+        "confidence": 0.95,
+        "rationale": "Two/three letter AU state abbreviation (8 distinct discovery values: NSW,VIC,QLD,SA,WA,TAS,NT,ACT)."
+      },
+      {
+        "source_paths": [
+          "SITE_POSTCODE"
+        ],
+        "join_with": " ",
+        "when": null,
+        "target": "address.postcode",
+        "steps": [
+          {
+            "op": "trim",
+            "args": {}
+          },
+          {
+            "op": "postcode",
+            "args": {}
+          }
+        ],
+        "confidence": 0.9,
+        "rationale": "4-digit AU postcodes; 13 of 505 discovery rows are 3-digit (NT codes such as 822) which the postcode transform re-pads."
+      }
+    ],
+    "constants": [
+      {
+        "target": "address.country",
+        "value": "AU",
+        "confidence": 0.9,
+        "rationale": "Australian government register of Australian employment-services sites; all states are AU state codes and postcodes are AU format."
+      }
+    ],
+    "unmapped": [
+      {
+        "source_path": "DIS_SITE_CODE",
+        "reason": "Short site code (e.g. A230, V352) with no checksum; not unique per record (same site repeats across contract codes). The record's own site ID, not a business identifier."
+      },
+      {
+        "source_path": "CONTRACT_NAME",
+        "reason": "Employment-services contract type (DESB, DESA, EPS5, TTW5, RJCP...) describing the program under which the site is contracted, not an attribute of the business entity."
+      },
+      {
+        "source_path": "LOCATION_NAME",
+        "reason": "Duplicates SITE_LOCALITY_NAME (same 412 distinct value domain) - the site's town; already captured via address.locality."
+      },
+      {
+        "source_path": "SITE_CONTACT_PHONE",
+        "reason": "Site contact phone number; phone is not a target in the canonical ontology."
+      },
+      {
+        "source_path": "SITE_EMAIL_ADDRESS",
+        "reason": "Contact email only; there is no email target in the ontology and it is not a website (critic concurred). Some values are personal staff addresses (e.g. kal.perera@...), which are not entity fields."
+      },
+      {
+        "source_path": "ESA_CD_1",
+        "reason": "Employment Services Area code (e.g. 5ACT, 4SOE) - a program administrative region, not an ANZSIC industry code and not a business identifier."
+      },
+      {
+        "source_path": "ESA_CD_2",
+        "reason": "Blank in 100% of discovery rows (wrapped second ESA code)."
+      },
+      {
+        "source_path": "ESA_CD_3",
+        "reason": "Blank in 100% of discovery rows (wrapped third ESA code)."
+      },
+      {
+        "source_path": "AGENT_FREECALL_NUM",
+        "reason": "13/1800 freecall number for the agent; phone is not an ontology target."
+      },
+      {
+        "source_path": "PHONE_NUMBER",
+        "reason": "Site phone number; phone is not a target in the canonical ontology."
+      },
+      {
+        "source_path": "LATITUDE",
+        "reason": "Site geocoordinate; no geo target in the canonical ontology (and 7 discovery rows contain the literal 'NULL')."
+      },
+      {
+        "source_path": "LONGITUDE",
+        "reason": "Site geocoordinate; no geo target in the canonical ontology (and 7 discovery rows contain the literal 'NULL')."
+      },
+      {
+        "source_path": "column_18",
+        "reason": "Empty trailing column created by trailing delimiter in header; 0% present."
+      }
+    ],
+    "notes": "No ABN/ACN/NZBN column exists in this extract (checksum-valid rates on numeric columns are ~0%), so no business identifier can be mapped. entity_type is left out because no column states a legal structure. SITE_NAME is trading_name, not legal_name: values are brand names with inconsistent variants. address.full is explicitly the PREMISES (street) address of the site, not a postal address. Held-out fixes: placeholder 'TBA' now nulled in address fields and SITE_NAME; SITE_URL gated by a domain-shaped regex so junk values (bare phone numbers, 'TTY: ...') are dropped instead of erroring."
+  }
+}

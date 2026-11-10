@@ -1,0 +1,91 @@
+{
+  "status": "PENDING_REVIEW",
+  "run_id": "20261110T045723-46f0b7",
+  "prompt_version": "prompts-v3",
+  "model": "deepseek-v4-flash",
+  "ontology_sha256": "639b80ea6333146c7ac714cd940fcdf6b2945f451e95333b0be21174bedee5da",
+  "snapshot_sha256": "7cccd963cd4aad31c305b21d33272d3d99ff9c36258641622a28cd0028d65c45",
+  "config_digest": "1fd1627a10f78a0875132c67664f461a14a59c955d54be8465d6eb7a4c0a63c7",
+  "config": {
+    "source_id": "ato_tax_transparency",
+    "record_grain": "legal_entity",
+    "grain_rationale": "Each row in the 'Income tax details' sheet is one company's tax information for one income year (name, ABN, total income, taxable income, tax payable). The business participant is the entity identified by the row's Name and ABN.",
+    "reader": {
+      "format": "xlsx",
+      "archive_member": null,
+      "encoding": "utf-8-sig",
+      "delimiter": null,
+      "skip_rows": 0,
+      "sheet": "Income tax details",
+      "record_path": null
+    },
+    "record_id": {
+      "strategy": "content_hash",
+      "source_paths": [],
+      "rationale": "No column set is reliably unique: ABN has fewer distinct values than rows (431 of 435 in discovery, and the holdout rejected an ABN+Income year key with 8 collisions), so duplicate rows can legitimately repeat ABN/name/year. A content hash over the full row is the only guaranteed-unique, traceable record identity."
+    },
+    "observed_at": {
+      "source_path": null,
+      "steps": [],
+      "fallback": "resource_last_modified"
+    },
+    "fields": [
+      {
+        "source_paths": [
+          "Name"
+        ],
+        "join_with": " ",
+        "when": null,
+        "target": "entity.legal_name",
+        "steps": [
+          {
+            "op": "trim",
+            "args": {}
+          },
+          {
+            "op": "collapse_whitespace",
+            "args": {}
+          }
+        ],
+        "confidence": 0.75,
+        "rationale": "Sheet is a statutory tax-info report of entities; names are all-caps registered-style company names (PTY LTD / LIMITED)."
+      },
+      {
+        "source_paths": [
+          "ABN"
+        ],
+        "join_with": "",
+        "when": null,
+        "target": "entity.abn",
+        "steps": [
+          {
+            "op": "abn",
+            "args": {}
+          }
+        ],
+        "confidence": 0.98,
+        "rationale": "ABN column with 100% checksum-valid rate in discovery partition."
+      }
+    ],
+    "constants": [],
+    "unmapped": [
+      {
+        "source_path": "Total income $",
+        "reason": "Financial figure, no ontology target."
+      },
+      {
+        "source_path": "Taxable income $",
+        "reason": "Financial figure, no ontology target."
+      },
+      {
+        "source_path": "Tax payable $",
+        "reason": "Financial figure, no ontology target."
+      },
+      {
+        "source_path": "Income year",
+        "reason": "Income year is a fiscal period label (e.g. 2024-25), not a clean date; no ontology date target fits cleanly."
+      }
+    ],
+    "notes": "Multi-sheet workbook; only 'Income tax details' mapped. PRRT details sheet holds a different tax (PRRT payable) for a subset of entities and has no income-year column, so it is excluded to keep grain consistent. Record ID uses content_hash because ABN is not unique across rows."
+  }
+}

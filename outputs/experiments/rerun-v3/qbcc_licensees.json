@@ -1,0 +1,220 @@
+{
+  "status": "PENDING_REVIEW",
+  "run_id": "20261110T045803-d51345",
+  "prompt_version": "prompts-v3",
+  "model": "deepseek-v4-flash",
+  "ontology_sha256": "639b80ea6333146c7ac714cd940fcdf6b2945f451e95333b0be21174bedee5da",
+  "snapshot_sha256": "509b287a7bf36eb39510b79a8056568dd532843d75b711d3d44c193ff0d84447",
+  "config_digest": "f2b91ed0fd33deebf549fd454efe0deecc9e472e0843d7933023c54ac64151de",
+  "config": {
+    "source_id": "qbcc_licensees",
+    "record_grain": "licence_or_permit",
+    "grain_rationale": "One record is one QBCC licence held by a licensee (Licence Number is the licence identity; '_id' is the data.gov.au datastore row id). Business/entity attributes describe the licensee participant, not the licence. Most records are Individual licensees, where 'Licensee Name' is a natural person's name (including nominee supervisors who act for a company and are not the business); such person names are not mapped at all. Only for Company licensees, where the name is a business name, is it emitted, and only as trading_name because the register never asserts an ASIC-registered legal name.",
+    "reader": {
+      "format": "json",
+      "archive_member": null,
+      "encoding": "utf-8-sig",
+      "delimiter": null,
+      "skip_rows": 0,
+      "sheet": null,
+      "record_path": "result.records"
+    },
+    "record_id": {
+      "strategy": "columns",
+      "source_paths": [
+        "_id"
+      ],
+      "rationale": "_id is the data.gov.au datastore row id and is distinct across all 508 discovery records, so it uniquely and traceably identifies the record."
+    },
+    "observed_at": {
+      "source_path": null,
+      "steps": [],
+      "fallback": "resource_last_modified"
+    },
+    "fields": [
+      {
+        "source_paths": [
+          "Licensee Name"
+        ],
+        "join_with": " ",
+        "when": {
+          "source_path": "Licence Type CODE",
+          "op": "equals",
+          "values": [
+            "C"
+          ]
+        },
+        "target": "entity.trading_name",
+        "steps": [
+          {
+            "op": "trim",
+            "args": {}
+          },
+          {
+            "op": "collapse_whitespace",
+            "args": {}
+          },
+          {
+            "op": "null_if",
+            "args": {
+              "values": [
+                ""
+              ]
+            }
+          }
+        ],
+        "confidence": 0.6,
+        "rationale": "Only for 'Company' licensees is this column a business name as used on the licence (e.g. 'FLASH AIR CONDITIONING AND ELECTRICAL PTY LTD'). It is plausibly the registered name, but the register does not assert ASIC registration, so trading_name is the safe target. Individual licensees (natural persons, incl. nominee supervisors) are excluded by the row condition."
+      },
+      {
+        "source_paths": [
+          "ACN"
+        ],
+        "join_with": " ",
+        "when": null,
+        "target": "entity.acn",
+        "steps": [
+          {
+            "op": "acn",
+            "args": {}
+          }
+        ],
+        "confidence": 0.97,
+        "rationale": "ACN column formatted '999 999 999'; 100% of present values pass the ACN checksum (34/34 discovery, 77/77 held-out present)."
+      },
+      {
+        "source_paths": [
+          "ABN"
+        ],
+        "join_with": " ",
+        "when": null,
+        "target": "entity.abn",
+        "steps": [
+          {
+            "op": "abn",
+            "args": {}
+          }
+        ],
+        "confidence": 0.96,
+        "rationale": "ABN column formatted '99 999 999 999'; 99.6% of discovery and 99.0% of held-out present values pass the ABN checksum; the few failures are surfaced as errors rather than coerced."
+      },
+      {
+        "source_paths": [
+          "Licensee Business Address"
+        ],
+        "join_with": " ",
+        "when": null,
+        "target": "address.full",
+        "steps": [
+          {
+            "op": "trim",
+            "args": {}
+          },
+          {
+            "op": "collapse_whitespace",
+            "args": {}
+          }
+        ],
+        "confidence": 0.9,
+        "rationale": "Single free-text address field labelled 'Licensee Business Address' ('street locality STATE postcode'); kept whole as the full address."
+      },
+      {
+        "source_paths": [
+          "Licensee Business Address"
+        ],
+        "join_with": " ",
+        "when": null,
+        "target": "address.state",
+        "steps": [
+          {
+            "op": "regex_extract",
+            "args": {
+              "pattern": "\\b(QLD|NSW|VIC|WA|SA|TAS|ACT|NT|NZ)\\b\\s+\\d{3,4}\\s*$",
+              "group": 1
+            }
+          },
+          {
+            "op": "state",
+            "args": {}
+          }
+        ],
+        "confidence": 0.9,
+        "rationale": "Address ends with a state abbreviation before the postcode (99% of held-out rows)."
+      },
+      {
+        "source_paths": [
+          "Licensee Business Address"
+        ],
+        "join_with": " ",
+        "when": null,
+        "target": "address.postcode",
+        "steps": [
+          {
+            "op": "regex_extract",
+            "args": {
+              "pattern": "(\\d{4})\\s*$",
+              "group": 1
+            }
+          },
+          {
+            "op": "postcode",
+            "args": {}
+          }
+        ],
+        "confidence": 0.9,
+        "rationale": "Trailing 4-digit postcode in every sampled value."
+      }
+    ],
+    "constants": [
+      {
+        "target": "address.country",
+        "value": "AU",
+        "confidence": 0.7,
+        "rationale": "Queensland (QBCC) state register; business addresses carry QLD/other AU state abbreviations, so the licensee's address country is Australia."
+      }
+    ],
+    "unmapped": [
+      {
+        "source_path": "_id",
+        "reason": "Datastore row id, not a business identifier; used only as record_id."
+      },
+      {
+        "source_path": "Licence Number",
+        "reason": "Identifier of the licence/permit record, not of the business; must not be mapped to an entity identifier. Not used as record_id either because 2 values are duplicated across different datastore rows."
+      },
+      {
+        "source_path": "Licensee Name",
+        "reason": "Emitted only as entity.trading_name and only for Company licensees. For Individual licensees (the large majority of records, incl. nominee supervisors) the value is a natural person's name, not a business name, so it is deliberately not mapped. Not mapped to legal_name for any row because the register never asserts an ASIC-registered legal name."
+      },
+      {
+        "source_path": "Licence Type DESC",
+        "reason": "Describes the form of the licence holder (Individual/Company). 'Individual' covers sole traders and employee nominee supervisors alike, so it does not state an entity type; entity_type is left as the ontology default 'unknown' per guidance against guessing."
+      },
+      {
+        "source_path": "Licence Type CODE",
+        "reason": "Coded form of Licence Type DESC (I/C); used only as the row condition restricting name mapping to Company licensees. Not a legal-form code."
+      },
+      {
+        "source_path": "Financial Category DESC",
+        "reason": "Licence financial category (classification of the licence), not a business attribute. Single value 'Self Certification - Trade' in discovery."
+      },
+      {
+        "source_path": "Financial Category CODE",
+        "reason": "Coded form of Financial Category DESC; licence classification, not a business attribute."
+      },
+      {
+        "source_path": "Licence Grade",
+        "reason": "Grade of the licence (Trade Contractor Licence, Site Supervisor, Nominee Supervisor, etc.); describes the permit, not the business, and is not a status. No suitable ontology target; this extract carries no licence status column, so entity.status is left unset rather than inferred."
+      },
+      {
+        "source_path": "Licence Class Type",
+        "reason": "Licensed trade specialisation (Carpentry, Plumbing and Drainage, Gasfitting, ...), a licence classification rather than an ANZSIC industry code, and some values arrive truncated from the source; stuffing it into entity.industry_code would conflate a licence class with an industry code and propagate source truncation, so it is left unmapped."
+      },
+      {
+        "source_path": "Licensee Business Address",
+        "reason": "Used for address.full/state/postcode/country. Locality is NOT mapped: the address is a single free-text field and no split that fits the engine's regex limits is reliable and consistent (street-type lists miss 'Esplanade', 'Bvd', 'Court', 'Cr', and streets without a type token), so guessing would produce inconsistent partial values."
+      }
+    ],
+    "notes": "Source is a data.gov.au datastore_search API JSON wrapper (top-level keys include help/success/result); records live at result.records and the advertised 'CSV' metadata is inaccurate. No dates (registration/renewal/lapse) are present, so observed_at falls back to resource last-modified and valid_from/valid_to are empty. Revision history: entity_type removed (licence-holder form is not an explicit legal-form statement; 'Individual' includes nominee supervisors); names mapped to trading_name only for Company licensees after a review flagged person-as-trading-name; address.locality and Licence Class Type moved to unmapped as unreliable / not an industry code. Expected shape downstream: Company records carry trading_name + ACN (+ ABN where present); Individual records carry address only, plus ABN where the licensee supplied one. Licence grade/class and licence number remain available in the source for consumers needing permit-level detail. ABN values failing the checksum (~1% of present) are surfaced as errors, not coerced or suppressed."
+  }
+}

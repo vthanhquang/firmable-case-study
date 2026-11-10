@@ -1,0 +1,291 @@
+{
+  "status": "PENDING_REVIEW",
+  "run_id": "20261110T034918-117693",
+  "prompt_version": "prompts-v1",
+  "model": "deepseek-v4-flash",
+  "ontology_sha256": "639b80ea6333146c7ac714cd940fcdf6b2945f451e95333b0be21174bedee5da",
+  "snapshot_sha256": "69be72862e8728bfda782fc8438d8f6b16bf00f2ef99089e9c4dc2d85a8f6833",
+  "config_digest": "c273fa116c4eed13b4f0251aabb2c515a01a91c7ec05b0a708af2ad65760993a",
+  "config": {
+    "source_id": "acnc_charities",
+    "record_grain": "legal_entity",
+    "grain_rationale": "One row per ACNC-registered charity; the record describes the registered legal entity and its registered address. ABN is not guaranteed unique in a row (duplicates/blanks occur), so record identity is content-derived.",
+    "reader": {
+      "format": "xlsx",
+      "archive_member": null,
+      "encoding": "utf-8-sig",
+      "delimiter": null,
+      "skip_rows": 0,
+      "sheet": "Sheet1",
+      "record_path": null
+    },
+    "record_id": {
+      "strategy": "content_hash",
+      "source_paths": [],
+      "rationale": "ABN repeats across 6 held-out records and is blank in some rows, so it is not a unique key; hash the record content instead."
+    },
+    "observed_at": {
+      "source_path": null,
+      "steps": [],
+      "fallback": "resource_last_modified"
+    },
+    "fields": [
+      {
+        "source_paths": [
+          "Charity_Legal_Name"
+        ],
+        "join_with": " ",
+        "target": "entity.legal_name",
+        "steps": [
+          {
+            "op": "trim",
+            "args": {}
+          },
+          {
+            "op": "collapse_whitespace",
+            "args": {}
+          }
+        ],
+        "confidence": 0.93,
+        "rationale": "Column explicitly named Charity_Legal_Name from the ACNC register = registered legal name."
+      },
+      {
+        "source_paths": [
+          "Other_Organisation_Names"
+        ],
+        "join_with": " ",
+        "target": "entity.trading_name",
+        "steps": [
+          {
+            "op": "trim",
+            "args": {}
+          },
+          {
+            "op": "collapse_whitespace",
+            "args": {}
+          }
+        ],
+        "confidence": 0.6,
+        "rationale": "Other names a charity is known by (trading/display names); explicitly separate from the legal name column."
+      },
+      {
+        "source_paths": [
+          "ABN"
+        ],
+        "join_with": " ",
+        "target": "entity.abn",
+        "steps": [
+          {
+            "op": "abn",
+            "args": {}
+          }
+        ],
+        "confidence": 0.98,
+        "rationale": "ABN column, 100% checksum-valid in discovery and holdout samples."
+      },
+      {
+        "source_paths": [
+          "Charity_Website"
+        ],
+        "join_with": " ",
+        "target": "entity.website",
+        "steps": [
+          {
+            "op": "trim",
+            "args": {}
+          },
+          {
+            "op": "website",
+            "args": {}
+          }
+        ],
+        "confidence": 0.88,
+        "rationale": "Charity_Website values are domains or URLs."
+      },
+      {
+        "source_paths": [
+          "Registration_Date"
+        ],
+        "join_with": " ",
+        "target": "entity.date_registered",
+        "steps": [
+          {
+            "op": "parse_date",
+            "args": {
+              "formats": [
+                "%d/%m/%Y"
+              ]
+            }
+          }
+        ],
+        "confidence": 0.9,
+        "rationale": "ACNC registration date, DD/MM/YYYY shape confirmed for all values."
+      },
+      {
+        "source_paths": [
+          "Address_Line_1",
+          "Address_Line_2",
+          "Address_Line_3"
+        ],
+        "join_with": ", ",
+        "target": "address.full",
+        "steps": [
+          {
+            "op": "trim",
+            "args": {}
+          },
+          {
+            "op": "null_if",
+            "args": {
+              "values": [
+                ""
+              ]
+            }
+          },
+          {
+            "op": "collapse_whitespace",
+            "args": {}
+          }
+        ],
+        "confidence": 0.68,
+        "rationale": "Street address lines combined; values may be PO boxes/contact addresses rather than premises (Address_Type is uniformly 'Business')."
+      },
+      {
+        "source_paths": [
+          "Town_City"
+        ],
+        "join_with": " ",
+        "target": "address.locality",
+        "steps": [
+          {
+            "op": "trim",
+            "args": {}
+          },
+          {
+            "op": "collapse_whitespace",
+            "args": {}
+          }
+        ],
+        "confidence": 0.92,
+        "rationale": "Town/city suburb field."
+      },
+      {
+        "source_paths": [
+          "State"
+        ],
+        "join_with": " ",
+        "target": "address.state",
+        "steps": [
+          {
+            "op": "state",
+            "args": {}
+          }
+        ],
+        "confidence": 0.95,
+        "rationale": "Australian state abbreviation field."
+      },
+      {
+        "source_paths": [
+          "Postcode"
+        ],
+        "join_with": " ",
+        "target": "address.postcode",
+        "steps": [
+          {
+            "op": "postcode",
+            "args": {}
+          }
+        ],
+        "confidence": 0.9,
+        "rationale": "4-digit Australian postcodes; a rare malformed value fails validation."
+      },
+      {
+        "source_paths": [
+          "Country"
+        ],
+        "join_with": " ",
+        "target": "address.country",
+        "steps": [
+          {
+            "op": "trim",
+            "args": {}
+          },
+          {
+            "op": "collapse_whitespace",
+            "args": {}
+          }
+        ],
+        "confidence": 0.75,
+        "rationale": "Country field populated in ~89% of rows (mostly Australia, rare overseas); raw value mapped rather than a constant."
+      }
+    ],
+    "constants": [],
+    "unmapped": [
+      {
+        "source_path": "Address_Type",
+        "reason": "Single constant value 'Business' on all rows (address contact type); no ontology target."
+      },
+      {
+        "source_path": "Date_Organisation_Established",
+        "reason": "When the organisation was founded, not when the ACNC registration became true; not a substitute for date_registered."
+      },
+      {
+        "source_path": "Charity_Size",
+        "reason": "ACNC revenue-size band (Small/Medium/Large); no ontology target."
+      },
+      {
+        "source_path": "Number_of_Responsible_Persons",
+        "reason": "Governance headcount; no ontology target."
+      },
+      {
+        "source_path": "Financial_Year_End",
+        "reason": "Reporting period fit, e.g. 30-Jun; not a valid_from/valid_to date."
+      },
+      {
+        "source_path": "Operates_in_ACT",
+        "reason": "State operation flag; address.state comes from the registered address, not operation footprint."
+      },
+      {
+        "source_path": "Operates_in_NSW",
+        "reason": "State operation flag; not a canonical field."
+      },
+      {
+        "source_path": "Operates_in_NT",
+        "reason": "State operation flag; not a canonical field."
+      },
+      {
+        "source_path": "Operates_in_QLD",
+        "reason": "State operation flag; not a canonical field."
+      },
+      {
+        "source_path": "Operates_in_SA",
+        "reason": "State operation flag; not a canonical field."
+      },
+      {
+        "source_path": "Operates_in_TAS",
+        "reason": "State operation flag; not a canonical field."
+      },
+      {
+        "source_path": "Operates_in_VIC",
+        "reason": "State operation flag; not a canonical field."
+      },
+      {
+        "source_path": "Operates_in_WA",
+        "reason": "State operation flag; not a canonical field."
+      },
+      {
+        "source_path": "Operating_Countries",
+        "reason": "ISO3 country list of operation; no ontology target (address.country is the registered address)."
+      },
+      {
+        "source_path": "PBI",
+        "reason": "Tax concession flag; no ontology target."
+      },
+      {
+        "source_path": "HPC",
+        "reason": "Tax concession flag; no ontology target."
+      }
+    ],
+    "notes": "Charity purpose ('Advancing_*' etc.) and beneficiary-type flag columns (29-69) are Y/N indicators with no ontology target and are left unmapped. entity.status is NOT mapped: the source has no per-row status column and extracts can include revoked/deregistered charities, so asserting 'active' for all rows would be guesswork (removed after critic review). entity_type likewise not mapped: suffix text (Incorporated/Ltd/Trust) is not a structured entity-type field. Address values may be postal/contact addresses (Address_Type uniformly 'Business'), which is why address.full confidence is moderate. No per-row observation date; fallback to resource last-modified. One rare 6-digit Postcode value fails validation by design (source defect, not hidden)."
+  }
+}
