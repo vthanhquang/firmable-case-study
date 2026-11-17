@@ -1,0 +1,20 @@
+name: anzsic_credit_authorisation
+version: 1
+kind: code
+target: ext.entity.industry_code
+scheme: anzsic2006
+derivation_level: L2
+review_status: draft - judgement crosswalk prepared by an AI assistant; needs a human reviewer
+source: >
+  ASIC credit licence authorisation text to ANZSIC 2006. "As a credit provider" -> lender
+  (6230 Non-Depository Financing); "other than as a credit provider" -> credit assistance / broking
+  (6419 Other Auxiliary Finance and Investment Services). One text can authorise both, so every
+  matching pattern produces a code (all_matches). Apply it to the whole authorisation cell.
+all_matches: true
+unlisted: error
+patterns:
+  - {regex: 'credit activities as a credit provider', code: "6230", label: Non-Depository Financing}
+  - {regex: 'credit activities other than as a credit provider', code: "6419", label: Other Auxiliary Finance and Investment Services}
+  - {regex: 'debt management services', code: "6419", label: Other Auxiliary Finance and Investment Services, note: debt management / credit repair}
+  - {regex: 'acting as an intermediary', code: "6419", label: Other Auxiliary Finance and Investment Services}
+  - {regex: 'being the credit provider under the existing buy now pay later', code: "6230", label: Non-Depository Financing}

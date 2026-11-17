@@ -1,0 +1,377 @@
+{
+  "run_id": "20261112T205404-d08c5f",
+  "source_id": "ato_tax_transparency_2023_24",
+  "status": "PENDING_REVIEW",
+  "started_at": "2026-11-12T13:54:04+00:00",
+  "prompt_version": "prompts-v9",
+  "model": "deepseek-v4-flash",
+  "critic_model": "deepseek-v4-flash",
+  "ontology_sha256": "639b80ea6333146c7ac714cd940fcdf6b2945f451e95333b0be21174bedee5da",
+  "snapshot_sha256": "6b47837efab92e1eb2b0cacc46945376a5b185c1b16814146c3282a1921b0c75",
+  "proposals": [
+    {
+      "round": 0,
+      "digest": "25a340246ac8b541e3e920f6428f0c534e57597d8835c44cf6ae9de490c1ddc9",
+      "config": {
+        "source_id": "ato_tax_transparency_2023_24",
+        "record_grain": "legal_entity",
+        "grain_rationale": "Each record is a legal entity (identified by ABN) with its tax information for an income year. The business participant's legal name and ABN are mapped; the financial figures are outside the ontology.",
+        "reader": {
+          "format": "xlsx",
+          "archive_member": null,
+          "encoding": "utf-8-sig",
+          "delimiter": null,
+          "skip_rows": 0,
+          "sheet": "Income tax details",
+          "record_path": null
+        },
+        "record_id": {
+          "strategy": "content_hash",
+          "source_paths": [],
+          "rationale": "Neither Name (526 distinct/527) nor ABN (524 distinct/527, 2 missing) is unique per record, so a content hash is the traceable record id."
+        },
+        "observed_at": {
+          "source_path": null,
+          "steps": [],
+          "fallback": "resource_last_modified"
+        },
+        "fields": [
+          {
+            "source_paths": [
+              "Name"
+            ],
+            "join_with": " ",
+            "when": null,
+            "target": "entity.legal_name",
+            "valid_from_path": null,
+            "valid_to_path": null,
+            "validity_date_formats": null,
+            "claim_scope": null,
+            "steps": [
+              {
+                "op": "trim",
+                "args": {}
+              },
+              {
+                "op": "collapse_whitespace",
+                "args": {}
+              }
+            ],
+            "confidence": 0.95,
+            "rationale": "The ATO corporate tax transparency report lists entities by their registered legal name; names carry legal-form suffixes (PTY LTD, PTY LIMITED, LIMITED).",
+            "entity": null,
+            "qualifiers": null
+          },
+          {
+            "source_paths": [
+              "ABN"
+            ],
+            "join_with": " ",
+            "when": null,
+            "target": "entity.abn",
+            "valid_from_path": null,
+            "valid_to_path": null,
+            "validity_date_formats": null,
+            "claim_scope": null,
+            "steps": [
+              {
+                "op": "abn",
+                "args": {}
+              }
+            ],
+            "confidence": 0.98,
+            "rationale": "ABN column is 11 digits and 100% checksum-valid across the discovery partition; 2 records legitimately have no ABN.",
+            "entity": null,
+            "qualifiers": null
+          }
+        ],
+        "constants": [],
+        "unmapped": [
+          {
+            "source_path": "Total income $",
+            "reason": "Financial figure (total income) not in the ontology."
+          },
+          {
+            "source_path": "Taxable income $",
+            "reason": "Financial figure (taxable income) not in the ontology."
+          },
+          {
+            "source_path": "Tax payable $",
+            "reason": "Financial figure (tax payable) not in the ontology."
+          },
+          {
+            "source_path": "Income year",
+            "reason": "Tax income year the figures relate to; not an entity attribute, and not a statement of when the name/ABN claim was observed. Kept as an observation-level fact only."
+          }
+        ],
+        "notes": "Mapped the main data sheet 'Income tax details'. The 'Information' sheet is front-matter with no tabular records; the 'PRRT details' sheet (16 records: Name, ABN, PRRT Payable $) is a separate supplementary table not covered by this config. Restricting to one sheet keeps one row = one legal entity; no publisher documentation was supplied, so semantics rest on the sheet headers and the report's published structure.",
+        "profile_context": null,
+        "extensions": null,
+        "entities": null,
+        "relationships": null
+      },
+      "holdout_issues": [],
+      "holdout_report": {
+        "records_in": 1075,
+        "records_with_output": 1075,
+        "record_errors": {},
+        "fields": [
+          {
+            "target": "entity.legal_name",
+            "source_paths": [
+              "Name"
+            ],
+            "records": 1075,
+            "source_present": 1075,
+            "emitted": 1075,
+            "coverage_of_records": 1.0,
+            "error_rate_of_present": 0.0,
+            "errors": {},
+            "error_examples": {}
+          },
+          {
+            "target": "entity.abn",
+            "source_paths": [
+              "ABN"
+            ],
+            "records": 1075,
+            "source_present": 1069,
+            "emitted": 1069,
+            "coverage_of_records": 0.994,
+            "error_rate_of_present": 0.0,
+            "errors": {},
+            "error_examples": {}
+          }
+        ]
+      },
+      "critic": {
+        "fields": [
+          {
+            "rule_index": 0,
+            "verdict": "ok",
+            "reason": "The ATO corporate tax transparency report lists entities by their registered (legal) name, including the legal-form suffixes PTY LTD / PTY LIMITED / LIMITED seen in the held-out records; trimming and whitespace collapsing preserve that registered form. No evidence these are trading or display names.",
+            "target": "entity.legal_name",
+            "source_paths": [
+              "Name"
+            ]
+          },
+          {
+            "rule_index": 1,
+            "verdict": "ok",
+            "reason": "The ABN column supplies 11-digit values that fit the entity.abn pattern and are emitted as-is with no invented padding; the rationale notes 2 records legitimately have no ABN, so no value is fabricated. Rule targets the identifier itself, not a licence or contract number.",
+            "target": "entity.abn",
+            "source_paths": [
+              "ABN"
+            ]
+          }
+        ],
+        "missed": [],
+        "summary": "Both rules are sound. Names carry legal-form suffixes and match the report's nature as a listing of registered legal entities, so entity.legal_name is correctly sourced rather than a trading name; ABNs are emitted in native 11-digit form. No entity_type, status, address, or date targets are claimed, which is appropriate since the source has only name, ABN, financial figures, and income year. Unmapped financial columns and income year are correctly excluded; note the income year is not being used as an observation date, which is the right call but means no provenance date exists for these claims.",
+        "prompt_version": "critic-v5"
+      }
+    }
+  ],
+  "tool_calls": 9,
+  "stages": [
+    {
+      "stage": "INSPECTED",
+      "at": "2026-11-12T13:54:05+00:00"
+    },
+    {
+      "stage": "PROPOSED_v0",
+      "at": "2026-11-12T13:56:43+00:00"
+    },
+    {
+      "stage": "VALIDATED_v0",
+      "at": "2026-11-12T13:56:43+00:00"
+    },
+    {
+      "stage": "CRITIQUED_v0",
+      "at": "2026-11-12T13:56:48+00:00"
+    },
+    {
+      "stage": "PENDING_REVIEW",
+      "at": "2026-11-12T13:56:48+00:00"
+    }
+  ],
+  "experiment": null,
+  "only_targets": null,
+  "inspection": {
+    "file_name": "snapshot",
+    "size_bytes": 276536,
+    "magic_hex": "504b030414000600",
+    "container": "xlsx",
+    "sheets_first_rows": {
+      "Information": [
+        [
+          "Corporate tax transparency: report of entity tax information"
+        ],
+        [
+          "To better inform public debate about tax policy, the Commiss"
+        ],
+        [
+          "Where can you find more information?"
+        ],
+        [
+          "1. Report of Entity Tax Information (2013-14 to 2023-24 data"
+        ],
+        [
+          "2. Treasury Laws Amendment (2022 Measures No. 1) Act 2022"
+        ],
+        [
+          "3. Corporate tax transparency reports (guidance material)"
+        ],
+        [
+          "4. Voluntary Tax Transparency Code (guidance)"
+        ],
+        [
+          "5. Voluntary Tax Transparency Code (reports)"
+        ]
+      ],
+      "Income tax details": [
+        [
+          "Name",
+          "ABN",
+          "Total income $",
+          "Taxable income $",
+          "Tax payable $",
+          "Income year",
+          null,
+          null,
+          null
+        ],
+        [
+          "1 MENDS STREET PTY LTD",
+          "94600082111",
+          "159074147",
+          null,
+          null,
+          "2023-24",
+          null,
+          null,
+          null
+        ],
+        [
+          "1884 PTY LIMITED",
+          "83114980880",
+          "337911962",
+          "6347804",
+          "1904341",
+          "2023-24",
+          null,
+          null,
+          null
+        ],
+        [
+          "1ST ENERGY PTY LTD",
+          "71604999706",
+          "144268804",
+          "6396883",
+          "1919065",
+          "2023-24",
+          null,
+          null,
+          null
+        ],
+        [
+          "20 CASHEWS PTY LTD",
+          "16634403124",
+          "242155153",
+          "9887530",
+          "2877116",
+          "2023-24",
+          null,
+          null,
+          null
+        ],
+        [
+          "21ST CENTURY RESORTS HOLDINGS PTY LIMITED",
+          "33104201014",
+          "332566480",
+          "43885213",
+          "13165564",
+          "2023-24",
+          null,
+          null,
+          null
+        ],
+        [
+          "29METALS LIMITED",
+          "95650096094",
+          "490015375",
+          null,
+          null,
+          "2023-24",
+          null,
+          null,
+          null
+        ],
+        [
+          "2CONSTRUCT PTY LTD",
+          "28109517188",
+          "168694987",
+          "7399488",
+          "2213799",
+          "2023-24",
+          null,
+          null,
+          null
+        ]
+      ],
+      "PRRT details": [
+        [
+          "Name",
+          "ABN",
+          "PRRT Payable $"
+        ],
+        [
+          "COOPER ENERGY (CH) PTY. LTD.",
+          "70615355023",
+          "3210449"
+        ],
+        [
+          "ESSO AUSTRALIA RESOURCES PTY LTD- BASS STRAIT",
+          "62091829819",
+          "351898218"
+        ],
+        [
+          "KANSAI ELECTRIC POWER AUSTRALIA PTY LTD",
+          "32126720732",
+          "7237704"
+        ],
+        [
+          "KUFPEC AUSTRALIA (JULIMAR) PTY LTD",
+          "38139500502",
+          "21404964"
+        ],
+        [
+          "MEPAU OTWAY BASIN PTY LTD",
+          "17009363820",
+          "3202743"
+        ],
+        [
+          "MIDOCEAN PLUTO PTY LTD",
+          "23126462744",
+          "7418023"
+        ],
+        [
+          "MITSUI E&P AUSTRALIA PTY LTD",
+          "45108437529",
+          "75846094"
+        ]
+      ]
+    }
+  },
+  "human_feedback": null,
+  "reader": {
+    "format": "xlsx",
+    "archive_member": null,
+    "encoding": "utf-8-sig",
+    "delimiter": null,
+    "skip_rows": 0,
+    "sheet": "PRRT details",
+    "record_path": null
+  },
+  "finished_at": "2026-11-12T13:56:48+00:00",
+  "final_digest": "25a340246ac8b541e3e920f6428f0c534e57597d8835c44cf6ae9de490c1ddc9"
+}

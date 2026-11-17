@@ -63,7 +63,8 @@ def _keys(obs: list[dict]) -> set:
     for o in obs:
         if o["field"] in ("entity.abn", "entity.acn"):
             out.add((o["field"], o["value"]))
-        elif o["field"] == "entity.legal_name" and _SUFFIX.search(o["value"].upper()):
+        elif (o["field"] == "entity.legal_name" and o.get("claim_scope") != "former_legal_name"
+              and _SUFFIX.search(o["value"].upper())):
             out.add(("name", name_key(o["value"])))  # only registered-company-style names are cohort keys
     return out
 
@@ -100,18 +101,31 @@ def _engine(sid, cfg, man, rel, ingested_at):
     return Engine(cfg, man[sid], rel.get(sid, rel.get("default", {})), ingested_at)
 
 
-def run_all(sample_size: int = 1000, sources: list[str] | None = None):
+def run_all(sample_size: int = 1000, sources: list[str] | None = None, *, allow_proxy_approvals: bool = False):
     man = load_manifest()
     rel = reliability()
-    sids = [s for s in (sources or [p.stem for p in OUT_MAPPINGS.glob("*.json")])
-            if not s.endswith(".history") and s in man]
+    sids = sources or [p.stem for p in OUT_MAPPINGS.glob("*.json") if p.stem in man]
     approved = {}
+    missing = []
+    kinds = {"human", "ai_assistant_proxy"} if allow_proxy_approvals else {"human"}
     for sid in sids:
-        if current_approval(sid):
-            verify_snapshot(man[sid])
-            approved[sid] = load_config(sid)[0]
-        else:
-            print(f"skip {sid}: no approval for the current config digest")
+        if sid not in man or not (OUT_MAPPINGS / f"{sid}.json").is_file():
+            missing.append(f"{sid}: source or proposal missing")
+            continue
+        cfg, doc = load_config(sid)
+        review = current_approval(sid, doc)
+        if not review or review["reviewer_kind"] not in kinds or doc["status"] != "PENDING_REVIEW":
+            missing.append(f"{sid}: no eligible approval for the current proposal")
+            continue
+        if doc.get("snapshot_sha256") != man[sid]["snapshot"]["sha256"]:
+            missing.append(f"{sid}: the manifest snapshot differs from the reviewed snapshot")
+            continue
+        verify_snapshot(man[sid])
+        approved[sid] = cfg
+    if missing and (sources or not approved):
+        raise SystemExit("Extraction blocked\n" + "\n".join(missing))
+    for reason in missing:
+        print(f"skip {reason}")
     from datetime import datetime, timezone
     ingested_at = datetime.now(timezone.utc).isoformat(timespec="seconds")
 
@@ -166,7 +180,7 @@ def run_all(sample_size: int = 1000, sources: list[str] | None = None):
         OUT_OBS.mkdir(parents=True, exist_ok=True)
         strata = {}
         n_obs = 0
-        with open(OUT_OBS / f"{sid}.jsonl", "w", encoding="utf-8") as fh:
+        with open(OUT_OBS / f"{sid}.jsonl", "w", encoding="utf-8", newline="\n") as fh:
             for i, rec, stratum in final:
                 obs = eng.process(rec)
                 for o in obs:
@@ -182,6 +196,6 @@ def run_all(sample_size: int = 1000, sources: list[str] | None = None):
                    "cohort_candidates_found": len(cohort), "observations": n_obs,
                    "config_digest": cfg.digest(), "extractor_version": eng.extractor_version,
                    "engine_report": eng.report(), "seed": SEED, "record_strata": strata}
-        (OUT_OBS / f"{sid}.sample.json").write_text(json.dumps(summary, indent=1), encoding="utf-8")
+        (OUT_OBS / f"{sid}.sample.json").write_text(json.dumps(summary, indent=1), encoding="utf-8", newline="\n")
         print(f"{sid}: wrote {n_obs} observations from {len(final)} records "
               f"({summary['random']} random + {summary['cohort']} cohort)", flush=True)

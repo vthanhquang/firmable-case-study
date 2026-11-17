@@ -1,0 +1,36 @@
+name: anzsic_vic_liquor_category
+version: 2
+kind: code
+target: ext.entity.industry_code
+scheme: anzsic2006
+derivation_level: L2
+review_status: draft - judgement crosswalk prepared by an AI assistant; needs a human reviewer
+source: >
+  Liquor Control Victoria licence categories (15 values in the snapshot) to ANZSIC 2006. Only categories that
+  identify the licensee's activity map to a code. Version 2 follows the extension critic's findings on version 1
+  (run 20261112T205722-ffda3e): a BYO permit was mapped to cafes and restaurants for a ski club and tennis clubs;
+  General and On-Premises licences also cover hotels, motels and function venues; BYO, Limited, Remote Seller's
+  and Pre-retail licences describe a permission, not an activity. Those now emit no code.
+  ANZSIC 121 is the group "Beverage Manufacturing" (a valid group-level code; the class is not stated).
+unlisted: error
+changes_from_v1:
+  - "BYO Permit: 4511 -> no code (clubs and other venues hold BYO permits)"
+  - "General Licence: 4520 -> no code (pubs, hotels and motels)"
+  - "On-Premises Licence: 4520 -> no code (bars, function venues, theatres, restaurants)"
+  - "Remote Seller's Licence: 4310 -> no code (a permission to sell remotely)"
+  - "Pre-retail Licence: 3606 -> no code (a permission to sell to licensees)"
+entries:
+  "Restaurant and cafe Licence": {code: "4511", label: Cafes and Restaurants}
+  "Packaged Liquor Licence": {code: "4123", label: Liquor Retailing}
+  "Late night (packaged liquor) Licence": {code: "4123", label: Liquor Retailing}
+  "Late night (general) Licence": {code: "4520", label: "Pubs, Taverns and Bars"}
+  "Late night (on-premises) Licence": {code: "4520", label: "Pubs, Taverns and Bars"}
+  "Full Club Licence": {code: "4530", label: Clubs (Hospitality)}
+  "Restricted Club Licence": {code: "4530", label: Clubs (Hospitality)}
+  "Producer's Licence": {code: "121", label: Beverage Manufacturing}
+  "General Licence": {code: null, label: No industry inferred}
+  "On-Premises Licence": {code: null, label: No industry inferred}
+  "BYO Permit": {code: null, label: No industry inferred}
+  "Remote Seller's Licence": {code: null, label: No industry inferred}
+  "Pre-retail Licence": {code: null, label: No industry inferred}
+  "Limited Licence": {code: null, label: No industry inferred}

@@ -1,0 +1,61 @@
+name: anzsic_qbcc_licence_class
+version: 1
+kind: code
+target: ext.entity.industry_code
+scheme: anzsic2006
+derivation_level: L2
+review_status: draft - judgement crosswalk prepared by an AI assistant; needs a human reviewer
+source: >
+  QBCC licence classes (130 distinct values in the 32,000-row snapshot) to ANZSIC 2006. Classes whose
+  ANZSIC class is unclear map to subdivision 32 (Construction Services) or 30 (Building Construction)
+  rather than a guessed four-digit class. Exact entries are checked before patterns; patterns apply in order.
+unlisted: error
+entries:
+  Carpentry: {code: "3242", label: Carpentry Services}
+  Carpentry (Formwork): {code: "3242", label: Carpentry Services}
+  Carpentry Restricted To Framing: {code: "3242", label: Carpentry Services}
+  Carpentry Restricted To Lattice And Other Timber Work: {code: "3242", label: Carpentry Services}
+  Joinery: {code: "3242", label: Carpentry Services}
+  Cabinet Making: {code: "3242", label: Carpentry Services}
+  Painting and Decorating: {code: "3244", label: Painting and Decorating Services}
+  Painting Restricted To Roof Painting: {code: "3244", label: Painting and Decorating Services}
+  Wall and Floor Tiling: {code: "3243", label: Tiling and Carpeting Services}
+  Gasfitting: {code: "3231", label: Plumbing Services}
+  Irrigation: {code: "3291", label: Landscape Construction Services}
+  Concreting: {code: "3221", label: Concreting Services}
+  Roof and Wall Cladding: {code: "3223", label: Roofing Services}
+  Metal Fascias and Gutters: {code: "3223", label: Roofing Services}
+  Roof Tiling: {code: "3223", label: Roofing Services}
+  Roof Tiling Restricted To Roof Tile Maintenance: {code: "3223", label: Roofing Services}
+  Bricklaying and Blocklaying: {code: "3222", label: Bricklaying Services}
+  Stone Masonry: {code: "3222", label: Bricklaying Services}
+  Brick and Segmental Paving: {code: "3222", label: Bricklaying Services}
+  Waterproofing: {code: "3299", label: Other Construction Services n.e.c.}
+  Glass, Glazing and Aluminium: {code: "3245", label: Glazing Services}
+  Structural Metal Fabrication and Erection: {code: "3224", label: Structural Steel Erection Services}
+  Steel Fixing: {code: "3224", label: Structural Steel Erection Services}
+  Foundation Work (Piling and Anchors): {code: "3212", label: Site Preparation Services}
+  Hydraulic Services Design: {code: "6923", label: Engineering Design and Engineering Consulting Services}
+  Site Classifier: {code: "6923", label: Engineering Design and Engineering Consulting Services}
+  Completed Residential Building Inspection: {code: "6929", label: Other Specialised Design Services, note: building inspection placement is a judgement call}
+  Air Handling Duct Installation: {code: "3233", label: Air Conditioning and Heating Services}
+  Mechanical Services - Plumbing: {code: "3231", label: Plumbing Services}
+  Mechanical Services - Medical Gas: {code: "3239", label: Other Building Installation Services}
+  Building Restricted To Building Removal: {code: "32", label: Construction Services}
+patterns:
+  - {regex: '^Plumbing|^Drainage', code: "3231", label: Plumbing Services}
+  - {regex: '^Builder', code: "30", label: Building Construction}
+  - {regex: '^Building Design', code: "6921", label: Architectural Services}
+  - {regex: '^Structural Landscaping', code: "3291", label: Landscape Construction Services}
+  - {regex: '^Concreting', code: "3221", label: Concreting Services}
+  - {regex: '^Plastering', code: "3241", label: Plastering and Ceiling Services}
+  - {regex: '^Floor Finishing', code: "3243", label: Tiling and Carpeting Services}
+  - {regex: '^Mechanical Services - Air-conditioning|^Refrigeration, Airconditioning', code: "3233", label: Air Conditioning and Heating Services}
+  - {regex: '^Termite Management', code: "7313", label: Building Pest Control Services}
+  - {regex: 'Water-Based Fire System', code: "3231", label: Plumbing Services, note: sprinkler and hydrant systems}
+  - {regex: '^Fire Protection - Electrical|^Fire Detection|Fire Alarm', code: "3234", label: Fire and Security Alarm Installation Services}
+  - {regex: '^Fire Protection - Passive|^Passive Fire', code: "3239", label: Other Building Installation Services}
+  - {regex: '^Fire Protection - Portables|^Fire Protection - Special Hazard|^Fire Suppression|^Fire Pump', code: "3239", label: Other Building Installation Services}
+  - {regex: '^Fire Safety Professional', code: "6923", label: Engineering Design and Engineering Consulting Services}
+  - {regex: '^Swimming Pool', code: "32", label: Construction Services}
+  - {regex: '^Sheds, Carports|^Non-Structural Metal|^Shopfitting', code: "32", label: Construction Services}

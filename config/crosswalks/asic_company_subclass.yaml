@@ -1,0 +1,28 @@
+name: asic_company_subclass
+version: 2
+kind: code
+target: ext.entity.legal_form_detail
+derivation_level: L1
+review_status: draft - locally corrected against ASIC EDGE Appendix C; human sign-off pending, unverified codes withheld
+source: ASIC EDGE Document Messages Specification v5.00, Appendix C page 92 (2021-02-18); https://download.asic.gov.au/media/5982305/els-document-messages-specification-v500-20210218.pdf#page=97
+output_format: "{key}: {label}"
+unlisted: error
+entries:
+  PROP: {label: Proprietary - other}
+  PSTC: {label: Proprietary superannuation trustee company, flags: [super_trustee]}
+  PNPC: {label: Proprietary non-profit company, flags: [not_for_profit]}
+  HUNT: {label: Proprietary home unit company}
+  LIST: {label: Listed public company, flags: [listed]}
+  LISN: {label: Company licensed to omit Limited from name (section 383)}
+  LISS: {label: Company licensed to omit Limited from name (section 383) - superannuation trustee, flags: [super_trustee]}
+  ULST: {label: Unlisted public company}
+  ULSN: {label: Unlisted public non-profit company, flags: [not_for_profit]}
+  ULSS: {label: Unlisted public superannuation trustee company, flags: [super_trustee]}
+  STFI: {label: Public company - small transferring financial institution}
+  PUBF: {code: null, label: Unverified meaning withheld, verified: false}
+  NLTD: {label: Not Limited public company (section 150)}
+  RACA: {code: null, label: Unverified meaning withheld, verified: false}
+  RACO: {code: null, label: Unverified meaning withheld, verified: false}
+  WHSL: {code: null, label: Unverified meaning withheld, verified: false}
+  EXPT: {code: null, label: Unverified meaning withheld, verified: false}
+  NONE: {code: null, label: No sub-class recorded}

@@ -1,0 +1,21 @@
+== onboarding qbcc_licensees
+Traceback (most recent call last):
+  File "C:\Users\Quang\AppData\Local\Programs\Python\Python310\lib\runpy.py", line 196, in _run_module_as_main
+    return _run_code(code, main_globals, None,
+  File "C:\Users\Quang\AppData\Local\Programs\Python\Python310\lib\runpy.py", line 86, in _run_code
+    exec(code, run_globals)
+  File "D:\code\github_code\firmable-case-study\firmable\cli.py", line 260, in <module>
+    main()
+  File "D:\code\github_code\firmable-case-study\firmable\cli.py", line 256, in main
+    a.fn(a)
+  File "D:\code\github_code\firmable-case-study\firmable\cli.py", line 72, in cmd_onboard
+    st = resume(source, a.resume)
+  File "D:\code\github_code\firmable-case-study\firmable\agent\onboard.py", line 356, in resume
+    return _drive(run, ws, source, start, pending)
+  File "D:\code\github_code\firmable-case-study\firmable\agent\onboard.py", line 493, in _drive
+    verdict = critic(run, cfg, critic_sample(hold, ws.rare_holdout(cfg.reader)), round_no, scope=scope)
+  File "D:\code\github_code\firmable-case-study\firmable\agent\onboard.py", line 293, in critic
+    m = llm.chat(messages, stage=f"critic_r{round_no}", source_id=run.sid, run_id=run.run_id,
+  File "D:\code\github_code\firmable-case-study\firmable\llm.py", line 80, in chat
+    raise BudgetExceeded(f"run token budget {TOKEN_BUDGET} exhausted")
+firmable.llm.BudgetExceeded: run token budget 900000 exhausted

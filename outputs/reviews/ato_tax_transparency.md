@@ -3,11 +3,11 @@
 - **Latest review decision:** approved by claude-code (AI assistant acting for the candidate) (ai_assistant_proxy) at 2026-11-09T20:58:46+00:00
 - **Status:** PENDING_REVIEW  (run `20261110T034703-b5fe14`, prompt `prompts-v1`, model `deepseek-v4-flash`)
 - **Dataset:** Corporate Tax Transparency — Australian Taxation Office
-- **Resource:** 2024-25 Report of Entity Tax Information (excel (.xlsx)), sha256 `7cccd963cd4aad31…`
+- **Resource:** 2024-25 Report of Entity Tax Information (excel (.xlsx)), sha256 `7cccd963cd4aad31c305b21d33272d3d99ff9c36258641622a28cd0028d65c45`
 - **Licence:** cc-by
 - **Agent effort:** 1 proposal(s), 9 tool calls, 8 model calls, 51,437 prompt + 2,790 completion tokens, 38s model time
 
-## Final proposal (v0, digest `4eaa881938cfbeba`)
+## Final proposal (v0, digest `78133ba75c7f0f4cfd321fc27b28ff75aaec21454ac96fbe43e84b214c77f85b`)
 
 **Record grain:** `legal_entity` — One row per legal entity (identified by its ABN) per income year, reporting aggregate tax information (total income, taxable income, tax payable) on the ATO Corporate Tax Transparency register. The record is about the business itself, so entity attributes are mapped directly; the financial figures have no canonical ontology target and are recorded as unmapped.
 
@@ -19,7 +19,7 @@
 
 | source column(s) | canonical target | transforms | conf. | held-out emitted / present | errors | rationale |
 |---|---|---|---|---|---|---|
-| Name | `entity.legal_name` | trim, collapse_whitespace, null_if({"values": ["", "n/a", "na", "-"]}) | 0.82 | 1165 / 1165 |  | Column 'Name' holds registered-style entity names ('CHEVRON AUSTRALIA PTY LTD', 'MOBIL AUSTRALIA RESOURCES COMPANY PTY LIMITED'); the ATO transparency register  |
+| Name | `entity.legal_name` | trim, collapse_whitespace, null_if({"values": ["", "n/a", "na", "-"]}) | 0.82 | 1165 / 1165 |  | Column 'Name' holds registered-style entity names ('CHEVRON AUSTRALIA PTY LTD', 'MOBIL AUSTRALIA RESOURCES COMPANY PTY LIMITED'); the ATO transparency register publishes the legal/taxable-entity name, and company suffixes (PTY LTD / LIMITED) indicate legal rather than trading names. Note 'GOVE ALUMINIUM FINANCE LINITED' shows the source's own typos are preserved. |
 | ABN | `entity.abn` | abn | 0.97 | 1155 / 1155 |  | Column 'ABN' is 11 digits in all present rows with a 100% checksum-valid rate (431/431) in discovery; the abn transform validates the checksum. |
 
 **Constants:**

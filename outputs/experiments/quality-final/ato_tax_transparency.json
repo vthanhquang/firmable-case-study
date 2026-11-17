@@ -1,0 +1,117 @@
+{
+  "status": "PENDING_REVIEW",
+  "run_id": "20261112T023836-e79af7",
+  "prompt_version": "prompts-v9",
+  "model": "deepseek-v4-flash",
+  "ontology_sha256": "639b80ea6333146c7ac714cd940fcdf6b2945f451e95333b0be21174bedee5da",
+  "snapshot_sha256": "7cccd963cd4aad31c305b21d33272d3d99ff9c36258641622a28cd0028d65c45",
+  "config_digest": "fb40b0bea5f3d729ae0810ed4df757897f3db8ba92f01d0e2678a99833074960",
+  "config": {
+    "source_id": "ato_tax_transparency",
+    "record_grain": "legal_entity",
+    "grain_rationale": "One row is one entity's tax information for one income year (Name + ABN). The identifiers and name describe the business participant; the monetary amounts and income year are financial facts about that entity-year and have no ontology target.",
+    "reader": {
+      "format": "xlsx",
+      "archive_member": null,
+      "encoding": "utf-8-sig",
+      "delimiter": null,
+      "skip_rows": 0,
+      "sheet": "Income tax details",
+      "record_path": null
+    },
+    "record_id": {
+      "strategy": "content_hash",
+      "source_paths": [
+        "Name",
+        "ABN",
+        "Total income $",
+        "Taxable income $",
+        "Tax payable $",
+        "Income year"
+      ],
+      "rationale": "No column combination is a reliable unique key: ABN+Income year collided on the held-out partition (8 duplicate keys) because an ABN can be reported more than once for the same income year. Content hash over all six reported columns is used instead."
+    },
+    "observed_at": {
+      "source_path": null,
+      "steps": [],
+      "fallback": "resource_last_modified"
+    },
+    "fields": [
+      {
+        "source_paths": [
+          "Name"
+        ],
+        "join_with": " ",
+        "when": null,
+        "target": "entity.legal_name",
+        "valid_from_path": null,
+        "valid_to_path": null,
+        "validity_date_formats": [],
+        "claim_scope": "current_legal_name",
+        "steps": [
+          {
+            "op": "trim",
+            "args": {}
+          },
+          {
+            "op": "collapse_whitespace",
+            "args": {}
+          }
+        ],
+        "confidence": 0.72,
+        "rationale": "Header is 'Name' in an ATO register of entities reporting tax; values are registered-style legal names ending in PTY LTD / PTY LIMITED / LIMITED. ATO publishes the registered entity name, not a trading name, so legal_name is appropriate."
+      },
+      {
+        "source_paths": [
+          "ABN"
+        ],
+        "join_with": " ",
+        "when": null,
+        "target": "entity.abn",
+        "valid_from_path": null,
+        "valid_to_path": null,
+        "validity_date_formats": [],
+        "claim_scope": null,
+        "steps": [
+          {
+            "op": "trim",
+            "args": {}
+          },
+          {
+            "op": "abn",
+            "args": {}
+          }
+        ],
+        "confidence": 0.97,
+        "rationale": "Column 'ABN' holds 11-digit values with a 100% checksum-valid rate on the discovery partition; validated with the abn transform."
+      }
+    ],
+    "constants": [
+      {
+        "target": "address.country",
+        "value": "AU",
+        "confidence": 0.85,
+        "rationale": "Australian Taxation Office register of Australian entities identified by ABN; all records are Australian."
+      }
+    ],
+    "unmapped": [
+      {
+        "source_path": "Total income $",
+        "reason": "Monetary amount reported for the income year; no ontology target for financial figures."
+      },
+      {
+        "source_path": "Taxable income $",
+        "reason": "Monetary amount reported for the income year; no ontology target."
+      },
+      {
+        "source_path": "Tax payable $",
+        "reason": "Monetary amount reported for the income year; no ontology target."
+      },
+      {
+        "source_path": "Income year",
+        "reason": "Reporting period label (e.g. 2024-25) used only for record identity, not a validity date of the name or registration; not a mappable observation date."
+      }
+    ],
+    "notes": "Workbook has three sheets: 'Information' (documentation), 'Income tax details' (mapped here) and 'PRRT details' (Name, ABN, PRRT Payable) - the PRRT sheet was not mapped; it is a separate small table of petroleum resource rent tax payers. No dates in the data, so the record envelope uses resource_last_modified. ABN+Income year is not unique (an ABN can be reported more than once per income year; the held-out partition had 8 such collisions), so record identity uses content_hash over all six columns. ABN is missing in ~0.9% of rows, so such rows hash with an empty ABN and still emit legal_name."
+  }
+}

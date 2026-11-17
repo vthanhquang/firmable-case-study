@@ -1,0 +1,1043 @@
+{
+  "run_id": "20261112T015916-1299ca",
+  "source_id": "dewr_employment_providers",
+  "status": "PENDING_REVIEW",
+  "started_at": "2026-11-11T18:59:16+00:00",
+  "prompt_version": "prompts-v8",
+  "model": "deepseek-v4-flash",
+  "critic_model": "deepseek-v4-flash",
+  "ontology_sha256": "639b80ea6333146c7ac714cd940fcdf6b2945f451e95333b0be21174bedee5da",
+  "snapshot_sha256": "0034e176b580405064272e688c7bf51230f051880263cdeeb5107ac00bd7a979",
+  "proposals": [
+    {
+      "round": 0,
+      "digest": "d2ccfd7a205f31a5913286c1fc31a6670963e735abad16e6089c43ca08d085eb",
+      "config": {
+        "source_id": "dewr_employment_providers",
+        "record_grain": "establishment",
+        "grain_rationale": "One record is a single employment-services provider SITE (a physical service-delivery location) contracted under a DEWR program; the site's operator is a business participant, so SITE_NAME is mapped to entity.trading_name (a business/brand name, not a registered legal name). DIS_SITE_CODE identifies the site, not the business, so it is not used as a business identifier.",
+        "reader": {
+          "format": "delimited",
+          "archive_member": null,
+          "encoding": "utf-8-sig",
+          "delimiter": ",",
+          "skip_rows": 0,
+          "sheet": null,
+          "record_path": null
+        },
+        "record_id": {
+          "strategy": "content_hash",
+          "source_paths": [],
+          "rationale": "DIS_SITE_CODE is not unique per record (489 distinct across 505 discovery rows, and repeated rows carry different CONTRACT_NAME/ESA_CD_1 values; some codes are non-geographic placeholders such as EFTZ). No other candidate key is unique, so a content hash over the row is the only traceable identifier."
+        },
+        "observed_at": {
+          "source_path": null,
+          "steps": [],
+          "fallback": "resource_last_modified"
+        },
+        "fields": [
+          {
+            "source_paths": [
+              "SITE_NAME"
+            ],
+            "join_with": " ",
+            "when": null,
+            "target": "entity.trading_name",
+            "valid_from_path": null,
+            "valid_to_path": null,
+            "validity_date_formats": [],
+            "claim_scope": null,
+            "steps": [
+              {
+                "op": "trim",
+                "args": {}
+              },
+              {
+                "op": "collapse_whitespace",
+                "args": {}
+              },
+              {
+                "op": "null_if",
+                "args": {
+                  "values": [
+                    ""
+                  ]
+                }
+              }
+            ],
+            "confidence": 0.6,
+            "rationale": "SITE_NAME holds the provider's public brand/trading names (MAX Employment, Advanced Personnel Management, Job Centre Australia, CoAct/Community Solutions) as used on site listings. No evidence it is the registered legal name, so trading_name is the safe target."
+          },
+          {
+            "source_paths": [
+              "SITE_URL"
+            ],
+            "join_with": " ",
+            "when": null,
+            "target": "entity.website",
+            "valid_from_path": null,
+            "valid_to_path": null,
+            "validity_date_formats": [],
+            "claim_scope": null,
+            "steps": [
+              {
+                "op": "trim",
+                "args": {}
+              },
+              {
+                "op": "null_if",
+                "args": {
+                  "values": [
+                    ""
+                  ]
+                }
+              },
+              {
+                "op": "website",
+                "args": {}
+              }
+            ],
+            "confidence": 0.6,
+            "rationale": "SITE_URL holds the operator's website (www.apm.net.au, orsgroup.com.au, wiseemployment.com.au), present in 57.6% of rows. It is the provider's web presence, not a site-specific page."
+          },
+          {
+            "source_paths": [
+              "SITE_ADDRESS_LN"
+            ],
+            "join_with": " ",
+            "when": null,
+            "target": "address.full",
+            "valid_from_path": null,
+            "valid_to_path": null,
+            "validity_date_formats": [],
+            "claim_scope": "establishment_address",
+            "steps": [
+              {
+                "op": "trim",
+                "args": {}
+              },
+              {
+                "op": "collapse_whitespace",
+                "args": {}
+              },
+              {
+                "op": "null_if",
+                "args": {
+                  "values": [
+                    ""
+                  ]
+                }
+              }
+            ],
+            "confidence": 0.7,
+            "rationale": "Street address line of the service-delivery site; scope is the contracted premises, not a registered office. Values are truncated at about 45 chars in the source but remain usable address lines."
+          },
+          {
+            "source_paths": [
+              "SITE_LOCALITY_NAME"
+            ],
+            "join_with": " ",
+            "when": null,
+            "target": "address.locality",
+            "valid_from_path": null,
+            "valid_to_path": null,
+            "validity_date_formats": [],
+            "claim_scope": "establishment_address",
+            "steps": [
+              {
+                "op": "trim",
+                "args": {}
+              },
+              {
+                "op": "collapse_whitespace",
+                "args": {}
+              },
+              {
+                "op": "null_if",
+                "args": {
+                  "values": [
+                    ""
+                  ]
+                }
+              }
+            ],
+            "confidence": 0.8,
+            "rationale": "Suburb/town of the site; matches LOCATION_NAME almost exactly (412 distinct each)."
+          },
+          {
+            "source_paths": [
+              "SITE_STATE_CD"
+            ],
+            "join_with": " ",
+            "when": null,
+            "target": "address.state",
+            "valid_from_path": null,
+            "valid_to_path": null,
+            "validity_date_formats": [],
+            "claim_scope": "establishment_address",
+            "steps": [
+              {
+                "op": "trim",
+                "args": {}
+              },
+              {
+                "op": "state",
+                "args": {}
+              }
+            ],
+            "confidence": 0.92,
+            "rationale": "Two/three-letter AU state abbreviations only (NSW, VIC, QLD, SA, WA, TAS, ACT, NT; 8 distinct values, no overseas entries)."
+          },
+          {
+            "source_paths": [
+              "SITE_POSTCODE"
+            ],
+            "join_with": " ",
+            "when": null,
+            "target": "address.postcode",
+            "valid_from_path": null,
+            "valid_to_path": null,
+            "validity_date_formats": [],
+            "claim_scope": "establishment_address",
+            "steps": [
+              {
+                "op": "trim",
+                "args": {}
+              },
+              {
+                "op": "null_if",
+                "args": {
+                  "values": [
+                    ""
+                  ]
+                }
+              },
+              {
+                "op": "postcode",
+                "args": {}
+              }
+            ],
+            "confidence": 0.85,
+            "rationale": "4-digit AU postcodes present 97% (492/505); 13 three-digit values are NT codes such as 822 which the postcode transform re-pads."
+          }
+        ],
+        "constants": [
+          {
+            "target": "address.country",
+            "value": "AU",
+            "confidence": 0.85,
+            "rationale": "Australian Government (DEWR) employment services register; all records carry AU state codes and 4-digit AU postcodes."
+          }
+        ],
+        "unmapped": [
+          {
+            "source_path": "DIS_SITE_CODE",
+            "reason": "Site identifier for a contracted service location, not a business identifier; also not unique per row and contains non-geographic placeholders (EFTZ)."
+          },
+          {
+            "source_path": "CONTRACT_NAME",
+            "reason": "DEWR program/contract code (DESA, DESB, EPS5, TTW5, RJCP, NEI5) describing the funding contract under which the site operates, not a property of the legal entity or its location."
+          },
+          {
+            "source_path": "LOCATION_NAME",
+            "reason": "Duplicates SITE_LOCALITY_NAME (412 distinct each); no added value over address.locality."
+          },
+          {
+            "source_path": "SITE_CONTACT_PHONE",
+            "reason": "Site contact phone number; the ontology has no telephone target."
+          },
+          {
+            "source_path": "PHONE_NUMBER",
+            "reason": "Site phone number, largely identical to SITE_CONTACT_PHONE; no telephone target in the ontology."
+          },
+          {
+            "source_path": "AGENT_FREECALL_NUM",
+            "reason": "Freecall/13-number of the provider's call centre (27% present); contact detail, no telephone target."
+          },
+          {
+            "source_path": "SITE_EMAIL_ADDRESS",
+            "reason": "Site mailbox, often a named individual (kal.perera@visionaustralia.org) or generic enquiries; a person/contact detail, not an entity field, and the ontology has no email target."
+          },
+          {
+            "source_path": "ESA_CD_1",
+            "reason": "Employment Services Area geography code (e.g. 5ACT, 4SOE, 5MRV) denoting the service region of the site, not an ANZSIC industry code and not an entity identifier."
+          },
+          {
+            "source_path": "ESA_CD_2",
+            "reason": "Employment Services Area code, blank in 100% of discovery rows."
+          },
+          {
+            "source_path": "ESA_CD_3",
+            "reason": "Employment Services Area code, blank in 100% of discovery rows."
+          },
+          {
+            "source_path": "LATITUDE",
+            "reason": "Site geocode with 'NULL' placeholders; no coordinate target in the ontology."
+          },
+          {
+            "source_path": "LONGITUDE",
+            "reason": "Site geocode with 'NULL' placeholders; no coordinate target in the ontology."
+          },
+          {
+            "source_path": "column_18",
+            "reason": "Trailing empty field created by a trailing comma in the header; contains no data in any discovery row."
+          }
+        ],
+        "notes": "Source is a site-level register: no ABN, ACN, legal entity name, entity type, status or registration date is present, so none of those is mapped. SITE_NAME is treated as trading_name only; the operator's registered legal name cannot be established from this file. No date columns exist, so observation.observed_at falls back to resource last-modified and no validity dates are asserted. Records repeat the same site under different CONTRACT_NAME/ESA_CD geography combinations, which is why content_hash is used for record_id."
+      },
+      "holdout_issues": [
+        {
+          "code": "SOME_ERRORS",
+          "severity": "warning",
+          "message": "3 values rejected: {'WEBSITE_INVALID': 3}",
+          "target": "entity.website",
+          "source_paths": [
+            "SITE_URL"
+          ],
+          "examples": {
+            "WEBSITE_INVALID": [
+              "467027758",
+              "TTY: 03 96143062",
+              "467027758"
+            ]
+          }
+        },
+        {
+          "code": "PLACEHOLDER_VALUE_EMITTED",
+          "severity": "error",
+          "message": "placeholder-like values emitted as data: ['TBA']",
+          "target": "address.full",
+          "examples": [
+            "TBA"
+          ]
+        }
+      ],
+      "holdout_report": {
+        "records_in": 1106,
+        "records_with_output": 1106,
+        "record_errors": {},
+        "fields": [
+          {
+            "target": "entity.trading_name",
+            "source_paths": [
+              "SITE_NAME"
+            ],
+            "records": 1106,
+            "source_present": 1106,
+            "emitted": 1106,
+            "coverage_of_records": 1.0,
+            "error_rate_of_present": 0.0,
+            "errors": {},
+            "error_examples": {}
+          },
+          {
+            "target": "entity.website",
+            "source_paths": [
+              "SITE_URL"
+            ],
+            "records": 1106,
+            "source_present": 650,
+            "emitted": 647,
+            "coverage_of_records": 0.585,
+            "error_rate_of_present": 0.005,
+            "errors": {
+              "WEBSITE_INVALID": 3
+            },
+            "error_examples": {
+              "WEBSITE_INVALID": [
+                "467027758",
+                "TTY: 03 96143062",
+                "467027758"
+              ]
+            }
+          },
+          {
+            "target": "address.full",
+            "source_paths": [
+              "SITE_ADDRESS_LN"
+            ],
+            "records": 1106,
+            "source_present": 1104,
+            "emitted": 1104,
+            "coverage_of_records": 0.998,
+            "error_rate_of_present": 0.0,
+            "errors": {},
+            "error_examples": {}
+          },
+          {
+            "target": "address.locality",
+            "source_paths": [
+              "SITE_LOCALITY_NAME"
+            ],
+            "records": 1106,
+            "source_present": 1106,
+            "emitted": 1106,
+            "coverage_of_records": 1.0,
+            "error_rate_of_present": 0.0,
+            "errors": {},
+            "error_examples": {}
+          },
+          {
+            "target": "address.state",
+            "source_paths": [
+              "SITE_STATE_CD"
+            ],
+            "records": 1106,
+            "source_present": 1106,
+            "emitted": 1106,
+            "coverage_of_records": 1.0,
+            "error_rate_of_present": 0.0,
+            "errors": {},
+            "error_examples": {}
+          },
+          {
+            "target": "address.postcode",
+            "source_paths": [
+              "SITE_POSTCODE"
+            ],
+            "records": 1106,
+            "source_present": 1106,
+            "emitted": 1106,
+            "coverage_of_records": 1.0,
+            "error_rate_of_present": 0.0,
+            "errors": {},
+            "error_examples": {}
+          }
+        ]
+      },
+      "critic": {
+        "fields": [
+          {
+            "rule_index": 0,
+            "verdict": "ok",
+            "reason": "SITE_NAME \u662f\u7ad9\u70b9\u4e0a\u516c\u5f00\u5c55\u793a\u7684\u670d\u52a1\u54c1\u724c/\u8fd0\u8425\u540d\u79f0\uff08Vision Australia\u3001Job Centre Australia\u3001Sarina Russo Job Access\uff09\uff0c\u6ca1\u6709\u8bc1\u636e\u663e\u793a\u5b83\u662f\u6ce8\u518c\u6cd5\u5f8b\u540d\u79f0\uff0c\u56e0\u6b64\u6620\u5c04\u5230 entity.trading_name \u662f\u7a33\u59a5\u7684\u9009\u62e9\u3002\u6ce8\u610f\uff1a'OCTEC Limited' \u8fd9\u7c7b\u503c\u5305\u542b\u516c\u53f8\u540e\u7f00\uff0c\u53ef\u80fd\u662f\u6cd5\u5f8b\u540d\u79f0\uff0c\u53ea\u628a\u5b83\u4f5c\u4e3a trading_name \u662f\u504f\u4fdd\u5b88\u800c\u975e\u9519\u8bef\uff1b\u4e0d\u5e94\u518d\u989d\u5916\u63a8\u65ad legal_name\u3002",
+            "target": "entity.trading_name",
+            "source_paths": [
+              "SITE_NAME"
+            ]
+          },
+          {
+            "rule_index": 1,
+            "verdict": "ok",
+            "reason": "SITE_URL \u662f\u8fd0\u8425\u5546\u7684\u7f51\u7ad9\uff0c\u800c\u975e\u67d0\u4e2a\u7ad9\u70b9\u7684\u4e13\u7528\u9875\u9762\uff08\u591a\u4e2a\u8bb0\u5f55\u5171\u7528\u540c\u4e00\u57df\u540d\uff09\uff0c\u53ef\u4ee5\u5f52\u5c5e\u5230 entity.website\u3002website \u8f6c\u6362\u63a5\u53d7 'www.visionaustralia.org.au' \u8fd9\u7c7b\u4e0d\u5e26 scheme \u7684\u503c\uff0c\u53ea\u5728\u7a7a\u503c\u65f6\u624d\u7701\u7565\uff0c\u4ece\u800c\u4ea7\u751f\u89c2\u6d4b\u8bb0\u5f55\u3002\u7136\u800c\uff0c\u8bf7\u6ce8\u610f 'http://www.novaemployment.com.au' \u539f\u6837\u901a\u8fc7\uff0c\u800c\u5176\u4ed6\u503c\u4e0d\u5e26 scheme\u2014\u2014\u5373\u89c4\u8303\u5316\u4e0d\u4e00\u81f4\uff0c\u4f46\u76ee\u6807\u672c\u8eab\u4ecd\u662f\u6b63\u786e\u7684\u5b57\u6bb5\u3002",
+            "target": "entity.website",
+            "source_paths": [
+              "SITE_URL"
+            ]
+          },
+          {
+            "rule_index": 2,
+            "verdict": "ok",
+            "reason": "SITE_ADDRESS_LN \u662f\u670d\u52a1\u4ea4\u4ed8\u7ad9\u70b9\u7684\u8857\u9053\u5730\u5740\u884c\uff0c\u56e0\u6b64 claim_scope \u4f7f\u7528 establishment_address \u662f\u6b63\u786e\u7684\uff0c\u5e76\u4e14\u6709\u660e\u786e\u58f0\u660e\uff0c\u4e0d\u4f1a\u662f\u6ce8\u518c\u529e\u516c\u5ba4\u5730\u5740\u3002\u539f\u59cb\u884c\u88ab\u622a\u65ad\u7ea6 45 \u4e2a\u5b57\u7b26\uff08\u4f8b\u5982\u4ecd\u53ef\u7528\u7684 'Ang Gnarra Co-Op Peninsula Development Road'\uff09\uff0c\u8fd9\u4fdd\u7559\u4e3a\u5730\u5740\u884c\u662f\u53ef\u4ee5\u7684\u3002",
+            "target": "address.full",
+            "source_paths": [
+              "SITE_ADDRESS_LN"
+            ]
+          },
+          {
+            "rule_index": 3,
+            "verdict": "ok",
+            "reason": "SITE_LOCALITY_NAME \u662f\u7ad9\u70b9\u7684\u90ca\u533a/\u57ce\u9547\uff0c\u53ef\u76f4\u63a5\u6620\u5c04\u5230 address.locality\uff0c\u4f5c\u7528\u57df\u4e3a establishment_address\uff0c\u4e0e STATE/POSTCODE \u4e00\u81f4\u3002",
+            "target": "address.locality",
+            "source_paths": [
+              "SITE_LOCALITY_NAME"
+            ]
+          },
+          {
+            "rule_index": 4,
+            "verdict": "ok",
+            "reason": "SITE_STATE_CD \u4ec5\u5305\u542b 8 \u4e2a\u6fb3\u5927\u5229\u4e9a\u5dde/\u9886\u5730\u7f29\u5199\uff0c\u901a\u8fc7 state \u8f6c\u6362\u6620\u5c04\u5230 address.state\uff1b\u6240\u6709\u7559\u51fa\u9879\u90fd\u6b63\u786e\u751f\u6210 ACT/NSW/NT/QLD/VIC/SA\uff0c\u4f5c\u7528\u57df\u4e3a establishment_address\u3002",
+            "target": "address.state",
+            "source_paths": [
+              "SITE_STATE_CD"
+            ]
+          },
+          {
+            "rule_index": 5,
+            "verdict": "ok",
+            "reason": "SITE_POSTCODE \u662f\u6fb3\u5927\u5229\u4e9a\u7ad9\u70b9\u90ae\u653f\u7f16\u7801\uff1b\u8865\u96f6\u8f6c\u6362\u5c06 NT \u7684\u4e09\u4f4d\u6570 '850' \u4fee\u6b63\u4e3a '0850'\uff0c\u4e14\u4fdd\u6301\u56db\u4f4d\u6570\u4e0d\u53d8\uff082601\u30012830\u30013076\u30014871\u30015118\u30012780\u30012795\u30012444\u30012650\u30012594\uff09\u3002\u5728 establishment_address \u4f5c\u7528\u57df\u4e0b\u8bbe\u5b9a\u662f\u6b63\u786e\u7684\u3002",
+            "target": "address.postcode",
+            "source_paths": [
+              "SITE_POSTCODE"
+            ]
+          },
+          {
+            "rule_index": 6,
+            "verdict": "ok",
+            "reason": "\u5e38\u91cf AU \u6709\u5145\u5206\u7406\u7531\uff1aDEWR \u6fb3\u5927\u5229\u4e9a\u653f\u5e9c\u767b\u8bb0\u518c\uff0c\u6240\u6709\u8bb0\u5f55\u90fd\u5305\u542b\u6fb3\u5927\u5229\u4e9a\u5dde\u4ee3\u7801\u548c\u6fb3\u5927\u5229\u4e9a\u90ae\u653f\u7f16\u7801\uff1b\u6ca1\u6709 NZ \u6216\u5176\u4ed6\u53f8\u6cd5\u7ba1\u8f96\u533a\u7684\u8bc1\u636e\u3002",
+            "target": "address.country",
+            "source_paths": []
+          }
+        ],
+        "missed": [
+          {
+            "source_path": "CONTRACT_NAME",
+            "suggested_target": "entity.industry_code\uff08\u6216 entity \u7684 programme \u5c5e\u6027\uff0c\u82e5\u65e0\u8be5\u5c5e\u6027\u5219\u4fdd\u6301\u672a\u6620\u5c04\uff09",
+            "reason": "\u867d\u7136\u8be5\u503c\uff08DESA/DESB/EPS5/TTW5/RJCP/NEI5/HLS5\uff09\u662f\u8ba1\u5212/\u5408\u540c\u4ee3\u7801\uff0c\u800c\u4e0d\u662f ANZSIC\uff0c\u4f46\u5b83\u662f\u552f\u4e00\u80fd\u6807\u8bc6\u6240\u4ea4\u4ed8\u670d\u52a1\u7c7b\u578b\uff08\u5c31\u4e1a\u670d\u52a1\u8ba1\u5212\uff09\u7684\u5217\uff1b\u503c\u5f97\u8bb0\u5f55\u539f\u59cb\u503c\uff0c\u800c\u4e0d\u662f\u5b8c\u5168\u4e22\u5f03\u3002\u82e5\u6ca1\u6709\u6269\u5c55\u5c5e\u6027\uff0c\u5219\u4fdd\u7559\u672a\u6620\u5c04\u662f\u5408\u7406\u7684\uff0c\u56e0\u4e3a\u628a\u5b83\u6620\u5c04\u5230 industry_code \u4f1a\u662f\u9519\u8bef\u7684\u3002"
+          },
+          {
+            "source_path": "SITE_EMAIL_ADDRESS",
+            "suggested_target": "entity.website\uff08\u4e0d\u2014\u2014\u6b63\u786e\u7701\u7565\uff09\uff0c\u6216\u6765\u6e90\u5907\u6ce8\u7684\u901a\u7528\u8054\u7cfb\u5b57\u6bb5",
+            "reason": "\u6ca1\u6709\u7535\u5b50\u90ae\u4ef6\u76ee\u6807\uff0c\u4f46\u503c\u5f97\u6ce8\u610f\u7684\u662f\uff0c\u82e5\u5e72\u503c\u662f\u4e2a\u4eba\u90ae\u7bb1\uff08kal.perera@visionaustralia.org\u3001l.sarago@mpth.com.au\u3001Rebecca_Venning@aep.salvationarmy.org\uff09\uff0c\u56e0\u6b64\u7edd\u4e0d\u80fd\u6620\u5c04\u5230\u4efb\u4f55\u5b9e\u4f53/\u8054\u7cfb\u4eba\u540d\u79f0\u5b57\u6bb5\uff1b\u5c3d\u7ba1\u6709\u4e00\u4e2a\u662f 'deewrcontracts@novaemployment.com.au'\uff0c\u5b83\u53ef\u652f\u6301\u8fd0\u8425\u5546\u57df\u540d\uff0c\u4f46\u6620\u5c04\u5230 website \u4f1a\u662f\u4e0d\u6b63\u786e\u7684\u63a8\u65ad\u3002"
+          }
+        ],
+        "summary": "\u6b64\u6620\u5c04\u5bf9\u5176\u58f0\u660e\u7684\u7c92\u5ea6\uff08\u4e00\u4e2a\u627f\u5305\u5546\u670d\u52a1\u7ad9\u70b9\uff09\u662f\u5408\u7406\u7684\u3002SITE_NAME \u88ab\u6b63\u786e\u89c6\u4e3a trading_name\uff0c\u800c\u975e legal_name\uff1bSITE_URL \u88ab\u6b63\u786e\u89c6\u4e3a\u5b9e\u4f53\u7f51\u7ad9\uff1b\u5730\u5740\u5217\u88ab\u4e00\u81f4\u4e14\u660e\u786e\u5730\u9650\u5b9a\u4e3a establishment_address\uff0c\u800c\u975e\u6ce8\u518c\u529e\u516c\u5ba4\uff1bNT 3 \u4f4d\u90ae\u653f\u7f16\u7801\u7684\u8865\u96f6\u662f\u6b63\u786e\u7684\uff0c\u6ca1\u6709\u6708\u4efd/\u65e5\u671f\u95ee\u9898\uff0c\u4e5f\u6ca1\u6709\u5bf9 deregistered \u72b6\u6001\u6216\u65e5\u671f\u6709\u6548\u6027\u7684\u8bef\u7528\uff08\u6b64\u5904\u672a\u53d1\u51fa\u65e5\u671f\uff0c\u56e0\u6b64\u6ca1\u6709\u9519\u8bef\u9644\u52a0\u7684\u6709\u6548\u6027\uff09\u3002\u57fa\u4e8e\u679a\u4e3e\u6216\u6807\u8bc6\u7b26\u7684\u635f\u574f\u89c4\u5219\u5747\u4e0d\u5b58\u5728\u3002\u4ec5\u5269\u7684\u5c0f\u95ee\u9898\u662f\uff1awebsite \u503c\u672a\u89c4\u8303\u5316\uff08\u90e8\u5206\u4fdd\u7559\u4e86 http:// \u524d\u7f00\uff09\uff0c\u4ee5\u53ca\u5c11\u6570\u770b\u8d77\u6765\u50cf\u6cd5\u5f8b\u540d\u79f0\u7684 SITE_NAME \u503c\uff08OCTEC Limited\uff09\uff1b\u4f46\u5c06\u8fd9\u4e9b\u503c\u4e0e\u4fdd\u5b88\u5904\u7406\u76f8\u7ed3\u5408\u5e76\u672a\u4ea7\u751f\u9519\u8bef\u76ee\u6807\u3002\u672a\u6620\u5c04\u5217\u8868\u662f\u5408\u7406\u7684\uff1b\u552f\u4e00\u503c\u5f97\u91cd\u65b0\u5ba1\u89c6\u7684\u9057\u6f0f\u662f CONTRACT_NAME\uff0c\u5b83\u53ef\u80fd\u4f5c\u4e3a\u539f\u59cb programme \u5c5e\u6027\u4fdd\u7559\uff0c\u800c\u4e0d\u662f\u4e22\u5f03\u3002",
+        "prompt_version": "critic-v5"
+      }
+    },
+    {
+      "round": 1,
+      "digest": "fcd1badfb6e4c2df5f7a62c8b77332ec51a84d28d7cd30ce75a0543ff96bf9b8",
+      "config": {
+        "source_id": "dewr_employment_providers",
+        "record_grain": "establishment",
+        "grain_rationale": "One record is a single employment-services provider SITE (a physical service-delivery location) contracted under a DEWR program; the site's operator is a business participant, so SITE_NAME is mapped to entity.trading_name (a business/brand name, not a registered legal name). DIS_SITE_CODE identifies the site, not the business, so it is not used as a business identifier.",
+        "reader": {
+          "format": "delimited",
+          "archive_member": null,
+          "encoding": "utf-8-sig",
+          "delimiter": ",",
+          "skip_rows": 0,
+          "sheet": null,
+          "record_path": null
+        },
+        "record_id": {
+          "strategy": "content_hash",
+          "source_paths": [],
+          "rationale": "DIS_SITE_CODE is not unique per record (489 distinct across 505 discovery rows; repeated rows carry different CONTRACT_NAME/ESA_CD_1 values, and some codes are non-geographic placeholders such as EFTZ). No other candidate key is unique, so a content hash over the row is the only traceable identifier."
+        },
+        "observed_at": {
+          "source_path": null,
+          "steps": [],
+          "fallback": "resource_last_modified"
+        },
+        "fields": [
+          {
+            "source_paths": [
+              "SITE_NAME"
+            ],
+            "join_with": " ",
+            "when": null,
+            "target": "entity.trading_name",
+            "valid_from_path": null,
+            "valid_to_path": null,
+            "validity_date_formats": [],
+            "claim_scope": null,
+            "steps": [
+              {
+                "op": "trim",
+                "args": {}
+              },
+              {
+                "op": "collapse_whitespace",
+                "args": {}
+              },
+              {
+                "op": "null_if",
+                "args": {
+                  "values": [
+                    ""
+                  ]
+                }
+              }
+            ],
+            "confidence": 0.6,
+            "rationale": "SITE_NAME holds the provider's public brand/trading names (MAX Employment, Advanced Personnel Management, Job Centre Australia, CoAct/Community Solutions) as used on site listings. No evidence it is the registered legal name, so trading_name is the safe target."
+          },
+          {
+            "source_paths": [
+              "SITE_URL"
+            ],
+            "join_with": " ",
+            "when": null,
+            "target": "entity.website",
+            "valid_from_path": null,
+            "valid_to_path": null,
+            "validity_date_formats": [],
+            "claim_scope": null,
+            "steps": [
+              {
+                "op": "trim",
+                "args": {}
+              },
+              {
+                "op": "null_if",
+                "args": {
+                  "values": [
+                    "",
+                    "NULL",
+                    "N/A",
+                    "NA",
+                    "TBA",
+                    "-"
+                  ]
+                }
+              },
+              {
+                "op": "regex_extract",
+                "args": {
+                  "pattern": "(?i)^(?:https?://)?(?:www\\.)?([a-z0-9][a-z0-9-]*(?:\\.[a-z0-9-]+)*\\.(?:com\\.au|net\\.au|org\\.au|edu\\.au|gov\\.au|asn\\.au|id\\.au|au|com|net|org|edu|gov|info|biz))",
+                  "group": 0
+                }
+              },
+              {
+                "op": "website",
+                "args": {}
+              }
+            ],
+            "confidence": 0.65,
+            "rationale": "SITE_URL holds the operator's website (www.apm.net.au, orsgroup.com.au, wiseemployment.com.au), present in 57.6% of rows. Holdout rows include phone numbers and 'TTY: 03 96143062' in this column, so a TLD-anchored regex_extract is applied: it keeps every genuine domain in discovery (all 88 distinct values are domain-shaped) while rejecting numeric/code values that would otherwise be emitted as websites."
+          },
+          {
+            "source_paths": [
+              "SITE_ADDRESS_LN"
+            ],
+            "join_with": " ",
+            "when": null,
+            "target": "address.full",
+            "valid_from_path": null,
+            "valid_to_path": null,
+            "validity_date_formats": [],
+            "claim_scope": "establishment_address",
+            "steps": [
+              {
+                "op": "trim",
+                "args": {}
+              },
+              {
+                "op": "collapse_whitespace",
+                "args": {}
+              },
+              {
+                "op": "null_if",
+                "args": {
+                  "values": [
+                    "",
+                    "TBA",
+                    "TBC",
+                    "N/A",
+                    "NA",
+                    "NULL",
+                    "UNKNOWN",
+                    "-"
+                  ]
+                }
+              }
+            ],
+            "confidence": 0.7,
+            "rationale": "Street address line of the service-delivery site; scope is the contracted premises, not a registered office. Values are truncated at about 45 chars in the source but remain usable address lines. Holdout contained a literal 'TBA' placeholder, now excluded via null_if."
+          },
+          {
+            "source_paths": [
+              "SITE_LOCALITY_NAME"
+            ],
+            "join_with": " ",
+            "when": null,
+            "target": "address.locality",
+            "valid_from_path": null,
+            "valid_to_path": null,
+            "validity_date_formats": [],
+            "claim_scope": "establishment_address",
+            "steps": [
+              {
+                "op": "trim",
+                "args": {}
+              },
+              {
+                "op": "collapse_whitespace",
+                "args": {}
+              },
+              {
+                "op": "null_if",
+                "args": {
+                  "values": [
+                    ""
+                  ]
+                }
+              }
+            ],
+            "confidence": 0.8,
+            "rationale": "Suburb/town of the site; matches LOCATION_NAME almost exactly (412 distinct each)."
+          },
+          {
+            "source_paths": [
+              "SITE_STATE_CD"
+            ],
+            "join_with": " ",
+            "when": null,
+            "target": "address.state",
+            "valid_from_path": null,
+            "valid_to_path": null,
+            "validity_date_formats": [],
+            "claim_scope": "establishment_address",
+            "steps": [
+              {
+                "op": "trim",
+                "args": {}
+              },
+              {
+                "op": "state",
+                "args": {}
+              }
+            ],
+            "confidence": 0.92,
+            "rationale": "Two/three-letter AU state abbreviations only (NSW, VIC, QLD, SA, WA, TAS, ACT, NT; 8 distinct values, no overseas entries)."
+          },
+          {
+            "source_paths": [
+              "SITE_POSTCODE"
+            ],
+            "join_with": " ",
+            "when": null,
+            "target": "address.postcode",
+            "valid_from_path": null,
+            "valid_to_path": null,
+            "validity_date_formats": [],
+            "claim_scope": "establishment_address",
+            "steps": [
+              {
+                "op": "trim",
+                "args": {}
+              },
+              {
+                "op": "null_if",
+                "args": {
+                  "values": [
+                    ""
+                  ]
+                }
+              },
+              {
+                "op": "postcode",
+                "args": {}
+              }
+            ],
+            "confidence": 0.85,
+            "rationale": "4-digit AU postcodes present 97% (492/505); 13 three-digit values are NT codes such as 822/850 which the postcode transform re-pads to 0822/0850."
+          }
+        ],
+        "constants": [
+          {
+            "target": "address.country",
+            "value": "AU",
+            "confidence": 0.85,
+            "rationale": "Australian Government (DEWR) employment services register; all records carry AU state codes and AU postcodes, with no NZ or other jurisdiction evidence."
+          }
+        ],
+        "unmapped": [
+          {
+            "source_path": "DIS_SITE_CODE",
+            "reason": "Site identifier for a contracted service location, not a business identifier; also not unique per row and contains non-geographic placeholders (EFTZ)."
+          },
+          {
+            "source_path": "CONTRACT_NAME",
+            "reason": "DEWR programme/contract code (DESA, DESB, EPS5, TTW5, RJCP, NEI5, HLS5) naming the funding contract under which the site operates. It is not an ANZSIC industry code, so mapping to entity.industry_code would be wrong, and the ontology has no programme attribute; retained as unmapped rather than mis-typed."
+          },
+          {
+            "source_path": "LOCATION_NAME",
+            "reason": "Duplicates SITE_LOCALITY_NAME (412 distinct each); no added value over address.locality."
+          },
+          {
+            "source_path": "SITE_CONTACT_PHONE",
+            "reason": "Site contact phone number; the ontology has no telephone target."
+          },
+          {
+            "source_path": "PHONE_NUMBER",
+            "reason": "Site phone number, largely identical to SITE_CONTACT_PHONE; no telephone target in the ontology."
+          },
+          {
+            "source_path": "AGENT_FREECALL_NUM",
+            "reason": "Freecall/13-number of the provider's call centre (27% present); contact detail, no telephone target."
+          },
+          {
+            "source_path": "SITE_EMAIL_ADDRESS",
+            "reason": "Site mailbox, often a named individual (kal.perera@visionaustralia.org) or generic enquiries; a person/contact detail, not an entity field, and the ontology has no email target."
+          },
+          {
+            "source_path": "ESA_CD_1",
+            "reason": "Employment Services Area geography code (e.g. 5ACT, 4SOE, 5MRV) denoting the service region of the site, not an ANZSIC industry code and not an entity identifier."
+          },
+          {
+            "source_path": "ESA_CD_2",
+            "reason": "Employment Services Area code, blank in 100% of discovery rows."
+          },
+          {
+            "source_path": "ESA_CD_3",
+            "reason": "Employment Services Area code, blank in 100% of discovery rows."
+          },
+          {
+            "source_path": "LATITUDE",
+            "reason": "Site geocode with 'NULL' placeholders; no coordinate target in the ontology."
+          },
+          {
+            "source_path": "LONGITUDE",
+            "reason": "Site geocode with 'NULL' placeholders; no coordinate target in the ontology."
+          },
+          {
+            "source_path": "column_18",
+            "reason": "Trailing empty field created by a trailing comma in the header; contains no data in any row."
+          }
+        ],
+        "notes": "Source is a site-level register: no ABN, ACN, legal entity name, entity type, status or registration date is present, so none of those is mapped. SITE_NAME is treated as trading_name only; the operator's registered legal name cannot be established from this file (some values such as 'OCTEC Limited' look legal but cannot be proven, so legal_name is not asserted). No date columns exist, so observation.observed_at falls back to resource last-modified and no validity dates are asserted. SITE_URL is guarded by a TLD-anchored regex because holdout rows carry phone numbers in that column; genuine domains are unchanged."
+      },
+      "holdout_issues": [],
+      "holdout_report": {
+        "records_in": 1106,
+        "records_with_output": 1106,
+        "record_errors": {},
+        "fields": [
+          {
+            "target": "entity.trading_name",
+            "source_paths": [
+              "SITE_NAME"
+            ],
+            "records": 1106,
+            "source_present": 1106,
+            "emitted": 1106,
+            "coverage_of_records": 1.0,
+            "error_rate_of_present": 0.0,
+            "errors": {},
+            "error_examples": {}
+          },
+          {
+            "target": "entity.website",
+            "source_paths": [
+              "SITE_URL"
+            ],
+            "records": 1106,
+            "source_present": 650,
+            "emitted": 647,
+            "coverage_of_records": 0.585,
+            "error_rate_of_present": 0.0,
+            "errors": {},
+            "error_examples": {}
+          },
+          {
+            "target": "address.full",
+            "source_paths": [
+              "SITE_ADDRESS_LN"
+            ],
+            "records": 1106,
+            "source_present": 1104,
+            "emitted": 1101,
+            "coverage_of_records": 0.995,
+            "error_rate_of_present": 0.0,
+            "errors": {},
+            "error_examples": {}
+          },
+          {
+            "target": "address.locality",
+            "source_paths": [
+              "SITE_LOCALITY_NAME"
+            ],
+            "records": 1106,
+            "source_present": 1106,
+            "emitted": 1106,
+            "coverage_of_records": 1.0,
+            "error_rate_of_present": 0.0,
+            "errors": {},
+            "error_examples": {}
+          },
+          {
+            "target": "address.state",
+            "source_paths": [
+              "SITE_STATE_CD"
+            ],
+            "records": 1106,
+            "source_present": 1106,
+            "emitted": 1106,
+            "coverage_of_records": 1.0,
+            "error_rate_of_present": 0.0,
+            "errors": {},
+            "error_examples": {}
+          },
+          {
+            "target": "address.postcode",
+            "source_paths": [
+              "SITE_POSTCODE"
+            ],
+            "records": 1106,
+            "source_present": 1106,
+            "emitted": 1106,
+            "coverage_of_records": 1.0,
+            "error_rate_of_present": 0.0,
+            "errors": {},
+            "error_examples": {}
+          }
+        ]
+      },
+      "critic": {
+        "fields": [
+          {
+            "rule_index": 0,
+            "verdict": "ok",
+            "reason": "SITE_NAME displays the provider's public or brand name (Vision Australia, Job Centre Australia, NOVA Employment, The Salvation Army Employment Plus); it is not evidence of a registered legal name, so mapping it to trading_name is right, not legal_name. Note that 'OCTEC Limited' and 'Parkes Forbes Business Enterprise Centre' look like legal names, but a cautious emer target choice remains acceptable. Also, no claim_scope was supplied, so a site listing name might be mistaken for the entity's brand-wide trading name; this is acceptable but worth noting.",
+            "target": "entity.trading_name",
+            "source_paths": [
+              "SITE_NAME"
+            ]
+          },
+          {
+            "rule_index": 1,
+            "verdict": "ok",
+            "reason": "The regex-extract with a TLD anchor keeps real domains and rejects phone-like values ('TTY: 03 96143062', 1800 numbers). Heldout values such as www.visionaustralia.org.au, http://www.novaemployment.com.au and www.iim.net.au produce correct websites; blanks produce no observation. Site-level URL is the operator's website, which is reasonable.",
+            "target": "entity.website",
+            "source_paths": [
+              "SITE_URL"
+            ]
+          },
+          {
+            "rule_index": 2,
+            "verdict": "ok",
+            "reason": "This is the site's street address line, and claim_scope is establishment_address, which matches the site-premises grain. However, 'Ang Gnarra Co-Op Peninsula Development Road' has no street number and is an unmasked site name that looks truncated; it is still an address line, so no error that changes the meaning. It would be good to state that truncated lines are only the address line, not address.full.",
+            "target": "address.full",
+            "source_paths": [
+              "SITE_ADDRESS_LN"
+            ]
+          },
+          {
+            "rule_index": 3,
+            "verdict": "ok",
+            "reason": "Site locality is used for address.locality with establishment_address scope; heldout values (CANBERRA, WAGGA WAGGA, KATHERINE, Gayndah) are valid localities, and mixed case is preserved.",
+            "target": "address.locality",
+            "source_paths": [
+              "SITE_LOCALITY_NAME"
+            ]
+          },
+          {
+            "rule_index": 4,
+            "verdict": "ok",
+            "reason": "SITE_STATE_CD contains AU state abbreviations only; the state transform maps ACT, NSW, NT, QLD, SA correctly, and no overseas values appear.",
+            "target": "address.state",
+            "source_paths": [
+              "SITE_STATE_CD"
+            ]
+          },
+          {
+            "rule_index": 5,
+            "verdict": "doubtful",
+            "reason": "The padding of a 3-digit NT value ('850' to '0850') is plausible, but the rationale gives no evidence that these codes are NT-numeric; the state transform is applied separately and might disagree. The origin of the padding (leading zeros) is assumed; this carries moderate risk, not clearly wrong.",
+            "target": "address.postcode",
+            "source_paths": [
+              "SITE_POSTCODE"
+            ]
+          },
+          {
+            "rule_index": 6,
+            "verdict": "ok",
+            "reason": "The constant AU country is supported by the publisher (Australian Government), AU state codes, and 4-digit AU postcodes in all heldout rows.",
+            "target": "address.country",
+            "source_paths": []
+          }
+        ],
+        "missed": [
+          {
+            "source_path": "SITE_EMAIL_ADDRESS",
+            "suggested_target": "entity.website",
+            "reason": "Not a valid website target, but the domains in site emails (novaemployment.com.au, iim.net.au, bec.net.au) could fill website gaps. This is lower priority: do not emit an email as a website."
+          },
+          {
+            "source_path": "SITE_NAME",
+            "suggested_target": "entity.legal_name",
+            "reason": "Rows such as 'OCTEC Limited' and 'The Salvation Army Employment Plus' contain legal-form tokens; without ABN or ACN support, however, legal_name_must_not_be guessed. It is better left unmapped; listed only for completeness."
+          }
+        ],
+        "summary": "Address block (rules 2-6) is consistent with a site/establishment grain and correctly scoped; no registered-office confusion and no licence/contract number misused as a business identifier (DIS_SITE_CODE and CONTRACT_NAME correctly left unmapped). Trading name vs legal name is the main risk area: SITE_NAME is displayed brand text, so trading_name is defensible, but names with legal suffixes (OCTEC Limited) and site names are blend into one target without claim_scope; doubtful rather than wrong. Rule 5's 3-digit NT postcode padding is an inference not backed by evidence in the rationale. Website regex is sound. No validity dates are emitted so no validity-path defects; status/entity_type/ABN were not mapped, which is correct given no source columns.",
+        "prompt_version": "critic-v5"
+      }
+    }
+  ],
+  "tool_calls": 12,
+  "stages": [
+    {
+      "stage": "INSPECTED",
+      "at": "2026-11-11T18:59:16+00:00"
+    },
+    {
+      "stage": "PROPOSED_v0",
+      "at": "2026-11-11T19:00:08+00:00"
+    },
+    {
+      "stage": "VALIDATED_v0",
+      "at": "2026-11-11T19:00:09+00:00"
+    },
+    {
+      "stage": "CRITIQUED_v0",
+      "at": "2026-11-11T19:01:58+00:00"
+    },
+    {
+      "stage": "REVISING_v1",
+      "at": "2026-11-11T19:01:58+00:00"
+    },
+    {
+      "stage": "PROPOSED_v1",
+      "at": "2026-11-11T19:03:31+00:00"
+    },
+    {
+      "stage": "VALIDATED_v1",
+      "at": "2026-11-11T19:03:32+00:00"
+    },
+    {
+      "stage": "CRITIQUED_v1",
+      "at": "2026-11-11T19:03:42+00:00"
+    },
+    {
+      "stage": "PENDING_REVIEW",
+      "at": "2026-11-11T19:03:42+00:00"
+    }
+  ],
+  "experiment": "quality-guided",
+  "only_targets": null,
+  "inspection": {
+    "file_name": "dewr_employment_providers__d9c69f98",
+    "size_bytes": 1098343,
+    "magic_hex": "4449535f53495445",
+    "container": "plain",
+    "looks_like": "text",
+    "encoding_guess": "utf-8-sig",
+    "delimiter_counts_per_line": {
+      "comma": {
+        "min": 18,
+        "max": 19
+      },
+      "tab": {
+        "min": 0,
+        "max": 0
+      },
+      "pipe": {
+        "min": 0,
+        "max": 0
+      },
+      "semicolon": {
+        "min": 0,
+        "max": 0
+      }
+    },
+    "first_lines": [
+      "DIS_SITE_CODE,CONTRACT_NAME,LOCATION_NAME,SITE_NAME,SITE_CONTACT_PHONE,SITE_ADDRESS_LN,SITE_LOCALITY_NAME,SITE_STATE_CD,SITE_POSTCODE,SITE_URL,SITE_EMAIL_ADDRESS,ESA_CD_1,ESA_CD_2,ESA_CD_3,AGENT_FREECALL_NUM,PHONE_NUMBER,LATITUDE,LONGITUDE,",
+      "A230,DESB,CANBERRA,Vision Australia,61325800,2nd Floor 22 East Row,CANBERRA,ACT,2601,www.visionaustralia.org.au,kal.perera@visionaustralia.org,5ACT,    ,    ,          ,61325800,-35.2791945,149.1306937,",
+      "A290,DESB,YOUNG,Job Centre Australia,1800466046,2B Campbell Street,YOUNG,NSW,2594,www.jobcentreaustralia.com.au,jcayoung@jobcentreaustralia.com.au,5ACT,    ,    ,1800466046,63823222,-34.31470378,148.2943602,",
+      "A300,DESA,WAGGA WAGGA,Job Centre Australia,1800466046,55 Peter Street,WAGGA WAGGA,NSW,2650,www.jobcentreaustralia.com.au,jcawagga@jobcentreaustralia.com.au,4SOE,    ,    ,1800466046,69218004,-35.11538899,147.3684042,",
+      "A300,DESB,WAGGA WAGGA,Job Centre Australia,1800466046,55 Peter Street,WAGGA WAGGA,NSW,2650,www.jobcentreaustralia.com.au,jcawagga@jobcentreaustralia.com.au,5MRV,    ,    ,1800466046,69218004,-35.11538899,147.3684042,",
+      "A310,DESA,TUMUT,Job Centre Australia,1800466046,Shop 6 & 7 The HUB Wynyard Street,TUMUT,NSW,2720,www.jobcentreaustralia.com.au,jcatumut@jcal.com.au,4SOE,    ,    ,1800466046,69474040,-35.32075023,148.2325049,",
+      "A310,DESB,TUMUT,Job Centre Australia,1800466046,Shop 6 & 7 The HUB Wynyard Street,TUMUT,NSW,2720,www.jobcentreaustralia.com.au,jcatumut@jcal.com.au,5MRV,    ,    ,1800466046,69474040,-35.32075023,148.2325049,",
+      "A320,DESA,COOTAMUNDRA,Job Centre Australia,1800466046,169a Parker Street,COOTAMUNDRA,NSW,2590,www.jobcentreaustralia.com.au,jcacoota@jobcentreaustralia.com.au,4SOE,    ,    ,1800466046,466046,-34.63608234,148.0260863,",
+      "A320,DESB,COOTAMUNDRA,Job Centre Australia,1800466046,169a Parker Street,COOTAMUNDRA,NSW,2590,www.jobcentreaustralia.com.au,jcacoota@jobcentreaustralia.com.au,5MRV,    ,    ,1800466046,466046,-34.63608234,148.0260863,",
+      "A340,DESB,CHATSWOOD,Job Centre Australia,1800466046,Level 1 13 Spring Street,CHATSWOOD,NSW,2067,www.jobcentreaustralia.com.au,jcachatswood@jobcentreaustralia.com.au,5SYW,    ,    ,1800466046,94131313,-33.79640109,151.1849635,",
+      "A860,DESA,Woy Woy,ORS Employment Solutions,43447500,26-30 Railway Street,Woy Woy,NSW,2256,www.orsgroup.com.au,enquiries@orsgroup.com.au,4CEC,    ,    ,          ,43447500,-33.48585245,151.3241008,",
+      "A860,DESB,Woy Woy,ORS Employment Solutions,43447500,26-30 Railway Street,Woy Woy,NSW,2256,www.orsgroup.com.au,enquiries@orsgroup.com.au,5SYW,    ,    ,          ,43447500,-33.48585245,151.3241008,"
+    ]
+  },
+  "human_feedback": null,
+  "reader": {
+    "format": "delimited",
+    "archive_member": null,
+    "encoding": "utf-8-sig",
+    "delimiter": ",",
+    "skip_rows": 0,
+    "sheet": null,
+    "record_path": null
+  },
+  "finished_at": "2026-11-11T19:03:42+00:00",
+  "final_digest": "fcd1badfb6e4c2df5f7a62c8b77332ec51a84d28d7cd30ce75a0543ff96bf9b8"
+}

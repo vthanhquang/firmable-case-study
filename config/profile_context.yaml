@@ -1,0 +1,72 @@
+version: v1
+fields:
+  tax.income_year:
+    type: string
+    pattern: '^20[0-9]{2}-[0-9]{2}$'
+    notes: Fiscal reporting period printed on a corporate tax disclosure. Preserve the label.
+  tax.total_income_aud:
+    type: integer
+    notes: Total income as published for the reporting entity and income year, in whole AUD.
+  tax.taxable_income_aud:
+    type: integer
+    notes: Published taxable income for the reporting year in whole AUD. Keep missing distinct from zero.
+  tax.tax_payable_aud:
+    type: integer
+    notes: Published tax payable for the reporting year in whole AUD.
+  charity.size:
+    type: enum
+    values: [Small, Medium, Large]
+    notes: Source-declared charity reporting-size class.
+  charity.established_on:
+    type: date
+    notes: Original establishment date, distinct from charity registration.
+  charity.purpose:
+    type: enum
+    values: [Animal welfare, Culture, Education, Health, Public policy and advocacy, Natural environment, Human rights, General public benefit, Reconciliation and tolerance, Religion, Social and public welfare, Public safety]
+    notes: One stated charitable purpose per affirmative source flag. Emit nothing for blank or negative flags.
+  charity.operating_region:
+    type: enum
+    values: [ACT, NSW, NT, QLD, SA, TAS, VIC, WA]
+    notes: One operating jurisdiction per affirmative source flag. This is a service footprint.
+  licence.number:
+    type: string
+    notes: Publisher-assigned licence number, scoped to the licence.
+  licence.category:
+    type: string
+    notes: Publisher's licence category or type, in its original terminology.
+  licence.grade:
+    type: string
+    notes: Published grade of the licence.
+  licence.class:
+    type: string
+    notes: Published licence class. Preserve the publisher wording.
+  licence.trading_hours:
+    type: string
+    notes: Trading hours or conditions stated for this licence.
+  licence.patron_capacity:
+    type: integer
+    notes: Published maximum patron count for the licensed premises.
+  licence.council:
+    type: string
+    notes: Local council of the licensed premises.
+  licence.region:
+    type: string
+    notes: Publisher's licensing region.
+  establishment.site_code:
+    type: string
+    notes: Publisher's service-site code. Scope to the establishment.
+  establishment.program:
+    type: string
+    notes: Source programme or contract code for the services offered at this establishment.
+  company.deregistered_on:
+    type: date
+    notes: Source-stated company deregistration event date.
+  company.former_registration_jurisdiction:
+    type: string
+    notes: Historical jurisdiction of company registration. It gives no address evidence.
+  company.share_class:
+    type: string
+    notes: Publisher's company capital-structure class code.
+  company.share_subclass:
+    type: string
+    notes: Publisher's company subclass code.

@@ -1,0 +1,1028 @@
+{
+  "source_id": "vic_liquor",
+  "run_id": "20261117T041638-local-45736cb6",
+  "status": "PENDING_REVIEW",
+  "started_at": "2026-11-17T04:16:38+00:00",
+  "finished_at": "2026-11-17T04:16:38+00:00",
+  "snapshot_sha256": "b0a00e0846f430dc3eb2bc32fde3e4136caa9142c60d127e8c1419fbc34fb36e",
+  "final_digest": "45736cb670d75219d42759bf6e9d98722f58372a003624f6b1affaedb2a4024a",
+  "model": "local-maintainer",
+  "critic_model": "Not called (local correction)",
+  "tool_calls": 0,
+  "proposals": [
+    {
+      "round": 1,
+      "digest": "45736cb670d75219d42759bf6e9d98722f58372a003624f6b1affaedb2a4024a",
+      "config": {
+        "source_id": "vic_liquor",
+        "record_grain": "licence_or_permit",
+        "grain_rationale": "Each row is one current Victorian liquor licence (Licence Number unique per row) held by a licensee at licensed premises. Entity fields describe the licensee business; address fields describe the licensed premises ONLY. The licensee's postal mailing address columns are left unmapped because they describe a different location than the premises and mixing them into the same address fields would make each record claim two different addresses.",
+        "reader": {
+          "format": "xlsx",
+          "archive_member": null,
+          "encoding": "utf-8-sig",
+          "delimiter": null,
+          "skip_rows": 4,
+          "sheet": "Current_Victorian_Licences_By_L",
+          "record_path": null
+        },
+        "record_id": {
+          "strategy": "columns",
+          "source_paths": [
+            "Licence Number"
+          ],
+          "rationale": "Licence Number: 465/465 present and 465 distinct (shape 99999999); identifies the licence record, not a business identifier."
+        },
+        "observed_at": {
+          "source_path": null,
+          "steps": [],
+          "fallback": "dataset_metadata_modified"
+        },
+        "fields": [
+          {
+            "source_paths": [
+              "Licensee"
+            ],
+            "join_with": " ",
+            "when": null,
+            "target": "entity.legal_name",
+            "valid_from_path": null,
+            "valid_to_path": null,
+            "validity_date_formats": null,
+            "claim_scope": null,
+            "steps": [
+              {
+                "op": "trim",
+                "args": {}
+              },
+              {
+                "op": "collapse_whitespace",
+                "args": {}
+              },
+              {
+                "op": "regex_extract",
+                "args": {
+                  "pattern": "^(?!THE SECRETARY$)(?!SECRETARY$)(?!THE TRUSTEE$)(?!THE OWNER$)(?!THE LICENSEE$)(?!THE MANAGER$)(?!NOMINEES?$)(?!.*\\bC/-\\b).*$",
+                  "group": 0
+                }
+              },
+              {
+                "op": "trim",
+                "args": {}
+              },
+              {
+                "op": "null_if",
+                "args": {
+                  "values": [
+                    "",
+                    "-",
+                    "--",
+                    ".",
+                    "..",
+                    "...",
+                    "N/A",
+                    "NA",
+                    "N.A.",
+                    "N/A -",
+                    "TBA",
+                    "TBC",
+                    "UNKNOWN",
+                    "NOT APPLICABLE",
+                    "NOT APPLICABLE -",
+                    "[NOT APPLICABLE]",
+                    "[NOT APPLICABLE] -",
+                    "SAME AS ABOVE",
+                    "NONE",
+                    "NULL",
+                    "NIL",
+                    "0"
+                  ]
+                }
+              }
+            ],
+            "confidence": 0.6,
+            "rationale": "Column headed 'Licensee' = holder of the licence, mostly in legal-name form (PTY LTD / LIMITED / CITY OF X). Also carries officer/contact-role strings such as 'THE SECRETARY' and c/- address forms, which are gated out to null; corporate and sole-trader licensee names are kept. Confidence 0.6 reflects the mixed column.",
+            "entity": null,
+            "qualifiers": null,
+            "one_hot": null
+          },
+          {
+            "source_paths": [
+              "Trading As"
+            ],
+            "join_with": " ",
+            "when": null,
+            "target": "entity.trading_name",
+            "valid_from_path": null,
+            "valid_to_path": null,
+            "validity_date_formats": null,
+            "claim_scope": null,
+            "steps": [
+              {
+                "op": "trim",
+                "args": {}
+              },
+              {
+                "op": "collapse_whitespace",
+                "args": {}
+              },
+              {
+                "op": "null_if",
+                "args": {
+                  "values": [
+                    "",
+                    "-",
+                    "--",
+                    ".",
+                    "..",
+                    "...",
+                    "N/A",
+                    "NA",
+                    "N.A.",
+                    "N/A -",
+                    "TBA",
+                    "TBC",
+                    "UNKNOWN",
+                    "NOT APPLICABLE",
+                    "NOT APPLICABLE -",
+                    "[NOT APPLICABLE]",
+                    "[NOT APPLICABLE] -",
+                    "SAME AS ABOVE",
+                    "NONE",
+                    "NULL",
+                    "NIL",
+                    "0"
+                  ]
+                }
+              }
+            ],
+            "confidence": 0.85,
+            "rationale": "'Trading As' is explicitly the business/trading name, distinct from the licensee column (451 distinct of 465, 99.1% present). Placeholder strings nulled.",
+            "entity": null,
+            "qualifiers": null,
+            "one_hot": null
+          },
+          {
+            "source_paths": [
+              "Street Address"
+            ],
+            "join_with": " ",
+            "when": null,
+            "target": "address.full",
+            "valid_from_path": null,
+            "valid_to_path": null,
+            "validity_date_formats": null,
+            "claim_scope": null,
+            "steps": [
+              {
+                "op": "trim",
+                "args": {}
+              },
+              {
+                "op": "collapse_whitespace",
+                "args": {}
+              },
+              {
+                "op": "null_if",
+                "args": {
+                  "values": [
+                    "",
+                    "-",
+                    "--",
+                    ".",
+                    "..",
+                    "...",
+                    "N/A",
+                    "NA",
+                    "N.A.",
+                    "N/A -",
+                    "TBA",
+                    "TBC",
+                    "UNKNOWN",
+                    "NOT APPLICABLE",
+                    "NOT APPLICABLE -",
+                    "[NOT APPLICABLE]",
+                    "[NOT APPLICABLE] -",
+                    "NONE",
+                    "NULL",
+                    "NIL",
+                    "0"
+                  ]
+                }
+              }
+            ],
+            "confidence": 0.85,
+            "rationale": "Street address of the licensed premises (present 94.2%). Premises address, not postal.",
+            "entity": "premises",
+            "qualifiers": null,
+            "one_hot": null
+          },
+          {
+            "source_paths": [
+              "Suburb"
+            ],
+            "join_with": " ",
+            "when": null,
+            "target": "address.locality",
+            "valid_from_path": null,
+            "valid_to_path": null,
+            "validity_date_formats": null,
+            "claim_scope": null,
+            "steps": [
+              {
+                "op": "trim",
+                "args": {}
+              },
+              {
+                "op": "collapse_whitespace",
+                "args": {}
+              },
+              {
+                "op": "upper",
+                "args": {}
+              },
+              {
+                "op": "regex_extract",
+                "args": {
+                  "pattern": "^(?!\\[?NOT APPLICABLE\\]?).*$",
+                  "group": 0
+                }
+              },
+              {
+                "op": "null_if",
+                "args": {
+                  "values": [
+                    "",
+                    "-",
+                    "--",
+                    ".",
+                    "..",
+                    "...",
+                    "N/A",
+                    "NA",
+                    "N.A.",
+                    "N/A -",
+                    "TBA",
+                    "TBC",
+                    "UNKNOWN",
+                    "NOT APPLICABLE",
+                    "NOT APPLICABLE -",
+                    "[NOT APPLICABLE]",
+                    "[NOT APPLICABLE] -",
+                    ",",
+                    "NONE",
+                    "NULL",
+                    "NIL",
+                    "0"
+                  ]
+                }
+              }
+            ],
+            "confidence": 0.85,
+            "rationale": "Suburb of the licensed premises (95.7% present). 7 records carry the placeholder '[Not applicable] -' (remote/pre-retail sellers without premises, shape '[a a] -'); after upper+trim the '[NOT APPLICABLE] -' gate nulls these so no bogus locality is emitted.",
+            "entity": "premises",
+            "qualifiers": null,
+            "one_hot": null
+          },
+          {
+            "source_paths": [
+              "Postcode"
+            ],
+            "join_with": " ",
+            "when": null,
+            "target": "address.postcode",
+            "valid_from_path": null,
+            "valid_to_path": null,
+            "validity_date_formats": null,
+            "claim_scope": null,
+            "steps": [
+              {
+                "op": "trim",
+                "args": {}
+              },
+              {
+                "op": "null_if",
+                "args": {
+                  "values": [
+                    "",
+                    "0",
+                    "0000",
+                    "-",
+                    ".",
+                    "N/A",
+                    "NA",
+                    "N/A -",
+                    "NOT APPLICABLE",
+                    "NOT APPLICABLE -",
+                    "[NOT APPLICABLE]",
+                    "[NOT APPLICABLE] -",
+                    "TBA"
+                  ]
+                }
+              },
+              {
+                "op": "postcode",
+                "args": {}
+              }
+            ],
+            "confidence": 0.85,
+            "rationale": "Premises postcode; 438 4-digit values plus 7 placeholder '0' values which are nulled. Postal postcodes are not used here (some are interstate, e.g. '2000').",
+            "entity": "premises",
+            "qualifiers": null,
+            "one_hot": null
+          },
+          {
+            "source_paths": [
+              "Licence Number"
+            ],
+            "join_with": " ",
+            "when": null,
+            "target": "ext.licence.number",
+            "valid_from_path": null,
+            "valid_to_path": null,
+            "validity_date_formats": null,
+            "claim_scope": null,
+            "steps": [],
+            "confidence": 0.95,
+            "rationale": "Publisher-assigned licence number, unique per row (465/465 distinct, 8-digit).",
+            "entity": "licence",
+            "qualifiers": null,
+            "one_hot": null
+          },
+          {
+            "source_paths": [
+              "Licence Category"
+            ],
+            "join_with": " ",
+            "when": null,
+            "target": "ext.licence.category",
+            "valid_from_path": null,
+            "valid_to_path": null,
+            "validity_date_formats": null,
+            "claim_scope": null,
+            "steps": [
+              {
+                "op": "trim",
+                "args": {}
+              },
+              {
+                "op": "collapse_whitespace",
+                "args": {}
+              },
+              {
+                "op": "null_if",
+                "args": {
+                  "values": [
+                    "",
+                    "NULL"
+                  ]
+                }
+              }
+            ],
+            "confidence": 0.95,
+            "rationale": "13 publisher licence categories kept in the publisher's wording on the licence role (Restaurant and cafe Licence 146, Limited Licence 75, General Licence 48, On-Premises 44, Packaged Liquor 36, Pre-retail 28, ...).",
+            "entity": "licence",
+            "qualifiers": null,
+            "one_hot": null
+          },
+          {
+            "source_paths": [
+              "Patron Capacity (if applicable)"
+            ],
+            "join_with": " ",
+            "when": null,
+            "target": "ext.establishment.capacity",
+            "valid_from_path": null,
+            "valid_to_path": null,
+            "validity_date_formats": null,
+            "claim_scope": null,
+            "steps": [
+              {
+                "op": "trim",
+                "args": {}
+              },
+              {
+                "op": "null_if",
+                "args": {
+                  "values": [
+                    "",
+                    "NULL",
+                    "NOT APPLICABLE",
+                    "Not Applicable",
+                    "N/A"
+                  ]
+                }
+              },
+              {
+                "op": "parse_integer",
+                "args": {}
+              }
+            ],
+            "confidence": 0.85,
+            "rationale": "Published maximum patron count for the premises (60.2% present, all integer shapes 99/999/9999); blanks dropped.",
+            "entity": "premises",
+            "qualifiers": null,
+            "one_hot": null
+          },
+          {
+            "source_paths": [
+              "Council"
+            ],
+            "join_with": " ",
+            "when": null,
+            "target": "ext.establishment.lga",
+            "valid_from_path": null,
+            "valid_to_path": null,
+            "validity_date_formats": null,
+            "claim_scope": null,
+            "steps": [
+              {
+                "op": "trim",
+                "args": {}
+              },
+              {
+                "op": "collapse_whitespace",
+                "args": {}
+              },
+              {
+                "op": "null_if",
+                "args": {
+                  "values": [
+                    "",
+                    "NULL",
+                    "NOT APPLICABLE",
+                    "Not Applicable",
+                    "N/A",
+                    "NOT STATED",
+                    "UNKNOWN"
+                  ]
+                }
+              }
+            ],
+            "confidence": 0.9,
+            "rationale": "Local government area of the licensed premises (74 distinct council names, 96.3% present).",
+            "entity": "premises",
+            "qualifiers": null,
+            "one_hot": null
+          },
+          {
+            "source_paths": [
+              "Region"
+            ],
+            "join_with": " ",
+            "when": null,
+            "target": "ext.establishment.region",
+            "valid_from_path": null,
+            "valid_to_path": null,
+            "validity_date_formats": null,
+            "claim_scope": null,
+            "steps": [
+              {
+                "op": "trim",
+                "args": {}
+              },
+              {
+                "op": "collapse_whitespace",
+                "args": {}
+              },
+              {
+                "op": "null_if",
+                "args": {
+                  "values": [
+                    "",
+                    "NULL",
+                    "NOT APPLICABLE",
+                    "Not Applicable",
+                    "N/A"
+                  ]
+                }
+              }
+            ],
+            "confidence": 0.85,
+            "rationale": "Publisher's licensing region for the premises (11 values: Metro North/South/East/West, Barwon South-West, Hume, ...), 96.3% present.",
+            "entity": "premises",
+            "qualifiers": null,
+            "one_hot": null
+          },
+          {
+            "source_paths": [
+              "Metro/Regional"
+            ],
+            "join_with": " ",
+            "when": null,
+            "target": "ext.establishment.region",
+            "valid_from_path": null,
+            "valid_to_path": null,
+            "validity_date_formats": null,
+            "claim_scope": null,
+            "steps": [
+              {
+                "op": "trim",
+                "args": {}
+              },
+              {
+                "op": "null_if",
+                "args": {
+                  "values": [
+                    "",
+                    "NULL",
+                    "NOT APPLICABLE",
+                    "Not Applicable",
+                    "N/A"
+                  ]
+                }
+              }
+            ],
+            "confidence": 0.7,
+            "rationale": "Second publisher region label per site (Metro 286 / Regional 179); ext.establishment.region is multi-valued so this is one more value per observation.",
+            "entity": "premises",
+            "qualifiers": null,
+            "one_hot": null
+          },
+          {
+            "source_paths": [
+              "Latitude",
+              "Longitude"
+            ],
+            "join_with": ",",
+            "when": null,
+            "target": "ext.establishment.geo",
+            "valid_from_path": null,
+            "valid_to_path": null,
+            "validity_date_formats": null,
+            "claim_scope": null,
+            "steps": [
+              {
+                "op": "trim",
+                "args": {}
+              },
+              {
+                "op": "geo_point",
+                "args": {}
+              }
+            ],
+            "confidence": 0.85,
+            "rationale": "Latitude first then longitude joined with ','; 94% present, remaining are missing coordinates.",
+            "entity": "premises",
+            "qualifiers": null,
+            "one_hot": null
+          },
+          {
+            "source_paths": [
+              "Postal Address"
+            ],
+            "join_with": " ",
+            "when": null,
+            "target": "address.full",
+            "valid_from_path": null,
+            "valid_to_path": null,
+            "validity_date_formats": null,
+            "claim_scope": "correspondence_address",
+            "steps": [
+              {
+                "op": "trim",
+                "args": {}
+              },
+              {
+                "op": "collapse_whitespace",
+                "args": {}
+              },
+              {
+                "op": "null_if",
+                "args": {
+                  "values": [
+                    "",
+                    "NULL"
+                  ]
+                }
+              }
+            ],
+            "confidence": 0.8,
+            "rationale": "The licensee's postal mailing address is the subject's correspondence address; claim_scope keeps it separate from the establishment address so one record never claims two premises addresses.",
+            "entity": "subject",
+            "qualifiers": null,
+            "one_hot": null
+          },
+          {
+            "source_paths": [
+              "Postal Suburb"
+            ],
+            "join_with": " ",
+            "when": null,
+            "target": "address.locality",
+            "valid_from_path": null,
+            "valid_to_path": null,
+            "validity_date_formats": null,
+            "claim_scope": "correspondence_address",
+            "steps": [
+              {
+                "op": "trim",
+                "args": {}
+              },
+              {
+                "op": "collapse_whitespace",
+                "args": {}
+              },
+              {
+                "op": "upper",
+                "args": {}
+              },
+              {
+                "op": "regex_extract",
+                "args": {
+                  "pattern": "^\\s*([A-Z0-9' -]+?)\\s*(?:,?\\s*(NSW|VIC|QLD|WA|SA|TAS|ACT|NT))?\\s*$",
+                  "group": 1
+                }
+              },
+              {
+                "op": "null_if",
+                "args": {
+                  "values": [
+                    "",
+                    "NULL"
+                  ]
+                }
+              }
+            ],
+            "confidence": 0.75,
+            "rationale": "Postal suburb of the correspondence address; 7 rows carry an interstate suffix (e.g. 'SYDNEY NSW') which the regex strips to the locality.",
+            "entity": "subject",
+            "qualifiers": null,
+            "one_hot": null
+          },
+          {
+            "source_paths": [
+              "Postal Postcode"
+            ],
+            "join_with": " ",
+            "when": null,
+            "target": "address.postcode",
+            "valid_from_path": null,
+            "valid_to_path": null,
+            "validity_date_formats": null,
+            "claim_scope": "correspondence_address",
+            "steps": [
+              {
+                "op": "trim",
+                "args": {}
+              },
+              {
+                "op": "null_if",
+                "args": {
+                  "values": [
+                    "",
+                    "NULL"
+                  ]
+                }
+              },
+              {
+                "op": "postcode",
+                "args": {}
+              }
+            ],
+            "confidence": 0.8,
+            "rationale": "Postal postcode of the correspondence address, including interstate codes (e.g. 2000, 7 rows); all 465 values are 4 digits.",
+            "entity": "subject",
+            "qualifiers": null,
+            "one_hot": null
+          }
+        ],
+        "constants": [
+          {
+            "target": "address.state",
+            "value": "VIC",
+            "confidence": 0.9,
+            "rationale": "Metadata default for the evidenced Australian site/premises only, never the subject company or correspondence address.",
+            "entity": "premises",
+            "claim_scope": "licensed_premises"
+          },
+          {
+            "target": "address.country",
+            "value": "AU",
+            "confidence": 0.9,
+            "rationale": "Metadata default for the evidenced Australian site/premises only, never the subject company or correspondence address.",
+            "entity": "premises",
+            "claim_scope": "licensed_premises"
+          }
+        ],
+        "unmapped": [
+          {
+            "source_path": "Trading Hours",
+            "reason": "15 values, but in ~136 rows the cell merely repeats the licence category ('Limited Licence' 75, 'Pre-retail Licence' 28, \"Producer's Licence\" 18, 'Restricted Club Licence' 15, 'BYO Permit' etc.), so ext.licence.condition would duplicate ext.licence.category as a condition. The remainder are coarse bands ('Trading to 1am' 213, 'Ordinary' 79) that are trading-hour categories rather than conditions on one licence. Kept unmapped: duplicating the category is worse than omitting it."
+          },
+          {
+            "source_path": "column_7",
+            "reason": "Empty spacer column (0% present)."
+          },
+          {
+            "source_path": "column_8",
+            "reason": "Empty spacer column (0% present)."
+          },
+          {
+            "source_path": "column_13",
+            "reason": "Empty spacer column (0% present)."
+          },
+          {
+            "source_path": "column_14",
+            "reason": "Empty spacer column (0% present)."
+          }
+        ],
+        "notes": "XLSX: 4 title/branding rows precede the header (skip_rows=4); sheet 'Current_Victorian_Licences_By_L'; 465 data rows, 21 columns incl. two pairs of empty spacer columns. Sheet subtitle states 'Current Victorian Liquor Licences as of 31/08/2026' - a snapshot date, not per-record; observed_at falls back to dataset metadata. Nothing in the data changes per record over time, so address columns need no validity dates. No ABN/ACN column: Licence Number is 8-digit (ABN checksum 0%, ACN checksum 9.2% = chance) - deliberately unmapped. entity_type unmapped (no column states legal entity type). REVISION 3: adopts the reviewer's approved scope unchanged (premises address only; ALL postal columns unmapped) and adds ONLY the placeholder handling: '[Not applicable] -' in Suburb (7 rows, shape '[a a] -') is upper-cased and gated out at address.locality; the same '[NOT APPLICABLE] -' placeholder is nulled in address.full and the '0' postcodes in address.postcode so no placeholder value can be emitted.\n\n[ext-v1] Revision 2. Kept every rule from draft 1 that the data supports. No ext.entity.industry_code rule on Licence Category in this revision: the v2 anzsic_vic_liquor_category table's keys do cover all 13 categories in this file, and its 4 code-bearing groups (restaurant/cafe, packaged liquor, clubs, producers, late-night venues) are genuine activity evidence, but the table is still 'draft - L2 judgement crosswalk, needs a human reviewer' and 5 of the 13 categories (General, On-Premises, BYO, Remote Seller's, Pre-retail, Limited) would yield no code at all, so coverage is uneven. Recommend adding the rule with scheme anzsic2006 once a human signs the table off. Trading Hours stays unmapped because 136 of 465 values repeat the licence category; the rest are coarse trading bands. The three approved address rules were re-roled to premises (establishment), per the rule that a premises address describes the establishment.\nLocal maintainer correction (no model API call): Place VIC/AU defaults on licensed premises, not the licensee correspondence address.",
+        "profile_context": null,
+        "extensions": "ext-v1",
+        "entities": {
+          "licence": {
+            "kind": "licence",
+            "key_paths": [
+              "Licence Number"
+            ],
+            "rationale": "Licence Number is unique per row (465/465 distinct, 8-digit) and identifies the licence across snapshots."
+          },
+          "premises": {
+            "kind": "establishment",
+            "key_paths": [
+              "Street Address",
+              "Suburb",
+              "Postcode"
+            ],
+            "rationale": "The licensed premises: address, LGA, licensing region, metro/regional flag and coordinates describe the site, not the licensee business."
+          }
+        },
+        "relationships": [
+          {
+            "type": "HOLDS_LICENCE",
+            "from_role": "subject",
+            "to_role": "licence",
+            "rationale": "Each row is one current licence held by the licensee."
+          },
+          {
+            "type": "OPERATES_ESTABLISHMENT",
+            "from_role": "subject",
+            "to_role": "premises",
+            "rationale": "The licensee operates the licensed premises named in the address columns."
+          },
+          {
+            "type": "LICENCE_AT_ESTABLISHMENT",
+            "from_role": "licence",
+            "to_role": "premises",
+            "rationale": "The licence authorises the named premises."
+          }
+        ]
+      },
+      "holdout_report": {
+        "records_in": 750,
+        "records_with_output": 750,
+        "record_errors": {},
+        "fields": [
+          {
+            "target": "entity.legal_name",
+            "source_paths": [
+              "Licensee"
+            ],
+            "records": 750,
+            "source_present": 750,
+            "emitted": 749,
+            "coverage_of_records": 0.999,
+            "error_rate_of_present": 0.0,
+            "errors": {},
+            "error_examples": {}
+          },
+          {
+            "target": "entity.trading_name",
+            "source_paths": [
+              "Trading As"
+            ],
+            "records": 750,
+            "source_present": 744,
+            "emitted": 744,
+            "coverage_of_records": 0.992,
+            "error_rate_of_present": 0.0,
+            "errors": {},
+            "error_examples": {}
+          },
+          {
+            "target": "address.full",
+            "source_paths": [
+              "Street Address"
+            ],
+            "records": 750,
+            "source_present": 716,
+            "emitted": 715,
+            "coverage_of_records": 0.953,
+            "error_rate_of_present": 0.0,
+            "errors": {},
+            "error_examples": {},
+            "entity": "premises"
+          },
+          {
+            "target": "address.locality",
+            "source_paths": [
+              "Suburb"
+            ],
+            "records": 750,
+            "source_present": 726,
+            "emitted": 715,
+            "coverage_of_records": 0.953,
+            "error_rate_of_present": 0.0,
+            "errors": {},
+            "error_examples": {},
+            "entity": "premises"
+          },
+          {
+            "target": "address.postcode",
+            "source_paths": [
+              "Postcode"
+            ],
+            "records": 750,
+            "source_present": 726,
+            "emitted": 715,
+            "coverage_of_records": 0.953,
+            "error_rate_of_present": 0.0,
+            "errors": {},
+            "error_examples": {},
+            "entity": "premises"
+          },
+          {
+            "target": "ext.licence.number",
+            "source_paths": [
+              "Licence Number"
+            ],
+            "records": 750,
+            "source_present": 750,
+            "emitted": 750,
+            "coverage_of_records": 1.0,
+            "error_rate_of_present": 0.0,
+            "errors": {},
+            "error_examples": {},
+            "entity": "licence"
+          },
+          {
+            "target": "ext.licence.category",
+            "source_paths": [
+              "Licence Category"
+            ],
+            "records": 750,
+            "source_present": 750,
+            "emitted": 750,
+            "coverage_of_records": 1.0,
+            "error_rate_of_present": 0.0,
+            "errors": {},
+            "error_examples": {},
+            "entity": "licence"
+          },
+          {
+            "target": "ext.establishment.capacity",
+            "source_paths": [
+              "Patron Capacity (if applicable)"
+            ],
+            "records": 750,
+            "source_present": 442,
+            "emitted": 442,
+            "coverage_of_records": 0.589,
+            "error_rate_of_present": 0.0,
+            "errors": {},
+            "error_examples": {},
+            "entity": "premises"
+          },
+          {
+            "target": "ext.establishment.lga",
+            "source_paths": [
+              "Council"
+            ],
+            "records": 750,
+            "source_present": 728,
+            "emitted": 717,
+            "coverage_of_records": 0.956,
+            "error_rate_of_present": 0.0,
+            "errors": {},
+            "error_examples": {},
+            "entity": "premises"
+          },
+          {
+            "target": "ext.establishment.region",
+            "source_paths": [
+              "Region"
+            ],
+            "records": 750,
+            "source_present": 728,
+            "emitted": 728,
+            "coverage_of_records": 0.971,
+            "error_rate_of_present": 0.0,
+            "errors": {},
+            "error_examples": {},
+            "entity": "premises"
+          },
+          {
+            "target": "ext.establishment.region",
+            "source_paths": [
+              "Metro/Regional"
+            ],
+            "records": 750,
+            "source_present": 750,
+            "emitted": 750,
+            "coverage_of_records": 1.0,
+            "error_rate_of_present": 0.0,
+            "errors": {},
+            "error_examples": {},
+            "entity": "premises"
+          },
+          {
+            "target": "ext.establishment.geo",
+            "source_paths": [
+              "Latitude",
+              "Longitude"
+            ],
+            "records": 750,
+            "source_present": 715,
+            "emitted": 715,
+            "coverage_of_records": 0.953,
+            "error_rate_of_present": 0.0,
+            "errors": {},
+            "error_examples": {},
+            "entity": "premises"
+          },
+          {
+            "target": "address.full",
+            "source_paths": [
+              "Postal Address"
+            ],
+            "records": 750,
+            "source_present": 750,
+            "emitted": 750,
+            "coverage_of_records": 1.0,
+            "error_rate_of_present": 0.0,
+            "errors": {},
+            "error_examples": {},
+            "entity": "subject"
+          },
+          {
+            "target": "address.locality",
+            "source_paths": [
+              "Postal Suburb"
+            ],
+            "records": 750,
+            "source_present": 750,
+            "emitted": 750,
+            "coverage_of_records": 1.0,
+            "error_rate_of_present": 0.0,
+            "errors": {},
+            "error_examples": {},
+            "entity": "subject"
+          },
+          {
+            "target": "address.postcode",
+            "source_paths": [
+              "Postal Postcode"
+            ],
+            "records": 750,
+            "source_present": 750,
+            "emitted": 750,
+            "coverage_of_records": 1.0,
+            "error_rate_of_present": 0.0,
+            "errors": {},
+            "error_examples": {},
+            "entity": "subject"
+          }
+        ],
+        "relationships": {
+          "HOLDS_LICENCE": 750,
+          "OPERATES_ESTABLISHMENT": 750,
+          "LICENCE_AT_ESTABLISHMENT": 750
+        }
+      },
+      "holdout_issues": [],
+      "critic": {
+        "fields": [],
+        "missed": [],
+        "summary": "No model critic called. Local deterministic regression checks; semantic corrections documented in the revision."
+      }
+    }
+  ],
+  "local_revision": {
+    "kind": "maintainer_correction",
+    "actor": "Codex maintainer, at user request",
+    "reason": "Place VIC/AU defaults on licensed premises, not the licensee correspondence address.",
+    "parent_run_id": "20261112T210805-b6050a",
+    "parent_config_digest": "4a41b83076313583089c587a3986612bc3bc8716ba1e9a9fbb15d7e53544a2c1",
+    "bundle_sha256": "14f2b563f29f736047da7f16303d0fbce2a9e6c25428984cdba2f68666491dc4",
+    "dependencies": {
+      "firmable_ontology.yaml": "639b80ea6333146c7ac714cd940fcdf6b2945f451e95333b0be21174bedee5da",
+      "config\\ontology_extensions.yaml": "61598d10cb0feb8f2de0daeb403bd68722ae4ef6beec5d758bd5ca3d5ad8a061",
+      "firmable\\mapping\\engine.py": "42402ccfbfb5a896ef14f2405be8f27ebf3d428030c9a2c2ec214b1a30d9056b",
+      "firmable\\mapping\\transforms.py": "9f96be7568e9693dee9a8f89303471ac3883e3ed5bccd748f259a24227886c65",
+      "firmable\\crosswalk.py": "ef1a7479dbe2ea3a5bc5ac86ed49dac849bc0990c36ddd3401107d862d0634cf"
+    },
+    "model_calls": 0,
+    "validation_scope": "Frozen replay sample partition; not an unseen holdout"
+  },
+  "stages": [
+    {
+      "stage": "LOCAL_CORRECTION_VALIDATED",
+      "at": "2026-11-17T04:16:38+00:00"
+    },
+    {
+      "stage": "PENDING_REVIEW",
+      "at": "2026-11-17T04:16:38+00:00"
+    }
+  ]
+}

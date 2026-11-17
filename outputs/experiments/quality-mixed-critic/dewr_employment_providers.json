@@ -1,0 +1,309 @@
+{
+  "status": "PENDING_REVIEW",
+  "run_id": "20261112T020855-b3968c",
+  "prompt_version": "prompts-v7",
+  "model": "deepseek-v4-flash",
+  "ontology_sha256": "639b80ea6333146c7ac714cd940fcdf6b2945f451e95333b0be21174bedee5da",
+  "snapshot_sha256": "0034e176b580405064272e688c7bf51230f051880263cdeeb5107ac00bd7a979",
+  "config_digest": "9bffaf5a2539d0ff754f369e7fd9b0d69652ab1b42f779ef2474b5aaffc4b702",
+  "config": {
+    "source_id": "dewr_employment_providers",
+    "record_grain": "establishment",
+    "grain_rationale": "One record is a provider's service site (outlet): the location at which an employment-services provider delivers a named contract (DESA, DESB, EPS5, TTW5, NEI5, RJCP...). The same physical site recurs once per contract, and identical site/contract keys also repeat in the source, so record identity is taken from the full row content. Business attributes mapped here (name, website, address) are those of the provider operating that site; the file carries no ABN/ACN or registered legal name.",
+    "reader": {
+      "format": "delimited",
+      "archive_member": null,
+      "encoding": "utf-8-sig",
+      "delimiter": ",",
+      "skip_rows": 0,
+      "sheet": null,
+      "record_path": null
+    },
+    "record_id": {
+      "strategy": "content_hash",
+      "source_paths": [
+        "DIS_SITE_CODE",
+        "CONTRACT_NAME",
+        "LOCATION_NAME",
+        "SITE_NAME",
+        "SITE_CONTACT_PHONE",
+        "SITE_ADDRESS_LN",
+        "SITE_LOCALITY_NAME",
+        "SITE_STATE_CD",
+        "SITE_POSTCODE",
+        "SITE_URL",
+        "SITE_EMAIL_ADDRESS",
+        "ESA_CD_1",
+        "ESA_CD_2",
+        "ESA_CD_3",
+        "AGENT_FREECALL_NUM",
+        "PHONE_NUMBER",
+        "LATITUDE",
+        "LONGITUDE"
+      ],
+      "rationale": "DIS_SITE_CODE alone is not unique (489 distinct in 505 discovery rows) and the (DIS_SITE_CODE, CONTRACT_NAME) pair still collides on held-out records (7 duplicates), so no column key is unique per record; identity is hashed from the full row content instead."
+    },
+    "observed_at": {
+      "source_path": null,
+      "steps": [],
+      "fallback": "resource_last_modified"
+    },
+    "fields": [
+      {
+        "source_paths": [
+          "SITE_NAME"
+        ],
+        "join_with": " ",
+        "when": null,
+        "target": "entity.trading_name",
+        "valid_from_path": null,
+        "valid_to_path": null,
+        "validity_date_formats": [],
+        "steps": [
+          {
+            "op": "collapse_whitespace",
+            "args": {}
+          },
+          {
+            "op": "trim",
+            "args": {}
+          },
+          {
+            "op": "null_if",
+            "args": {
+              "values": [
+                "",
+                "NA",
+                "N/A",
+                "NULL"
+              ]
+            }
+          }
+        ],
+        "confidence": 0.62,
+        "rationale": "SITE_NAME holds the provider organisation's trading/brand name as published in the provider directory (e.g. 'MAX Employment', 'Advanced Personnel Management (APM)', 'Vision Australia', 'NOVA Employment'). These are business/display names, not registered legal names, and the source has no legal-name, ABN or ACN column, so trading_name is the correct target rather than legal_name."
+      },
+      {
+        "source_paths": [
+          "SITE_URL"
+        ],
+        "join_with": " ",
+        "when": null,
+        "target": "entity.website",
+        "valid_from_path": null,
+        "valid_to_path": null,
+        "validity_date_formats": [],
+        "steps": [
+          {
+            "op": "trim",
+            "args": {}
+          },
+          {
+            "op": "null_if",
+            "args": {
+              "values": [
+                "",
+                "NA",
+                "N/A",
+                "NULL"
+              ]
+            }
+          },
+          {
+            "op": "regex_extract",
+            "args": {
+              "pattern": "(?:[A-Za-z][A-Za-z0-9+.-]*://)?(?:[A-Za-z0-9][A-Za-z0-9-]*\\.)+[A-Za-z]{2,}(?:/\\S*)?",
+              "group": 0
+            }
+          },
+          {
+            "op": "website",
+            "args": {}
+          }
+        ],
+        "confidence": 0.82,
+        "rationale": "SITE_URL is the provider's web address (present on 57.6% of discovery rows, 88 distinct domains such as www.apm.net.au, www.sureway.com.au), mostly without scheme. A few cells contain phone numbers or 'TTY: ...' text instead of a domain; regex_extract keeps only the domain-shaped part so non-URL junk (e.g. '467027758', 'TTY: 03 96143062') yields no observation instead of a rejected value, and the website op then normalises the domain. Discovery coverage is unchanged (291/291 domain values still emitted) with zero errors."
+      },
+      {
+        "source_paths": [
+          "SITE_ADDRESS_LN",
+          "SITE_LOCALITY_NAME",
+          "SITE_STATE_CD",
+          "SITE_POSTCODE"
+        ],
+        "join_with": ", ",
+        "when": null,
+        "target": "address.full",
+        "valid_from_path": null,
+        "valid_to_path": null,
+        "validity_date_formats": [],
+        "steps": [
+          {
+            "op": "collapse_whitespace",
+            "args": {}
+          },
+          {
+            "op": "trim",
+            "args": {}
+          },
+          {
+            "op": "null_if",
+            "args": {
+              "values": [
+                "",
+                "NA",
+                "N/A",
+                "NULL"
+              ]
+            }
+          }
+        ],
+        "confidence": 0.72,
+        "rationale": "Composed full address of the provider site from the street address line, locality, state code and postcode; all four components are present on 100% of discovery and held-out rows."
+      },
+      {
+        "source_paths": [
+          "SITE_LOCALITY_NAME"
+        ],
+        "join_with": " ",
+        "when": null,
+        "target": "address.locality",
+        "valid_from_path": null,
+        "valid_to_path": null,
+        "validity_date_formats": [],
+        "steps": [
+          {
+            "op": "collapse_whitespace",
+            "args": {}
+          },
+          {
+            "op": "trim",
+            "args": {}
+          },
+          {
+            "op": "null_if",
+            "args": {
+              "values": [
+                "",
+                "NA",
+                "N/A",
+                "NULL"
+              ]
+            }
+          }
+        ],
+        "confidence": 0.9,
+        "rationale": "SITE_LOCALITY_NAME is the suburb/locality of the site's street address (100% present, 412 distinct AU localities such as HEALESVILLE, IPSWICH)."
+      },
+      {
+        "source_paths": [
+          "SITE_STATE_CD"
+        ],
+        "join_with": " ",
+        "when": null,
+        "target": "address.state",
+        "valid_from_path": null,
+        "valid_to_path": null,
+        "validity_date_formats": [],
+        "steps": [
+          {
+            "op": "trim",
+            "args": {}
+          },
+          {
+            "op": "state",
+            "args": {}
+          }
+        ],
+        "confidence": 0.95,
+        "rationale": "SITE_STATE_CD is the site's Australian state/territory abbreviation (NSW, VIC, QLD, SA, WA, TAS, NT, ACT observed in discovery and held-out rows)."
+      },
+      {
+        "source_paths": [
+          "SITE_POSTCODE"
+        ],
+        "join_with": " ",
+        "when": null,
+        "target": "address.postcode",
+        "valid_from_path": null,
+        "valid_to_path": null,
+        "validity_date_formats": [],
+        "steps": [
+          {
+            "op": "trim",
+            "args": {}
+          },
+          {
+            "op": "postcode",
+            "args": {}
+          }
+        ],
+        "confidence": 0.95,
+        "rationale": "SITE_POSTCODE is the site's 4-digit Australian postcode; 13 discovery values are 3 digits and are NT postcodes missing the leading zero (postcode op re-pads, e.g. 850 -> 0850)."
+      }
+    ],
+    "constants": [
+      {
+        "target": "address.country",
+        "value": "AU",
+        "confidence": 0.9,
+        "rationale": "Australian Government (DEWR) employment-services provider directory; every state code is an Australian state/territory."
+      }
+    ],
+    "unmapped": [
+      {
+        "source_path": "DIS_SITE_CODE",
+        "reason": "Internal code for the provider's site/outlet; not an ABN/ACN and not unique per record (489 distinct in 505 discovery rows). Identifies a site under contract, not a business."
+      },
+      {
+        "source_path": "CONTRACT_NAME",
+        "reason": "Code of the employment-services contract/programme the site delivers (DESB, DESA, EPS5, TTW5, NEI5, RJCP...). Describes the site's contract, not an attribute of the legal entity; the contract's status is not entity.status."
+      },
+      {
+        "source_path": "LOCATION_NAME",
+        "reason": "Provider site location label; duplicates SITE_LOCALITY_NAME (same 412 distinct values) and adds no separate attribute."
+      },
+      {
+        "source_path": "SITE_CONTACT_PHONE",
+        "reason": "Phone number of the site; no phone target in the ontology."
+      },
+      {
+        "source_path": "AGENT_FREECALL_NUM",
+        "reason": "Agent free-call number; no phone target in the ontology."
+      },
+      {
+        "source_path": "PHONE_NUMBER",
+        "reason": "Additional site phone number; no phone target in the ontology."
+      },
+      {
+        "source_path": "SITE_EMAIL_ADDRESS",
+        "reason": "Site contact email (often a named individual's mailbox); no email target in the ontology."
+      },
+      {
+        "source_path": "ESA_CD_1",
+        "reason": "Employment Service Area code for the first ESA the site serves; a geography/contract descriptor, not a business identifier or ANZSIC industry code."
+      },
+      {
+        "source_path": "ESA_CD_2",
+        "reason": "Second Employment Service Area code; geography/contract descriptor, mostly blank."
+      },
+      {
+        "source_path": "ESA_CD_3",
+        "reason": "Third Employment Service Area code; geography/contract descriptor, mostly blank."
+      },
+      {
+        "source_path": "LATITUDE",
+        "reason": "Site geocode ('NULL' placeholders present); no coordinate target in the ontology."
+      },
+      {
+        "source_path": "LONGITUDE",
+        "reason": "Site geocode ('NULL' placeholders present); no coordinate target in the ontology."
+      },
+      {
+        "source_path": "column_18",
+        "reason": "Trailing empty column created by the header's final comma; 0% populated."
+      }
+    ],
+    "notes": "Header has a trailing comma, producing an empty 19th field (column_18) - ignored. No ABN/ACN/NZBN, legal-name, entity-type, entity-status or date columns exist, so no identifier, entity_type, status, date_registered or observation validity dates can be asserted. SITE_NAME appears truncated at 30 characters in places (e.g. 'Auctus Business Training and Consul', 'Campbell Page MORELAND/'), so trading names may be incomplete. Some SITE_URL cells hold phone numbers or text such as 'TTY: 03 96143062', which are dropped by the domain regex rather than emitted as websites. Held-out validation showed (DIS_SITE_CODE, CONTRACT_NAME) is not unique, so record_id now uses a content hash over all source columns."
+  }
+}

@@ -4,11 +4,11 @@
 - **Latest review decision:** approved by claude-code (AI assistant acting for the candidate) (ai_assistant_proxy) at 2026-11-09T21:53:15+00:00
 - **Status:** PENDING_REVIEW  (run `20261110T045114-d14064`, prompt `prompts-v3`, model `deepseek-v4-flash`)
 - **Dataset:** Employment Services Provider Locations and Contacts — Department of Employment and Workplace Relations
-- **Resource:** Employment Services Provider Locations and Contacts (CSV), sha256 `0034e176b5804050…`
+- **Resource:** Employment Services Provider Locations and Contacts (CSV), sha256 `0034e176b580405064272e688c7bf51230f051880263cdeeb5107ac00bd7a979`
 - **Licence:** cc-by
 - **Agent effort:** 1 proposal(s), 7 tool calls, 6 model calls, 59,387 prompt + 4,597 completion tokens, 33s model time
 
-## Final proposal (v0, digest `38158714ad1c7b84`)
+## Final proposal (v0, digest `38158714ad1c7b84b475221bdc9445c64a4abedc8cd04284fe9ad79d6b1164fc`)
 
 **Record grain:** `establishment` — One row is a provider service SITE (a physical office of an employment-services provider) delivering a given CONTRACT (e.g. DESB, DESA, EPS5, RJCP) at a given location. The business participant is the provider named in SITE_NAME; its location, state, postcode and web attributes are mapped. DIS_SITE_CODE identifies the site/contract row, not a business registration, and is not mapped as a business identifier.
 
@@ -20,9 +20,9 @@
 
 | source column(s) | canonical target | transforms | conf. | held-out emitted / present | errors | rationale |
 |---|---|---|---|---|---|---|
-| SITE_NAME | `entity.trading_name` | trim, collapse_whitespace, null_if({"values": ["TBA", "TBC", "N/A", "NA", "NULL", "-", "--", ".", "UNKNOWN"]}) | 0.72 | 1104 / 1104 |  | SITE_NAME holds the provider's operating/brand name as delivered at this site (196 distinct values, e.g. 'MAX Employment', 'Advanced Personnel Management (APM)' |
+| SITE_NAME | `entity.trading_name` | trim, collapse_whitespace, null_if({"values": ["TBA", "TBC", "N/A", "NA", "NULL", "-", "--", ".", "UNKNOWN"]}) | 0.72 | 1104 / 1104 |  | SITE_NAME holds the provider's operating/brand name as delivered at this site (196 distinct values, e.g. 'MAX Employment', 'Advanced Personnel Management (APM)', 'Job Centre Australia'), not a registered legal name; trading_name is the safe target. Placeholders treated as missing. |
 | SITE_URL | `entity.website` | trim, null_if({"values": ["TBA", "TBC", "N/A", "NA", "NULL", "-", "--", ".", "UNKNOWN"]}), website | 0.8 | 646 / 649 | {'WEBSITE_INVALID': 3} | Provider website; 57.6% present, values are domains/URLs (www.*, http://*). |
-| SITE_ADDRESS_LN | `address.full` | trim, collapse_whitespace, null_if({"values": ["TBA", "TBC", "N/A", "NA", "NULL", "-", "--", ".", "UNKNOWN", ""]}) | 0.85 | 1099 / 1102 |  | Street address line of the site (e.g. '2nd Floor 22 East Row'); locality is a separate column. Placeholder strings (TBA/TBC/N/A/-/.) are treated as missing per  |
+| SITE_ADDRESS_LN | `address.full` | trim, collapse_whitespace, null_if({"values": ["TBA", "TBC", "N/A", "NA", "NULL", "-", "--", ".", "UNKNOWN", ""]}) | 0.85 | 1099 / 1102 |  | Street address line of the site (e.g. '2nd Floor 22 East Row'); locality is a separate column. Placeholder strings (TBA/TBC/N/A/-/.) are treated as missing per reviewer feedback. |
 | SITE_LOCALITY_NAME | `address.locality` | trim, collapse_whitespace, null_if({"values": ["TBA", "TBC", "N/A", "NA", "NULL", "-", "--", ".", "UNKNOWN", ""]}) | 0.9 | 1104 / 1104 |  | Suburb/locality name (412 distinct AU localities, e.g. WOY WOY, CHATSWOOD). Placeholders treated as missing. |
 | SITE_STATE_CD | `address.state` | trim, null_if({"values": ["TBA", "TBC", "N/A", "NA", "NULL", "-", "--", ".", "UNKNOWN", ""]}), state | 0.95 | 1104 / 1104 |  | Explicit 8-value AU state code column (NSW/VIC/QLD/SA/WA/TAS/ACT/NT), all 2-letter abbreviations, 100% present. |
 | SITE_POSTCODE | `address.postcode` | trim, null_if({"values": ["TBA", "TBC", "N/A", "NA", "NULL", "-", "--", ".", "UNKNOWN", ""]}), postcode | 0.9 | 1104 / 1104 |  | 4-digit AU postcodes plus 13 three-digit values (NT-style, e.g. 0822 stored as 822) which the postcode transform re-pads. |

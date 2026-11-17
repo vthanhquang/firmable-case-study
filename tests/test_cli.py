@@ -4,7 +4,7 @@ import sys
 
 import pytest
 
-COMMANDS = ["discover", "select-sources", "fetch", "onboard", "review", "approve", "extract", "resolve",
+COMMANDS = ["discover", "select-sources", "register-source", "fetch", "onboard", "review", "review-import", "approve", "extract", "resolve", "audit-links",
             "compare-matchers", "profiles", "report", "restore-approved", "revalidate", "fullcheck", "stability"]
 
 

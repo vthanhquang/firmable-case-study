@@ -1,0 +1,38 @@
+# Firmable quality replay
+
+The replay used the frozen catalogue, the six benchmark snapshots, and two held-back sources. It ran the onboarding agent again for all eight sources, selected mappings on a development sample, and checked the selected set on a second sample excluded from both onboarding and the first evaluation.
+
+| Part | Baseline | Quality replay |
+|---|---|---|
+| 1 · Discovery | 50 shortlisted, 6 distinct scores, 11 positive in the original 20-case AI-proxy audit | 50 shortlisted, 44 distinct scores, 20 positive in a fresh 20-case Qwen proxy audit |
+| 2 · Mapping | 3,216 expected claims recovered, 15 unsupported claims, 480 missing registration scopes on the final semantic checks | All 3,216 expected claims recovered, zero unsupported claims or missing registration scopes on the same checks |
+| 3 · Identity | 644 accepted pairs and 3 distinct scores | The same 644 source-row pairs across 473 multi-source entities, with 132 distinct scores |
+| 4 · Profiles | 50 profiles, 9 distinct legal-name scores, 55 defaults in core profile fields | 50 profiles, 30 distinct legal-name scores, defaults recorded as context and zero used as observed profile fields |
+
+## Discovery and mapping
+
+The follow-up Part 1 rerun reached 45 distinct scores across 50 datasets. Its fresh audit reopened publisher records and found 20 positives, zero negatives and zero uncertain cases. All six mapping benchmark sources appear in that shortlist. The audit records AI-assisted review. [Follow-up shortlist](../../discovery/evidence_ranked/shortlist.csv) · [Follow-up audit](../../discovery/evidence_ranked/audit/audit_20.csv)
+
+The discovery pass screened 1,509 catalogue records and read publisher rows for 230 datasets. Valid identifier checksums and populated business-name fields drive the ranking. The resource search tried up to three previews per dataset. All six benchmark sources appear in the shortlist. A final Flash review confirmed 66 row-evidence candidates. The Qwen proxy audit drew 20 datasets at random from the frozen top 50 and found 20 positive, zero negative and zero uncertain. [Shortlist](discovery/shortlist.jsonl) · [Audit](discovery/audit/audit_20.csv)
+
+The semantic benchmark covered 1,440 fresh rows across the six replayed sources. ASIC now separates current and former names and carries the company registration scope. ACNC keeps charity registration as a separate event and leaves unclassified alternate names unmapped. The generic extractor replayed 5,999 frozen rows into 37,156 observations. It used the selected ASIC, ACNC and Victorian liquor drafts and retained the established ATO, DEWR and QBCC mappings. [Selected mappings](selected-mappings/) · [Held-out checks](evaluation/mapping-holdout.json) · [ASIC dictionary](https://data.gov.au/data/dataset/7b8656f9-606d-4337-af29-66b89b2eeefb/resource/9430b6b2-b28c-4b1a-a58a-a88b54912853/download/company-dataset-help-file.pdf) · [ACNC register guidance](https://www.acnc.gov.au/charity/about-acnc-charity-register/information-charity-register)
+
+On the Queensland Suitable Operator Register, the final agent took 222 seconds, nine checkpoint stages, 12 tool calls and 193,040 tokens. It mapped the names of all 132 explicit organisations in the 240-row test and abstained on the names of 108 holders with the combined individual or sole-trader label. It recovered all 128 checked ABNs and ACNs using the source’s declared identifier scheme. The controller checkpoints proposals and validation results so an interrupted run can resume at the last saved stage. [Queensland review](qld_suitable_operators.md) · [Role and identifier checks](evaluation/mapping-rso-semantics.json)
+
+## Identity and profiles
+
+The matcher combines identifier and name evidence with claim quality, distinctive name tokens and location agreement. It links at 0.85 when no veto applies. The largest score tie fell from 381 to 86 links at stored precision. The new licence-name guard referred all ten simulated wrong-company identifier cases that passed the old policy. The five real holder-mismatch referrals remained in the queue. [Matcher comparison](evaluation/identity-benchmark.json) · [Review queue](identity/review_queue.jsonl)
+
+An independent coverage check sampled 450 ATO, ACNC and QBCC rows before looking for overlap. Scanning all 4,458,851 ASIC snapshot rows found 182 sampled rows with a shared identifier in ASIC's current-name records. Both policies linked 180 of those and referred two. This measures the shared-identifier subset. The main six-source benchmark includes an overlap cohort. [Full-register coverage](evaluation/full-register-coverage.json)
+
+The blinded 50-link proxy audit returned 48 correct, one incorrect and one uncertain. The two disputed pairs were Callide Coal No. 2 and National Storage Holdings. The frozen ASIC history placed both observed names in each pair under the same ACN and ABN. The registry checks support both links. The audit retains the original model verdicts alongside the documented adjudications. [Original audit](evaluation/link_audit_50.csv) · [Adjudications](evaluation/link_audit_adjudications.json) · [ASIC history rows](evaluation/asic_name_history_crosscheck.json) · [Callide ABN history](https://abr.business.gov.au/AbnHistory/View?id=92004784454) · [National Storage ABN record](https://abr.business.gov.au/ABN/View/38166572845)
+
+The full ASIC lookup found both reported names under one observed identifier for 47 audit pairs. Public register checks covered the other three cases, two incorporated associations and an apostrophe variant. The check also verified the licence premises for the association whose contact and premises postcodes differed. [Register checks and source links](evaluation/registry_audit_crosscheck.json)
+
+The profile replay checked provenance on 464 field and context entries and found zero errors. Company registration and charity registration can coexist. For example, Realise Life Ltd has a company registration dated 2011-02-07 and a charity registration dated 2012-12-03. Licensed premises remain attached to their own source records. All selected primary addresses draw their components from one source record. [Profiles](profiles/company_profiles_50.jsonl) · [Provenance checks](evaluation/profile-benchmark.json)
+
+Removing ASIC affected 48 profiles, removed 199 core fields and changed four winning values. Shifting its registration dates changed 48 displayed company registration dates. Replacing its legal names produced 46 corrupted provisional winners, with 39 marked for review and zero above 0.75 confidence. The baseline assigned 45 corrupted winners confidence above 0.75 in the same name stress test. [Deletion replay](evaluation/source_deletion_impact.json) · [Date stress test](evaluation/source_corruption_impact.json) · [Name stress test](evaluation/source_name_corruption_impact.json)
+
+## Cost and review status
+
+The final window used 1,943,373 tokens across 170 successful model calls and four failed attempts. The provider meter rose by **$3.10** against the $10 budget. The token-based estimate was $3.05. Earlier trials used separate ledgers and included a Qwen critic and a DeepSeek Pro triage run. The final mapping drafts and both audit samples are ready for human review. The verdicts reported here are AI-proxy or registry-assisted, with zero human decisions recorded. The Python suite passed 106 tests. A clean replay reproduced 11 identity, profile and stress-test artifacts byte for byte. [Billing snapshots](billing.jsonl) · [Usage ledger](usage.jsonl) · [Verified summary](summary.json) · [Replay hashes](evaluation/deterministic_replay_check.json)

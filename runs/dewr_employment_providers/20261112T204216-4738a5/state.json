@@ -1,0 +1,1771 @@
+{
+  "run_id": "20261112T204216-4738a5",
+  "source_id": "dewr_employment_providers",
+  "status": "PENDING_REVIEW",
+  "started_at": "2026-11-12T13:42:16+00:00",
+  "prompt_version": "ext-prompts-v1",
+  "model": "deepseek-v4-flash",
+  "critic_model": "deepseek-v4-flash",
+  "ontology_sha256": "426c6cf1aa00d3848f9957895dd849df2c553d3ab1725e3b17c35e0ac94ebb07",
+  "snapshot_sha256": "0034e176b580405064272e688c7bf51230f051880263cdeeb5107ac00bd7a979",
+  "proposals": [
+    {
+      "round": 0,
+      "digest": "e73f6cf16744a08c7c4b011f00409a8d6c3c47feada4310b1bea46d7f41ceada",
+      "config": {
+        "source_id": "dewr_employment_providers",
+        "record_grain": "establishment",
+        "grain_rationale": "One row is a provider service SITE (a physical office of an employment-services provider) delivering a given CONTRACT (e.g. DESB, DESA, EPS5, RJCP) at a given location. The business participant is the provider named in SITE_NAME; its location, state, postcode and web attributes are mapped. DIS_SITE_CODE identifies the site/contract row, not a business registration, and is not mapped as a business identifier.",
+        "reader": {
+          "format": "delimited",
+          "archive_member": null,
+          "encoding": "utf-8-sig",
+          "delimiter": ",",
+          "skip_rows": 0,
+          "sheet": null,
+          "record_path": null
+        },
+        "record_id": {
+          "strategy": "content_hash",
+          "source_paths": [],
+          "rationale": "DIS_SITE_CODE has 489 distinct values over 505 discovery rows and no other column is unique per row, so a content hash is the only traceable row key."
+        },
+        "observed_at": {
+          "source_path": null,
+          "steps": [],
+          "fallback": "resource_last_modified"
+        },
+        "fields": [
+          {
+            "source_paths": [
+              "SITE_NAME"
+            ],
+            "join_with": " ",
+            "when": null,
+            "target": "entity.trading_name",
+            "valid_from_path": null,
+            "valid_to_path": null,
+            "validity_date_formats": null,
+            "claim_scope": null,
+            "steps": [
+              {
+                "op": "trim",
+                "args": {}
+              },
+              {
+                "op": "collapse_whitespace",
+                "args": {}
+              },
+              {
+                "op": "null_if",
+                "args": {
+                  "values": [
+                    "TBA",
+                    "TBC",
+                    "N/A",
+                    "NA",
+                    "NULL",
+                    "-",
+                    "--",
+                    ".",
+                    "UNKNOWN"
+                  ]
+                }
+              }
+            ],
+            "confidence": 0.72,
+            "rationale": "SITE_NAME holds the provider's operating/brand name as delivered at this site (196 distinct values, e.g. 'MAX Employment', 'Advanced Personnel Management (APM)', 'Job Centre Australia'), not a registered legal name; trading_name is the safe target. Placeholders treated as missing.",
+            "entity": null,
+            "qualifiers": null
+          },
+          {
+            "source_paths": [
+              "SITE_URL"
+            ],
+            "join_with": " ",
+            "when": null,
+            "target": "entity.website",
+            "valid_from_path": null,
+            "valid_to_path": null,
+            "validity_date_formats": null,
+            "claim_scope": null,
+            "steps": [
+              {
+                "op": "trim",
+                "args": {}
+              },
+              {
+                "op": "null_if",
+                "args": {
+                  "values": [
+                    "TBA",
+                    "TBC",
+                    "N/A",
+                    "NA",
+                    "NULL",
+                    "-",
+                    "--",
+                    ".",
+                    "UNKNOWN"
+                  ]
+                }
+              },
+              {
+                "op": "website",
+                "args": {}
+              }
+            ],
+            "confidence": 0.8,
+            "rationale": "Provider website; 57.6% present, values are domains/URLs (www.*, http://*).",
+            "entity": null,
+            "qualifiers": null
+          },
+          {
+            "source_paths": [
+              "SITE_ADDRESS_LN"
+            ],
+            "join_with": " ",
+            "when": null,
+            "target": "address.full",
+            "valid_from_path": null,
+            "valid_to_path": null,
+            "validity_date_formats": null,
+            "claim_scope": null,
+            "steps": [
+              {
+                "op": "trim",
+                "args": {}
+              },
+              {
+                "op": "collapse_whitespace",
+                "args": {}
+              },
+              {
+                "op": "null_if",
+                "args": {
+                  "values": [
+                    "TBA",
+                    "TBC",
+                    "N/A",
+                    "NA",
+                    "NULL",
+                    "-",
+                    "--",
+                    ".",
+                    "UNKNOWN",
+                    ""
+                  ]
+                }
+              }
+            ],
+            "confidence": 0.85,
+            "rationale": "Street address line of the site (e.g. '2nd Floor 22 East Row'); locality is a separate column. Placeholder strings (TBA/TBC/N/A/-/.) are treated as missing per reviewer feedback.",
+            "entity": "establishment",
+            "qualifiers": null
+          },
+          {
+            "source_paths": [
+              "SITE_LOCALITY_NAME"
+            ],
+            "join_with": " ",
+            "when": null,
+            "target": "address.locality",
+            "valid_from_path": null,
+            "valid_to_path": null,
+            "validity_date_formats": null,
+            "claim_scope": null,
+            "steps": [
+              {
+                "op": "trim",
+                "args": {}
+              },
+              {
+                "op": "collapse_whitespace",
+                "args": {}
+              },
+              {
+                "op": "null_if",
+                "args": {
+                  "values": [
+                    "TBA",
+                    "TBC",
+                    "N/A",
+                    "NA",
+                    "NULL",
+                    "-",
+                    "--",
+                    ".",
+                    "UNKNOWN",
+                    ""
+                  ]
+                }
+              }
+            ],
+            "confidence": 0.9,
+            "rationale": "Suburb/locality name (412 distinct AU localities, e.g. WOY WOY, CHATSWOOD). Placeholders treated as missing.",
+            "entity": "establishment",
+            "qualifiers": null
+          },
+          {
+            "source_paths": [
+              "SITE_STATE_CD"
+            ],
+            "join_with": " ",
+            "when": null,
+            "target": "address.state",
+            "valid_from_path": null,
+            "valid_to_path": null,
+            "validity_date_formats": null,
+            "claim_scope": null,
+            "steps": [
+              {
+                "op": "trim",
+                "args": {}
+              },
+              {
+                "op": "null_if",
+                "args": {
+                  "values": [
+                    "TBA",
+                    "TBC",
+                    "N/A",
+                    "NA",
+                    "NULL",
+                    "-",
+                    "--",
+                    ".",
+                    "UNKNOWN",
+                    ""
+                  ]
+                }
+              },
+              {
+                "op": "state",
+                "args": {}
+              }
+            ],
+            "confidence": 0.95,
+            "rationale": "Explicit 8-value AU state code column (NSW/VIC/QLD/SA/WA/TAS/ACT/NT), all 2-letter abbreviations, 100% present.",
+            "entity": "establishment",
+            "qualifiers": null
+          },
+          {
+            "source_paths": [
+              "SITE_POSTCODE"
+            ],
+            "join_with": " ",
+            "when": null,
+            "target": "address.postcode",
+            "valid_from_path": null,
+            "valid_to_path": null,
+            "validity_date_formats": null,
+            "claim_scope": null,
+            "steps": [
+              {
+                "op": "trim",
+                "args": {}
+              },
+              {
+                "op": "null_if",
+                "args": {
+                  "values": [
+                    "TBA",
+                    "TBC",
+                    "N/A",
+                    "NA",
+                    "NULL",
+                    "-",
+                    "--",
+                    ".",
+                    "UNKNOWN",
+                    ""
+                  ]
+                }
+              },
+              {
+                "op": "postcode",
+                "args": {}
+              }
+            ],
+            "confidence": 0.9,
+            "rationale": "4-digit AU postcodes plus 13 three-digit values (NT-style, e.g. 0822 stored as 822) which the postcode transform re-pads.",
+            "entity": "establishment",
+            "qualifiers": null
+          },
+          {
+            "source_paths": [
+              "DIS_SITE_CODE"
+            ],
+            "join_with": " ",
+            "when": null,
+            "target": "ext.establishment.source_key",
+            "valid_from_path": null,
+            "valid_to_path": null,
+            "validity_date_formats": null,
+            "claim_scope": null,
+            "steps": [
+              {
+                "op": "trim",
+                "args": {}
+              },
+              {
+                "op": "collapse_whitespace",
+                "args": {}
+              },
+              {
+                "op": "null_if",
+                "args": {
+                  "values": [
+                    "",
+                    "NULL"
+                  ]
+                }
+              }
+            ],
+            "confidence": 0.95,
+            "rationale": "Publisher-assigned site code; stable key for the establishment across snapshots.",
+            "entity": "establishment",
+            "qualifiers": null
+          },
+          {
+            "source_paths": [
+              "CONTRACT_NAME"
+            ],
+            "join_with": " ",
+            "when": null,
+            "target": "ext.establishment.program",
+            "valid_from_path": null,
+            "valid_to_path": null,
+            "validity_date_formats": null,
+            "claim_scope": null,
+            "steps": [
+              {
+                "op": "trim",
+                "args": {}
+              },
+              {
+                "op": "null_if",
+                "args": {
+                  "values": [
+                    "",
+                    "NULL"
+                  ]
+                }
+              }
+            ],
+            "confidence": 0.95,
+            "rationale": "DEWR employment-services contract/programme code delivered at this site (DESB, EPS5, DESA, TTW5, RJCP, NEI5, SPP5, HLS5). A site attribute, not a business identifier.",
+            "entity": "establishment",
+            "qualifiers": null
+          },
+          {
+            "source_paths": [
+              "ESA_CD_1"
+            ],
+            "join_with": " ",
+            "when": null,
+            "target": "ext.establishment.region",
+            "valid_from_path": null,
+            "valid_to_path": null,
+            "validity_date_formats": null,
+            "claim_scope": null,
+            "steps": [
+              {
+                "op": "trim",
+                "args": {}
+              },
+              {
+                "op": "null_if",
+                "args": {
+                  "values": [
+                    "",
+                    "NULL"
+                  ]
+                }
+              }
+            ],
+            "confidence": 0.9,
+            "rationale": "ESA_CD_1 is the Employment Services Area code of the contract; the ontology names 'employment services area' as an example of a publisher region for an establishment.",
+            "entity": "establishment",
+            "qualifiers": null
+          },
+          {
+            "source_paths": [
+              "LATITUDE",
+              "LONGITUDE"
+            ],
+            "join_with": ",",
+            "when": null,
+            "target": "ext.establishment.geo",
+            "valid_from_path": null,
+            "valid_to_path": null,
+            "validity_date_formats": null,
+            "claim_scope": null,
+            "steps": [
+              {
+                "op": "geo_point",
+                "args": {}
+              }
+            ],
+            "confidence": 0.95,
+            "rationale": "Published decimal latitude/longitude of the site; the literal NULL (7 rows) is handled as missing by geo_point.",
+            "entity": "establishment",
+            "qualifiers": null
+          },
+          {
+            "source_paths": [
+              "SITE_EMAIL_ADDRESS"
+            ],
+            "join_with": " ",
+            "when": null,
+            "target": "ext.contact.email_domain",
+            "valid_from_path": null,
+            "valid_to_path": null,
+            "validity_date_formats": null,
+            "claim_scope": null,
+            "steps": [
+              {
+                "op": "trim",
+                "args": {}
+              },
+              {
+                "op": "null_if",
+                "args": {
+                  "values": [
+                    "",
+                    "NULL"
+                  ]
+                }
+              },
+              {
+                "op": "email_domain",
+                "args": {}
+              }
+            ],
+            "confidence": 0.85,
+            "rationale": "Domain of the published site contact email. Only the domain is kept, so the personal local part is never stored.",
+            "entity": "establishment",
+            "qualifiers": null
+          },
+          {
+            "source_paths": [
+              "SITE_EMAIL_ADDRESS"
+            ],
+            "join_with": " ",
+            "when": null,
+            "target": "ext.contact.role_email",
+            "valid_from_path": null,
+            "valid_to_path": null,
+            "validity_date_formats": null,
+            "claim_scope": null,
+            "steps": [
+              {
+                "op": "trim",
+                "args": {}
+              },
+              {
+                "op": "null_if",
+                "args": {
+                  "values": [
+                    "",
+                    "NULL"
+                  ]
+                }
+              },
+              {
+                "op": "role_email",
+                "args": {}
+              }
+            ],
+            "confidence": 0.8,
+            "rationale": "Role mailboxes published for the site (enquiries@, info@); the transform drops personal mailboxes (317 dropped in discovery).",
+            "entity": "establishment",
+            "qualifiers": null
+          },
+          {
+            "source_paths": [
+              "SITE_CONTACT_PHONE",
+              "SITE_STATE_CD"
+            ],
+            "join_with": "|",
+            "when": null,
+            "target": "ext.contact.phone",
+            "valid_from_path": null,
+            "valid_to_path": null,
+            "validity_date_formats": null,
+            "claim_scope": null,
+            "steps": [
+              {
+                "op": "trim",
+                "args": {}
+              },
+              {
+                "op": "null_if",
+                "args": {
+                  "values": [
+                    "",
+                    "NULL"
+                  ]
+                }
+              },
+              {
+                "op": "phone_au",
+                "args": {
+                  "area_from_state": true,
+                  "on_incomplete": "drop"
+                }
+              }
+            ],
+            "confidence": 0.75,
+            "rationale": "Site contact number published for the office; the state completes 8-digit local numbers and truncated numbers are dropped (70 in discovery).",
+            "entity": "establishment",
+            "qualifiers": {
+              "role": {
+                "source_path": null,
+                "value": "site_contact",
+                "steps": []
+              }
+            }
+          },
+          {
+            "source_paths": [
+              "PHONE_NUMBER",
+              "SITE_STATE_CD"
+            ],
+            "join_with": "|",
+            "when": null,
+            "target": "ext.contact.phone",
+            "valid_from_path": null,
+            "valid_to_path": null,
+            "validity_date_formats": null,
+            "claim_scope": null,
+            "steps": [
+              {
+                "op": "trim",
+                "args": {}
+              },
+              {
+                "op": "null_if",
+                "args": {
+                  "values": [
+                    "",
+                    "NULL"
+                  ]
+                }
+              },
+              {
+                "op": "phone_au",
+                "args": {
+                  "area_from_state": true,
+                  "on_incomplete": "drop"
+                }
+              }
+            ],
+            "confidence": 0.75,
+            "rationale": "Provider office number for the site; the state completes local numbers and truncated numbers are dropped (55 in discovery).",
+            "entity": "establishment",
+            "qualifiers": {
+              "role": {
+                "source_path": null,
+                "value": "office",
+                "steps": []
+              }
+            }
+          },
+          {
+            "source_paths": [
+              "AGENT_FREECALL_NUM",
+              "SITE_STATE_CD"
+            ],
+            "join_with": "|",
+            "when": null,
+            "target": "ext.contact.phone",
+            "valid_from_path": null,
+            "valid_to_path": null,
+            "validity_date_formats": null,
+            "claim_scope": null,
+            "steps": [
+              {
+                "op": "trim",
+                "args": {}
+              },
+              {
+                "op": "null_if",
+                "args": {
+                  "values": [
+                    "",
+                    "NULL"
+                  ]
+                }
+              },
+              {
+                "op": "phone_au",
+                "args": {
+                  "area_from_state": true,
+                  "on_incomplete": "drop"
+                }
+              }
+            ],
+            "confidence": 0.7,
+            "rationale": "Provider freecall line (13/1300/1800); blank in 73% of rows, and the values present are complete national numbers.",
+            "entity": "establishment",
+            "qualifiers": {
+              "role": {
+                "source_path": null,
+                "value": "freecall",
+                "steps": []
+              }
+            }
+          },
+          {
+            "source_paths": [
+              "SITE_URL"
+            ],
+            "join_with": " ",
+            "when": null,
+            "target": "ext.contact.website_domain",
+            "valid_from_path": null,
+            "valid_to_path": null,
+            "validity_date_formats": null,
+            "claim_scope": null,
+            "steps": [
+              {
+                "op": "trim",
+                "args": {}
+              },
+              {
+                "op": "null_if",
+                "args": {
+                  "values": [
+                    "",
+                    "NULL"
+                  ]
+                }
+              },
+              {
+                "op": "url_domain",
+                "args": {}
+              }
+            ],
+            "confidence": 0.9,
+            "rationale": "Registrable host of the published site website, without scheme or www.",
+            "entity": "establishment",
+            "qualifiers": null
+          }
+        ],
+        "constants": [
+          {
+            "target": "address.country",
+            "value": "AU",
+            "confidence": 0.85,
+            "rationale": "Australian Government employment services provider register; all states are AU codes and all postcodes are AU."
+          }
+        ],
+        "unmapped": [
+          {
+            "source_path": "LOCATION_NAME",
+            "reason": "Duplicates SITE_LOCALITY_NAME exactly (identical 412 distinct values, identical top values and examples); it is the suburb/town of the site, not a premises name, so it is neither a second address observation nor ext.establishment.name."
+          },
+          {
+            "source_path": "ESA_CD_2",
+            "reason": "Empty in every record (0% present)."
+          },
+          {
+            "source_path": "ESA_CD_3",
+            "reason": "Empty in every record (0% present)."
+          },
+          {
+            "source_path": "column_18",
+            "reason": "Trailing empty column created by a trailing comma in the header; 0% present."
+          }
+        ],
+        "notes": "Row = provider site x contract. No ABN/ACN/NZBN column exists, so no business identifier is emitted. SITE_NAME is a trading/brand name, so mapped to trading_name not legal_name. Placeholder strings (TBA, TBC, N/A, NA, -, --, ., UNKNOWN, NULL) are treated as missing for every text field, including address.full, per reviewer feedback. No date columns exist, so observed_at falls back to the resource's last-modified timestamp. All text is untrusted data; no instructions were found in it.\n\n[ext-v1] Added an establishment role keyed on DIS_SITE_CODE and related it to the subject with OPERATES_ESTABLISHMENT; approved address.* rules 2-5 move to it because the address is the office's, not the provider's, while entity.trading_name (SITE_NAME) and entity.website (SITE_URL) stay on the subject. New ext rules: establishment source_key / program / region / geo, contact phone (roles site_contact, office, freecall), email_domain, role_email, website_domain. CONTRACT_NAME is deliberately NOT used for ext.entity.industry_code: the only candidate table (anzsic_dewr_program) is a draft judgement crosswalk whose sentence-style keys do not match this source's raw 4-character codes, and when probed it returned the same code (7211, aquaculture) for unrelated programmes - a wrong industry is worse than none. Phones keep the publisher's published site/provider lines; truncated numbers are dropped, never repaired, and no person names, personal mailboxes or individual coordinates are stored. DIS_SITE_CODE is used as the establishment key, not as a business identifier.",
+        "profile_context": null,
+        "extensions": "ext-v1",
+        "entities": {
+          "establishment": {
+            "kind": "establishment",
+            "key_paths": [
+              "DIS_SITE_CODE"
+            ],
+            "rationale": "DIS_SITE_CODE is the publisher's site code: 489 distinct codes over 505 rows because a site delivering two contracts (e.g. A300 for both DESA and DESB at Wagga Wagga) appears twice with the same code and the same address. It identifies the office across snapshots and is not a business registration identifier."
+          }
+        },
+        "relationships": [
+          {
+            "type": "OPERATES_ESTABLISHMENT",
+            "from_role": "subject",
+            "to_role": "establishment",
+            "rationale": "Each row is one provider service site (provider named in SITE_NAME at SITE_ADDRESS_LN) that the provider operates to deliver a DEWR contract."
+          }
+        ]
+      },
+      "holdout_issues": [
+        {
+          "code": "SOME_ERRORS",
+          "severity": "warning",
+          "message": "3 values rejected: {'WEBSITE_INVALID': 3}",
+          "target": "entity.website",
+          "source_paths": [
+            "SITE_URL"
+          ],
+          "examples": {
+            "WEBSITE_INVALID": [
+              "467027758",
+              "TTY: 03 96143062",
+              "467027758"
+            ]
+          }
+        },
+        {
+          "code": "SOME_ERRORS",
+          "severity": "warning",
+          "message": "4 values rejected: {'GEO_OUTSIDE_AU': 4}",
+          "target": "ext.establishment.geo",
+          "source_paths": [
+            "LATITUDE",
+            "LONGITUDE"
+          ],
+          "examples": {
+            "GEO_OUTSIDE_AU": [
+              "54821633,-26.49854824",
+              "41627346,-26.67764804",
+              "41627346,-26.24115911",
+              "41627346,-26.54123981"
+            ]
+          }
+        },
+        {
+          "code": "SOME_ERRORS",
+          "severity": "warning",
+          "message": "1 values rejected: {'EMAIL_INVALID': 1}",
+          "target": "ext.contact.email_domain",
+          "source_paths": [
+            "SITE_EMAIL_ADDRESS"
+          ],
+          "examples": {
+            "EMAIL_INVALID": [
+              "<withheld: personal data>"
+            ]
+          }
+        },
+        {
+          "code": "SOME_ERRORS",
+          "severity": "warning",
+          "message": "1 values rejected: {'EMAIL_INVALID': 1}",
+          "target": "ext.contact.role_email",
+          "source_paths": [
+            "SITE_EMAIL_ADDRESS"
+          ],
+          "examples": {
+            "EMAIL_INVALID": [
+              "<withheld: personal data>"
+            ]
+          }
+        },
+        {
+          "code": "VALUES_DROPPED",
+          "severity": "warning",
+          "message": "713 values deliberately discarded: {'PERSONAL_MAILBOX_DROPPED': 713}",
+          "target": "ext.contact.role_email",
+          "source_paths": [
+            "SITE_EMAIL_ADDRESS"
+          ]
+        },
+        {
+          "code": "VALUES_DROPPED",
+          "severity": "warning",
+          "message": "154 values deliberately discarded: {'PHONE_INCOMPLETE': 154}",
+          "target": "ext.contact.phone",
+          "source_paths": [
+            "SITE_CONTACT_PHONE",
+            "SITE_STATE_CD"
+          ]
+        },
+        {
+          "code": "VALUES_DROPPED",
+          "severity": "warning",
+          "message": "123 values deliberately discarded: {'PHONE_INCOMPLETE': 123}",
+          "target": "ext.contact.phone",
+          "source_paths": [
+            "PHONE_NUMBER",
+            "SITE_STATE_CD"
+          ]
+        },
+        {
+          "code": "VALUES_DROPPED",
+          "severity": "warning",
+          "message": "66 values deliberately discarded: {'PHONE_INCOMPLETE': 66}",
+          "target": "ext.contact.phone",
+          "source_paths": [
+            "AGENT_FREECALL_NUM",
+            "SITE_STATE_CD"
+          ]
+        },
+        {
+          "code": "SOME_ERRORS",
+          "severity": "warning",
+          "message": "3 values rejected: {'DOMAIN_INVALID': 3}",
+          "target": "ext.contact.website_domain",
+          "source_paths": [
+            "SITE_URL"
+          ],
+          "examples": {
+            "DOMAIN_INVALID": [
+              "<withheld: personal data>",
+              "<withheld: personal data>",
+              "<withheld: personal data>"
+            ]
+          }
+        }
+      ],
+      "holdout_report": {
+        "records_in": 1106,
+        "records_with_output": 1106,
+        "record_errors": {},
+        "fields": [
+          {
+            "target": "entity.trading_name",
+            "source_paths": [
+              "SITE_NAME"
+            ],
+            "records": 1106,
+            "source_present": 1106,
+            "emitted": 1106,
+            "coverage_of_records": 1.0,
+            "error_rate_of_present": 0.0,
+            "errors": {},
+            "error_examples": {}
+          },
+          {
+            "target": "entity.website",
+            "source_paths": [
+              "SITE_URL"
+            ],
+            "records": 1106,
+            "source_present": 650,
+            "emitted": 647,
+            "coverage_of_records": 0.585,
+            "error_rate_of_present": 0.005,
+            "errors": {
+              "WEBSITE_INVALID": 3
+            },
+            "error_examples": {
+              "WEBSITE_INVALID": [
+                "467027758",
+                "TTY: 03 96143062",
+                "467027758"
+              ]
+            }
+          },
+          {
+            "target": "address.full",
+            "source_paths": [
+              "SITE_ADDRESS_LN"
+            ],
+            "records": 1106,
+            "source_present": 1104,
+            "emitted": 1101,
+            "coverage_of_records": 0.995,
+            "error_rate_of_present": 0.0,
+            "errors": {},
+            "error_examples": {},
+            "entity": "establishment"
+          },
+          {
+            "target": "address.locality",
+            "source_paths": [
+              "SITE_LOCALITY_NAME"
+            ],
+            "records": 1106,
+            "source_present": 1106,
+            "emitted": 1106,
+            "coverage_of_records": 1.0,
+            "error_rate_of_present": 0.0,
+            "errors": {},
+            "error_examples": {},
+            "entity": "establishment"
+          },
+          {
+            "target": "address.state",
+            "source_paths": [
+              "SITE_STATE_CD"
+            ],
+            "records": 1106,
+            "source_present": 1106,
+            "emitted": 1106,
+            "coverage_of_records": 1.0,
+            "error_rate_of_present": 0.0,
+            "errors": {},
+            "error_examples": {},
+            "entity": "establishment"
+          },
+          {
+            "target": "address.postcode",
+            "source_paths": [
+              "SITE_POSTCODE"
+            ],
+            "records": 1106,
+            "source_present": 1106,
+            "emitted": 1106,
+            "coverage_of_records": 1.0,
+            "error_rate_of_present": 0.0,
+            "errors": {},
+            "error_examples": {},
+            "entity": "establishment"
+          },
+          {
+            "target": "ext.establishment.source_key",
+            "source_paths": [
+              "DIS_SITE_CODE"
+            ],
+            "records": 1106,
+            "source_present": 1106,
+            "emitted": 1106,
+            "coverage_of_records": 1.0,
+            "error_rate_of_present": 0.0,
+            "errors": {},
+            "error_examples": {},
+            "entity": "establishment"
+          },
+          {
+            "target": "ext.establishment.program",
+            "source_paths": [
+              "CONTRACT_NAME"
+            ],
+            "records": 1106,
+            "source_present": 1106,
+            "emitted": 1106,
+            "coverage_of_records": 1.0,
+            "error_rate_of_present": 0.0,
+            "errors": {},
+            "error_examples": {},
+            "entity": "establishment"
+          },
+          {
+            "target": "ext.establishment.region",
+            "source_paths": [
+              "ESA_CD_1"
+            ],
+            "records": 1106,
+            "source_present": 1102,
+            "emitted": 1102,
+            "coverage_of_records": 0.996,
+            "error_rate_of_present": 0.0,
+            "errors": {},
+            "error_examples": {},
+            "entity": "establishment"
+          },
+          {
+            "target": "ext.establishment.geo",
+            "source_paths": [
+              "LATITUDE",
+              "LONGITUDE"
+            ],
+            "records": 1106,
+            "source_present": 1106,
+            "emitted": 1089,
+            "coverage_of_records": 0.985,
+            "error_rate_of_present": 0.004,
+            "errors": {
+              "GEO_OUTSIDE_AU": 4
+            },
+            "error_examples": {
+              "GEO_OUTSIDE_AU": [
+                "54821633,-26.49854824",
+                "41627346,-26.67764804",
+                "41627346,-26.24115911",
+                "41627346,-26.54123981"
+              ]
+            },
+            "entity": "establishment"
+          },
+          {
+            "target": "ext.contact.email_domain",
+            "source_paths": [
+              "SITE_EMAIL_ADDRESS"
+            ],
+            "records": 1106,
+            "source_present": 814,
+            "emitted": 813,
+            "coverage_of_records": 0.735,
+            "error_rate_of_present": 0.001,
+            "errors": {
+              "EMAIL_INVALID": 1
+            },
+            "error_examples": {
+              "EMAIL_INVALID": [
+                "<withheld: personal data>"
+              ]
+            },
+            "entity": "establishment"
+          },
+          {
+            "target": "ext.contact.role_email",
+            "source_paths": [
+              "SITE_EMAIL_ADDRESS"
+            ],
+            "records": 1106,
+            "source_present": 814,
+            "emitted": 100,
+            "coverage_of_records": 0.09,
+            "error_rate_of_present": 0.001,
+            "errors": {
+              "EMAIL_INVALID": 1
+            },
+            "error_examples": {
+              "EMAIL_INVALID": [
+                "<withheld: personal data>"
+              ]
+            },
+            "entity": "establishment",
+            "dropped": {
+              "PERSONAL_MAILBOX_DROPPED": 713
+            }
+          },
+          {
+            "target": "ext.contact.phone",
+            "source_paths": [
+              "SITE_CONTACT_PHONE",
+              "SITE_STATE_CD"
+            ],
+            "records": 1106,
+            "source_present": 1106,
+            "emitted": 922,
+            "coverage_of_records": 0.834,
+            "error_rate_of_present": 0.0,
+            "errors": {},
+            "error_examples": {},
+            "entity": "establishment",
+            "dropped": {
+              "PHONE_INCOMPLETE": 154
+            }
+          },
+          {
+            "target": "ext.contact.phone",
+            "source_paths": [
+              "PHONE_NUMBER",
+              "SITE_STATE_CD"
+            ],
+            "records": 1106,
+            "source_present": 1106,
+            "emitted": 902,
+            "coverage_of_records": 0.816,
+            "error_rate_of_present": 0.0,
+            "errors": {},
+            "error_examples": {},
+            "entity": "establishment",
+            "dropped": {
+              "PHONE_INCOMPLETE": 123
+            }
+          },
+          {
+            "target": "ext.contact.phone",
+            "source_paths": [
+              "AGENT_FREECALL_NUM",
+              "SITE_STATE_CD"
+            ],
+            "records": 1106,
+            "source_present": 1106,
+            "emitted": 242,
+            "coverage_of_records": 0.219,
+            "error_rate_of_present": 0.0,
+            "errors": {},
+            "error_examples": {},
+            "entity": "establishment",
+            "dropped": {
+              "PHONE_INCOMPLETE": 66
+            }
+          },
+          {
+            "target": "ext.contact.website_domain",
+            "source_paths": [
+              "SITE_URL"
+            ],
+            "records": 1106,
+            "source_present": 650,
+            "emitted": 647,
+            "coverage_of_records": 0.585,
+            "error_rate_of_present": 0.005,
+            "errors": {
+              "DOMAIN_INVALID": 3
+            },
+            "error_examples": {
+              "DOMAIN_INVALID": [
+                "<withheld: personal data>",
+                "<withheld: personal data>",
+                "<withheld: personal data>"
+              ]
+            },
+            "entity": "establishment"
+          }
+        ],
+        "relationships": {
+          "OPERATES_ESTABLISHMENT": 1106
+        }
+      },
+      "critic": {
+        "fields": [
+          {
+            "rule_index": 0,
+            "verdict": "ok",
+            "reason": "SITE_ADDRESS_LN is the street/level line of the site ('2nd Floor 22 East Row', 'Level 1 42 Katherine Terrace'), locality held separately; address.full is a legitimate partial street address and placeholders are nulled. Site address is the establishment's own address, so the role fits.",
+            "target": "address.full",
+            "source_paths": [
+              "SITE_ADDRESS_LN"
+            ]
+          },
+          {
+            "rule_index": 1,
+            "verdict": "ok",
+            "reason": "Locality column; values match address.locality in all held-out rows, placeholders nulled.",
+            "target": "address.locality",
+            "source_paths": [
+              "SITE_LOCALITY_NAME"
+            ]
+          },
+          {
+            "rule_index": 2,
+            "verdict": "ok",
+            "reason": "Explicit 2-letter AU state code column mapped through a state transform; held-out values ACT/NSW/NT/QLD/VIC/SA all emitted correctly and inside the enum.",
+            "target": "address.state",
+            "source_paths": [
+              "SITE_STATE_CD"
+            ]
+          },
+          {
+            "rule_index": 3,
+            "verdict": "ok",
+            "reason": "Postcodes are 4-digit AU; the 3-digit NT value '850' is re-padded to '0850' as claimed, which is the correct NT postcode. Type and enum-compatible.",
+            "target": "address.postcode",
+            "source_paths": [
+              "SITE_POSTCODE"
+            ]
+          },
+          {
+            "rule_index": 4,
+            "verdict": "ok",
+            "reason": "DIS_SITE_CODE is the publisher site code and the declared establishment key, not a business registration number; emitted as ext.establishment.source_key with values A230/A300/BK20 etc.",
+            "target": "ext.establishment.source_key",
+            "source_paths": [
+              "DIS_SITE_CODE"
+            ]
+          },
+          {
+            "rule_index": 5,
+            "verdict": "ok",
+            "reason": "CONTRACT_NAME values (DESB, DESA, NEI5, RJCP, HLS5, TTW5, EPS5) are precisely the DEWR contract/programme codes; one value per row so the multi-valued target is not violated, and attaching a programme to the site is correct.",
+            "target": "ext.establishment.program",
+            "source_paths": [
+              "CONTRACT_NAME"
+            ]
+          },
+          {
+            "rule_index": 6,
+            "verdict": "ok",
+            "reason": "ESA_CD_1 is the Employment Services Area code (4SOE, NTKR, 5ACT...), which the ontology explicitly lists as an example of a publisher region for an establishment; one value per row, site-level.",
+            "target": "ext.establishment.region",
+            "source_paths": [
+              "ESA_CD_1"
+            ]
+          },
+          {
+            "rule_index": 7,
+            "verdict": "ok",
+            "reason": "LATITUDE/LONGITUDE are decimal degrees inside Australia; the literal NULL pair correctly produces no geo observation (RM30), and other rows yield valid points rounded consistently.",
+            "target": "ext.establishment.geo",
+            "source_paths": [
+              "LATITUDE",
+              "LONGITUDE"
+            ]
+          },
+          {
+            "rule_index": 8,
+            "verdict": "ok",
+            "reason": "Only the domain of the published site email is kept (visionaustralia.org, iim.net.au), so the personal local part is never emitted; domain is the registrable host.",
+            "target": "ext.contact.email_domain",
+            "source_paths": [
+              "SITE_EMAIL_ADDRESS"
+            ]
+          },
+          {
+            "rule_index": 9,
+            "verdict": "ok",
+            "reason": "All held-out emails have personal local parts and the role_email transform correctly emits nothing; no personal mailbox is stored. Rule is sound.",
+            "target": "ext.contact.role_email",
+            "source_paths": [
+              "SITE_EMAIL_ADDRESS"
+            ]
+          },
+          {
+            "rule_index": 10,
+            "verdict": "doubtful",
+            "reason": "SITE_CONTACT_PHONE is the published site line and the area-code completion is reasonable, but using the site's STATE to infer the area code fabricated the ACT code: '61325800' (a Sydney 02 number) is emitted as +61261325800 for Canberra. The same value appears identically in PHONE_NUMBER, so it is also unclear this is a distinct role line versus the office number. Also role 'site_contact' duplicates role 'office' on most rows.",
+            "target": "ext.contact.phone",
+            "source_paths": [
+              "SITE_CONTACT_PHONE",
+              "SITE_STATE_CD"
+            ]
+          },
+          {
+            "rule_index": 11,
+            "verdict": "doubtful",
+            "reason": "PHONE_NUMBER is mapped as a distinct 'office' role, but in the held-out rows it is byte-identical to SITE_CONTACT_PHONE in every populated case (61325800, 1800466046\u2192same, 68848155, 89729200, 85225656), so it is likely the same line emitted twice rather than an independent contact. The state-based area-code completion is fine for normal 8-digit numbers.",
+            "target": "ext.contact.phone",
+            "source_paths": [
+              "PHONE_NUMBER",
+              "SITE_STATE_CD"
+            ]
+          },
+          {
+            "rule_index": 12,
+            "verdict": "ok",
+            "reason": "AGENT_FREECALL_NUM holds genuine 13/1800 national numbers (1800466046, 131559, 136123); blank cells are nulled before the phone transform, so no bogus freecall observations are emitted and no personal mobile is implied.",
+            "target": "ext.contact.phone",
+            "source_paths": [
+              "AGENT_FREECALL_NUM",
+              "SITE_STATE_CD"
+            ]
+          },
+          {
+            "rule_index": 13,
+            "verdict": "ok",
+            "reason": "SITE_URL is the site's own website; url_domain strips scheme and www (http://www.novaemployment.com.au \u2192 novaemployment.com.au; empty SITE_URL \u2192 nothing emitted, consistent with the unchanged entity.website rule).",
+            "target": "ext.contact.website_domain",
+            "source_paths": [
+              "SITE_URL"
+            ]
+          }
+        ],
+        "missed": [
+          {
+            "source_path": "SITE_NAME",
+            "suggested_target": "entity.legal_name",
+            "reason": "SITE_NAME values are provider organisation names (Vision Australia, OCTEC Limited, The Salvation Army Employment Plus) that are currently emitted only as trading_name. At minimum a separate name concept for the provider organisation should be considered; 'OCTEC Limited' suggests some values are registered names, not trading names. Treat as a review item, not an automatic legal_name emission."
+          },
+          {
+            "source_path": "CONTRACT_NAME",
+            "suggested_target": "ext.establishment.source_key",
+            "reason": "DIS_SITE_CODE is not unique: 489 codes for 505 rows because a site delivering two contracts repeats the code. The establishment key should be the pair (DIS_SITE_CODE, CONTRACT_NAME) or the programme should be part of the key qualifier, otherwise two programme-specific rows collapse onto one key."
+          },
+          {
+            "source_path": "SITE_NAME",
+            "suggested_target": "ext.establishment.name",
+            "reason": "SITE_NAME is the provider organisation, not the site's own name; the ontology has no establishment name, so this is a gap note only. LOCATION_NAME correctly was not used for it since it duplicates the locality."
+          }
+        ],
+        "summary": "The added rules are mostly sound: address, state, postcode, source_key, program, region, geo, email domain/role-email and website-domain all map to the right concepts with correct types, and the multi-valued targets receive one value per row. Two defects: the phone rules emit duplicated roles (site_contact and office are the same number in every held-out row) and, more seriously, the state-based area-code completion rewrites a Sydney number (61325800) as a Canberra +612 number for the ACT site, fabricating a phone not evidenced by the data \u2014 both marked doubtful. Also worth attention: DIS_SITE_CODE is not unique across rows (489 codes / 505 rows) because a site delivering two contracts repeats the code, so the declared entity key needs the contract qualifier; and SITE_NAME carries provider organisation names (some, like 'OCTEC Limited', plausibly registered names) that are only mapped as trading_name. Unmapped drops (LOCATION_NAME duplicate, empty ESA_CD_2/3, trailing column) are justified.",
+        "prompt_version": "critic-v5"
+      }
+    }
+  ],
+  "tool_calls": 13,
+  "stages": [
+    {
+      "stage": "INSPECTED",
+      "at": "2026-11-12T13:42:17+00:00"
+    },
+    {
+      "stage": "PROPOSED_v0",
+      "at": "2026-11-12T13:47:48+00:00"
+    },
+    {
+      "stage": "VALIDATED_v0",
+      "at": "2026-11-12T13:47:49+00:00"
+    },
+    {
+      "stage": "CRITIQUED_v0",
+      "at": "2026-11-12T13:48:01+00:00"
+    },
+    {
+      "stage": "PENDING_REVIEW",
+      "at": "2026-11-12T13:48:01+00:00"
+    }
+  ],
+  "extension_base": {
+    "source_id": "dewr_employment_providers",
+    "record_grain": "establishment",
+    "grain_rationale": "One row is a provider service SITE (a physical office of an employment-services provider) delivering a given CONTRACT (e.g. DESB, DESA, EPS5, RJCP) at a given location. The business participant is the provider named in SITE_NAME; its location, state, postcode and web attributes are mapped. DIS_SITE_CODE identifies the site/contract row, not a business registration, and is not mapped as a business identifier.",
+    "reader": {
+      "format": "delimited",
+      "archive_member": null,
+      "encoding": "utf-8-sig",
+      "delimiter": ",",
+      "skip_rows": 0,
+      "sheet": null,
+      "record_path": null
+    },
+    "record_id": {
+      "strategy": "content_hash",
+      "source_paths": [],
+      "rationale": "DIS_SITE_CODE has 489 distinct values over 505 discovery rows and no other column is unique per row, so a content hash is the only traceable row key."
+    },
+    "observed_at": {
+      "source_path": null,
+      "steps": [],
+      "fallback": "resource_last_modified"
+    },
+    "fields": [
+      {
+        "source_paths": [
+          "SITE_NAME"
+        ],
+        "join_with": " ",
+        "when": null,
+        "target": "entity.trading_name",
+        "steps": [
+          {
+            "op": "trim",
+            "args": {}
+          },
+          {
+            "op": "collapse_whitespace",
+            "args": {}
+          },
+          {
+            "op": "null_if",
+            "args": {
+              "values": [
+                "TBA",
+                "TBC",
+                "N/A",
+                "NA",
+                "NULL",
+                "-",
+                "--",
+                ".",
+                "UNKNOWN"
+              ]
+            }
+          }
+        ],
+        "confidence": 0.72,
+        "rationale": "SITE_NAME holds the provider's operating/brand name as delivered at this site (196 distinct values, e.g. 'MAX Employment', 'Advanced Personnel Management (APM)', 'Job Centre Australia'), not a registered legal name; trading_name is the safe target. Placeholders treated as missing."
+      },
+      {
+        "source_paths": [
+          "SITE_URL"
+        ],
+        "join_with": " ",
+        "when": null,
+        "target": "entity.website",
+        "steps": [
+          {
+            "op": "trim",
+            "args": {}
+          },
+          {
+            "op": "null_if",
+            "args": {
+              "values": [
+                "TBA",
+                "TBC",
+                "N/A",
+                "NA",
+                "NULL",
+                "-",
+                "--",
+                ".",
+                "UNKNOWN"
+              ]
+            }
+          },
+          {
+            "op": "website",
+            "args": {}
+          }
+        ],
+        "confidence": 0.8,
+        "rationale": "Provider website; 57.6% present, values are domains/URLs (www.*, http://*)."
+      },
+      {
+        "source_paths": [
+          "SITE_ADDRESS_LN"
+        ],
+        "join_with": " ",
+        "when": null,
+        "target": "address.full",
+        "steps": [
+          {
+            "op": "trim",
+            "args": {}
+          },
+          {
+            "op": "collapse_whitespace",
+            "args": {}
+          },
+          {
+            "op": "null_if",
+            "args": {
+              "values": [
+                "TBA",
+                "TBC",
+                "N/A",
+                "NA",
+                "NULL",
+                "-",
+                "--",
+                ".",
+                "UNKNOWN",
+                ""
+              ]
+            }
+          }
+        ],
+        "confidence": 0.85,
+        "rationale": "Street address line of the site (e.g. '2nd Floor 22 East Row'); locality is a separate column. Placeholder strings (TBA/TBC/N/A/-/.) are treated as missing per reviewer feedback."
+      },
+      {
+        "source_paths": [
+          "SITE_LOCALITY_NAME"
+        ],
+        "join_with": " ",
+        "when": null,
+        "target": "address.locality",
+        "steps": [
+          {
+            "op": "trim",
+            "args": {}
+          },
+          {
+            "op": "collapse_whitespace",
+            "args": {}
+          },
+          {
+            "op": "null_if",
+            "args": {
+              "values": [
+                "TBA",
+                "TBC",
+                "N/A",
+                "NA",
+                "NULL",
+                "-",
+                "--",
+                ".",
+                "UNKNOWN",
+                ""
+              ]
+            }
+          }
+        ],
+        "confidence": 0.9,
+        "rationale": "Suburb/locality name (412 distinct AU localities, e.g. WOY WOY, CHATSWOOD). Placeholders treated as missing."
+      },
+      {
+        "source_paths": [
+          "SITE_STATE_CD"
+        ],
+        "join_with": " ",
+        "when": null,
+        "target": "address.state",
+        "steps": [
+          {
+            "op": "trim",
+            "args": {}
+          },
+          {
+            "op": "null_if",
+            "args": {
+              "values": [
+                "TBA",
+                "TBC",
+                "N/A",
+                "NA",
+                "NULL",
+                "-",
+                "--",
+                ".",
+                "UNKNOWN",
+                ""
+              ]
+            }
+          },
+          {
+            "op": "state",
+            "args": {}
+          }
+        ],
+        "confidence": 0.95,
+        "rationale": "Explicit 8-value AU state code column (NSW/VIC/QLD/SA/WA/TAS/ACT/NT), all 2-letter abbreviations, 100% present."
+      },
+      {
+        "source_paths": [
+          "SITE_POSTCODE"
+        ],
+        "join_with": " ",
+        "when": null,
+        "target": "address.postcode",
+        "steps": [
+          {
+            "op": "trim",
+            "args": {}
+          },
+          {
+            "op": "null_if",
+            "args": {
+              "values": [
+                "TBA",
+                "TBC",
+                "N/A",
+                "NA",
+                "NULL",
+                "-",
+                "--",
+                ".",
+                "UNKNOWN",
+                ""
+              ]
+            }
+          },
+          {
+            "op": "postcode",
+            "args": {}
+          }
+        ],
+        "confidence": 0.9,
+        "rationale": "4-digit AU postcodes plus 13 three-digit values (NT-style, e.g. 0822 stored as 822) which the postcode transform re-pads."
+      }
+    ],
+    "constants": [
+      {
+        "target": "address.country",
+        "value": "AU",
+        "confidence": 0.85,
+        "rationale": "Australian Government employment services provider register; all states are AU codes and all postcodes are AU."
+      }
+    ],
+    "unmapped": [
+      {
+        "source_path": "DIS_SITE_CODE",
+        "reason": "Site/contract code identifying the service site (489 distinct of 505 rows, so not unique), not a business registration identifier and not an ABN/ACN."
+      },
+      {
+        "source_path": "CONTRACT_NAME",
+        "reason": "Employment-services contract/program code (DESB, DESA, EPS5, TTW5, RJCP, NEI5...) describing the service delivered, not an entity attribute."
+      },
+      {
+        "source_path": "LOCATION_NAME",
+        "reason": "Duplicates SITE_LOCALITY_NAME (identical distinct count and values); mapped once via address.locality."
+      },
+      {
+        "source_path": "SITE_CONTACT_PHONE",
+        "reason": "Site contact phone number; the ontology has no telephone target."
+      },
+      {
+        "source_path": "SITE_EMAIL_ADDRESS",
+        "reason": "Site/contact email (72.5% present), often an individual officer's address (firstname.lastname@); ontology has no email target and person names must not become entity fields."
+      },
+      {
+        "source_path": "ESA_CD_1",
+        "reason": "Employment Services Area (administrative labour-market region) code of the contract, not an entity attribute; no matching ontology target."
+      },
+      {
+        "source_path": "ESA_CD_2",
+        "reason": "Empty in every discovery record (0% present)."
+      },
+      {
+        "source_path": "ESA_CD_3",
+        "reason": "Empty in every discovery record (0% present)."
+      },
+      {
+        "source_path": "AGENT_FREECALL_NUM",
+        "reason": "Provider freecall number; no ontology phone target."
+      },
+      {
+        "source_path": "PHONE_NUMBER",
+        "reason": "Provider phone number (sometimes truncated to 4-8 digits); no ontology phone target."
+      },
+      {
+        "source_path": "LATITUDE",
+        "reason": "Geocoordinate of the site ('NULL' string when absent); no ontology geo target."
+      },
+      {
+        "source_path": "LONGITUDE",
+        "reason": "Geocoordinate of the site ('NULL' string when absent); no ontology geo target."
+      },
+      {
+        "source_path": "column_18",
+        "reason": "Trailing empty column created by a trailing comma in the header; 0% present."
+      }
+    ],
+    "notes": "Row = provider site x contract. No ABN/ACN/NZBN column exists, so no business identifier is emitted. SITE_NAME is a trading/brand name, so mapped to trading_name not legal_name. Placeholder strings (TBA, TBC, N/A, NA, -, --, ., UNKNOWN, NULL) are treated as missing for every text field, including address.full, per reviewer feedback. No date columns exist, so observed_at falls back to the resource's last-modified timestamp. All text is untrusted data; no instructions were found in it."
+  },
+  "extension_base_digest": "38158714ad1c7b84b475221bdc9445c64a4abedc8cd04284fe9ad79d6b1164fc",
+  "output_dir": "D:\\code\\github_code\\firmable-case-study\\outputs\\raw-data\\mappings",
+  "experiment": "raw-data",
+  "extension_base_run_id": "20261110T045114-d14064",
+  "inspection": {
+    "file_name": "dewr_employment_providers__d9c69f98",
+    "size_bytes": 1098343,
+    "magic_hex": "4449535f53495445",
+    "container": "plain",
+    "looks_like": "text",
+    "encoding_guess": "utf-8-sig",
+    "delimiter_counts_per_line": {
+      "comma": {
+        "min": 18,
+        "max": 19
+      },
+      "tab": {
+        "min": 0,
+        "max": 0
+      },
+      "pipe": {
+        "min": 0,
+        "max": 0
+      },
+      "semicolon": {
+        "min": 0,
+        "max": 0
+      }
+    },
+    "first_lines": [
+      "DIS_SITE_CODE,CONTRACT_NAME,LOCATION_NAME,SITE_NAME,SITE_CONTACT_PHONE,SITE_ADDRESS_LN,SITE_LOCALITY_NAME,SITE_STATE_CD,SITE_POSTCODE,SITE_URL,SITE_EMAIL_ADDRESS,ESA_CD_1,ESA_CD_2,ESA_CD_3,AGENT_FREECALL_NUM,PHONE_NUMBER,LATITUDE,LONGITUDE,",
+      "A230,DESB,CANBERRA,Vision Australia,61325800,2nd Floor 22 East Row,CANBERRA,ACT,2601,www.visionaustralia.org.au,kal.perera@visionaustralia.org,5ACT,    ,    ,          ,61325800,-35.2791945,149.1306937,",
+      "A290,DESB,YOUNG,Job Centre Australia,1800466046,2B Campbell Street,YOUNG,NSW,2594,www.jobcentreaustralia.com.au,jcayoung@jobcentreaustralia.com.au,5ACT,    ,    ,1800466046,63823222,-34.31470378,148.2943602,",
+      "A300,DESA,WAGGA WAGGA,Job Centre Australia,1800466046,55 Peter Street,WAGGA WAGGA,NSW,2650,www.jobcentreaustralia.com.au,jcawagga@jobcentreaustralia.com.au,4SOE,    ,    ,1800466046,69218004,-35.11538899,147.3684042,",
+      "A300,DESB,WAGGA WAGGA,Job Centre Australia,1800466046,55 Peter Street,WAGGA WAGGA,NSW,2650,www.jobcentreaustralia.com.au,jcawagga@jobcentreaustralia.com.au,5MRV,    ,    ,1800466046,69218004,-35.11538899,147.3684042,",
+      "A310,DESA,TUMUT,Job Centre Australia,1800466046,Shop 6 & 7 The HUB Wynyard Street,TUMUT,NSW,2720,www.jobcentreaustralia.com.au,jcatumut@jcal.com.au,4SOE,    ,    ,1800466046,69474040,-35.32075023,148.2325049,",
+      "A310,DESB,TUMUT,Job Centre Australia,1800466046,Shop 6 & 7 The HUB Wynyard Street,TUMUT,NSW,2720,www.jobcentreaustralia.com.au,jcatumut@jcal.com.au,5MRV,    ,    ,1800466046,69474040,-35.32075023,148.2325049,",
+      "A320,DESA,COOTAMUNDRA,Job Centre Australia,1800466046,169a Parker Street,COOTAMUNDRA,NSW,2590,www.jobcentreaustralia.com.au,jcacoota@jobcentreaustralia.com.au,4SOE,    ,    ,1800466046,466046,-34.63608234,148.0260863,",
+      "A320,DESB,COOTAMUNDRA,Job Centre Australia,1800466046,169a Parker Street,COOTAMUNDRA,NSW,2590,www.jobcentreaustralia.com.au,jcacoota@jobcentreaustralia.com.au,5MRV,    ,    ,1800466046,466046,-34.63608234,148.0260863,",
+      "A340,DESB,CHATSWOOD,Job Centre Australia,1800466046,Level 1 13 Spring Street,CHATSWOOD,NSW,2067,www.jobcentreaustralia.com.au,jcachatswood@jobcentreaustralia.com.au,5SYW,    ,    ,1800466046,94131313,-33.79640109,151.1849635,",
+      "A860,DESA,Woy Woy,ORS Employment Solutions,43447500,26-30 Railway Street,Woy Woy,NSW,2256,www.orsgroup.com.au,enquiries@orsgroup.com.au,4CEC,    ,    ,          ,43447500,-33.48585245,151.3241008,",
+      "A860,DESB,Woy Woy,ORS Employment Solutions,43447500,26-30 Railway Street,Woy Woy,NSW,2256,www.orsgroup.com.au,enquiries@orsgroup.com.au,5SYW,    ,    ,          ,43447500,-33.48585245,151.3241008,"
+    ]
+  },
+  "ext_base_findings": [],
+  "ext_editable": [],
+  "reader": {
+    "format": "delimited",
+    "archive_member": null,
+    "encoding": "utf-8-sig",
+    "delimiter": ",",
+    "skip_rows": 0,
+    "sheet": null,
+    "record_path": null
+  },
+  "ext_change_logs": [
+    {
+      "round": 0,
+      "changes": [
+        {
+          "index": 2,
+          "change": "attributes",
+          "target": "address.full",
+          "entity": "establishment",
+          "reason": "SITE_ADDRESS_LN is the street address of the provider's site office, not the business entity's own address."
+        },
+        {
+          "index": 3,
+          "change": "attributes",
+          "target": "address.locality",
+          "entity": "establishment",
+          "reason": "SITE_LOCALITY_NAME is the locality of the site office; it belongs to the establishment."
+        },
+        {
+          "index": 4,
+          "change": "attributes",
+          "target": "address.state",
+          "entity": "establishment",
+          "reason": "SITE_STATE_CD is the state of the site office; it belongs to the establishment."
+        },
+        {
+          "index": 5,
+          "change": "attributes",
+          "target": "address.postcode",
+          "entity": "establishment",
+          "reason": "SITE_POSTCODE is the postcode of the site office; it belongs to the establishment."
+        },
+        {
+          "change": "added",
+          "target": "ext.establishment.source_key",
+          "source_paths": [
+            "DIS_SITE_CODE"
+          ],
+          "entity": "establishment"
+        },
+        {
+          "change": "added",
+          "target": "ext.establishment.program",
+          "source_paths": [
+            "CONTRACT_NAME"
+          ],
+          "entity": "establishment"
+        },
+        {
+          "change": "added",
+          "target": "ext.establishment.region",
+          "source_paths": [
+            "ESA_CD_1"
+          ],
+          "entity": "establishment"
+        },
+        {
+          "change": "added",
+          "target": "ext.establishment.geo",
+          "source_paths": [
+            "LATITUDE",
+            "LONGITUDE"
+          ],
+          "entity": "establishment"
+        },
+        {
+          "change": "added",
+          "target": "ext.contact.email_domain",
+          "source_paths": [
+            "SITE_EMAIL_ADDRESS"
+          ],
+          "entity": "establishment"
+        },
+        {
+          "change": "added",
+          "target": "ext.contact.role_email",
+          "source_paths": [
+            "SITE_EMAIL_ADDRESS"
+          ],
+          "entity": "establishment"
+        },
+        {
+          "change": "added",
+          "target": "ext.contact.phone",
+          "source_paths": [
+            "SITE_CONTACT_PHONE",
+            "SITE_STATE_CD"
+          ],
+          "entity": "establishment"
+        },
+        {
+          "change": "added",
+          "target": "ext.contact.phone",
+          "source_paths": [
+            "PHONE_NUMBER",
+            "SITE_STATE_CD"
+          ],
+          "entity": "establishment"
+        },
+        {
+          "change": "added",
+          "target": "ext.contact.phone",
+          "source_paths": [
+            "AGENT_FREECALL_NUM",
+            "SITE_STATE_CD"
+          ],
+          "entity": "establishment"
+        },
+        {
+          "change": "added",
+          "target": "ext.contact.website_domain",
+          "source_paths": [
+            "SITE_URL"
+          ],
+          "entity": "establishment"
+        }
+      ],
+      "discarded": []
+    }
+  ],
+  "finished_at": "2026-11-12T13:48:01+00:00",
+  "final_digest": "e73f6cf16744a08c7c4b011f00409a8d6c3c47feada4310b1bea46d7f41ceada"
+}

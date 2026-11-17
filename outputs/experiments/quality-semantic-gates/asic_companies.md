@@ -1,0 +1,60 @@
+# Mapping review: `asic_companies`
+
+- **Status:** PENDING_REVIEW  (run `20261112T015912-8a00b4`, prompt `prompts-v9`, model `deepseek-v4-flash`)
+- **Dataset:** ASIC - Company Dataset — Australian Securities and Investments Commission (ASIC)
+- **Resource:** Company Dataset - Current (ZIP), sha256 `bb7935a163292c6d195bd2d5788863164f191198b3f29257fb332785f998bcea`
+- **Licence:** cc-by
+- **Agent effort:** 2 proposal(s), 15 tool calls, 15 model calls, 216,166 prompt + 23,952 completion tokens, 481s model time
+
+## Final proposal (v1, digest `56e0b6f073932898680b9508636a8c29e1fed503fef50cf68b1b30b630449ce9`)
+
+**Record grain:** `legal_entity` — Each row is one name-history record for an ASIC-registered legal entity, identified by its ACN. ASIC joins changed names onto the same registration: exactly one row per entity carries Current Name Indicator=Y and holds the entity's current registered name, while the other rows hold former names and carry the current name in the separate Current Name column. All entity attributes mapped here (ACN, ABN, entity type, status, registration date) are attributes of the legal person, not of the row's name; the name rules are gated so current and former names are never confused.
+
+**Reader:** `{"format": "delimited", "archive_member": "COMPANY_202611.csv", "encoding": "utf-8-sig", "delimiter": "\t", "skip_rows": 0, "sheet": null, "record_path": null}`
+
+**Record id:** `columns` ['ACN', 'Company Name', 'Current Name Indicator'] — ACN is stable per legal entity but repeats across name-history rows (471 distinct in 473 discovery rows; holdout shows the same pattern), so ACN alone is not unique per record. ACN+Company Name+Current Name Indicator identifies one name row of one entity uniquely; Current Name Indicator is included so a repeated name for the same ACN cannot collide.
+
+**observed_at:** `{"source_path": null, "steps": [], "fallback": "resource_last_modified"}`
+
+| source column(s) | canonical target | transforms | conf. | held-out emitted / present | errors | rationale |
+|---|---|---|---|---|---|---|
+| Company Name *when Current Name Indicator equals ['Y']* | `entity.legal_name` | collapse_whitespace, trim | 0.9 | 732 / 732 |  | Publisher word-for-word: Company Name is the current registered company name when Current Name Indicator is Y. The gate is essential - without it every superseded name was emitted as a current_legal_name claim (the critic caught LOVINI HOLDINGS PTY LTD presented as current alongside MONAKA PTY LTD). Gated: 301/473 discovery rows, every entity gets exactly one current name. ASIC holds legal names only, so entity.legal_name, not trading_name. Column is space-padded to fixed width, hence collapse_whitespace then trim. |
+| Company Name *when Current Name Indicator not_equals ['Y']* | `entity.legal_name` | collapse_whitespace, trim | 0.8 | 431 / 431 |  | Complementary branch: rows without the Y indicator are name-history rows, so Company Name there is a superseded registered name of the same ACN - a former legal name, not a current one. Gated: 172/473 discovery rows, exactly the complement of the current-name rows, so every name row is classified as current or former and none is dropped. valid_to left empty because the publisher states the extract does not establish when each former name stopped being valid, and a current name's start date does not establish the end date of a previous name. |
+| Current Name *when Current Name present []* | `entity.legal_name` | collapse_whitespace, trim, valid_from from Current Name Start Date | 0.78 | 431 / 431 |  | Corrected direction. The critic established that on a history row Current Name holds the entity's CURRENT registered name (record 1 Company Name=LOVINI with Current Name=MONAKA; record 2 the current-name row for the same ACN with Company Name=MONAKA), so this is a current_legal_name claim, not a former alias. Current Name Start Date dates that current name, so it is valid_from for this claim. Not gated on the indicator because the columns are complementary (301 indicator rows vs 172 populated Current Name rows), so this supplies current names for entities whose current name is expressed this way. It repeats a name the Y-gated rule also emits for the same ACN, which is a consistent duplicate assertion rather than a conflict. |
+| ACN | `entity.acn` | trim, acn | 0.95 | 1163 / 1163 |  | Profile: 100% of discovery values match ^\d{9}$ and pass the ACN checksum (1.0 rate); 471 distinct over 473 rows, consistent with one entity spanning several name rows. Holdout: 1163/1163 emitted, zero errors. ASIC's primary company identifier, so it is the business identifier, not the row's own ID. |
+| ABN | `entity.abn` | trim, null_if({"values": ["0"]}), abn | 0.92 | 844 / 1163 |  | Publisher: ABN 0 is a missing value. Profile: 145/473 discovery rows hold the literal single-character '0'; the other 328 are 11 digits and all pass the ABN checksum (0.693 valid rate is exactly the non-zero share). null_if '0' then the checksummed abn transform, which also strips zero padding that would otherwise fail the checksum. Holdout: 844/1163 emitted, zero errors. |
+| Status | `entity.status` | trim, map_enum({"mapping": {"REGD": "active", "DRGD": "deregistered", "EXAD": "unknown", "SOFF": "unknown"}, "default": "unknown"}) | 0.75 | 1163 / 1163 |  | Publisher: REGD=registered, DRGD=deregistered, EXAD covers BOTH receivership and liquidation, SOFF=strike-off action in progress. This is the entity's own registration status, so entity.status is the correct target. REGD->active and DRGD->deregistered are direct. EXAD now maps to unknown instead of in_liquidation: the critic is right that inferring liquidation from a code that also covers receivership would mislabel every receiver, and unknown is the enum's honest value. SOFF is a pending strike-off, neither suspended nor deregistered, so also unknown. |
+| Date of Registration | `entity.date_registered` | trim, parse_date({"formats": ["%d/%m/%Y"]}) | 0.92 | 1163 / 1163 |  | Publisher: Date of Registration is a company event with day-first dates. All shapes are 99/99/9999 and holdout values parse day-first correctly (08/01/1990 -> 1990-01-08, 03/04/1935 -> 1935-04-03). |
+| Type | `entity.entity_type` | trim, map_enum({"mapping": {"APTY": "company", "APUB": "company"}, "default": "unknown"}) | 0.85 | 1163 / 1163 |  | Accepted the critic's missed item: APTY (proprietary) and APUB (public) both denote an ASIC-registered company body, which is precisely the ontology value 'company'. This is the source's own statement of business form rather than a default, so mapping it is preferable to leaving entity_type unknown and losing the only explicit evidence. The proprietary/public distinction has no enum value, so both collapse to company; any unseen code falls to unknown. |
+
+**Deliberately unmapped:**
+- `Class` — LMSH (limited by shares) and LMGT (limited by guarantee) are ASIC share/guarantee classes - capital structure, not business form. Type already establishes entity_type=company from evidence, and mapping Class would add no distinct enum value while risking misrepresentation of limited-by-guarantee bodies, so it is recorded here as supporting context only.
+- `Sub Class` — PROP, PSTC, LISN, LIST, ULSN, ULST etc. describe company sub-class/share structure. No ontology target and no additional defensible entity_type information beyond Type.
+- `Previous State of Registration` — Publisher: this is the historical jurisdiction in which the entity was previously registered, not the entity's current address. The ontology offers only address fields, and address.state would assert a current location the source does not establish. A previous state of registration is a historical jurisdiction, so it stays unmapped.
+- `State Registration number` — A state-level registration number, not an ACN, ABN or NZBN, and the ontology has no target for it. Numeric extraction would risk being mistaken for an entity identifier. Also space-padded (trailing blanks in several values).
+- `Modified since last report` — Present rate 0.0 - the column is entirely empty in this extract, so no content evidence exists. It is in any case a report-processing flag, not an entity attribute.
+- `Current Name Indicator` — Not an entity attribute itself - it is the row-level discriminator between current and former name rows, so it is used as the 'when' gate on the two Company Name rules and in record_id rather than emitted as a field.
+- `Date of Deregistration` — Kept off observation.valid_to because a deregistration date ends the entity's existence, not the validity of its name/ACN/address claims, and the publisher treats it as a separate company event. It is also too sparse to serve as a bound (19 populated rows vs 28 DRGD rows). The ontology has no event-date target for it, so it is unmapped rather than forced into valid_to; the DRGD status code already carries the fact that the entity is deregistered.
+
+**Held-out run:** 1163 records, 1163 produced observations; record errors {}
+
+**Open issues (held-out validator):**
+- none
+
+**Critic:** All eight mapping rules hold up: the current/former name split is correctly gated, the Current Name column is correctly read as the current registered name with its own valid_from, ABN 0 nulling and checksum validation are right, REGD/DRGD map directly and EXAD/SOFF honestly degrade to unknown, day-first registration dates and ACN are correct, and APTY/APUB -> company is source-based rather than guessed. No validity path misattachments, no deregistered entity carrying valid_to, no legacy record-level validity, and no unsupported current/former confusion in the held-out observations. Only minor gaps: deregistration date and Class are left unmapped (defensibly, but they carry corroborating evidence).
+- missed? `Date of Deregistration` -> `entity.status (supporting evidence) / no ontology target` — It is a genuine company event date with 19 populated rows and independently corroborates DRGD status; the ontology has no event-date target, but its existence (and its absence on REGD rows) is the only cross-check that DRGD status is real, so the decision to leave it unmapped is acceptable only because it is explicitly reasoned, though a reviewer may prefer it retained as supporting status evidence.
+- missed? `Class` -> `entity.entity_type (supporting, e.g. LMGT limited-by-guarantee)` — LMGT bodies are not share companies in the ordinary sense; Class adds evidence that could refine entity_type beyond the blank company value. The unmapped justification is defensible but Class is materially more informative than 'no evidence'.
+
+**Agent notes:** Revised after critic review. Key fixes: (1) Company Name is now split into two complementary gated rules so a superseded name is never emitted as current_legal_name; (2) Current Name is reclassified as current_legal_name (not former_legal_name) with Current Name Start Date as valid_from, correcting the inverted semantics; (3) EXAD and SOFF now map to unknown instead of guessing in_liquidation; (4) Type added as entity.entity_type=company per the critic's missed-item suggestion. Current Name Indicator is deliberately not emitted as a field but used as the gate and in record_id. The Current Name rule intentionally duplicates the current name for ACNs whose current-name row is expressed in the other column - these are consistent assertions, not conflicts. Previous State of Registration is deliberately left unmapped: it is a historical jurisdiction, not a current address.
+
+## Self-correction trace
+- v0 -> v1: triggered by validator errors none, critic 'wrong' ['entity.legal_name', 'entity.legal_name']
+    - + added `('Type',)` -> `entity.entity_type`
+    - ~ changed `('Company Name',)` -> `entity.legal_name` (steps/confidence)
+    - ~ changed `('Current Name',)` -> `entity.legal_name` (steps/confidence)
+    - ~ changed `('Status',)` -> `entity.status` (steps/confidence)
+    - ~ record_id columns -> columns ['ACN', 'Company Name', 'Current Name Indicator']
+
+## Decision
+
+This experimental proposal is outside the approval queue.

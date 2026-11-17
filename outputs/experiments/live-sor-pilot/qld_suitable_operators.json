@@ -1,0 +1,323 @@
+{
+  "status": "PENDING_REVIEW",
+  "run_id": "20261111T180502-531bbd",
+  "prompt_version": "prompts-v5",
+  "model": "deepseek-v4-flash",
+  "ontology_sha256": "639b80ea6333146c7ac714cd940fcdf6b2945f451e95333b0be21174bedee5da",
+  "snapshot_sha256": "d89014bdfa9616779dd19e3076e563a631c0af92137e78178da1a285e2dfd4ba",
+  "config_digest": "cebb493408a3d98246f514659aaedf5b42353fe49eac2e326ec6ae1b20549d73",
+  "config": {
+    "source_id": "qld_suitable_operators",
+    "record_grain": "licence_or_permit",
+    "grain_rationale": "One row is one suitable-operator registration (RSO) held by an entity under the Environmental Protection Act ERAs scheme. The business participant is the holder named in 'Customer Name'; the register's own identifier (RSO Number) and the registration status are not business attributes.",
+    "reader": {
+      "format": "xlsx",
+      "archive_member": null,
+      "encoding": "utf-8-sig",
+      "delimiter": null,
+      "skip_rows": 0,
+      "sheet": "rso-register",
+      "record_path": null
+    },
+    "record_id": {
+      "strategy": "columns",
+      "source_paths": [
+        "RSO Number"
+      ],
+      "rationale": "RSO Number is present in 100% of rows and distinct 459/459 in the discovery partition, so it uniquely identifies one registration."
+    },
+    "observed_at": {
+      "source_path": null,
+      "steps": [],
+      "fallback": "resource_last_modified"
+    },
+    "fields": [
+      {
+        "source_paths": [
+          "Customer Name"
+        ],
+        "join_with": " ",
+        "when": null,
+        "target": "entity.legal_name",
+        "valid_from_path": null,
+        "valid_to_path": null,
+        "validity_date_formats": [],
+        "steps": [
+          {
+            "op": "trim",
+            "args": {}
+          },
+          {
+            "op": "collapse_whitespace",
+            "args": {}
+          },
+          {
+            "op": "null_if",
+            "args": {
+              "values": [
+                "",
+                "-",
+                "N/A",
+                "Not applicable",
+                "?"
+              ]
+            }
+          }
+        ],
+        "confidence": 0.8,
+        "rationale": "'Customer Name' is the name of the RSO registration holder, i.e. the legal person the registration was issued to. Corporate values carry Pty Ltd etc. For 'An individual or Sole trader' rows it is the person's own name, which is the legal name of a sole trader."
+      },
+      {
+        "source_paths": [
+          "Entity Type"
+        ],
+        "join_with": " ",
+        "when": null,
+        "target": "entity.entity_type",
+        "valid_from_path": null,
+        "valid_to_path": null,
+        "validity_date_formats": [],
+        "steps": [
+          {
+            "op": "trim",
+            "args": {}
+          },
+          {
+            "op": "map_enum",
+            "args": {
+              "mapping": {
+                "Corporation (Company)": "company",
+                "An individual or Sole trader": "sole_trader",
+                "Government Owned Corporation": "government",
+                "State Government Department": "government",
+                "Local Government Authority": "government",
+                "Incorporated Association": "incorporated_association",
+                "Australian Registered (Foreign) Body": "other"
+              },
+              "default": "unknown",
+              "passthrough": false
+            }
+          }
+        ],
+        "confidence": 0.85,
+        "rationale": "Column explicitly states the holder's legal form, so entity_type is stated, not guessed. Government forms (GOC, state department, local government authority) all map to 'government'. An ARBN holder ('Australian Registered (Foreign) Body') is a foreign body corporate, not an Australian company, so it maps to 'other' rather than 'company'. Unlisted variants fall back to 'unknown'."
+      },
+      {
+        "source_paths": [
+          "Business Number"
+        ],
+        "join_with": " ",
+        "when": null,
+        "target": "entity.acn",
+        "valid_from_path": null,
+        "valid_to_path": null,
+        "validity_date_formats": [],
+        "steps": [
+          {
+            "op": "trim",
+            "args": {}
+          },
+          {
+            "op": "regex_extract",
+            "args": {
+              "pattern": "^(?:ACN\\s*)?(\\d{9})$",
+              "group": 1
+            }
+          },
+          {
+            "op": "acn",
+            "args": {}
+          }
+        ],
+        "confidence": 0.8,
+        "rationale": "Business Number carries prefixed identifiers from several schemes. Nine-digit values are ACNs, published as 'ACN 123456789'; the optional-prefix regex also tolerates a bare nine-digit ACN. Values are then checksum-validated with the acn transform, so non-ACN nine-digit strings fail validation rather than being emitted. A couple of source values ('ACN 409225509', 'ACN 912679254') genuinely fail the ACN checksum and are surfaced as errors, not silently dropped."
+      },
+      {
+        "source_paths": [
+          "Business Number"
+        ],
+        "join_with": " ",
+        "when": null,
+        "target": "entity.abn",
+        "valid_from_path": null,
+        "valid_to_path": null,
+        "validity_date_formats": [],
+        "steps": [
+          {
+            "op": "trim",
+            "args": {}
+          },
+          {
+            "op": "regex_extract",
+            "args": {
+              "pattern": "^ABN\\s*(\\d{11})$",
+              "group": 1
+            }
+          },
+          {
+            "op": "abn",
+            "args": {}
+          }
+        ],
+        "confidence": 0.8,
+        "rationale": "The column's 11-digit shapes are 'ABN 12345678901' values (e.g. ABN 61250757901, 80769308350, 52429278345). They are extracted and checksum-validated with the abn transform and emitted to entity.abn, so valid ABN identifiers are routed correctly instead of discarded. The pattern never matches a nine-digit ACN shape, so the ACN and ABN rules cannot both fire on one row."
+      },
+      {
+        "source_paths": [
+          "Location"
+        ],
+        "join_with": " ",
+        "when": null,
+        "target": "address.locality",
+        "valid_from_path": null,
+        "valid_to_path": null,
+        "validity_date_formats": [],
+        "steps": [
+          {
+            "op": "trim",
+            "args": {}
+          },
+          {
+            "op": "regex_extract",
+            "args": {
+              "pattern": "^([^,]+)",
+              "group": 1
+            }
+          },
+          {
+            "op": "collapse_whitespace",
+            "args": {}
+          },
+          {
+            "op": "upper",
+            "args": {}
+          }
+        ],
+        "confidence": 0.85,
+        "rationale": "Location is 'LOCALITY, STATE, POSTCODE' (all discovery rows match that shape); the first comma-separated segment is the suburb/locality."
+      },
+      {
+        "source_paths": [
+          "Location"
+        ],
+        "join_with": " ",
+        "when": null,
+        "target": "address.state",
+        "valid_from_path": null,
+        "valid_to_path": null,
+        "validity_date_formats": [],
+        "steps": [
+          {
+            "op": "trim",
+            "args": {}
+          },
+          {
+            "op": "regex_extract",
+            "args": {
+              "pattern": ",\\s*([^,]+?)\\s*,\\s*\\d{3,4}\\s*$",
+              "group": 1
+            }
+          },
+          {
+            "op": "state",
+            "args": {}
+          }
+        ],
+        "confidence": 0.85,
+        "rationale": "The segment between locality and postcode is the state/territory, sometimes abbreviated (QLD, VIC, NSW) and sometimes spelled out ('Queensland'). The regex captures the whole middle segment regardless of length and the state transform normalises both abbreviations and full names to the enum, so full-name states are no longer silently dropped."
+      },
+      {
+        "source_paths": [
+          "Location"
+        ],
+        "join_with": " ",
+        "when": null,
+        "target": "address.postcode",
+        "valid_from_path": null,
+        "valid_to_path": null,
+        "validity_date_formats": [],
+        "steps": [
+          {
+            "op": "trim",
+            "args": {}
+          },
+          {
+            "op": "regex_extract",
+            "args": {
+              "pattern": ",\\s*(\\d{3,4})\\s*$",
+              "group": 1
+            }
+          },
+          {
+            "op": "postcode",
+            "args": {}
+          }
+        ],
+        "confidence": 0.85,
+        "rationale": "Trailing segment is the Australian postcode; the profile shows a few 1-3 digit shapes which the postcode transform re-pads."
+      },
+      {
+        "source_paths": [
+          "Registration Date"
+        ],
+        "join_with": " ",
+        "when": null,
+        "target": "observation.valid_from",
+        "valid_from_path": null,
+        "valid_to_path": null,
+        "validity_date_formats": [],
+        "steps": [
+          {
+            "op": "trim",
+            "args": {}
+          },
+          {
+            "op": "null_if",
+            "args": {
+              "values": [
+                "",
+                "-"
+              ]
+            }
+          },
+          {
+            "op": "parse_date",
+            "args": {
+              "formats": [
+                "%Y-%m-%dT%H:%M:%S",
+                "%Y-%m-%d %H:%M:%S",
+                "%Y-%m-%d",
+                "%d/%m/%Y"
+              ]
+            }
+          }
+        ],
+        "confidence": 0.75,
+        "rationale": "Registration Date is the date the holder's RSO registration took effect, i.e. the date the 'X is a registered suitable operator' claim became true; used as the claim's valid_from rather than as entity.date_registered, since it dates this registration and not the entity's incorporation. Discovery values are ISO timestamps ('2014-07-25T00:00:00'), parsed by the explicit T-format first, with date-only and day-first forms as guarded fallbacks."
+      }
+    ],
+    "constants": [
+      {
+        "target": "address.country",
+        "value": "AU",
+        "confidence": 0.9,
+        "rationale": "Queensland (Australia) state register published by the QLD environment department; all Location values are Australian state/postcode pairs."
+      }
+    ],
+    "unmapped": [
+      {
+        "source_path": "RSO Number",
+        "reason": "Identifier of the suitable-operator registration record itself, not of the business. Used only as record_id; formats vary (649054 / RSO001334 / 9-digit) so it is not a stable external business identifier."
+      },
+      {
+        "source_path": "Registration Status",
+        "reason": "Status of the registration/licence (only value in the file is 'Registered'), not the status of the legal entity; mapping it to entity.status would falsely assert every holder is 'active'."
+      },
+      {
+        "source_path": "Location",
+        "reason": "Emitted only for its parts (locality, state, postcode). The value is a locality/state/postcode triplet with no street number, street name or PO box, so it is not a full premises address and is deliberately NOT mapped to address.full."
+      }
+    ],
+    "notes": "Register of holders of suitable-operator registrations for ERAs. 'Business Number' is a multi-scheme identifier column: ACN-prefixed (and bare 9-digit) values go to entity.acn, ABN-prefixed 11-digit values go to entity.abn, and ARBN-prefixed values (e.g. ARBN 010937112) are neither, so no identifier is emitted and the holder's entity_type is 'other'. ARBN values are the only identifier shapes deliberately not emitted. A small number of ACN-prefixed values fail the ACN checksum in the source; these are reported as ACN_CHECKSUM errors rather than being emitted unvalidated. 'Customer Name' covers both companies and sole traders; for the latter the person's name is the legal name of the registration holder. Location is a postal/locality line only, so address.full is intentionally left unmapped."
+  }
+}

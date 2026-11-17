@@ -1,0 +1,25 @@
+name: anzsic_acnc_purpose
+version: 1
+kind: code
+target: ext.entity.industry_code
+scheme: anzsic2006
+derivation_level: L2
+review_status: draft - judgement crosswalk prepared by an AI assistant; needs a human reviewer
+source: >
+  ACNC charitable purposes to ANZSIC 2006 at division / subdivision level. Purposes that do not
+  identify an industry map to null and emit no industry claim. Keys are the purpose labels produced by
+  the acnc_purpose table (the same labels the mapping emits as ext.entity.sector_tag).
+unlisted: error
+entries:
+  "Advancing education": {code: "P", label: Education and Training}
+  "Advancing health": {code: "Q", label: Health Care and Social Assistance}
+  "Advancing social or public welfare": {code: "87", label: Social Assistance Services}
+  "Advancing religion": {code: "9540", label: Religious Services}
+  "Advancing culture": {code: "R", label: Arts and Recreation Services}
+  "Promoting or opposing a change to law, government policy or practice": {code: "9559", label: Other Interest Group Services}
+  "Promoting or protecting human rights": {code: "9559", label: Other Interest Group Services}
+  "Promoting reconciliation, mutual respect and tolerance": {code: "9559", label: Other Interest Group Services}
+  "Advancing the natural environment": {code: "9559", label: Other Interest Group Services}
+  "Preventing or relieving the suffering of animals": {code: null, label: No industry inferred}
+  "Other purposes beneficial to the general public": {code: null, label: No industry inferred}
+  "Advancing the security or safety of Australia or the Australian public": {code: null, label: No industry inferred}

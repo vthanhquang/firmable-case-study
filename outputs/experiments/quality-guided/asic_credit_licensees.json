@@ -1,0 +1,283 @@
+{
+  "status": "PENDING_REVIEW",
+  "run_id": "20261112T014653-803650",
+  "prompt_version": "prompts-v8",
+  "model": "deepseek-v4-flash",
+  "ontology_sha256": "639b80ea6333146c7ac714cd940fcdf6b2945f451e95333b0be21174bedee5da",
+  "snapshot_sha256": "74fc2f5f73e64331dd36538e1fee47ed474c33c161f7c9bf990efe7aa5f8a218",
+  "config_digest": "84baee2e41b1dd1400fd3e6985cc44429d22d2c7b640bee6e90c6fb5d2a5173c",
+  "config": {
+    "source_id": "asic_credit_licensees",
+    "record_grain": "licence_or_permit",
+    "grain_rationale": "One record is one current Australian credit licence issued by ASIC to a licensee. The business participant is the licensee (the holder), so business attributes (legal name, ABN, address) are mapped from the licence-holder columns; the licence number is the record's own identifier, not a business identifier, and licence status/dates describe the licence, not the entity.",
+    "reader": {
+      "format": "delimited",
+      "archive_member": null,
+      "encoding": "utf-8-sig",
+      "delimiter": "\t",
+      "skip_rows": 0,
+      "sheet": null,
+      "record_path": null
+    },
+    "record_id": {
+      "strategy": "columns",
+      "source_paths": [
+        "CRED_LIC_NUM"
+      ],
+      "rationale": "CRED_LIC_NUM present on every row, 464 distinct among 464 records (100% unique), fixed 6-digit shape. It is the ASIC credit licence number and the stable traceable key."
+    },
+    "observed_at": {
+      "source_path": null,
+      "steps": [],
+      "fallback": "resource_last_modified"
+    },
+    "fields": [
+      {
+        "source_paths": [
+          "CRED_LIC_NAME"
+        ],
+        "join_with": " ",
+        "when": null,
+        "target": "entity.legal_name",
+        "valid_from_path": null,
+        "valid_to_path": null,
+        "validity_date_formats": [],
+        "claim_scope": "current_legal_name",
+        "steps": [
+          {
+            "op": "trim",
+            "args": {}
+          },
+          {
+            "op": "collapse_whitespace",
+            "args": {}
+          },
+          {
+            "op": "null_if",
+            "args": {
+              "values": [
+                "",
+                "0",
+                "-"
+              ]
+            }
+          }
+        ],
+        "confidence": 0.8,
+        "rationale": "Column names the licensee, the legal person to whom the credit licence is issued (publisher: licence name changes follow business register updates). Values are registered-style legal names ending PTY LTD / LIMITED; some rows are individual holders in surname-first form (e.g. 'TAN, JINTANG'), still the holder's legal name rather than a trading name."
+      },
+      {
+        "source_paths": [
+          "CRED_LIC_BN"
+        ],
+        "join_with": " ",
+        "when": null,
+        "target": "entity.trading_name",
+        "valid_from_path": null,
+        "valid_to_path": null,
+        "validity_date_formats": [],
+        "claim_scope": null,
+        "steps": [
+          {
+            "op": "trim",
+            "args": {}
+          },
+          {
+            "op": "collapse_whitespace",
+            "args": {}
+          },
+          {
+            "op": "null_if",
+            "args": {
+              "values": [
+                "",
+                "0",
+                "-"
+              ]
+            }
+          }
+        ],
+        "confidence": 0.75,
+        "rationale": "CRED_LIC_BN is the licensee's business name, present on 34.5% of rows. Values are short trading-style names ('PLANNING PARTNERS', 'DEFENCE BANK', 'STACKS FINANCE') distinct from the legal-name column."
+      },
+      {
+        "source_paths": [
+          "CRED_LIC_ABN_ACN"
+        ],
+        "join_with": " ",
+        "when": null,
+        "target": "entity.abn",
+        "valid_from_path": null,
+        "valid_to_path": null,
+        "validity_date_formats": [],
+        "claim_scope": null,
+        "steps": [
+          {
+            "op": "trim",
+            "args": {}
+          },
+          {
+            "op": "null_if",
+            "args": {
+              "values": [
+                "",
+                "0",
+                "-"
+              ]
+            }
+          },
+          {
+            "op": "regex_extract",
+            "args": {
+              "pattern": "^\\d{11}$",
+              "group": 0
+            }
+          },
+          {
+            "op": "abn",
+            "args": {}
+          }
+        ],
+        "confidence": 0.8,
+        "rationale": "Mixed ABN/ACN column: 420/464 values are 11 digits and 90.5% of those pass the ABN checksum, so the 11-digit population is an ABN population. The regex pre-filter keeps only 11-digit values so the checksummed abn transform is applied solely to genuine ABN candidates; shorter ACN-shaped values and the '0' placeholder (13 rows) are deliberately left unmapped rather than converted."
+      },
+      {
+        "source_paths": [
+          "CRED_LIC_LOCALITY"
+        ],
+        "join_with": " ",
+        "when": null,
+        "target": "address.locality",
+        "valid_from_path": null,
+        "valid_to_path": null,
+        "validity_date_formats": [],
+        "claim_scope": "licence_holder_address",
+        "steps": [
+          {
+            "op": "trim",
+            "args": {}
+          },
+          {
+            "op": "collapse_whitespace",
+            "args": {}
+          },
+          {
+            "op": "null_if",
+            "args": {
+              "values": [
+                "",
+                "0",
+                "-"
+              ]
+            }
+          }
+        ],
+        "confidence": 0.8,
+        "rationale": "100% present with 314 distinct AU suburb/locality values, paired with coherent state and postcode columns."
+      },
+      {
+        "source_paths": [
+          "CRED_LIC_STATE"
+        ],
+        "join_with": " ",
+        "when": null,
+        "target": "address.state",
+        "valid_from_path": null,
+        "valid_to_path": null,
+        "validity_date_formats": [],
+        "claim_scope": "licence_holder_address",
+        "steps": [
+          {
+            "op": "trim",
+            "args": {}
+          },
+          {
+            "op": "state",
+            "args": {}
+          }
+        ],
+        "confidence": 0.9,
+        "rationale": "All 464 values are 1-character AU state abbreviations across 8 distinct values, exactly the state enum vocabulary."
+      },
+      {
+        "source_paths": [
+          "CRED_LIC_PCODE"
+        ],
+        "join_with": " ",
+        "when": null,
+        "target": "address.postcode",
+        "valid_from_path": null,
+        "valid_to_path": null,
+        "validity_date_formats": [],
+        "claim_scope": "licence_holder_address",
+        "steps": [
+          {
+            "op": "trim",
+            "args": {}
+          },
+          {
+            "op": "postcode",
+            "args": {}
+          }
+        ],
+        "confidence": 0.9,
+        "rationale": "100% present, 100% 4-digit numeric shape, 275 distinct values consistent with AU postcodes."
+      }
+    ],
+    "constants": [
+      {
+        "target": "address.country",
+        "value": "AU",
+        "confidence": 0.85,
+        "rationale": "ASIC Australian credit licensee register; all states are Australian and every postcode is a 4-digit AU postcode."
+      }
+    ],
+    "unmapped": [
+      {
+        "source_path": "REGISTER_NAME",
+        "reason": "Constant 'Credit Licence' on all rows - register name, not a business attribute."
+      },
+      {
+        "source_path": "CRED_LIC_NUM",
+        "reason": "The licence's own identifier; used for record_id only, not a business identifier."
+      },
+      {
+        "source_path": "CRED_LIC_START_DT",
+        "reason": "Start date of the credit licence, not the entity's registration date; publisher evidence says grant/suspension/cancellation dates concern the licence. Mapping it to entity.date_registered would overstate the claim."
+      },
+      {
+        "source_path": "CRED_LIC_END_DT",
+        "reason": "Licence end date, empty on all discovery rows; describes the licence, not the holder's entity claims."
+      },
+      {
+        "source_path": "CRED_LIC_STATUS",
+        "reason": "Status of the LICENCE (APPR = approved) on every row, not the legal entity's status. Licence status must not become entity.status."
+      },
+      {
+        "source_path": "CRED_LIC_AFSL_NUM",
+        "reason": "Australian Financial Services licence number - a different licence regime, not a business identifier in this ontology."
+      },
+      {
+        "source_path": "CRED_LIC_STATUS_HISTORY",
+        "reason": "Free-text licence condition/enforcement history (present on 0.2% of rows); concerns the licence, not the legal entity's status."
+      },
+      {
+        "source_path": "CRED_LIC_LAT",
+        "reason": "Latitude coordinate; no coordinate target in the ontology."
+      },
+      {
+        "source_path": "CRED_LIC_LNG",
+        "reason": "Longitude coordinate; no coordinate target in the ontology."
+      },
+      {
+        "source_path": "CRED_LIC_EDRS",
+        "reason": "External dispute resolution scheme membership (AFCA/COSL/FOS), a licence-condition attribute, not an entity or address field."
+      },
+      {
+        "source_path": "CRED_LIC_AUTHORISATIONS",
+        "reason": "Long free-text description of what the licence authorises; describes the licence scope, not an entity attribute."
+      }
+    ],
+    "notes": "Tab-delimited UTF-8-BOM text despite the TSV label; 17 columns, header on row 0. CRED_LIC_ABN_ACN is a combined ABN/ACN column: only the 11-digit values are mapped, via an ^\\d{11}$ pre-filter plus the checksummed abn transform. The 9-digit population (27 rows) was NOT mapped to entity.acn because no publisher evidence separates ABN from ACN in this column and the column-wide ACN checksum-valid rate is only 6.7%, so claiming those values are ACNs is unverified inference from shape alone - a wrong ABN/ACN mapping is worse than a missing one. entity.status intentionally emits nothing: CRED_LIC_STATUS describes the licence, not the legal entity, and rows with suspension history show licence status cannot establish holder status, so the ontology default of unknown applies. Licence-derived facts (start/end dates, status, authorisation text, EDR scheme, coordinates, AFSL number) are all left unmapped because the grain is the licence, not the entity. Held-out run was clean on every retained rule (0 errors)."
+  }
+}

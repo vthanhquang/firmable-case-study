@@ -1,0 +1,180 @@
+{
+  "status": "experimental_replay",
+  "mappings": {
+    "acnc_charities": {
+      "variant": "quality-guided",
+      "run_id": "20261112T014653-883226",
+      "rows_replayed": 999,
+      "canonical_observations": 8085,
+      "rows_without_observations": [],
+      "snapshot_sha256": "69be72862e8728bfda782fc8438d8f6b16bf00f2ef99089e9c4dc2d85a8f6833",
+      "config_digest": "b1e793864dbfa84aefdb44b27a512ab6a51918d5acc7c838cca3b2a44e08536d"
+    },
+    "asic_companies": {
+      "variant": "approved_baseline",
+      "run_id": "20261110T035442-7cd099",
+      "rows_replayed": 1000,
+      "canonical_observations": 6783,
+      "rows_without_observations": [],
+      "snapshot_sha256": "bb7935a163292c6d195bd2d5788863164f191198b3f29257fb332785f998bcea",
+      "config_digest": "ccd07371fbc95e2ef95c6cc3a5b59cc6066b5252e036359089686fb5fdcb604c"
+    },
+    "ato_tax_transparency": {
+      "variant": "approved_baseline",
+      "run_id": "20261110T034703-b5fe14",
+      "rows_replayed": 1000,
+      "canonical_observations": 2989,
+      "rows_without_observations": [],
+      "snapshot_sha256": "7cccd963cd4aad31c305b21d33272d3d99ff9c36258641622a28cd0028d65c45",
+      "config_digest": "78133ba75c7f0f4cfd321fc27b28ff75aaec21454ac96fbe43e84b214c77f85b"
+    },
+    "dewr_employment_providers": {
+      "variant": "approved_baseline",
+      "run_id": "20261110T045114-d14064",
+      "rows_replayed": 1000,
+      "canonical_observations": 6609,
+      "rows_without_observations": [],
+      "snapshot_sha256": "0034e176b580405064272e688c7bf51230f051880263cdeeb5107ac00bd7a979",
+      "config_digest": "38158714ad1c7b84b475221bdc9445c64a4abedc8cd04284fe9ad79d6b1164fc"
+    },
+    "qbcc_licensees": {
+      "variant": "approved_baseline",
+      "run_id": "20261110T035024-bb91f8",
+      "rows_replayed": 1000,
+      "canonical_observations": 6605,
+      "rows_without_observations": [],
+      "snapshot_sha256": "509b287a7bf36eb39510b79a8056568dd532843d75b711d3d44c193ff0d84447",
+      "config_digest": "fb879ed632612ffd25cde2bd45b2c83eac7bad8a8448df2085fe53f20f885ec0"
+    },
+    "vic_liquor": {
+      "variant": "approved_baseline",
+      "run_id": "20261110T054156-0453b4",
+      "rows_replayed": 1000,
+      "canonical_observations": 6852,
+      "rows_without_observations": [],
+      "snapshot_sha256": "b0a00e0846f430dc3eb2bc32fde3e4136caa9142c60d127e8c1419fbc34fb36e",
+      "config_digest": "3974d55e7dff60335e3eb408af6208fe30eebf960afcb41b8e1f6d5a6a11d6a0"
+    }
+  },
+  "identity": {
+    "policy_version": "evidence-v3",
+    "threshold": 0.85,
+    "records": 5999,
+    "business_records": 5999,
+    "candidate_pairs": 3005,
+    "links": 644,
+    "links_by_rule": {
+      "abn_equal": 381,
+      "abn_contains_acn_and_name": 1,
+      "registered_name_exact_and_location": 13,
+      "registered_name_exact": 249
+    },
+    "links_by_sample_strata": {
+      "cohort+random": 625,
+      "cohort+cohort": 14,
+      "random+random": 5
+    },
+    "links_by_source_pair": {
+      "acnc_charities <-> asic_companies": 57,
+      "asic_companies <-> ato_tax_transparency": 323,
+      "asic_companies <-> qbcc_licensees": 10,
+      "acnc_charities <-> vic_liquor": 14,
+      "asic_companies <-> vic_liquor": 121,
+      "ato_tax_transparency <-> vic_liquor": 119
+    },
+    "review_pairs": 5,
+    "rejected_pairs": 0,
+    "non_match_pairs": 926,
+    "abstained_pairs": 1430,
+    "entities_in_multiple_sources": 473,
+    "unlinked_queue": 464,
+    "unlinked_by_reason": {
+      "IDENTIFIER_HOLDER_MISMATCH": 10,
+      "WEAK_NAME_ONLY": 346,
+      "DIFFERENT_IDENTIFIERS_AND_NAMES": 108
+    },
+    "unlinked_records_without_positive_candidate": 4434,
+    "relationships": 244,
+    "oversized_blocks_skipped": 6
+  },
+  "profiles": {
+    "multi_source_entities": 473,
+    "profiles_written": 50,
+    "profiles_with_conflicts": 4,
+    "link_threshold": 0.85,
+    "deletion_impact": {
+      "acnc_charities": {
+        "profiles_affected": 4,
+        "profiles_unchanged": 46,
+        "no_longer_multi_source": 4,
+        "fields_removed": 24,
+        "fields_added": 0,
+        "fields_value_changed": 0,
+        "fields_confidence_changed": 20,
+        "fields_provenance_changed": 7,
+        "fields_unchanged": 280,
+        "share_of_fields_lost_or_changed": 0.074
+      },
+      "asic_companies": {
+        "profiles_affected": 48,
+        "profiles_unchanged": 2,
+        "no_longer_multi_source": 48,
+        "fields_removed": 199,
+        "fields_added": 0,
+        "fields_value_changed": 4,
+        "fields_confidence_changed": 113,
+        "fields_provenance_changed": 89,
+        "fields_unchanged": 12,
+        "share_of_fields_lost_or_changed": 0.627
+      },
+      "ato_tax_transparency": {
+        "profiles_affected": 39,
+        "profiles_unchanged": 11,
+        "no_longer_multi_source": 39,
+        "fields_removed": 1,
+        "fields_added": 0,
+        "fields_value_changed": 1,
+        "fields_confidence_changed": 230,
+        "fields_provenance_changed": 87,
+        "fields_unchanged": 93,
+        "share_of_fields_lost_or_changed": 0.006
+      },
+      "dewr_employment_providers": {
+        "profiles_affected": 0,
+        "profiles_unchanged": 50,
+        "no_longer_multi_source": 0,
+        "fields_removed": 0,
+        "fields_added": 0,
+        "fields_value_changed": 0,
+        "fields_confidence_changed": 0,
+        "fields_provenance_changed": 0,
+        "fields_unchanged": 324,
+        "share_of_fields_lost_or_changed": 0.0
+      },
+      "qbcc_licensees": {
+        "profiles_affected": 0,
+        "profiles_unchanged": 50,
+        "no_longer_multi_source": 0,
+        "fields_removed": 0,
+        "fields_added": 0,
+        "fields_value_changed": 0,
+        "fields_confidence_changed": 0,
+        "fields_provenance_changed": 0,
+        "fields_unchanged": 324,
+        "share_of_fields_lost_or_changed": 0.0
+      },
+      "vic_liquor": {
+        "profiles_affected": 9,
+        "profiles_unchanged": 41,
+        "no_longer_multi_source": 9,
+        "fields_removed": 9,
+        "fields_added": 0,
+        "fields_value_changed": 0,
+        "fields_confidence_changed": 52,
+        "fields_provenance_changed": 14,
+        "fields_unchanged": 263,
+        "share_of_fields_lost_or_changed": 0.028
+      }
+    }
+  }
+}

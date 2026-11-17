@@ -1,0 +1,170 @@
+{
+  "source_id": "qld_suitable_operators",
+  "run_id": "20261111T111917Z-critic-v3-recheck",
+  "onboarding_run_id": "20261111T180502-531bbd",
+  "config_digest": "cebb493408a3d98246f514659aaedf5b42353fe49eac2e326ec6ae1b20549d73",
+  "snapshot_sha256": "d89014bdfa9616779dd19e3076e563a631c0af92137e78178da1a285e2dfd4ba",
+  "model": "deepseek-v4-flash",
+  "heldout_records": 1151,
+  "static_issues": [
+    {
+      "code": "AMBIGUOUS_ENTITY_TYPE",
+      "severity": "error",
+      "message": "A combined individual or sole-trader label needs separate evidence to identify a sole trader. Use unknown when the label is the only evidence.",
+      "target": "entity.entity_type",
+      "source_paths": [
+        "Entity Type"
+      ],
+      "examples": [
+        "An individual or Sole trader"
+      ]
+    }
+  ],
+  "holdout_issues": [
+    {
+      "code": "SOME_ERRORS",
+      "severity": "warning",
+      "message": "2 values rejected: {'ACN_CHECKSUM': 2}",
+      "target": "entity.acn",
+      "source_paths": [
+        "Business Number"
+      ],
+      "examples": {
+        "ACN_CHECKSUM": [
+          "ACN 912679254",
+          "ACN 164828296"
+        ]
+      }
+    },
+    {
+      "code": "RECORD_VALIDITY_INHERITED",
+      "severity": "warning",
+      "message": "Claims can inherit this record-level date. Check that the source dates the claims themselves, including holder attributes.",
+      "target": "observation.valid_from",
+      "source_paths": [
+        "Registration Date"
+      ]
+    }
+  ],
+  "critic": {
+    "fields": [
+      {
+        "rule_index": 0,
+        "verdict": "ok",
+        "reason": "'Customer Name' is the name of the registration holder, and corporate values follow registered legal form ('PTY. LTD.'), so legal_name is the correct target. Note that for 'An individual or Sole trader' rows this is a person's name, which is acceptable as the sole trader's legal name.",
+        "target": "entity.legal_name",
+        "source_paths": [
+          "Customer Name"
+        ]
+      },
+      {
+        "rule_index": 1,
+        "verdict": "doubtful",
+        "reason": "The source column states legal form explicitly, so most mappings are defensible, but 'An individual or Sole trader' is a combined category. Mapping it to sole_trader asserts a business form the source does not distinguish — the record for 'Craig Smith' / 'A Gifford' is an individual who may be an employee or a private individual, not evidenced as a sole trader. 'Australian Registered (Foreign) Body' -> other is defensible; 'Government Owned Corporation' -> government is arguably a company but acceptable. At minimum the combined category should be doubtful/unknown.",
+        "target": "entity.entity_type",
+        "source_paths": [
+          "Entity Type"
+        ]
+      },
+      {
+        "rule_index": 2,
+        "verdict": "ok",
+        "reason": "Nine-digit 'ACN ...' values are extracted and ACN-checksum-validated; emitted values (000064835, 138111494, 650777441) route to entity.acn correctly. Invalid checksums surface as errors rather than silent wrong claims.",
+        "target": "entity.acn",
+        "source_paths": [
+          "Business Number"
+        ]
+      },
+      {
+        "rule_index": 3,
+        "verdict": "ok",
+        "reason": "Only 'ABN <11 digits>' shapes match, are checksum-validated, and emitted to entity.abn; the regex cannot collide with the ACN rule.",
+        "target": "entity.abn",
+        "source_paths": [
+          "Business Number"
+        ]
+      },
+      {
+        "rule_index": 4,
+        "verdict": "ok",
+        "reason": "Location is consistently 'LOCALITY, STATE, POSTCODE'; the first segment is the locality, uppercased and whitespace-collapsed. No premises street address confusion.",
+        "target": "address.locality",
+        "source_paths": [
+          "Location"
+        ]
+      },
+      {
+        "rule_index": 5,
+        "verdict": "ok",
+        "reason": "Middle segment of Location is the state/territory; 'Queensland' full-name row ('Pinkenba, Queensland, 4008') is correctly normalised to QLD, and abbreviation rows to QLD/NSW. Postcode-anchored regex tolerates 3-4 digit postcodes.",
+        "target": "address.state",
+        "source_paths": [
+          "Location"
+        ]
+      },
+      {
+        "rule_index": 6,
+        "verdict": "ok",
+        "reason": "Trailing digit group is the postcode; 3-digit values are re-padded. All held-out postcodes match the raw Location exactly.",
+        "target": "address.postcode",
+        "source_paths": [
+          "Location"
+        ]
+      },
+      {
+        "rule_index": 7,
+        "verdict": "wrong",
+        "reason": "Registration Date is the effective date of the RSO registration (a licence/permit record), not the date the entity-level claims (legal name, entity_type, ABN/ACN, address) became true in the world. Using it as observation.valid_from for every emitted claim attaches licence-effective validity to entity attributes, exactly the failure pattern warned about. It should at most scope the registration claim, or be mapped to entity.date_registered, not used as universal valid_from.",
+        "target": "observation.valid_from",
+        "source_paths": [
+          "Registration Date"
+        ]
+      },
+      {
+        "rule_index": 8,
+        "verdict": "ok",
+        "reason": "Register is a Queensland (Australia) state register and all Location values are Australian state/postcode pairs; constant AU is safe, though one NSW/VIC-styled row is still AU so no issue.",
+        "target": "address.country",
+        "source_paths": []
+      }
+    ],
+    "missed": [
+      {
+        "source_path": "Business Number",
+        "suggested_target": "entity.acn / entity.abn (with a raw-source field)",
+        "reason": "Business Number mixes ARBN and ARBN-prefixed 9-digit values (e.g. 'ARBN 010937112'); ARBN is neither ACN nor ABN and no observation is emitted for it, leaving the holder with no business identifier at all. The ontology asks to record the raw source value for industry/identifier columns."
+      },
+      {
+        "source_path": "Customer Name",
+        "suggested_target": "entity.trading_name",
+        "reason": "Many corporate holders are registered under a trading/display-style name (e.g. 'Allconnex Water', 'Alcohol and Drug Foundation Queensland', 'OZY SCOPE E MANAGEMENT PTY. LTD.'); where the same entity appears with a different registered legal name, emitting trading_name would capture it, but there is no source column with an explicit trading name — so this is a low-confidence note, not a definite miss."
+      },
+      {
+        "source_path": "Registration Status",
+        "suggested_target": "entity.status",
+        "reason": "Correctly left unmapped: 'Registered' describes the registration, not entity status; mapping it would falsely assert active entities."
+      }
+    ],
+    "summary": "The identifier and address decomposition rules are sound and correctly typed/checksummed, and rare values (full-name state, mixed ARBN/ABN/ACN prefixes, null Customer Name) are handled sensibly. Two substantive problems: rule 7 uses a licence/permit effective date as universal claim validity, which is wrong; and rule 1 asserts sole_trader from a combined 'individual or sole trader' category, which is not precise enough. The ARBN identifier is dropped entirely, and no trading name is captured. Verdicts: 0 ok, 1 doubtful, 2 ok, 3 ok, 4 ok, 5 ok, 6 ok, 7 wrong, 8 ok.",
+    "prompt_version": "critic-v3"
+  },
+  "events": [],
+  "usage": {
+    "calls": 1,
+    "errors": 0,
+    "prompt_tokens": 8997,
+    "completion_tokens": 1138,
+    "latency_ms": 12559
+  },
+  "first_attempt": {
+    "run_id": "20261111T111738Z-critic-v3-recheck",
+    "status": "response_lost_during_local_receipt_write",
+    "usage": {
+      "calls": 1,
+      "errors": 0,
+      "prompt_tokens": 13797,
+      "completion_tokens": 1502,
+      "latency_ms": 46023
+    }
+  }
+}

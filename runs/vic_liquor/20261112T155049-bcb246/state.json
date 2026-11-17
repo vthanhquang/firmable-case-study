@@ -1,0 +1,1155 @@
+{
+  "run_id": "20261112T155049-bcb246",
+  "source_id": "vic_liquor",
+  "status": "PENDING_REVIEW",
+  "started_at": "2026-11-12T08:50:49+00:00",
+  "prompt_version": "prompts-v9-profile-context-v1",
+  "model": "deepseek-v4-flash",
+  "critic_model": "deepseek-v4-flash",
+  "ontology_sha256": "027b4f344aa142e53c65052576d21f42e13f85626d99dd4cfe31f077746e1f21",
+  "snapshot_sha256": "b0a00e0846f430dc3eb2bc32fde3e4136caa9142c60d127e8c1419fbc34fb36e",
+  "proposals": [
+    {
+      "round": 0,
+      "digest": "86278470175e7ba1ae974d3520e25bd19fbd579f18bdcc8d436a2e1263a98027",
+      "config": {
+        "source_id": "vic_liquor",
+        "record_grain": "licence_or_permit",
+        "grain_rationale": "One record is one current Victorian liquor licence (one licence number) held at one premises. The business participant is the licensee; its legal name, trading name and premises address are mapped as attributes of the licence holder, not of the licence itself. Licence Number is the licence's own ID, so it is not used as a business identifier.",
+        "reader": {
+          "format": "xlsx",
+          "archive_member": null,
+          "encoding": "utf-8-sig",
+          "delimiter": null,
+          "skip_rows": 4,
+          "sheet": "Current_Victorian_Licences_By_L",
+          "record_path": null
+        },
+        "record_id": {
+          "strategy": "columns",
+          "source_paths": [
+            "Licence Number"
+          ],
+          "rationale": "Licence Number is present on 100% of rows and has 465 distinct values in 465 discovery records, so it is unique per record and traceable."
+        },
+        "observed_at": {
+          "source_path": null,
+          "steps": [],
+          "fallback": "resource_last_modified"
+        },
+        "fields": [
+          {
+            "source_paths": [
+              "Licensee"
+            ],
+            "join_with": " ",
+            "when": null,
+            "target": "entity.legal_name",
+            "valid_from_path": null,
+            "valid_to_path": null,
+            "validity_date_formats": [],
+            "claim_scope": null,
+            "steps": [
+              {
+                "op": "trim",
+                "args": {}
+              },
+              {
+                "op": "collapse_whitespace",
+                "args": {}
+              },
+              {
+                "op": "null_if",
+                "args": {
+                  "values": [
+                    "",
+                    "-",
+                    ".",
+                    "n/a",
+                    "na",
+                    "not applicable",
+                    "[not applicable] -"
+                  ]
+                }
+              }
+            ],
+            "confidence": 0.82,
+            "rationale": "Column headed 'Licensee' - a licence is issued to a legal person, so this is the registered legal name of the holder. Values look like registered entity names (ALDI FOODS PTY LIMITED, ENDEAVOUR GROUP LIMITED, CITY OF DAREBIN), with some sole traders (WOOD GERARD). Placeholder nulls added defensively; none were observed here."
+          },
+          {
+            "source_paths": [
+              "Trading As"
+            ],
+            "join_with": " ",
+            "when": null,
+            "target": "entity.trading_name",
+            "valid_from_path": null,
+            "valid_to_path": null,
+            "validity_date_formats": [],
+            "claim_scope": null,
+            "steps": [
+              {
+                "op": "trim",
+                "args": {}
+              },
+              {
+                "op": "collapse_whitespace",
+                "args": {}
+              },
+              {
+                "op": "null_if",
+                "args": {
+                  "values": [
+                    "",
+                    "-",
+                    ".",
+                    "n/a",
+                    "na",
+                    "not applicable",
+                    "none",
+                    "nil"
+                  ]
+                }
+              }
+            ],
+            "confidence": 0.9,
+            "rationale": "Explicitly a trading-as/business name column, distinct from the licensee (ALDI FOODS PTY LIMITED -> ALDI STORES). Held-out records contained a bare '.' placeholder, which is nulled rather than emitted."
+          },
+          {
+            "source_paths": [
+              "Street Address"
+            ],
+            "join_with": " ",
+            "when": null,
+            "target": "address.full",
+            "valid_from_path": null,
+            "valid_to_path": null,
+            "validity_date_formats": [],
+            "claim_scope": null,
+            "steps": [
+              {
+                "op": "trim",
+                "args": {}
+              },
+              {
+                "op": "collapse_whitespace",
+                "args": {}
+              },
+              {
+                "op": "null_if",
+                "args": {
+                  "values": [
+                    "",
+                    "-",
+                    ".",
+                    "n/a",
+                    "na",
+                    "not applicable"
+                  ]
+                }
+              }
+            ],
+            "confidence": 0.85,
+            "rationale": "Street address of the licensed premises (not the postal address), paired with Suburb/Postcode columns. Held-out records contained a bare '-' placeholder, which is nulled rather than emitted."
+          },
+          {
+            "source_paths": [
+              "Suburb"
+            ],
+            "join_with": " ",
+            "when": null,
+            "target": "address.locality",
+            "valid_from_path": null,
+            "valid_to_path": null,
+            "validity_date_formats": [],
+            "claim_scope": null,
+            "steps": [
+              {
+                "op": "trim",
+                "args": {}
+              },
+              {
+                "op": "collapse_whitespace",
+                "args": {}
+              },
+              {
+                "op": "null_if",
+                "args": {
+                  "values": [
+                    "",
+                    "-",
+                    ".",
+                    "n/a",
+                    "na",
+                    "not applicable",
+                    "[not applicable] -",
+                    "[not applicable]-"
+                  ]
+                }
+              }
+            ],
+            "confidence": 0.85,
+            "rationale": "Locality of the premises address row. The discovery profile showed 7 rows shaped '[a a] -' i.e. '[NOT APPLICABLE] -' markers (case varies in the source: '[Not applicable] -'); these are placeholders for licences with no fixed premises locality and are nulled."
+          },
+          {
+            "source_paths": [
+              "Postcode"
+            ],
+            "join_with": " ",
+            "when": null,
+            "target": "address.postcode",
+            "valid_from_path": null,
+            "valid_to_path": null,
+            "validity_date_formats": [],
+            "claim_scope": null,
+            "steps": [
+              {
+                "op": "trim",
+                "args": {}
+              },
+              {
+                "op": "null_if",
+                "args": {
+                  "values": [
+                    "",
+                    "0",
+                    "-",
+                    ".",
+                    "n/a",
+                    "na",
+                    "not applicable"
+                  ]
+                }
+              },
+              {
+                "op": "postcode",
+                "args": {}
+              }
+            ],
+            "confidence": 0.8,
+            "rationale": "4-digit premises postcode. A handful of rows contain '0' (7 of 465) which is a placeholder, not a postcode, so it is nulled."
+          },
+          {
+            "source_paths": [
+              "Licence Number"
+            ],
+            "join_with": " ",
+            "when": null,
+            "target": "context.licence.number",
+            "valid_from_path": null,
+            "valid_to_path": null,
+            "validity_date_formats": null,
+            "claim_scope": null,
+            "steps": [
+              {
+                "op": "trim",
+                "args": {}
+              },
+              {
+                "op": "null_if",
+                "args": {
+                  "values": [
+                    "",
+                    "N/A",
+                    "NOT APPLICABLE",
+                    "-"
+                  ]
+                }
+              }
+            ],
+            "confidence": 0.95,
+            "rationale": "Publisher licence number, unique per licence record (465 distinct, 8-digit)."
+          },
+          {
+            "source_paths": [
+              "Licence Category"
+            ],
+            "join_with": " ",
+            "when": null,
+            "target": "context.licence.category",
+            "valid_from_path": null,
+            "valid_to_path": null,
+            "validity_date_formats": null,
+            "claim_scope": null,
+            "steps": [
+              {
+                "op": "trim",
+                "args": {}
+              },
+              {
+                "op": "collapse_whitespace",
+                "args": {}
+              },
+              {
+                "op": "null_if",
+                "args": {
+                  "values": [
+                    "",
+                    "N/A",
+                    "NOT APPLICABLE"
+                  ]
+                }
+              }
+            ],
+            "confidence": 0.92,
+            "rationale": "Licence category in Liquor Control Victoria's own terms; kept verbatim."
+          },
+          {
+            "source_paths": [
+              "Trading Hours"
+            ],
+            "join_with": " ",
+            "when": null,
+            "target": "context.licence.trading_hours",
+            "valid_from_path": null,
+            "valid_to_path": null,
+            "validity_date_formats": null,
+            "claim_scope": null,
+            "steps": [
+              {
+                "op": "trim",
+                "args": {}
+              },
+              {
+                "op": "collapse_whitespace",
+                "args": {}
+              },
+              {
+                "op": "null_if",
+                "args": {
+                  "values": [
+                    "",
+                    "N/A",
+                    "NOT APPLICABLE"
+                  ]
+                }
+              }
+            ],
+            "confidence": 0.8,
+            "rationale": "Trading-hours condition stated for this licence, preserved as published."
+          },
+          {
+            "source_paths": [
+              "Patron Capacity (if applicable)"
+            ],
+            "join_with": " ",
+            "when": null,
+            "target": "context.licence.patron_capacity",
+            "valid_from_path": null,
+            "valid_to_path": null,
+            "validity_date_formats": null,
+            "claim_scope": null,
+            "steps": [
+              {
+                "op": "null_if",
+                "args": {
+                  "values": [
+                    "",
+                    "N/A",
+                    "NOT APPLICABLE",
+                    "-"
+                  ]
+                }
+              },
+              {
+                "op": "parse_integer",
+                "args": {}
+              }
+            ],
+            "confidence": 0.88,
+            "rationale": "Numeric patron capacity; blank for ~40% of rows so missing stays distinct from zero."
+          },
+          {
+            "source_paths": [
+              "Council"
+            ],
+            "join_with": " ",
+            "when": null,
+            "target": "context.licence.council",
+            "valid_from_path": null,
+            "valid_to_path": null,
+            "validity_date_formats": null,
+            "claim_scope": null,
+            "steps": [
+              {
+                "op": "trim",
+                "args": {}
+              },
+              {
+                "op": "collapse_whitespace",
+                "args": {}
+              },
+              {
+                "op": "null_if",
+                "args": {
+                  "values": [
+                    "",
+                    "N/A",
+                    "NOT APPLICABLE",
+                    "-"
+                  ]
+                }
+              }
+            ],
+            "confidence": 0.85,
+            "rationale": "Local council of the licensed premises, in publisher wording."
+          },
+          {
+            "source_paths": [
+              "Region"
+            ],
+            "join_with": " ",
+            "when": null,
+            "target": "context.licence.region",
+            "valid_from_path": null,
+            "valid_to_path": null,
+            "validity_date_formats": null,
+            "claim_scope": null,
+            "steps": [
+              {
+                "op": "trim",
+                "args": {}
+              },
+              {
+                "op": "collapse_whitespace",
+                "args": {}
+              },
+              {
+                "op": "null_if",
+                "args": {
+                  "values": [
+                    "",
+                    "N/A",
+                    "NOT APPLICABLE"
+                  ]
+                }
+              }
+            ],
+            "confidence": 0.85,
+            "rationale": "Publisher's licensing region (11 values such as Metro North, Hume)."
+          }
+        ],
+        "constants": [
+          {
+            "target": "address.state",
+            "value": "VIC",
+            "confidence": 0.9,
+            "rationale": "Victorian liquor licence register published by Liquor Control Victoria; every premises is in Victoria."
+          },
+          {
+            "target": "address.country",
+            "value": "AU",
+            "confidence": 0.9,
+            "rationale": "Victorian (Australian) licensing register."
+          }
+        ],
+        "unmapped": [
+          {
+            "source_path": "Metro/Regional",
+            "reason": "Geographic classifier for the licence area; no ontology target."
+          },
+          {
+            "source_path": "Latitude",
+            "reason": "Coordinates; no ontology target."
+          },
+          {
+            "source_path": "Longitude",
+            "reason": "Coordinates; no ontology target."
+          },
+          {
+            "source_path": "Postal Address",
+            "reason": "Postal address of the licensee, not the premises address; mapping it too would conflict with the premises address claimed by address.full."
+          },
+          {
+            "source_path": "Postal Suburb",
+            "reason": "Part of the postal (correspondence) address, not the premises locality."
+          },
+          {
+            "source_path": "Postal Postcode",
+            "reason": "Part of the postal (correspondence) address, not the premises postcode; also contains interstate postcodes (e.g. 2000 NSW)."
+          },
+          {
+            "source_path": "column_7",
+            "reason": "Empty spacer column in the sheet."
+          },
+          {
+            "source_path": "column_8",
+            "reason": "Empty spacer column in the sheet."
+          },
+          {
+            "source_path": "column_13",
+            "reason": "Empty spacer column in the sheet."
+          },
+          {
+            "source_path": "column_14",
+            "reason": "Empty spacer column in the sheet."
+          }
+        ],
+        "notes": "Single sheet 'Current_Victorian_Licences_By_L'; rows 1-3 are publisher contact block, a title ('Current Victorian Liquor Licences as of 31/08/2026') and a blank line, so header is row 5 -> skip_rows 4. No ABN/ACN columns exist, so none are mapped (Licence Number is 8 digits and fails both checksums - it is not an ACN). The snapshot date 31/08/2026 appears only in the title text, not as a per-record column, so observed_at falls back to resource_last_modified. Status of the licence is not mapped to entity.status: the sheet lists current licences, which says nothing about the entity's registered status. Revision: null_if placeholder lists were widened on entity.legal_name, entity.trading_name, address.full, address.locality and address.postcode after held-out records emitted '.', '-', and '[NOT APPLICABLE] -' markers.",
+        "profile_context": "v1"
+      },
+      "holdout_issues": [],
+      "holdout_report": {
+        "records_in": 1169,
+        "records_with_output": 1169,
+        "record_errors": {},
+        "fields": [
+          {
+            "target": "entity.legal_name",
+            "source_paths": [
+              "Licensee"
+            ],
+            "records": 1169,
+            "source_present": 1168,
+            "emitted": 1168,
+            "coverage_of_records": 0.999,
+            "error_rate_of_present": 0.0,
+            "errors": {},
+            "error_examples": {}
+          },
+          {
+            "target": "entity.trading_name",
+            "source_paths": [
+              "Trading As"
+            ],
+            "records": 1169,
+            "source_present": 1161,
+            "emitted": 1159,
+            "coverage_of_records": 0.991,
+            "error_rate_of_present": 0.0,
+            "errors": {},
+            "error_examples": {}
+          },
+          {
+            "target": "address.full",
+            "source_paths": [
+              "Street Address"
+            ],
+            "records": 1169,
+            "source_present": 1113,
+            "emitted": 1112,
+            "coverage_of_records": 0.951,
+            "error_rate_of_present": 0.0,
+            "errors": {},
+            "error_examples": {}
+          },
+          {
+            "target": "address.locality",
+            "source_paths": [
+              "Suburb"
+            ],
+            "records": 1169,
+            "source_present": 1123,
+            "emitted": 1111,
+            "coverage_of_records": 0.95,
+            "error_rate_of_present": 0.0,
+            "errors": {},
+            "error_examples": {}
+          },
+          {
+            "target": "address.postcode",
+            "source_paths": [
+              "Postcode"
+            ],
+            "records": 1169,
+            "source_present": 1124,
+            "emitted": 1111,
+            "coverage_of_records": 0.95,
+            "error_rate_of_present": 0.0,
+            "errors": {},
+            "error_examples": {}
+          },
+          {
+            "target": "context.licence.number",
+            "source_paths": [
+              "Licence Number"
+            ],
+            "records": 1169,
+            "source_present": 1169,
+            "emitted": 1169,
+            "coverage_of_records": 1.0,
+            "error_rate_of_present": 0.0,
+            "errors": {},
+            "error_examples": {}
+          },
+          {
+            "target": "context.licence.category",
+            "source_paths": [
+              "Licence Category"
+            ],
+            "records": 1169,
+            "source_present": 1169,
+            "emitted": 1169,
+            "coverage_of_records": 1.0,
+            "error_rate_of_present": 0.0,
+            "errors": {},
+            "error_examples": {}
+          },
+          {
+            "target": "context.licence.trading_hours",
+            "source_paths": [
+              "Trading Hours"
+            ],
+            "records": 1169,
+            "source_present": 1169,
+            "emitted": 1169,
+            "coverage_of_records": 1.0,
+            "error_rate_of_present": 0.0,
+            "errors": {},
+            "error_examples": {}
+          },
+          {
+            "target": "context.licence.patron_capacity",
+            "source_paths": [
+              "Patron Capacity (if applicable)"
+            ],
+            "records": 1169,
+            "source_present": 643,
+            "emitted": 643,
+            "coverage_of_records": 0.55,
+            "error_rate_of_present": 0.0,
+            "errors": {},
+            "error_examples": {}
+          },
+          {
+            "target": "context.licence.council",
+            "source_paths": [
+              "Council"
+            ],
+            "records": 1169,
+            "source_present": 1126,
+            "emitted": 1114,
+            "coverage_of_records": 0.953,
+            "error_rate_of_present": 0.0,
+            "errors": {},
+            "error_examples": {}
+          },
+          {
+            "target": "context.licence.region",
+            "source_paths": [
+              "Region"
+            ],
+            "records": 1169,
+            "source_present": 1126,
+            "emitted": 1126,
+            "coverage_of_records": 0.963,
+            "error_rate_of_present": 0.0,
+            "errors": {},
+            "error_examples": {}
+          }
+        ]
+      },
+      "critic": {
+        "fields": [
+          {
+            "rule_index": 0,
+            "verdict": "ok",
+            "reason": "Licence Number is the publisher-assigned licence identifier and maps directly to context.licence.number; held-out values are preserved (e.g., 31100099). Trimming and null_if do not distort it, and using it as a licence ID rather than a business identifier is consistent with the record grain.",
+            "target": "context.licence.number",
+            "source_paths": [
+              "Licence Number"
+            ]
+          },
+          {
+            "rule_index": 1,
+            "verdict": "ok",
+            "reason": "Licence Category is passed through verbatim in the publisher's terminology ('BYO Permit', 'Remote Seller's Licence', 'Pre-retail Licence'), matching context.licence.category, which explicitly asks for the original category wording rather than a normalised enum.",
+            "target": "context.licence.category",
+            "source_paths": [
+              "Licence Category"
+            ]
+          },
+          {
+            "rule_index": 2,
+            "verdict": "doubtful",
+            "reason": "Trading Hours is a licence condition, but in many held-out rows it merely repeats the category ('BYO Permit', 'Producer's Licence', 'Pre-retail Licence', 'Limited Licence'), so it is not actually trading hours. Copying it into context.licence.trading_hours produces false condition data (a category name in a hours field) rather than a null. Valid for rows like 'Trading to 5am'/'Ordinary', but the rule should suppress the category-echo values.",
+            "target": "context.licence.trading_hours",
+            "source_paths": [
+              "Trading Hours"
+            ]
+          },
+          {
+            "rule_index": 3,
+            "verdict": "ok",
+            "reason": "Patron Capacity maps to context.licence.patron_capacity with null_if before parse_integer, keeping missing distinct from zero. Held-out values remain integer strings ('500', '257', '100', '24') and blanks correctly emit no claim. Minor note only: values are rendered as strings in the observations while the ontology type is integer, but no value loss is visible.",
+            "target": "context.licence.patron_capacity",
+            "source_paths": [
+              "Patron Capacity (if applicable)"
+            ]
+          },
+          {
+            "rule_index": 4,
+            "verdict": "ok",
+            "reason": "Council is the local council of the licensed premises and matches context.licence.council; values are preserved in publisher wording (e.g., 'MANSFIELD SHIRE COUNCIL'). Blank council (row 33781710) correctly yields no claim rather than an empty string.",
+            "target": "context.licence.council",
+            "source_paths": [
+              "Council"
+            ]
+          },
+          {
+            "rule_index": 5,
+            "verdict": "ok",
+            "reason": "Region is Liquor Control Victoria's licensing region ('Hume', 'Metro South', 'Loddon Mallee', 'Barwon South-West') and matches context.licence.region. Empty region in row 33781710 correctly produces no observation; the value set is small and consistent.",
+            "target": "context.licence.region",
+            "source_paths": [
+              "Region"
+            ]
+          }
+        ],
+        "missed": [],
+        "summary": "The mapping is essentially sound: all six licence-scoped fields target appropriate ontology paths, values are preserved verbatim where the ontology asks for publisher terminology, blanks are nulled rather than emitted, and licence number is correctly treated as the licence's own ID. The one substantive weakness is rule 2: 'Trading Hours' is frequently just an echo of the licence category (BYO Permit, Producer's Licence, Pre-retail Licence, Limited Licence), so those rows carry a category name in a trading-hours field, which is misleading condition data. The postal address/suburb/postcode being left unmapped is defensible since the dataset distinguishes correspondence address from premises address. Metro/Regional, latitude/longitude, and spacer columns have no ontology target, so no important source columns were left unmapped.",
+        "prompt_version": "critic-v5"
+      }
+    }
+  ],
+  "tool_calls": 5,
+  "stages": [
+    {
+      "stage": "INSPECTED",
+      "at": "2026-11-12T08:50:55+00:00"
+    },
+    {
+      "stage": "PROPOSED_v0",
+      "at": "2026-11-12T08:57:20+00:00"
+    },
+    {
+      "stage": "VALIDATED_v0",
+      "at": "2026-11-12T08:57:20+00:00"
+    },
+    {
+      "stage": "CRITIQUED_v0",
+      "at": "2026-11-12T08:57:27+00:00"
+    },
+    {
+      "stage": "PENDING_REVIEW",
+      "at": "2026-11-12T08:57:27+00:00"
+    }
+  ],
+  "profile_context_base": {
+    "source_id": "vic_liquor",
+    "record_grain": "licence_or_permit",
+    "grain_rationale": "One record is one current Victorian liquor licence (one licence number) held at one premises. The business participant is the licensee; its legal name, trading name and premises address are mapped as attributes of the licence holder, not of the licence itself. Licence Number is the licence's own ID, so it is not used as a business identifier.",
+    "reader": {
+      "format": "xlsx",
+      "archive_member": null,
+      "encoding": "utf-8-sig",
+      "delimiter": null,
+      "skip_rows": 4,
+      "sheet": "Current_Victorian_Licences_By_L",
+      "record_path": null
+    },
+    "record_id": {
+      "strategy": "columns",
+      "source_paths": [
+        "Licence Number"
+      ],
+      "rationale": "Licence Number is present on 100% of rows and has 465 distinct values in 465 discovery records, so it is unique per record and traceable."
+    },
+    "observed_at": {
+      "source_path": null,
+      "steps": [],
+      "fallback": "resource_last_modified"
+    },
+    "fields": [
+      {
+        "source_paths": [
+          "Licensee"
+        ],
+        "join_with": " ",
+        "when": null,
+        "target": "entity.legal_name",
+        "valid_from_path": null,
+        "valid_to_path": null,
+        "validity_date_formats": [],
+        "steps": [
+          {
+            "op": "trim",
+            "args": {}
+          },
+          {
+            "op": "collapse_whitespace",
+            "args": {}
+          },
+          {
+            "op": "null_if",
+            "args": {
+              "values": [
+                "",
+                "-",
+                ".",
+                "n/a",
+                "na",
+                "not applicable",
+                "[not applicable] -"
+              ]
+            }
+          }
+        ],
+        "confidence": 0.82,
+        "rationale": "Column headed 'Licensee' - a licence is issued to a legal person, so this is the registered legal name of the holder. Values look like registered entity names (ALDI FOODS PTY LIMITED, ENDEAVOUR GROUP LIMITED, CITY OF DAREBIN), with some sole traders (WOOD GERARD). Placeholder nulls added defensively; none were observed here."
+      },
+      {
+        "source_paths": [
+          "Trading As"
+        ],
+        "join_with": " ",
+        "when": null,
+        "target": "entity.trading_name",
+        "valid_from_path": null,
+        "valid_to_path": null,
+        "validity_date_formats": [],
+        "steps": [
+          {
+            "op": "trim",
+            "args": {}
+          },
+          {
+            "op": "collapse_whitespace",
+            "args": {}
+          },
+          {
+            "op": "null_if",
+            "args": {
+              "values": [
+                "",
+                "-",
+                ".",
+                "n/a",
+                "na",
+                "not applicable",
+                "none",
+                "nil"
+              ]
+            }
+          }
+        ],
+        "confidence": 0.9,
+        "rationale": "Explicitly a trading-as/business name column, distinct from the licensee (ALDI FOODS PTY LIMITED -> ALDI STORES). Held-out records contained a bare '.' placeholder, which is nulled rather than emitted."
+      },
+      {
+        "source_paths": [
+          "Street Address"
+        ],
+        "join_with": " ",
+        "when": null,
+        "target": "address.full",
+        "valid_from_path": null,
+        "valid_to_path": null,
+        "validity_date_formats": [],
+        "steps": [
+          {
+            "op": "trim",
+            "args": {}
+          },
+          {
+            "op": "collapse_whitespace",
+            "args": {}
+          },
+          {
+            "op": "null_if",
+            "args": {
+              "values": [
+                "",
+                "-",
+                ".",
+                "n/a",
+                "na",
+                "not applicable"
+              ]
+            }
+          }
+        ],
+        "confidence": 0.85,
+        "rationale": "Street address of the licensed premises (not the postal address), paired with Suburb/Postcode columns. Held-out records contained a bare '-' placeholder, which is nulled rather than emitted."
+      },
+      {
+        "source_paths": [
+          "Suburb"
+        ],
+        "join_with": " ",
+        "when": null,
+        "target": "address.locality",
+        "valid_from_path": null,
+        "valid_to_path": null,
+        "validity_date_formats": [],
+        "steps": [
+          {
+            "op": "trim",
+            "args": {}
+          },
+          {
+            "op": "collapse_whitespace",
+            "args": {}
+          },
+          {
+            "op": "null_if",
+            "args": {
+              "values": [
+                "",
+                "-",
+                ".",
+                "n/a",
+                "na",
+                "not applicable",
+                "[not applicable] -",
+                "[not applicable]-"
+              ]
+            }
+          }
+        ],
+        "confidence": 0.85,
+        "rationale": "Locality of the premises address row. The discovery profile showed 7 rows shaped '[a a] -' i.e. '[NOT APPLICABLE] -' markers (case varies in the source: '[Not applicable] -'); these are placeholders for licences with no fixed premises locality and are nulled."
+      },
+      {
+        "source_paths": [
+          "Postcode"
+        ],
+        "join_with": " ",
+        "when": null,
+        "target": "address.postcode",
+        "valid_from_path": null,
+        "valid_to_path": null,
+        "validity_date_formats": [],
+        "steps": [
+          {
+            "op": "trim",
+            "args": {}
+          },
+          {
+            "op": "null_if",
+            "args": {
+              "values": [
+                "",
+                "0",
+                "-",
+                ".",
+                "n/a",
+                "na",
+                "not applicable"
+              ]
+            }
+          },
+          {
+            "op": "postcode",
+            "args": {}
+          }
+        ],
+        "confidence": 0.8,
+        "rationale": "4-digit premises postcode. A handful of rows contain '0' (7 of 465) which is a placeholder, not a postcode, so it is nulled."
+      }
+    ],
+    "constants": [
+      {
+        "target": "address.state",
+        "value": "VIC",
+        "confidence": 0.9,
+        "rationale": "Victorian liquor licence register published by Liquor Control Victoria; every premises is in Victoria."
+      },
+      {
+        "target": "address.country",
+        "value": "AU",
+        "confidence": 0.9,
+        "rationale": "Victorian (Australian) licensing register."
+      }
+    ],
+    "unmapped": [
+      {
+        "source_path": "Licence Number",
+        "reason": "The licence's own identifier, not a business identifier. Used only for record_id."
+      },
+      {
+        "source_path": "Licence Category",
+        "reason": "Status/type of the licence, not the legal entity's business form; entity_type enum does not permit licence categories and guessing would be wrong."
+      },
+      {
+        "source_path": "Trading Hours",
+        "reason": "Licence condition, not an entity attribute."
+      },
+      {
+        "source_path": "Patron Capacity (if applicable)",
+        "reason": "Premises/licence capacity; no ontology target."
+      },
+      {
+        "source_path": "Council",
+        "reason": "Local government area of the premises; no ontology target (address.state is a state enum, not an LGA)."
+      },
+      {
+        "source_path": "Region",
+        "reason": "Licensing region label; no ontology target."
+      },
+      {
+        "source_path": "Metro/Regional",
+        "reason": "Geographic classifier for the licence area; no ontology target."
+      },
+      {
+        "source_path": "Latitude",
+        "reason": "Coordinates; no ontology target."
+      },
+      {
+        "source_path": "Longitude",
+        "reason": "Coordinates; no ontology target."
+      },
+      {
+        "source_path": "Postal Address",
+        "reason": "Postal address of the licensee, not the premises address; mapping it too would conflict with the premises address claimed by address.full."
+      },
+      {
+        "source_path": "Postal Suburb",
+        "reason": "Part of the postal (correspondence) address, not the premises locality."
+      },
+      {
+        "source_path": "Postal Postcode",
+        "reason": "Part of the postal (correspondence) address, not the premises postcode; also contains interstate postcodes (e.g. 2000 NSW)."
+      },
+      {
+        "source_path": "column_7",
+        "reason": "Empty spacer column in the sheet."
+      },
+      {
+        "source_path": "column_8",
+        "reason": "Empty spacer column in the sheet."
+      },
+      {
+        "source_path": "column_13",
+        "reason": "Empty spacer column in the sheet."
+      },
+      {
+        "source_path": "column_14",
+        "reason": "Empty spacer column in the sheet."
+      }
+    ],
+    "notes": "Single sheet 'Current_Victorian_Licences_By_L'; rows 1-3 are publisher contact block, a title ('Current Victorian Liquor Licences as of 31/08/2026') and a blank line, so header is row 5 -> skip_rows 4. No ABN/ACN columns exist, so none are mapped (Licence Number is 8 digits and fails both checksums - it is not an ACN). The snapshot date 31/08/2026 appears only in the title text, not as a per-record column, so observed_at falls back to resource_last_modified. Status of the licence is not mapped to entity.status: the sheet lists current licences, which says nothing about the entity's registered status. Revision: null_if placeholder lists were widened on entity.legal_name, entity.trading_name, address.full, address.locality and address.postcode after held-out records emitted '.', '-', and '[NOT APPLICABLE] -' markers."
+  },
+  "experiment": "profile-context",
+  "continued_from_run": "20261112T154108-894d9c",
+  "inspection": {
+    "file_name": "vic_liquor__3804ec54",
+    "size_bytes": 4936744,
+    "magic_hex": "504b030414000000",
+    "container": "xlsx",
+    "sheets_first_rows": {
+      "Current_Victorian_Licences_By_L": [
+        [
+          null,
+          null,
+          null,
+          null,
+          null,
+          null,
+          null,
+          null,
+          "\nGPO Box 4356, Melbourne VIC 3001\n1300 182 457\nLiquor.vic.go"
+        ],
+        [],
+        [
+          "Current Victorian Liquor Licences as of 31/08/2026"
+        ],
+        [],
+        [
+          "Licence Number",
+          "Licensee",
+          "Trading As",
+          "Licence Category",
+          "Trading Hours",
+          "Patron Capacity (if applicable)",
+          "Street Address",
+          null,
+          null,
+          "Suburb",
+          "Postcode",
+          "Council",
+          "Region",
+          null,
+          null,
+          "Metro/Regional",
+          "Latitude",
+          "Longitude",
+          "Postal Address",
+          "Postal Suburb",
+          "Postal Postcode"
+        ],
+        [
+          "31100099",
+          "ARNOLD BRUCE",
+          "UNIVERSITY SKI CLUB",
+          "BYO Permit",
+          "BYO Permit",
+          "",
+          "U S C LODGE ALLOTMENTS 15 & 16 ALPINE VILL",
+          null,
+          null,
+          "MT BULLER",
+          "3723",
+          "MANSFIELD SHIRE COUNCIL",
+          "Hume",
+          null,
+          null,
+          "Regional",
+          "-37.14630500",
+          "146.45227600",
+          "PO BOX 93",
+          "SANDOWN VILLAGE",
+          "3171"
+        ],
+        [
+          "31100138",
+          "C S I R SKI CLUB",
+          "C S I R SKI CLUB",
+          "BYO Permit",
+          "BYO Permit",
+          "",
+          "SITE 65 1 SCHUSS STREET",
+          null,
+          null,
+          "FALLS CREEK",
+          "3699",
+          "ALPINE SHIRE COUNCIL",
+          "Hume",
+          null,
+          null,
+          "Regional",
+          "-36.86488200",
+          "147.27841300",
+          "PO BOX 4077",
+          "NARRE WARREN SOUTH",
+          "3805"
+        ],
+        [
+          "31100154",
+          "SKILIB ALPINE CLUB",
+          "SKILIB ALPINE CLUB",
+          "BYO Permit",
+          "BYO Permit",
+          "",
+          "2 GOAL POSTS RD",
+          null,
+          null,
+          "MT BULLER",
+          "3723",
+          "MANSFIELD SHIRE COUNCIL",
+          "Hume",
+          null,
+          null,
+          "Regional",
+          "-37.14695700",
+          "146.45464800",
+          "PO BOX 140",
+          "CANTERBURY",
+          "3126"
+        ]
+      ]
+    }
+  },
+  "human_feedback": null,
+  "reader": {
+    "format": "xlsx",
+    "archive_member": null,
+    "encoding": "utf-8-sig",
+    "delimiter": null,
+    "skip_rows": 4,
+    "sheet": "Current_Victorian_Licences_By_L",
+    "record_path": null
+  },
+  "finished_at": "2026-11-12T08:57:27+00:00",
+  "final_digest": "86278470175e7ba1ae974d3520e25bd19fbd579f18bdcc8d436a2e1263a98027"
+}

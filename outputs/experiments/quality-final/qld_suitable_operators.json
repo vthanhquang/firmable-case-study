@@ -1,0 +1,281 @@
+{
+  "status": "PENDING_REVIEW",
+  "run_id": "20261112T024240-9486e6",
+  "prompt_version": "prompts-v9",
+  "model": "deepseek-v4-flash",
+  "ontology_sha256": "639b80ea6333146c7ac714cd940fcdf6b2945f451e95333b0be21174bedee5da",
+  "snapshot_sha256": "d89014bdfa9616779dd19e3076e563a631c0af92137e78178da1a285e2dfd4ba",
+  "config_digest": "97c4e375e35e338cff0011c5f6bb91a4b404a4fb09d41d5851c572c8fa3d75ba",
+  "config": {
+    "source_id": "qld_suitable_operators",
+    "record_grain": "licence_or_permit",
+    "grain_rationale": "One record is one suitable-operator registration (identified by an RSO number) held by a corporation, government body, association or individual/sole trader. This is program participation, not the entity register itself; the holder's attributes (name, ACN/ABN, form, location) are mapped, while the registration status, RSO number and the program registration date are programme facts and stay unmapped.",
+    "reader": {
+      "format": "xlsx",
+      "archive_member": null,
+      "encoding": "utf-8-sig",
+      "delimiter": null,
+      "skip_rows": 0,
+      "sheet": "rso-register",
+      "record_path": null
+    },
+    "record_id": {
+      "strategy": "columns",
+      "source_paths": [
+        "RSO Number"
+      ],
+      "rationale": "RSO Number is the department-issued suitable-operator reference; distinct 459/459 across the discovery partition, so unique per registration (one row per registration)."
+    },
+    "observed_at": {
+      "source_path": null,
+      "steps": [],
+      "fallback": "resource_last_modified"
+    },
+    "fields": [
+      {
+        "source_paths": [
+          "Customer Name"
+        ],
+        "join_with": " ",
+        "when": {
+          "source_path": "Entity Type",
+          "op": "in",
+          "values": [
+            "Corporation (Company)",
+            "Government Owned Corporation",
+            "Incorporated Association",
+            "State Government Department",
+            "Australian Registered (Foreign) Body",
+            "Local Government Authority"
+          ]
+        },
+        "target": "entity.legal_name",
+        "valid_from_path": null,
+        "valid_to_path": null,
+        "validity_date_formats": [],
+        "claim_scope": "current_legal_name",
+        "steps": [
+          {
+            "op": "trim",
+            "args": {}
+          },
+          {
+            "op": "collapse_whitespace",
+            "args": {}
+          }
+        ],
+        "confidence": 0.85,
+        "rationale": "For explicit non-individual entity types the Customer Name is the registered style of the licence holder (e.g. '\"OVER THE TOP\" ROOF RESTORATIONS PTY. LTD'); licences are issued to legal persons, so this is the holder's legal name. Quote/asterisk characters retained as publisher text."
+      },
+      {
+        "source_paths": [
+          "Business Number"
+        ],
+        "join_with": " ",
+        "when": {
+          "source_path": "Business Number",
+          "op": "present",
+          "values": []
+        },
+        "target": "entity.acn",
+        "valid_from_path": null,
+        "valid_to_path": null,
+        "validity_date_formats": [],
+        "claim_scope": null,
+        "steps": [
+          {
+            "op": "regex_extract",
+            "args": {
+              "pattern": "^ACN\\s*(\\d{9})$",
+              "group": 1
+            }
+          },
+          {
+            "op": "acn",
+            "args": {}
+          }
+        ],
+        "confidence": 0.85,
+        "rationale": "Values are 'ACN nnnnnnnnn'; 237/249 present values are 9-digit ACNs and 96% of present values pass the ACN checksum. The prefix-anchored regex requires the literal 'ACN' prefix so 'ABN ...' and 'ARBN ...' values are not misparsed. Values failing the checksum are reported as errors, never repaired."
+      },
+      {
+        "source_paths": [
+          "Business Number"
+        ],
+        "join_with": " ",
+        "when": {
+          "source_path": "Business Number",
+          "op": "present",
+          "values": []
+        },
+        "target": "entity.abn",
+        "valid_from_path": null,
+        "valid_to_path": null,
+        "validity_date_formats": [],
+        "claim_scope": null,
+        "steps": [
+          {
+            "op": "regex_extract",
+            "args": {
+              "pattern": "^ABN\\s*(\\d{11})$",
+              "group": 1
+            }
+          },
+          {
+            "op": "abn",
+            "args": {}
+          }
+        ],
+        "confidence": 0.85,
+        "rationale": "A minority of Business Number values are prefixed 'ABN ' with 11 digits; the ABN checksum transform validates them. 'ACN' and 'ARBN' values are excluded by the prefix anchor, and no ACN is ever derived from an ABN."
+      },
+      {
+        "source_paths": [
+          "Entity Type"
+        ],
+        "join_with": " ",
+        "when": null,
+        "target": "entity.entity_type",
+        "valid_from_path": null,
+        "valid_to_path": null,
+        "validity_date_formats": [],
+        "claim_scope": null,
+        "steps": [
+          {
+            "op": "trim",
+            "args": {}
+          },
+          {
+            "op": "map_enum",
+            "args": {
+              "mapping": {
+                "Corporation (Company)": "company",
+                "Government Owned Corporation": "government",
+                "Incorporated Association": "incorporated_association",
+                "State Government Department": "government",
+                "Local Government Authority": "government",
+                "Australian Registered (Foreign) Body": "other"
+              },
+              "default": "unknown",
+              "passthrough": false
+            }
+          }
+        ],
+        "confidence": 0.8,
+        "rationale": "Entity Type explicitly states the business form. 'Local Government Authority' added as government (heldout showed Allconnex Water under this label). 'Government Owned Corporation' -> government, following the source's own 'Government' wording, though it is legally a company; low-stakes either way. 'An individual or Sole trader' is a combined label that cannot distinguish a person from a business form, so it falls to the default 'unknown' rather than a guessed sole_trader."
+      },
+      {
+        "source_paths": [
+          "Location"
+        ],
+        "join_with": " ",
+        "when": null,
+        "target": "address.locality",
+        "valid_from_path": null,
+        "valid_to_path": null,
+        "validity_date_formats": [],
+        "claim_scope": null,
+        "steps": [
+          {
+            "op": "regex_extract",
+            "args": {
+              "pattern": "^\\s*([^,]+)\\s*,",
+              "group": 1
+            }
+          },
+          {
+            "op": "trim",
+            "args": {}
+          }
+        ],
+        "confidence": 0.65,
+        "rationale": "Location is 'SUBURB, STATE, POSTCODE' (e.g. 'South Brisbane, QLD, 4101'); the first comma-delimited component is the suburb/locality. Scope is ambiguous (holder contact address vs licensed premises) and is flagged in notes."
+      },
+      {
+        "source_paths": [
+          "Location"
+        ],
+        "join_with": " ",
+        "when": null,
+        "target": "address.state",
+        "valid_from_path": null,
+        "valid_to_path": null,
+        "validity_date_formats": [],
+        "claim_scope": null,
+        "steps": [
+          {
+            "op": "regex_extract",
+            "args": {
+              "pattern": ",\\s*([A-Za-z]{2,3})\\s*,",
+              "group": 1
+            }
+          },
+          {
+            "op": "state",
+            "args": {}
+          }
+        ],
+        "confidence": 0.8,
+        "rationale": "Second comma-delimited component is the state abbreviation (QLD dominant, plus VIC/NSW/WA and NT/SA/TAS/ACT); normalised with the state transform. Rows whose separator shape defeats extraction stay null rather than being guessed."
+      },
+      {
+        "source_paths": [
+          "Location"
+        ],
+        "join_with": " ",
+        "when": null,
+        "target": "address.postcode",
+        "valid_from_path": null,
+        "valid_to_path": null,
+        "validity_date_formats": [],
+        "claim_scope": null,
+        "steps": [
+          {
+            "op": "regex_extract",
+            "args": {
+              "pattern": ",\\s*(\\d{3,4})\\s*$",
+              "group": 1
+            }
+          },
+          {
+            "op": "postcode",
+            "args": {}
+          }
+        ],
+        "confidence": 0.8,
+        "rationale": "Trailing comma-delimited component is the postcode; some raw values are 3/2/1 digits, and the postcode transform re-pads 3-digit NT codes."
+      }
+    ],
+    "constants": [
+      {
+        "target": "address.country",
+        "value": "AU",
+        "confidence": 0.85,
+        "rationale": "Queensland environment department register; all locations are AU suburbs/states, with a minority of holders located interstate (VIC, NSW, WA)."
+      }
+    ],
+    "unmapped": [
+      {
+        "source_path": "Registration Status",
+        "reason": "Status of the suitable-operator registration (a permit), not of the legal entity; only value present is 'Registered'. Mapping it to entity.status would misstate the entity's status."
+      },
+      {
+        "source_path": "RSO Number",
+        "reason": "Department-assigned suitable-operator reference for the registration; used as record_id. It identifies the permit, not the business."
+      },
+      {
+        "source_path": "Registration Date",
+        "reason": "Per publisher documentation this is the date the holder was registered as a suitable operator (programme participation), not the entity's incorporation/company registration date, and the claim_scope catalogue has no programme-registration scope. Mapping it to entity.date_registered would assert a legal-entity registration date the source does not support."
+      },
+      {
+        "source_path": "Customer Name (Entity Type = 'An individual or Sole trader')",
+        "reason": "For these rows Customer Name is a natural person's name (e.g. 'WILLIAM YOUNG'). Nothing in the source establishes it as a registered business/trading name, and the combined label cannot establish a business form; the ontology has no target for an individual's name, so it is not emitted."
+      },
+      {
+        "source_path": "Business Number values with 'ARBN' prefix",
+        "reason": "'ARBN nnnnnnnnn' is an Australian Registered Body Number, issued to a foreign registered body; it is neither an ACN nor an ABN, so those rows yield no entity.acn/abn and must not be mistaken for missing identifiers."
+      }
+    ],
+    "notes": "Programme register: each row is a suitable-operator registration (RSO number) held by a corporation, government body, association or an individual/sole trader. Registration Status, RSO Number and Registration Date describe the registration, not the entity, so they are unmapped. Customer Name is asserted as legal name only for explicit non-individual entity types; natural-person names under the combined 'An individual or Sole trader' label are not emitted. Business Number mixes ACN-, ABN- and ARBN-prefixed values, handled by two prefix-anchored rules so neither a wrong-length ACN nor an ABN-derived ACN is produced; a few values genuinely fail the ACN checksum and are reported as errors. Location 'SUBURB, STATE, POSTCODE' is split into locality/state/postcode because it is the only geographic evidence; its scope (holder contact vs licensed premises) is ambiguous, so it is emitted without a specific address claim_scope."
+  }
+}

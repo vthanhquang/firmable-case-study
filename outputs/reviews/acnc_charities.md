@@ -1,14 +1,14 @@
 # Mapping review: `acnc_charities`
 
 - **Revising after human rejection:** Fix address.country only: 'Australia.' (trailing full stop) must become 'AU', and 'WA 6105' (state+postcode typed into Country) must not be emitted as a country. Other letter-only country names (e.g. ARUBA, SINGAPORE) must pass through unchanged (map_enum passthrough true) - do not drop or guess them.
-- **Latest review decision:** rejected by claude-code (AI assistant acting for the candidate) (ai_assistant_proxy) at 2026-11-10T01:51:10+00:00 - *for a different config digest; this proposal is not yet decided*
+- **Latest review decision:** approved by claude-code (AI assistant acting for the candidate) (ai_assistant_proxy) at 2026-11-10T02:11:31+00:00
 - **Status:** PENDING_REVIEW  (run `20261110T090701-e6e3cc`, prompt `prompts-v5`, model `deepseek-v4-flash`)
 - **Dataset:** ACNC Registered Charities — Australian Charities and Not-for-profits Commission (ACNC)
-- **Resource:** ACNC Register of Australian charities (XLSX), sha256 `69be72862e8728bf…`
+- **Resource:** ACNC Register of Australian charities (XLSX), sha256 `69be72862e8728bfda782fc8438d8f6b16bf00f2ef99089e9c4dc2d85a8f6833`
 - **Licence:** cc-by
 - **Agent effort:** 1 proposal(s), 12 tool calls, 11 model calls, 154,370 prompt + 15,688 completion tokens, 205s model time
 
-## Final proposal (v0, digest `f1d943df55f301f8`)
+## Final proposal (v0, digest `f1d943df55f301f8287f039186ed11aefb5fd9d44e403c1e4aca057c9c319652`)
 
 **Record grain:** `legal_entity` — One row per ACNC-registered charity; the record describes the registered legal entity and its registered business address. ABN is not guaranteed unique (duplicates/blanks occur), so record identity is content-derived.
 
@@ -29,7 +29,7 @@
 | Town_City | `address.locality` | trim, collapse_whitespace | 0.92 | 1061 / 1061 |  | Town/city (suburb) field. |
 | State | `address.state` | state | 0.95 | 1061 / 1061 |  | Australian state abbreviations; state transform normalises and maps unknown to OTHER. |
 | Postcode | `address.postcode` | postcode | 0.9 | 1056 / 1058 | {'POSTCODE_INVALID': 2} | 4-digit Australian postcodes; one 6-digit source defect fails validation by design. |
-| Country | `address.country` | trim, collapse_whitespace, upper, regex_extract({"pattern": "^(.*?)[.\\s]*$", "group": 1}), map_enum({"mapping": {"AUSTR | 0.85 | 1056 / 1058 |  | Reviewer-directed fix. trim/collapse/upper, then strip trailing periods and spaces with regex_extract '^(.*?)[.\s]*$' so 'Australia.' structurally reduces to 'A |
+| Country | `address.country` | trim, collapse_whitespace, upper, regex_extract({"pattern": "^(.*?)[.\\s]*$", "group": 1}), map_enum({"mapping": {"AUSTRALIA": "AU", "AU": "AU", "AUS": "AU"}, "default": null, "passthrough": true}), regex_extract({"pattern": "^(\\D*)$", "group": 1}) | 0.85 | 1056 / 1058 |  | Reviewer-directed fix. trim/collapse/upper, then strip trailing periods and spaces with regex_extract '^(.*?)[.\s]*$' so 'Australia.' structurally reduces to 'AUSTRALIA' before lookup (general rule, not one hardcoded dotted key). map_enum(passthrough=true) maps 'AUSTRALIA'/'AU'/'AUS' -> 'AU' and passes any unlisted letter-only name (ARUBA, SINGAPORE) through unchanged as uppercase text, so genuine foreign countries are neither dropped nor guessed. A final regex_extract '^(\D*)$' returns the value only when it contains no digits, so state+postcode mistypes such as 'WA 6105' become null instead of being emitted as a country; letter-only names are unaffected. 'default: null' is deliberately NOT used, since it would also null real foreign countries. |
 
 **Deliberately unmapped:**
 - `Address_Type` — Single constant value 'Business' on all rows; address contact type, no ontology target.

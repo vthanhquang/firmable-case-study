@@ -1,0 +1,16 @@
+name: acnc_size_2022
+version: 1
+kind: band
+target: ext.financial.revenue_band
+derivation_level: L1
+review_status: draft - thresholds from ACNC's published size rules; verify the effective date
+source: >
+  ACNC charity size by annual revenue, thresholds in force from 1 July 2022. Before that date the
+  thresholds were $250k (small) and $1M (medium). The register's Charity_Size reflects the charity's
+  most recent reporting, so a band can describe an earlier reporting year.
+currency: AUD
+unlisted: error
+entries:
+  Small: {label: Small, min_aud: 0, max_aud: 499999}
+  Medium: {label: Medium, min_aud: 500000, max_aud: 2999999}
+  Large: {label: Large, min_aud: 3000000, max_aud: null}

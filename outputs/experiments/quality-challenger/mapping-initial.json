@@ -1,0 +1,833 @@
+{
+  "protocol": "paired publisher-informed semantic checks on unseen raw rows",
+  "seed": 20261112,
+  "sources": {
+    "asic_companies": {
+      "snapshot_sha256": "bb7935a163292c6d195bd2d5788863164f191198b3f29257fb332785f998bcea",
+      "excluded_onboarding_rows": 1636,
+      "validation_rows": 240,
+      "reference_reader": {
+        "format": "delimited",
+        "archive_member": "COMPANY_202611.csv",
+        "encoding": "utf-8-sig",
+        "delimiter": "\t",
+        "skip_rows": 0,
+        "sheet": null,
+        "record_path": null
+      },
+      "versions": {
+        "approved_baseline": {
+          "run_id": "20261110T035442-7cd099",
+          "status": "PENDING_REVIEW",
+          "config_digest": "ccd07371fbc95e2ef95c6cc3a5b59cc6066b5252e036359089686fb5fdcb604c",
+          "recorded_config_digest": "ccd07371fbc95e2ef95c6cc3a5b59cc6066b5252e036359089686fb5fdcb604c",
+          "reference_reader_rows_match": true,
+          "rows": 240,
+          "checked_rows_and_fields": 1440,
+          "exact": 1440,
+          "matched_claims": 1155,
+          "expected_claims": 1155,
+          "unexpected_claims": 0,
+          "tested_claim_precision": 1.0,
+          "tested_claim_recall": 1.0,
+          "canonical_observations": 1642,
+          "scope_issues": {
+            "registration_scope_missing_or_wrong": 240
+          },
+          "fields": {
+            "entity.abn": {
+              "rows": 240,
+              "exact": 240,
+              "expected_claims": 202,
+              "matched_claims": 202,
+              "unexpected_claims": 0
+            },
+            "entity.acn": {
+              "rows": 240,
+              "exact": 240,
+              "expected_claims": 240,
+              "matched_claims": 240,
+              "unexpected_claims": 0
+            },
+            "entity.legal_name": {
+              "rows": 240,
+              "exact": 240,
+              "expected_claims": 240,
+              "matched_claims": 240,
+              "unexpected_claims": 0
+            },
+            "entity.date_registered": {
+              "rows": 240,
+              "exact": 240,
+              "expected_claims": 240,
+              "matched_claims": 240,
+              "unexpected_claims": 0
+            },
+            "entity.status": {
+              "rows": 240,
+              "exact": 240,
+              "expected_claims": 233,
+              "matched_claims": 233,
+              "unexpected_claims": 0
+            },
+            "address.state": {
+              "rows": 240,
+              "exact": 240,
+              "expected_claims": 0,
+              "matched_claims": 0,
+              "unexpected_claims": 0
+            }
+          }
+        },
+        "quality-mixed-critic": {
+          "run_id": "20261112T012826-6a5558",
+          "status": "PENDING_REVIEW",
+          "config_digest": "3949d516f49f79231112d22d9191a622d54cf6694566cd3b2e85798c41123353",
+          "recorded_config_digest": "3949d516f49f79231112d22d9191a622d54cf6694566cd3b2e85798c41123353",
+          "reference_reader_rows_match": true,
+          "rows": 240,
+          "checked_rows_and_fields": 1440,
+          "exact": 1346,
+          "matched_claims": 1155,
+          "expected_claims": 1155,
+          "unexpected_claims": 94,
+          "tested_claim_precision": 0.9247,
+          "tested_claim_recall": 1.0,
+          "canonical_observations": 1736,
+          "scope_issues": {
+            "registration_scope_missing_or_wrong": 240
+          },
+          "fields": {
+            "entity.abn": {
+              "rows": 240,
+              "exact": 240,
+              "expected_claims": 202,
+              "matched_claims": 202,
+              "unexpected_claims": 0
+            },
+            "entity.acn": {
+              "rows": 240,
+              "exact": 240,
+              "expected_claims": 240,
+              "matched_claims": 240,
+              "unexpected_claims": 0
+            },
+            "entity.legal_name": {
+              "rows": 240,
+              "exact": 146,
+              "expected_claims": 240,
+              "matched_claims": 240,
+              "unexpected_claims": 94
+            },
+            "entity.date_registered": {
+              "rows": 240,
+              "exact": 240,
+              "expected_claims": 240,
+              "matched_claims": 240,
+              "unexpected_claims": 0
+            },
+            "entity.status": {
+              "rows": 240,
+              "exact": 240,
+              "expected_claims": 233,
+              "matched_claims": 233,
+              "unexpected_claims": 0
+            },
+            "address.state": {
+              "rows": 240,
+              "exact": 240,
+              "expected_claims": 0,
+              "matched_claims": 0,
+              "unexpected_claims": 0
+            }
+          }
+        },
+        "quality-guided": {
+          "run_id": "20261112T014654-0456a0",
+          "status": "PENDING_REVIEW",
+          "config_digest": "c22b623648ac17cafbdcb51488ae11248566022297dc002bf794f6cd84e34118",
+          "recorded_config_digest": "c22b623648ac17cafbdcb51488ae11248566022297dc002bf794f6cd84e34118",
+          "reference_reader_rows_match": true,
+          "rows": 240,
+          "checked_rows_and_fields": 1440,
+          "exact": 1200,
+          "matched_claims": 1155,
+          "expected_claims": 1155,
+          "unexpected_claims": 240,
+          "tested_claim_precision": 0.828,
+          "tested_claim_recall": 1.0,
+          "canonical_observations": 1976,
+          "scope_issues": {},
+          "fields": {
+            "entity.abn": {
+              "rows": 240,
+              "exact": 240,
+              "expected_claims": 202,
+              "matched_claims": 202,
+              "unexpected_claims": 0
+            },
+            "entity.acn": {
+              "rows": 240,
+              "exact": 240,
+              "expected_claims": 240,
+              "matched_claims": 240,
+              "unexpected_claims": 0
+            },
+            "entity.legal_name": {
+              "rows": 240,
+              "exact": 240,
+              "expected_claims": 240,
+              "matched_claims": 240,
+              "unexpected_claims": 0
+            },
+            "entity.date_registered": {
+              "rows": 240,
+              "exact": 240,
+              "expected_claims": 240,
+              "matched_claims": 240,
+              "unexpected_claims": 0
+            },
+            "entity.status": {
+              "rows": 240,
+              "exact": 240,
+              "expected_claims": 233,
+              "matched_claims": 233,
+              "unexpected_claims": 0
+            },
+            "address.state": {
+              "rows": 240,
+              "exact": 0,
+              "expected_claims": 0,
+              "matched_claims": 0,
+              "unexpected_claims": 240
+            }
+          }
+        }
+      }
+    },
+    "acnc_charities": {
+      "snapshot_sha256": "69be72862e8728bfda782fc8438d8f6b16bf00f2ef99089e9c4dc2d85a8f6833",
+      "excluded_onboarding_rows": 1662,
+      "validation_rows": 240,
+      "reference_reader": {
+        "format": "xlsx",
+        "archive_member": null,
+        "encoding": "utf-8-sig",
+        "delimiter": null,
+        "skip_rows": 0,
+        "sheet": "Sheet1",
+        "record_path": null
+      },
+      "versions": {
+        "approved_baseline": {
+          "run_id": "20261110T090701-e6e3cc",
+          "status": "PENDING_REVIEW",
+          "config_digest": "f1d943df55f301f8287f039186ed11aefb5fd9d44e403c1e4aca057c9c319652",
+          "recorded_config_digest": "f1d943df55f301f8287f039186ed11aefb5fd9d44e403c1e4aca057c9c319652",
+          "reference_reader_rows_match": true,
+          "rows": 240,
+          "checked_rows_and_fields": 960,
+          "exact": 939,
+          "matched_claims": 715,
+          "expected_claims": 715,
+          "unexpected_claims": 21,
+          "tested_claim_precision": 0.9715,
+          "tested_claim_recall": 1.0,
+          "canonical_observations": 1941,
+          "scope_issues": {
+            "registration_scope_missing_or_wrong": 239
+          },
+          "fields": {
+            "entity.abn": {
+              "rows": 240,
+              "exact": 240,
+              "expected_claims": 238,
+              "matched_claims": 238,
+              "unexpected_claims": 0
+            },
+            "entity.legal_name": {
+              "rows": 240,
+              "exact": 240,
+              "expected_claims": 238,
+              "matched_claims": 238,
+              "unexpected_claims": 0
+            },
+            "entity.trading_name": {
+              "rows": 240,
+              "exact": 219,
+              "expected_claims": 0,
+              "matched_claims": 0,
+              "unexpected_claims": 21
+            },
+            "entity.date_registered": {
+              "rows": 240,
+              "exact": 240,
+              "expected_claims": 239,
+              "matched_claims": 239,
+              "unexpected_claims": 0
+            }
+          }
+        },
+        "quality-mixed-critic": {
+          "run_id": "20261112T013823-1df524",
+          "status": "PENDING_REVIEW",
+          "config_digest": "51e9ade621df846929372bc654adbc5e59ae982c352845a03b2591bb3964c088",
+          "recorded_config_digest": "51e9ade621df846929372bc654adbc5e59ae982c352845a03b2591bb3964c088",
+          "reference_reader_rows_match": true,
+          "rows": 240,
+          "checked_rows_and_fields": 960,
+          "exact": 939,
+          "matched_claims": 715,
+          "expected_claims": 715,
+          "unexpected_claims": 21,
+          "tested_claim_precision": 0.9715,
+          "tested_claim_recall": 1.0,
+          "canonical_observations": 1942,
+          "scope_issues": {
+            "registration_scope_missing_or_wrong": 239
+          },
+          "fields": {
+            "entity.abn": {
+              "rows": 240,
+              "exact": 240,
+              "expected_claims": 238,
+              "matched_claims": 238,
+              "unexpected_claims": 0
+            },
+            "entity.legal_name": {
+              "rows": 240,
+              "exact": 240,
+              "expected_claims": 238,
+              "matched_claims": 238,
+              "unexpected_claims": 0
+            },
+            "entity.trading_name": {
+              "rows": 240,
+              "exact": 219,
+              "expected_claims": 0,
+              "matched_claims": 0,
+              "unexpected_claims": 21
+            },
+            "entity.date_registered": {
+              "rows": 240,
+              "exact": 240,
+              "expected_claims": 239,
+              "matched_claims": 239,
+              "unexpected_claims": 0
+            }
+          }
+        },
+        "quality-guided": {
+          "run_id": "20261112T014653-883226",
+          "status": "PENDING_REVIEW",
+          "config_digest": "b1e793864dbfa84aefdb44b27a512ab6a51918d5acc7c838cca3b2a44e08536d",
+          "recorded_config_digest": "b1e793864dbfa84aefdb44b27a512ab6a51918d5acc7c838cca3b2a44e08536d",
+          "reference_reader_rows_match": true,
+          "rows": 240,
+          "checked_rows_and_fields": 960,
+          "exact": 960,
+          "matched_claims": 715,
+          "expected_claims": 715,
+          "unexpected_claims": 0,
+          "tested_claim_precision": 1.0,
+          "tested_claim_recall": 1.0,
+          "canonical_observations": 1920,
+          "scope_issues": {},
+          "fields": {
+            "entity.abn": {
+              "rows": 240,
+              "exact": 240,
+              "expected_claims": 238,
+              "matched_claims": 238,
+              "unexpected_claims": 0
+            },
+            "entity.legal_name": {
+              "rows": 240,
+              "exact": 240,
+              "expected_claims": 238,
+              "matched_claims": 238,
+              "unexpected_claims": 0
+            },
+            "entity.trading_name": {
+              "rows": 240,
+              "exact": 240,
+              "expected_claims": 0,
+              "matched_claims": 0,
+              "unexpected_claims": 0
+            },
+            "entity.date_registered": {
+              "rows": 240,
+              "exact": 240,
+              "expected_claims": 239,
+              "matched_claims": 239,
+              "unexpected_claims": 0
+            }
+          }
+        }
+      }
+    },
+    "ato_tax_transparency": {
+      "snapshot_sha256": "7cccd963cd4aad31c305b21d33272d3d99ff9c36258641622a28cd0028d65c45",
+      "excluded_onboarding_rows": 1601,
+      "validation_rows": 240,
+      "reference_reader": {
+        "format": "xlsx",
+        "archive_member": null,
+        "encoding": "utf-8-sig",
+        "delimiter": null,
+        "skip_rows": 0,
+        "sheet": "Income tax details",
+        "record_path": null
+      },
+      "versions": {
+        "approved_baseline": {
+          "run_id": "20261110T034703-b5fe14",
+          "status": "PENDING_REVIEW",
+          "config_digest": "78133ba75c7f0f4cfd321fc27b28ff75aaec21454ac96fbe43e84b214c77f85b",
+          "recorded_config_digest": "4eaa881938cfbebabb230ee0430da8a02f6bc1addd97f2251dfa579fbd57e73a",
+          "reference_reader_rows_match": true,
+          "rows": 240,
+          "checked_rows_and_fields": 480,
+          "exact": 480,
+          "matched_claims": 479,
+          "expected_claims": 479,
+          "unexpected_claims": 0,
+          "tested_claim_precision": 1.0,
+          "tested_claim_recall": 1.0,
+          "canonical_observations": 719,
+          "scope_issues": {},
+          "fields": {
+            "entity.abn": {
+              "rows": 240,
+              "exact": 240,
+              "expected_claims": 239,
+              "matched_claims": 239,
+              "unexpected_claims": 0
+            },
+            "entity.legal_name": {
+              "rows": 240,
+              "exact": 240,
+              "expected_claims": 240,
+              "matched_claims": 240,
+              "unexpected_claims": 0
+            }
+          }
+        }
+      }
+    },
+    "qbcc_licensees": {
+      "snapshot_sha256": "509b287a7bf36eb39510b79a8056568dd532843d75b711d3d44c193ff0d84447",
+      "excluded_onboarding_rows": 1609,
+      "validation_rows": 240,
+      "reference_reader": {
+        "format": "json",
+        "archive_member": null,
+        "encoding": "utf-8-sig",
+        "delimiter": null,
+        "skip_rows": 0,
+        "sheet": null,
+        "record_path": "result.records"
+      },
+      "versions": {
+        "approved_baseline": {
+          "run_id": "20261110T035024-bb91f8",
+          "status": "PENDING_REVIEW",
+          "config_digest": "fb879ed632612ffd25cde2bd45b2c83eac7bad8a8448df2085fe53f20f885ec0",
+          "recorded_config_digest": "51948d3eb31b002b5f30008eb414b83a369cefdc6a6bee141295598949736a02",
+          "reference_reader_rows_match": true,
+          "rows": 240,
+          "checked_rows_and_fields": 1200,
+          "exact": 1200,
+          "matched_claims": 382,
+          "expected_claims": 382,
+          "unexpected_claims": 0,
+          "tested_claim_precision": 1.0,
+          "tested_claim_recall": 1.0,
+          "canonical_observations": 1577,
+          "scope_issues": {},
+          "fields": {
+            "entity.abn": {
+              "rows": 240,
+              "exact": 240,
+              "expected_claims": 128,
+              "matched_claims": 128,
+              "unexpected_claims": 0
+            },
+            "entity.acn": {
+              "rows": 240,
+              "exact": 240,
+              "expected_claims": 14,
+              "matched_claims": 14,
+              "unexpected_claims": 0
+            },
+            "entity.legal_name": {
+              "rows": 240,
+              "exact": 240,
+              "expected_claims": 240,
+              "matched_claims": 240,
+              "unexpected_claims": 0
+            },
+            "entity.status": {
+              "rows": 240,
+              "exact": 240,
+              "expected_claims": 0,
+              "matched_claims": 0,
+              "unexpected_claims": 0
+            },
+            "entity.date_registered": {
+              "rows": 240,
+              "exact": 240,
+              "expected_claims": 0,
+              "matched_claims": 0,
+              "unexpected_claims": 0
+            }
+          }
+        },
+        "quality-guided": {
+          "run_id": "20261112T014653-d3b6fb",
+          "status": "PENDING_REVIEW",
+          "config_digest": "f1b8e598fda1accf8d2704a5ee10d6bb1bfcfe5c24dcadc9124967286b5db371",
+          "recorded_config_digest": "f1b8e598fda1accf8d2704a5ee10d6bb1bfcfe5c24dcadc9124967286b5db371",
+          "reference_reader_rows_match": true,
+          "rows": 240,
+          "checked_rows_and_fields": 1200,
+          "exact": 1200,
+          "matched_claims": 382,
+          "expected_claims": 382,
+          "unexpected_claims": 0,
+          "tested_claim_precision": 1.0,
+          "tested_claim_recall": 1.0,
+          "canonical_observations": 1096,
+          "scope_issues": {},
+          "fields": {
+            "entity.abn": {
+              "rows": 240,
+              "exact": 240,
+              "expected_claims": 128,
+              "matched_claims": 128,
+              "unexpected_claims": 0
+            },
+            "entity.acn": {
+              "rows": 240,
+              "exact": 240,
+              "expected_claims": 14,
+              "matched_claims": 14,
+              "unexpected_claims": 0
+            },
+            "entity.legal_name": {
+              "rows": 240,
+              "exact": 240,
+              "expected_claims": 240,
+              "matched_claims": 240,
+              "unexpected_claims": 0
+            },
+            "entity.status": {
+              "rows": 240,
+              "exact": 240,
+              "expected_claims": 0,
+              "matched_claims": 0,
+              "unexpected_claims": 0
+            },
+            "entity.date_registered": {
+              "rows": 240,
+              "exact": 240,
+              "expected_claims": 0,
+              "matched_claims": 0,
+              "unexpected_claims": 0
+            }
+          }
+        }
+      }
+    },
+    "vic_liquor": {
+      "snapshot_sha256": "b0a00e0846f430dc3eb2bc32fde3e4136caa9142c60d127e8c1419fbc34fb36e",
+      "excluded_onboarding_rows": 1634,
+      "validation_rows": 240,
+      "reference_reader": {
+        "format": "xlsx",
+        "archive_member": null,
+        "encoding": "utf-8-sig",
+        "delimiter": null,
+        "skip_rows": 4,
+        "sheet": "Current_Victorian_Licences_By_L",
+        "record_path": null
+      },
+      "versions": {
+        "approved_baseline": {
+          "run_id": "20261110T054156-0453b4",
+          "status": "PENDING_REVIEW",
+          "config_digest": "3974d55e7dff60335e3eb408af6208fe30eebf960afcb41b8e1f6d5a6a11d6a0",
+          "recorded_config_digest": "3974d55e7dff60335e3eb408af6208fe30eebf960afcb41b8e1f6d5a6a11d6a0",
+          "reference_reader_rows_match": true,
+          "rows": 240,
+          "checked_rows_and_fields": 720,
+          "exact": 719,
+          "matched_claims": 239,
+          "expected_claims": 240,
+          "unexpected_claims": 0,
+          "tested_claim_precision": 1.0,
+          "tested_claim_recall": 0.9958,
+          "canonical_observations": 1636,
+          "scope_issues": {},
+          "fields": {
+            "entity.legal_name": {
+              "rows": 240,
+              "exact": 239,
+              "expected_claims": 240,
+              "matched_claims": 239,
+              "unexpected_claims": 0
+            },
+            "entity.status": {
+              "rows": 240,
+              "exact": 240,
+              "expected_claims": 0,
+              "matched_claims": 0,
+              "unexpected_claims": 0
+            },
+            "entity.date_registered": {
+              "rows": 240,
+              "exact": 240,
+              "expected_claims": 0,
+              "matched_claims": 0,
+              "unexpected_claims": 0
+            }
+          }
+        }
+      }
+    },
+    "dewr_employment_providers": {
+      "snapshot_sha256": "0034e176b580405064272e688c7bf51230f051880263cdeeb5107ac00bd7a979",
+      "excluded_onboarding_rows": 1599,
+      "validation_rows": 240,
+      "reference_reader": {
+        "format": "delimited",
+        "archive_member": null,
+        "encoding": "utf-8-sig",
+        "delimiter": ",",
+        "skip_rows": 0,
+        "sheet": null,
+        "record_path": null
+      },
+      "versions": {
+        "approved_baseline": {
+          "run_id": "20261110T045114-d14064",
+          "status": "PENDING_REVIEW",
+          "config_digest": "38158714ad1c7b84b475221bdc9445c64a4abedc8cd04284fe9ad79d6b1164fc",
+          "recorded_config_digest": "38158714ad1c7b84b475221bdc9445c64a4abedc8cd04284fe9ad79d6b1164fc",
+          "reference_reader_rows_match": true,
+          "rows": 240,
+          "checked_rows_and_fields": 720,
+          "exact": 720,
+          "matched_claims": 240,
+          "expected_claims": 240,
+          "unexpected_claims": 0,
+          "tested_claim_precision": 1.0,
+          "tested_claim_recall": 1.0,
+          "canonical_observations": 1576,
+          "scope_issues": {},
+          "fields": {
+            "entity.trading_name": {
+              "rows": 240,
+              "exact": 240,
+              "expected_claims": 240,
+              "matched_claims": 240,
+              "unexpected_claims": 0
+            },
+            "entity.status": {
+              "rows": 240,
+              "exact": 240,
+              "expected_claims": 0,
+              "matched_claims": 0,
+              "unexpected_claims": 0
+            },
+            "entity.date_registered": {
+              "rows": 240,
+              "exact": 240,
+              "expected_claims": 0,
+              "matched_claims": 0,
+              "unexpected_claims": 0
+            }
+          }
+        }
+      }
+    },
+    "asic_credit_licensees": {
+      "snapshot_sha256": "74fc2f5f73e64331dd36538e1fee47ed474c33c161f7c9bf990efe7aa5f8a218",
+      "excluded_onboarding_rows": 1638,
+      "validation_rows": 240,
+      "reference_reader": {
+        "format": "delimited",
+        "archive_member": null,
+        "encoding": "utf-8-sig",
+        "delimiter": "\t",
+        "skip_rows": 0,
+        "sheet": null,
+        "record_path": null
+      },
+      "versions": {
+        "approved_baseline": {
+          "run_id": "20261110T035350-5f82db",
+          "status": "PENDING_REVIEW",
+          "config_digest": "93e42b99014c322d168ee0c545d44f1bf6f2d61aba6e01df63336e42ba1e7b45",
+          "recorded_config_digest": "9f9a398f76545ac5a3b30b704336de07f21584dc74ece2f5a6850fe6a15f4770",
+          "reference_reader_rows_match": true,
+          "rows": 240,
+          "checked_rows_and_fields": 1200,
+          "exact": 1200,
+          "matched_claims": 478,
+          "expected_claims": 478,
+          "unexpected_claims": 0,
+          "tested_claim_precision": 1.0,
+          "tested_claim_recall": 1.0,
+          "canonical_observations": 2001,
+          "scope_issues": {},
+          "fields": {
+            "entity.abn": {
+              "rows": 240,
+              "exact": 240,
+              "expected_claims": 223,
+              "matched_claims": 223,
+              "unexpected_claims": 0
+            },
+            "entity.acn": {
+              "rows": 240,
+              "exact": 240,
+              "expected_claims": 15,
+              "matched_claims": 15,
+              "unexpected_claims": 0
+            },
+            "entity.legal_name": {
+              "rows": 240,
+              "exact": 240,
+              "expected_claims": 240,
+              "matched_claims": 240,
+              "unexpected_claims": 0
+            },
+            "entity.status": {
+              "rows": 240,
+              "exact": 240,
+              "expected_claims": 0,
+              "matched_claims": 0,
+              "unexpected_claims": 0
+            },
+            "entity.date_registered": {
+              "rows": 240,
+              "exact": 240,
+              "expected_claims": 0,
+              "matched_claims": 0,
+              "unexpected_claims": 0
+            }
+          }
+        },
+        "quality-mixed-critic": {
+          "run_id": "20261112T014819-93ea82",
+          "status": "PENDING_REVIEW",
+          "config_digest": "2c8f414c2e416149335e51e056f55bd5f61bcf180ae777b95824c9c2eda302f0",
+          "recorded_config_digest": "2c8f414c2e416149335e51e056f55bd5f61bcf180ae777b95824c9c2eda302f0",
+          "reference_reader_rows_match": true,
+          "rows": 240,
+          "checked_rows_and_fields": 1200,
+          "exact": 1200,
+          "matched_claims": 478,
+          "expected_claims": 478,
+          "unexpected_claims": 0,
+          "tested_claim_precision": 1.0,
+          "tested_claim_recall": 1.0,
+          "canonical_observations": 1521,
+          "scope_issues": {},
+          "fields": {
+            "entity.abn": {
+              "rows": 240,
+              "exact": 240,
+              "expected_claims": 223,
+              "matched_claims": 223,
+              "unexpected_claims": 0
+            },
+            "entity.acn": {
+              "rows": 240,
+              "exact": 240,
+              "expected_claims": 15,
+              "matched_claims": 15,
+              "unexpected_claims": 0
+            },
+            "entity.legal_name": {
+              "rows": 240,
+              "exact": 240,
+              "expected_claims": 240,
+              "matched_claims": 240,
+              "unexpected_claims": 0
+            },
+            "entity.status": {
+              "rows": 240,
+              "exact": 240,
+              "expected_claims": 0,
+              "matched_claims": 0,
+              "unexpected_claims": 0
+            },
+            "entity.date_registered": {
+              "rows": 240,
+              "exact": 240,
+              "expected_claims": 0,
+              "matched_claims": 0,
+              "unexpected_claims": 0
+            }
+          }
+        },
+        "quality-guided": {
+          "run_id": "20261112T014653-803650",
+          "status": "PENDING_REVIEW",
+          "config_digest": "84baee2e41b1dd1400fd3e6985cc44429d22d2c7b640bee6e90c6fb5d2a5173c",
+          "recorded_config_digest": "84baee2e41b1dd1400fd3e6985cc44429d22d2c7b640bee6e90c6fb5d2a5173c",
+          "reference_reader_rows_match": true,
+          "rows": 240,
+          "checked_rows_and_fields": 1200,
+          "exact": 1185,
+          "matched_claims": 463,
+          "expected_claims": 478,
+          "unexpected_claims": 0,
+          "tested_claim_precision": 1.0,
+          "tested_claim_recall": 0.9686,
+          "canonical_observations": 1506,
+          "scope_issues": {},
+          "fields": {
+            "entity.abn": {
+              "rows": 240,
+              "exact": 240,
+              "expected_claims": 223,
+              "matched_claims": 223,
+              "unexpected_claims": 0
+            },
+            "entity.acn": {
+              "rows": 240,
+              "exact": 225,
+              "expected_claims": 15,
+              "matched_claims": 0,
+              "unexpected_claims": 0
+            },
+            "entity.legal_name": {
+              "rows": 240,
+              "exact": 240,
+              "expected_claims": 240,
+              "matched_claims": 240,
+              "unexpected_claims": 0
+            },
+            "entity.status": {
+              "rows": 240,
+              "exact": 240,
+              "expected_claims": 0,
+              "matched_claims": 0,
+              "unexpected_claims": 0
+            },
+            "entity.date_registered": {
+              "rows": 240,
+              "exact": 240,
+              "expected_claims": 0,
+              "matched_claims": 0,
+              "unexpected_claims": 0
+            }
+          }
+        }
+      }
+    }
+  }
+}

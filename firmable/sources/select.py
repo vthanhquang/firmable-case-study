@@ -108,4 +108,8 @@ def fetch_from_manifest() -> list[dict]:
 
 
 def load_manifest() -> dict[str, dict]:
-    return {m["source_id"]: m for m in json.loads((OUT_SOURCES / "selected_sources.json").read_text(encoding="utf-8"))}
+    from .register import local_sources
+
+    manifest = OUT_SOURCES / "selected_sources.json"
+    selected = json.loads(manifest.read_text(encoding="utf-8")) if manifest.exists() else []
+    return {m["source_id"]: m for m in [*local_sources(), *selected]}

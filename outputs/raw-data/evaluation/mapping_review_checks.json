@@ -1,0 +1,1666 @@
+{
+  "reviewed_at": "2026-11-17T04:20:23.894017+00:00",
+  "method": "Replay all saved sample rows; compare values, columns, roles, qualifiers, scopes and validity. This is reproducibility evidence, not independent accuracy measurement.",
+  "sources": {
+    "acnc_charities": {
+      "run_id": "20261117T041635-local-b7bddd8d",
+      "config_digest": "b7bddd8d303e91894a57c64492ff21696b9a360d0965b629d4178a51b6ea0a20",
+      "snapshot_sha256": "69be72862e8728bfda782fc8438d8f6b16bf00f2ef99089e9c4dc2d85a8f6833",
+      "observations_sha256": "a1d601ac5b318ed630899008e034304bb0bd0f65e34d50e77cf9fcd9dc8fb792",
+      "records_checked": 1064,
+      "saved_observations": 16461,
+      "missing_raw_rows": [],
+      "replay_mismatches": [],
+      "static_issues": [],
+      "counts": {
+        "constant_address_claims": 0
+      },
+      "examples": {},
+      "replay_report": {
+        "records_in": 1064,
+        "records_with_output": 1064,
+        "record_errors": {},
+        "fields": [
+          {
+            "target": "entity.legal_name",
+            "source_paths": [
+              "Charity_Legal_Name"
+            ],
+            "records": 1064,
+            "source_present": 1064,
+            "emitted": 1064,
+            "coverage_of_records": 1.0,
+            "error_rate_of_present": 0.0,
+            "errors": {},
+            "error_examples": {}
+          },
+          {
+            "target": "ext.entity.former_name",
+            "source_paths": [
+              "Other_Organisation_Names"
+            ],
+            "records": 1064,
+            "source_present": 113,
+            "emitted": 8,
+            "coverage_of_records": 0.008,
+            "error_rate_of_present": 0.0,
+            "errors": {},
+            "error_examples": {}
+          },
+          {
+            "target": "entity.abn",
+            "source_paths": [
+              "ABN"
+            ],
+            "records": 1064,
+            "source_present": 1057,
+            "emitted": 1057,
+            "coverage_of_records": 0.993,
+            "error_rate_of_present": 0.0,
+            "errors": {},
+            "error_examples": {}
+          },
+          {
+            "target": "entity.website",
+            "source_paths": [
+              "Charity_Website"
+            ],
+            "records": 1064,
+            "source_present": 725,
+            "emitted": 721,
+            "coverage_of_records": 0.678,
+            "error_rate_of_present": 0.006,
+            "errors": {
+              "WEBSITE_INVALID": 4
+            },
+            "error_examples": {
+              "WEBSITE_INVALID": [
+                "https://www.facebook.com/karanadownsandsurroundscommunitygardenatburrunpark/ & Instagram.",
+                "https://www.hollywoodprivate/Research Foundation/Research Foundation",
+                "tielu124@gmail.com",
+                "finaveukiso@gmail.com"
+              ]
+            }
+          },
+          {
+            "target": "entity.date_registered",
+            "source_paths": [
+              "Registration_Date"
+            ],
+            "records": 1064,
+            "source_present": 1064,
+            "emitted": 1064,
+            "coverage_of_records": 1.0,
+            "error_rate_of_present": 0.0,
+            "errors": {},
+            "error_examples": {}
+          },
+          {
+            "target": "address.full",
+            "source_paths": [
+              "Address_Line_1",
+              "Address_Line_2",
+              "Address_Line_3"
+            ],
+            "records": 1064,
+            "source_present": 955,
+            "emitted": 955,
+            "coverage_of_records": 0.898,
+            "error_rate_of_present": 0.0,
+            "errors": {},
+            "error_examples": {}
+          },
+          {
+            "target": "address.locality",
+            "source_paths": [
+              "Town_City"
+            ],
+            "records": 1064,
+            "source_present": 956,
+            "emitted": 956,
+            "coverage_of_records": 0.898,
+            "error_rate_of_present": 0.0,
+            "errors": {},
+            "error_examples": {}
+          },
+          {
+            "target": "address.state",
+            "source_paths": [
+              "State"
+            ],
+            "records": 1064,
+            "source_present": 957,
+            "emitted": 957,
+            "coverage_of_records": 0.899,
+            "error_rate_of_present": 0.0,
+            "errors": {},
+            "error_examples": {}
+          },
+          {
+            "target": "address.postcode",
+            "source_paths": [
+              "Postcode"
+            ],
+            "records": 1064,
+            "source_present": 959,
+            "emitted": 958,
+            "coverage_of_records": 0.9,
+            "error_rate_of_present": 0.001,
+            "errors": {
+              "POSTCODE_INVALID": 1
+            },
+            "error_examples": {
+              "POSTCODE_INVALID": [
+                "Cloverdale"
+              ]
+            }
+          },
+          {
+            "target": "address.country",
+            "source_paths": [
+              "Country",
+              "State"
+            ],
+            "records": 1064,
+            "source_present": 999,
+            "emitted": 928,
+            "coverage_of_records": 0.872,
+            "error_rate_of_present": 0.002,
+            "errors": {
+              "COUNTRY_REGION_CONFLICT": 1,
+              "COUNTRY_UNMAPPED": 1
+            },
+            "error_examples": {
+              "COUNTRY_REGION_CONFLICT": [
+                "Aruba|VIC"
+              ],
+              "COUNTRY_UNMAPPED": [
+                "WA 6105"
+              ]
+            }
+          },
+          {
+            "target": "ext.financial.revenue_band",
+            "source_paths": [
+              "Charity_Size"
+            ],
+            "records": 1064,
+            "source_present": 947,
+            "emitted": 947,
+            "coverage_of_records": 0.89,
+            "error_rate_of_present": 0.0,
+            "errors": {},
+            "error_examples": {}
+          },
+          {
+            "target": "ext.entity.date_established",
+            "source_paths": [
+              "Date_Organisation_Established"
+            ],
+            "records": 1064,
+            "source_present": 1019,
+            "emitted": 1019,
+            "coverage_of_records": 0.958,
+            "error_rate_of_present": 0.0,
+            "errors": {},
+            "error_examples": {}
+          },
+          {
+            "target": "ext.entity.responsible_persons",
+            "source_paths": [
+              "Number_of_Responsible_Persons"
+            ],
+            "records": 1064,
+            "source_present": 1064,
+            "emitted": 1064,
+            "coverage_of_records": 1.0,
+            "error_rate_of_present": 0.0,
+            "errors": {},
+            "error_examples": {}
+          },
+          {
+            "target": "ext.entity.financial_year_end",
+            "source_paths": [
+              "Financial_Year_End"
+            ],
+            "records": 1064,
+            "source_present": 1064,
+            "emitted": 1064,
+            "coverage_of_records": 1.0,
+            "error_rate_of_present": 0.0,
+            "errors": {},
+            "error_examples": {}
+          },
+          {
+            "target": "ext.entity.operating_region",
+            "source_paths": [
+              "Operates_in_ACT",
+              "Operates_in_NSW",
+              "Operates_in_NT",
+              "Operates_in_QLD",
+              "Operates_in_SA",
+              "Operates_in_TAS",
+              "Operates_in_VIC",
+              "Operates_in_WA"
+            ],
+            "records": 1064,
+            "source_present": 855,
+            "emitted": 1217,
+            "coverage_of_records": 1.144,
+            "error_rate_of_present": 0.0,
+            "errors": {},
+            "error_examples": {}
+          },
+          {
+            "target": "ext.entity.operating_country",
+            "source_paths": [
+              "Operating_Countries"
+            ],
+            "records": 1064,
+            "source_present": 814,
+            "emitted": 965,
+            "coverage_of_records": 0.907,
+            "error_rate_of_present": 0.0,
+            "errors": {},
+            "error_examples": {}
+          },
+          {
+            "target": "ext.entity.tax_concession",
+            "source_paths": [
+              "PBI"
+            ],
+            "records": 1064,
+            "source_present": 274,
+            "emitted": 274,
+            "coverage_of_records": 0.258,
+            "error_rate_of_present": 0.0,
+            "errors": {},
+            "error_examples": {}
+          },
+          {
+            "target": "ext.entity.tax_concession",
+            "source_paths": [
+              "HPC"
+            ],
+            "records": 1064,
+            "source_present": 33,
+            "emitted": 33,
+            "coverage_of_records": 0.031,
+            "error_rate_of_present": 0.0,
+            "errors": {},
+            "error_examples": {}
+          },
+          {
+            "target": "ext.entity.sector_tag",
+            "source_paths": [
+              "Preventing_or_relieving_suffering_of_animals",
+              "Advancing_Culture",
+              "Advancing_Education",
+              "Advancing_Health",
+              "Promote_or_oppose_a_change_to_law__government_poll_or_prac",
+              "Advancing_natual_environment",
+              "Promoting_or_protecting_human_rights",
+              "Purposes_beneficial_to_ther_general_public_and_other_analogous",
+              "Promoting_reconciliation__mutual_respect_and_tolerance",
+              "Advancing_Religion",
+              "Advancing_social_or_public_welfare",
+              "Advancing_security_or_safety_of_Australia_or_Australian_public"
+            ],
+            "records": 1064,
+            "source_present": 924,
+            "emitted": 1210,
+            "coverage_of_records": 1.137,
+            "error_rate_of_present": 0.0,
+            "errors": {},
+            "error_examples": {}
+          }
+        ]
+      }
+    },
+    "asic_companies": {
+      "run_id": "20261117T041636-local-04fe946b",
+      "config_digest": "04fe946b4bbb6c1a60fe0bbf5f74f22cdf0e53ae4c267f956513e1088b9fa213",
+      "snapshot_sha256": "bb7935a163292c6d195bd2d5788863164f191198b3f29257fb332785f998bcea",
+      "observations_sha256": "d1d2a91c21618447845af2a3ecffa81b3366db2a15975ab59a0508038e402725",
+      "records_checked": 1166,
+      "saved_observations": 12223,
+      "missing_raw_rows": [],
+      "replay_mismatches": [],
+      "static_issues": [],
+      "counts": {
+        "subclass_PROP": 943,
+        "constant_address_claims": 0,
+        "subclass_LIST": 45,
+        "subclass_ULST": 52,
+        "subclass_ULSN": 48,
+        "subclass_PUBF": 4,
+        "subclass_LISN": 6,
+        "subclass_NLTD": 8,
+        "subclass_PSTC": 54,
+        "subclass_PNPC": 2,
+        "subclass_NONE": 1,
+        "subclass_RACA": 3
+      },
+      "examples": {},
+      "replay_report": {
+        "records_in": 1166,
+        "records_with_output": 1166,
+        "record_errors": {},
+        "fields": [
+          {
+            "target": "entity.legal_name",
+            "source_paths": [
+              "Company Name"
+            ],
+            "records": 1166,
+            "source_present": 768,
+            "emitted": 768,
+            "coverage_of_records": 0.659,
+            "error_rate_of_present": 0.0,
+            "errors": {},
+            "error_examples": {}
+          },
+          {
+            "target": "entity.legal_name",
+            "source_paths": [
+              "Current Name"
+            ],
+            "records": 1166,
+            "source_present": 398,
+            "emitted": 398,
+            "coverage_of_records": 0.341,
+            "error_rate_of_present": 0.0,
+            "errors": {},
+            "error_examples": {}
+          },
+          {
+            "target": "entity.acn",
+            "source_paths": [
+              "ACN"
+            ],
+            "records": 1166,
+            "source_present": 1166,
+            "emitted": 1166,
+            "coverage_of_records": 1.0,
+            "error_rate_of_present": 0.0,
+            "errors": {},
+            "error_examples": {}
+          },
+          {
+            "target": "entity.abn",
+            "source_paths": [
+              "ABN"
+            ],
+            "records": 1166,
+            "source_present": 1166,
+            "emitted": 930,
+            "coverage_of_records": 0.798,
+            "error_rate_of_present": 0.0,
+            "errors": {},
+            "error_examples": {}
+          },
+          {
+            "target": "entity.entity_type",
+            "source_paths": [
+              "Type"
+            ],
+            "records": 1166,
+            "source_present": 1166,
+            "emitted": 1166,
+            "coverage_of_records": 1.0,
+            "error_rate_of_present": 0.0,
+            "errors": {},
+            "error_examples": {}
+          },
+          {
+            "target": "entity.status",
+            "source_paths": [
+              "Status"
+            ],
+            "records": 1166,
+            "source_present": 1166,
+            "emitted": 1166,
+            "coverage_of_records": 1.0,
+            "error_rate_of_present": 0.0,
+            "errors": {},
+            "error_examples": {}
+          },
+          {
+            "target": "entity.date_registered",
+            "source_paths": [
+              "Date of Registration"
+            ],
+            "records": 1166,
+            "source_present": 1166,
+            "emitted": 1166,
+            "coverage_of_records": 1.0,
+            "error_rate_of_present": 0.0,
+            "errors": {},
+            "error_examples": {}
+          },
+          {
+            "target": "ext.entity.legal_form",
+            "source_paths": [
+              "Type"
+            ],
+            "records": 1166,
+            "source_present": 1166,
+            "emitted": 1166,
+            "coverage_of_records": 1.0,
+            "error_rate_of_present": 0.0,
+            "errors": {},
+            "error_examples": {}
+          },
+          {
+            "target": "ext.entity.legal_form_detail",
+            "source_paths": [
+              "Class"
+            ],
+            "records": 1166,
+            "source_present": 1166,
+            "emitted": 1158,
+            "coverage_of_records": 0.993,
+            "error_rate_of_present": 0.0,
+            "errors": {},
+            "error_examples": {},
+            "dropped": {
+              "CROSSWALK_NO_INFERENCE": 8
+            }
+          },
+          {
+            "target": "ext.entity.legal_form_detail",
+            "source_paths": [
+              "Sub Class"
+            ],
+            "records": 1166,
+            "source_present": 1166,
+            "emitted": 1158,
+            "coverage_of_records": 0.993,
+            "error_rate_of_present": 0.0,
+            "errors": {},
+            "error_examples": {},
+            "dropped": {
+              "CROSSWALK_NO_INFERENCE": 8
+            }
+          },
+          {
+            "target": "ext.entity.status_detail",
+            "source_paths": [
+              "Status"
+            ],
+            "records": 1166,
+            "source_present": 1166,
+            "emitted": 1166,
+            "coverage_of_records": 1.0,
+            "error_rate_of_present": 0.0,
+            "errors": {},
+            "error_examples": {}
+          },
+          {
+            "target": "ext.entity.prior_registration_state",
+            "source_paths": [
+              "Previous State of Registration"
+            ],
+            "records": 1166,
+            "source_present": 208,
+            "emitted": 208,
+            "coverage_of_records": 0.178,
+            "error_rate_of_present": 0.0,
+            "errors": {},
+            "error_examples": {}
+          },
+          {
+            "target": "ext.entity.prior_registration_number",
+            "source_paths": [
+              "State Registration number"
+            ],
+            "records": 1166,
+            "source_present": 209,
+            "emitted": 209,
+            "coverage_of_records": 0.179,
+            "error_rate_of_present": 0.0,
+            "errors": {},
+            "error_examples": {}
+          },
+          {
+            "target": "ext.entity.former_name",
+            "source_paths": [
+              "Company Name"
+            ],
+            "records": 1166,
+            "source_present": 398,
+            "emitted": 398,
+            "coverage_of_records": 0.341,
+            "error_rate_of_present": 0.0,
+            "errors": {},
+            "error_examples": {}
+          }
+        ]
+      }
+    },
+    "asic_credit_licensees": {
+      "run_id": "20261117T041636-local-4b724c4f",
+      "config_digest": "4b724c4f9636b1e38c53a66d6ee0648966cfe9ddec99da7b44ae1e343bc36047",
+      "snapshot_sha256": "74fc2f5f73e64331dd36538e1fee47ed474c33c161f7c9bf990efe7aa5f8a218",
+      "observations_sha256": "2ed0001210e6066be8a128c4f260a8d65d5f411236fa06a552ca1ab6fa990d59",
+      "records_checked": 512,
+      "saved_observations": 6890,
+      "missing_raw_rows": [],
+      "replay_mismatches": [],
+      "static_issues": [],
+      "counts": {
+        "constant_address_claims": 512
+      },
+      "examples": {},
+      "replay_report": {
+        "records_in": 512,
+        "records_with_output": 512,
+        "record_errors": {},
+        "fields": [
+          {
+            "target": "entity.legal_name",
+            "source_paths": [
+              "CRED_LIC_NAME"
+            ],
+            "records": 512,
+            "source_present": 512,
+            "emitted": 512,
+            "coverage_of_records": 1.0,
+            "error_rate_of_present": 0.0,
+            "errors": {},
+            "error_examples": {}
+          },
+          {
+            "target": "entity.trading_name",
+            "source_paths": [
+              "CRED_LIC_BN"
+            ],
+            "records": 512,
+            "source_present": 191,
+            "emitted": 191,
+            "coverage_of_records": 0.373,
+            "error_rate_of_present": 0.0,
+            "errors": {},
+            "error_examples": {}
+          },
+          {
+            "target": "entity.abn",
+            "source_paths": [
+              "CRED_LIC_ABN_ACN"
+            ],
+            "records": 512,
+            "source_present": 512,
+            "emitted": 456,
+            "coverage_of_records": 0.891,
+            "error_rate_of_present": 0.0,
+            "errors": {},
+            "error_examples": {}
+          },
+          {
+            "target": "entity.acn",
+            "source_paths": [
+              "CRED_LIC_ABN_ACN"
+            ],
+            "records": 512,
+            "source_present": 512,
+            "emitted": 49,
+            "coverage_of_records": 0.096,
+            "error_rate_of_present": 0.0,
+            "errors": {},
+            "error_examples": {}
+          },
+          {
+            "target": "address.locality",
+            "source_paths": [
+              "CRED_LIC_LOCALITY"
+            ],
+            "records": 512,
+            "source_present": 512,
+            "emitted": 512,
+            "coverage_of_records": 1.0,
+            "error_rate_of_present": 0.0,
+            "errors": {},
+            "error_examples": {}
+          },
+          {
+            "target": "address.state",
+            "source_paths": [
+              "CRED_LIC_STATE"
+            ],
+            "records": 512,
+            "source_present": 512,
+            "emitted": 512,
+            "coverage_of_records": 1.0,
+            "error_rate_of_present": 0.0,
+            "errors": {},
+            "error_examples": {}
+          },
+          {
+            "target": "address.postcode",
+            "source_paths": [
+              "CRED_LIC_PCODE"
+            ],
+            "records": 512,
+            "source_present": 512,
+            "emitted": 512,
+            "coverage_of_records": 1.0,
+            "error_rate_of_present": 0.0,
+            "errors": {},
+            "error_examples": {}
+          },
+          {
+            "target": "ext.licence.number",
+            "source_paths": [
+              "CRED_LIC_NUM"
+            ],
+            "records": 512,
+            "source_present": 512,
+            "emitted": 512,
+            "coverage_of_records": 1.0,
+            "error_rate_of_present": 0.0,
+            "errors": {},
+            "error_examples": {},
+            "entity": "licence"
+          },
+          {
+            "target": "ext.licence.status",
+            "source_paths": [
+              "CRED_LIC_STATUS"
+            ],
+            "records": 512,
+            "source_present": 512,
+            "emitted": 512,
+            "coverage_of_records": 1.0,
+            "error_rate_of_present": 0.0,
+            "errors": {},
+            "error_examples": {},
+            "entity": "licence"
+          },
+          {
+            "target": "ext.licence.edr_scheme",
+            "source_paths": [
+              "CRED_LIC_EDRS"
+            ],
+            "records": 512,
+            "source_present": 511,
+            "emitted": 559,
+            "coverage_of_records": 1.092,
+            "error_rate_of_present": 0.0,
+            "errors": {},
+            "error_examples": {},
+            "entity": "licence"
+          },
+          {
+            "target": "ext.licence.authorisation_text",
+            "source_paths": [
+              "CRED_LIC_AUTHORISATIONS"
+            ],
+            "records": 512,
+            "source_present": 512,
+            "emitted": 512,
+            "coverage_of_records": 1.0,
+            "error_rate_of_present": 0.0,
+            "errors": {},
+            "error_examples": {},
+            "entity": "licence"
+          },
+          {
+            "target": "ext.licence.status_event",
+            "source_paths": [
+              "CRED_LIC_STATUS_HISTORY"
+            ],
+            "records": 512,
+            "source_present": 3,
+            "emitted": 3,
+            "coverage_of_records": 0.006,
+            "error_rate_of_present": 0.0,
+            "errors": {},
+            "error_examples": {},
+            "entity": "licence"
+          },
+          {
+            "target": "ext.licence.start_date",
+            "source_paths": [
+              "CRED_LIC_START_DT"
+            ],
+            "records": 512,
+            "source_present": 512,
+            "emitted": 512,
+            "coverage_of_records": 1.0,
+            "error_rate_of_present": 0.0,
+            "errors": {},
+            "error_examples": {},
+            "entity": "licence"
+          },
+          {
+            "target": "ext.licence.end_date",
+            "source_paths": [
+              "CRED_LIC_END_DT"
+            ],
+            "records": 512,
+            "source_present": 0,
+            "emitted": 0,
+            "coverage_of_records": 0.0,
+            "error_rate_of_present": 0.0,
+            "errors": {},
+            "error_examples": {},
+            "entity": "licence"
+          }
+        ],
+        "relationships": {
+          "HOLDS_LICENCE": 512
+        }
+      }
+    },
+    "ato_tax_transparency": {
+      "run_id": "20261117T041636-local-015226f8",
+      "config_digest": "015226f840e046d67cee97aa355a30aceecd4aecf81c905879c1de88f28c6931",
+      "snapshot_sha256": "7cccd963cd4aad31c305b21d33272d3d99ff9c36258641622a28cd0028d65c45",
+      "observations_sha256": "4fab7b75c63779f5868fbbdb1892ed84358619edfd3ffbe5110965501b4463f5",
+      "records_checked": 1000,
+      "saved_observations": 4462,
+      "missing_raw_rows": [],
+      "replay_mismatches": [],
+      "static_issues": [],
+      "counts": {
+        "financial_claims": 2473,
+        "constant_address_claims": 0
+      },
+      "examples": {},
+      "replay_report": {
+        "records_in": 1000,
+        "records_with_output": 1000,
+        "record_errors": {},
+        "fields": [
+          {
+            "target": "entity.legal_name",
+            "source_paths": [
+              "Name"
+            ],
+            "records": 1000,
+            "source_present": 1000,
+            "emitted": 1000,
+            "coverage_of_records": 1.0,
+            "error_rate_of_present": 0.0,
+            "errors": {},
+            "error_examples": {}
+          },
+          {
+            "target": "entity.abn",
+            "source_paths": [
+              "ABN"
+            ],
+            "records": 1000,
+            "source_present": 989,
+            "emitted": 989,
+            "coverage_of_records": 0.989,
+            "error_rate_of_present": 0.0,
+            "errors": {},
+            "error_examples": {}
+          },
+          {
+            "target": "ext.financial.total_income",
+            "source_paths": [
+              "Total income $"
+            ],
+            "records": 1000,
+            "source_present": 1000,
+            "emitted": 1000,
+            "coverage_of_records": 1.0,
+            "error_rate_of_present": 0.0,
+            "errors": {},
+            "error_examples": {}
+          },
+          {
+            "target": "ext.financial.taxable_income",
+            "source_paths": [
+              "Taxable income $"
+            ],
+            "records": 1000,
+            "source_present": 761,
+            "emitted": 761,
+            "coverage_of_records": 0.761,
+            "error_rate_of_present": 0.0,
+            "errors": {},
+            "error_examples": {}
+          },
+          {
+            "target": "ext.financial.tax_payable",
+            "source_paths": [
+              "Tax payable $"
+            ],
+            "records": 1000,
+            "source_present": 712,
+            "emitted": 712,
+            "coverage_of_records": 0.712,
+            "error_rate_of_present": 0.0,
+            "errors": {},
+            "error_examples": {}
+          }
+        ]
+      }
+    },
+    "ato_tax_transparency_2023_24": {
+      "run_id": "20261112T205715-4a9edc",
+      "config_digest": "244af1f30398ffc614cf5a08be2c16412071bacf19c7c9bdbaa62dece844736c",
+      "snapshot_sha256": "6b47837efab92e1eb2b0cacc46945376a5b185c1b16814146c3282a1921b0c75",
+      "observations_sha256": "b7d3b8690ce7ee63e439474eee1a3e7cb20dbf17038e7afc9a4b945eff09c83a",
+      "records_checked": 1000,
+      "saved_observations": 4504,
+      "missing_raw_rows": [],
+      "replay_mismatches": [],
+      "static_issues": [],
+      "counts": {
+        "financial_claims": 2510,
+        "constant_address_claims": 0
+      },
+      "examples": {},
+      "replay_report": {
+        "records_in": 1000,
+        "records_with_output": 1000,
+        "record_errors": {},
+        "fields": [
+          {
+            "target": "entity.legal_name",
+            "source_paths": [
+              "Name"
+            ],
+            "records": 1000,
+            "source_present": 1000,
+            "emitted": 1000,
+            "coverage_of_records": 1.0,
+            "error_rate_of_present": 0.0,
+            "errors": {},
+            "error_examples": {}
+          },
+          {
+            "target": "entity.abn",
+            "source_paths": [
+              "ABN"
+            ],
+            "records": 1000,
+            "source_present": 994,
+            "emitted": 994,
+            "coverage_of_records": 0.994,
+            "error_rate_of_present": 0.0,
+            "errors": {},
+            "error_examples": {}
+          },
+          {
+            "target": "ext.financial.total_income",
+            "source_paths": [
+              "Total income $"
+            ],
+            "records": 1000,
+            "source_present": 1000,
+            "emitted": 1000,
+            "coverage_of_records": 1.0,
+            "error_rate_of_present": 0.0,
+            "errors": {},
+            "error_examples": {}
+          },
+          {
+            "target": "ext.financial.taxable_income",
+            "source_paths": [
+              "Taxable income $"
+            ],
+            "records": 1000,
+            "source_present": 783,
+            "emitted": 783,
+            "coverage_of_records": 0.783,
+            "error_rate_of_present": 0.0,
+            "errors": {},
+            "error_examples": {}
+          },
+          {
+            "target": "ext.financial.tax_payable",
+            "source_paths": [
+              "Tax payable $"
+            ],
+            "records": 1000,
+            "source_present": 727,
+            "emitted": 727,
+            "coverage_of_records": 0.727,
+            "error_rate_of_present": 0.0,
+            "errors": {},
+            "error_examples": {}
+          }
+        ]
+      }
+    },
+    "dewr_employment_providers": {
+      "run_id": "20261117T041637-local-69d5c4f1",
+      "config_digest": "69d5c4f153ea76f9d4c7c7b6575d60fb7c3746423896e00abf5e16c163ad5166",
+      "snapshot_sha256": "0034e176b580405064272e688c7bf51230f051880263cdeeb5107ac00bd7a979",
+      "observations_sha256": "066efd018cd1fc8751594f6398f1da8a278f9af09c02ff2a42f5d8dc6ec55023",
+      "records_checked": 1002,
+      "saved_observations": 13976,
+      "missing_raw_rows": [],
+      "replay_mismatches": [],
+      "static_issues": [],
+      "counts": {
+        "phone_repeated_across_source_roles": 847,
+        "constant_address_claims": 1002
+      },
+      "examples": {
+        "phone_repeated_across_source_roles": [
+          {
+            "source_row_ordinal": 7,
+            "evidence": null
+          },
+          {
+            "source_row_ordinal": 9,
+            "evidence": null
+          },
+          {
+            "source_row_ordinal": 11,
+            "evidence": null
+          },
+          {
+            "source_row_ordinal": 24,
+            "evidence": null
+          }
+        ]
+      },
+      "replay_report": {
+        "records_in": 1002,
+        "records_with_output": 1002,
+        "record_errors": {},
+        "fields": [
+          {
+            "target": "entity.trading_name",
+            "source_paths": [
+              "SITE_NAME"
+            ],
+            "records": 1002,
+            "source_present": 1002,
+            "emitted": 1002,
+            "coverage_of_records": 1.0,
+            "error_rate_of_present": 0.0,
+            "errors": {},
+            "error_examples": {}
+          },
+          {
+            "target": "entity.website",
+            "source_paths": [
+              "SITE_URL"
+            ],
+            "records": 1002,
+            "source_present": 612,
+            "emitted": 612,
+            "coverage_of_records": 0.611,
+            "error_rate_of_present": 0.0,
+            "errors": {},
+            "error_examples": {}
+          },
+          {
+            "target": "address.full",
+            "source_paths": [
+              "SITE_ADDRESS_LN"
+            ],
+            "records": 1002,
+            "source_present": 1001,
+            "emitted": 1000,
+            "coverage_of_records": 0.998,
+            "error_rate_of_present": 0.0,
+            "errors": {},
+            "error_examples": {},
+            "entity": "establishment"
+          },
+          {
+            "target": "address.locality",
+            "source_paths": [
+              "SITE_LOCALITY_NAME"
+            ],
+            "records": 1002,
+            "source_present": 1002,
+            "emitted": 1002,
+            "coverage_of_records": 1.0,
+            "error_rate_of_present": 0.0,
+            "errors": {},
+            "error_examples": {},
+            "entity": "establishment"
+          },
+          {
+            "target": "address.state",
+            "source_paths": [
+              "SITE_STATE_CD"
+            ],
+            "records": 1002,
+            "source_present": 1002,
+            "emitted": 1002,
+            "coverage_of_records": 1.0,
+            "error_rate_of_present": 0.0,
+            "errors": {},
+            "error_examples": {},
+            "entity": "establishment"
+          },
+          {
+            "target": "address.postcode",
+            "source_paths": [
+              "SITE_POSTCODE"
+            ],
+            "records": 1002,
+            "source_present": 1002,
+            "emitted": 1002,
+            "coverage_of_records": 1.0,
+            "error_rate_of_present": 0.0,
+            "errors": {},
+            "error_examples": {},
+            "entity": "establishment"
+          },
+          {
+            "target": "ext.establishment.source_key",
+            "source_paths": [
+              "DIS_SITE_CODE"
+            ],
+            "records": 1002,
+            "source_present": 1002,
+            "emitted": 1002,
+            "coverage_of_records": 1.0,
+            "error_rate_of_present": 0.0,
+            "errors": {},
+            "error_examples": {},
+            "entity": "establishment"
+          },
+          {
+            "target": "ext.establishment.program",
+            "source_paths": [
+              "CONTRACT_NAME"
+            ],
+            "records": 1002,
+            "source_present": 1002,
+            "emitted": 1002,
+            "coverage_of_records": 1.0,
+            "error_rate_of_present": 0.0,
+            "errors": {},
+            "error_examples": {},
+            "entity": "establishment"
+          },
+          {
+            "target": "ext.establishment.region",
+            "source_paths": [
+              "ESA_CD_1"
+            ],
+            "records": 1002,
+            "source_present": 1002,
+            "emitted": 1002,
+            "coverage_of_records": 1.0,
+            "error_rate_of_present": 0.0,
+            "errors": {},
+            "error_examples": {},
+            "entity": "establishment"
+          },
+          {
+            "target": "ext.establishment.geo",
+            "source_paths": [
+              "LATITUDE",
+              "LONGITUDE"
+            ],
+            "records": 1002,
+            "source_present": 1002,
+            "emitted": 997,
+            "coverage_of_records": 0.995,
+            "error_rate_of_present": 0.0,
+            "errors": {},
+            "error_examples": {},
+            "entity": "establishment"
+          },
+          {
+            "target": "ext.contact.email_domain",
+            "source_paths": [
+              "SITE_EMAIL_ADDRESS"
+            ],
+            "records": 1002,
+            "source_present": 733,
+            "emitted": 733,
+            "coverage_of_records": 0.732,
+            "error_rate_of_present": 0.0,
+            "errors": {},
+            "error_examples": {},
+            "entity": "establishment"
+          },
+          {
+            "target": "ext.contact.role_email",
+            "source_paths": [
+              "SITE_EMAIL_ADDRESS"
+            ],
+            "records": 1002,
+            "source_present": 733,
+            "emitted": 85,
+            "coverage_of_records": 0.085,
+            "error_rate_of_present": 0.0,
+            "errors": {},
+            "error_examples": {},
+            "entity": "establishment",
+            "dropped": {
+              "PERSONAL_MAILBOX_DROPPED": 648
+            }
+          },
+          {
+            "target": "ext.contact.phone",
+            "source_paths": [
+              "SITE_CONTACT_PHONE",
+              "SITE_STATE_CD"
+            ],
+            "records": 1002,
+            "source_present": 1002,
+            "emitted": 847,
+            "coverage_of_records": 0.845,
+            "error_rate_of_present": 0.0,
+            "errors": {},
+            "error_examples": {},
+            "entity": "establishment",
+            "dropped": {
+              "PHONE_INCOMPLETE": 127
+            }
+          },
+          {
+            "target": "ext.contact.phone",
+            "source_paths": [
+              "PHONE_NUMBER",
+              "SITE_STATE_CD"
+            ],
+            "records": 1002,
+            "source_present": 1002,
+            "emitted": 836,
+            "coverage_of_records": 0.834,
+            "error_rate_of_present": 0.0,
+            "errors": {},
+            "error_examples": {},
+            "entity": "establishment",
+            "dropped": {
+              "PHONE_INCOMPLETE": 101
+            }
+          },
+          {
+            "target": "ext.contact.phone",
+            "source_paths": [
+              "AGENT_FREECALL_NUM",
+              "SITE_STATE_CD"
+            ],
+            "records": 1002,
+            "source_present": 1002,
+            "emitted": 238,
+            "coverage_of_records": 0.238,
+            "error_rate_of_present": 0.0,
+            "errors": {},
+            "error_examples": {},
+            "entity": "establishment",
+            "dropped": {
+              "PHONE_INCOMPLETE": 55
+            }
+          },
+          {
+            "target": "ext.contact.website_domain",
+            "source_paths": [
+              "SITE_URL"
+            ],
+            "records": 1002,
+            "source_present": 612,
+            "emitted": 612,
+            "coverage_of_records": 0.611,
+            "error_rate_of_present": 0.0,
+            "errors": {},
+            "error_examples": {},
+            "entity": "establishment"
+          }
+        ],
+        "relationships": {
+          "OPERATES_ESTABLISHMENT": 1002
+        }
+      }
+    },
+    "qbcc_licensees": {
+      "run_id": "20261117T041637-local-e6ae0e56",
+      "config_digest": "e6ae0e5640fe0a52f4b662b3a69e7ecf0c14fe62c40a592a51b2be967e457f27",
+      "snapshot_sha256": "509b287a7bf36eb39510b79a8056568dd532843d75b711d3d44c193ff0d84447",
+      "observations_sha256": "8a763c484b38e603f2e3e18ebfc8c9b123e0465250d1f4b75b062894403069bc",
+      "records_checked": 1000,
+      "saved_observations": 10605,
+      "missing_raw_rows": [],
+      "replay_mismatches": [],
+      "static_issues": [],
+      "counts": {
+        "constant_address_claims": 1000
+      },
+      "examples": {},
+      "replay_report": {
+        "records_in": 1000,
+        "records_with_output": 1000,
+        "record_errors": {},
+        "fields": [
+          {
+            "target": "entity.legal_name",
+            "source_paths": [
+              "Licensee Name"
+            ],
+            "records": 1000,
+            "source_present": 1000,
+            "emitted": 1000,
+            "coverage_of_records": 1.0,
+            "error_rate_of_present": 0.0,
+            "errors": {},
+            "error_examples": {}
+          },
+          {
+            "target": "entity.abn",
+            "source_paths": [
+              "ABN"
+            ],
+            "records": 1000,
+            "source_present": 562,
+            "emitted": 559,
+            "coverage_of_records": 0.559,
+            "error_rate_of_present": 0.005,
+            "errors": {
+              "ABN_CHECKSUM": 3
+            },
+            "error_examples": {
+              "ABN_CHECKSUM": [
+                "61 601 987 687",
+                "96 472 706 505",
+                "93 939 550 174"
+              ]
+            }
+          },
+          {
+            "target": "entity.acn",
+            "source_paths": [
+              "ACN"
+            ],
+            "records": 1000,
+            "source_present": 64,
+            "emitted": 64,
+            "coverage_of_records": 0.064,
+            "error_rate_of_present": 0.0,
+            "errors": {},
+            "error_examples": {}
+          },
+          {
+            "target": "entity.entity_type",
+            "source_paths": [
+              "Licence Type CODE"
+            ],
+            "records": 1000,
+            "source_present": 1000,
+            "emitted": 1000,
+            "coverage_of_records": 1.0,
+            "error_rate_of_present": 0.0,
+            "errors": {},
+            "error_examples": {}
+          },
+          {
+            "target": "address.full",
+            "source_paths": [
+              "Licensee Business Address"
+            ],
+            "records": 1000,
+            "source_present": 1000,
+            "emitted": 1000,
+            "coverage_of_records": 1.0,
+            "error_rate_of_present": 0.0,
+            "errors": {},
+            "error_examples": {}
+          },
+          {
+            "target": "address.state",
+            "source_paths": [
+              "Licensee Business Address"
+            ],
+            "records": 1000,
+            "source_present": 1000,
+            "emitted": 982,
+            "coverage_of_records": 0.982,
+            "error_rate_of_present": 0.0,
+            "errors": {},
+            "error_examples": {}
+          },
+          {
+            "target": "address.postcode",
+            "source_paths": [
+              "Licensee Business Address"
+            ],
+            "records": 1000,
+            "source_present": 1000,
+            "emitted": 1000,
+            "coverage_of_records": 1.0,
+            "error_rate_of_present": 0.0,
+            "errors": {},
+            "error_examples": {}
+          },
+          {
+            "target": "ext.entity.holder_kind",
+            "source_paths": [
+              "Licence Type CODE"
+            ],
+            "records": 1000,
+            "source_present": 1000,
+            "emitted": 1000,
+            "coverage_of_records": 1.0,
+            "error_rate_of_present": 0.0,
+            "errors": {},
+            "error_examples": {}
+          },
+          {
+            "target": "ext.licence.number",
+            "source_paths": [
+              "Licence Number"
+            ],
+            "records": 1000,
+            "source_present": 1000,
+            "emitted": 1000,
+            "coverage_of_records": 1.0,
+            "error_rate_of_present": 0.0,
+            "errors": {},
+            "error_examples": {},
+            "entity": "licence"
+          },
+          {
+            "target": "ext.licence.grade",
+            "source_paths": [
+              "Licence Grade"
+            ],
+            "records": 1000,
+            "source_present": 1000,
+            "emitted": 1000,
+            "coverage_of_records": 1.0,
+            "error_rate_of_present": 0.0,
+            "errors": {},
+            "error_examples": {},
+            "entity": "licence"
+          },
+          {
+            "target": "ext.licence.category",
+            "source_paths": [
+              "Licence Class Type"
+            ],
+            "records": 1000,
+            "source_present": 1000,
+            "emitted": 1000,
+            "coverage_of_records": 1.0,
+            "error_rate_of_present": 0.0,
+            "errors": {},
+            "error_examples": {},
+            "entity": "licence"
+          }
+        ],
+        "relationships": {
+          "HOLDS_LICENCE": 1000
+        }
+      }
+    },
+    "vic_liquor": {
+      "run_id": "20261117T041638-local-45736cb6",
+      "config_digest": "45736cb670d75219d42759bf6e9d98722f58372a003624f6b1affaedb2a4024a",
+      "snapshot_sha256": "b0a00e0846f430dc3eb2bc32fde3e4136caa9142c60d127e8c1419fbc34fb36e",
+      "observations_sha256": "05ba1ca53352d1d49d71559d2c1e0fd0c3de4cf9f3d4c9e3caaab0a5df8b8684",
+      "records_checked": 1000,
+      "saved_observations": 16325,
+      "missing_raw_rows": [],
+      "replay_mismatches": [],
+      "static_issues": [],
+      "counts": {
+        "constant_address_claims": 2000,
+        "postal_postcode_outside_VIC_ranges": 44
+      },
+      "examples": {
+        "postal_postcode_outside_VIC_ranges": [
+          {
+            "source_row_ordinal": 25,
+            "evidence": {
+              "licence": "31104166",
+              "postal_suburb": "ALBURY",
+              "postal_postcode": "2640"
+            }
+          },
+          {
+            "source_row_ordinal": 2453,
+            "evidence": {
+              "licence": "31913696",
+              "postal_suburb": "SYDNEY NSW",
+              "postal_postcode": "2000"
+            }
+          },
+          {
+            "source_row_ordinal": 2589,
+            "evidence": {
+              "licence": "31916717",
+              "postal_suburb": "SYDNEY NSW",
+              "postal_postcode": "2000"
+            }
+          },
+          {
+            "source_row_ordinal": 2827,
+            "evidence": {
+              "licence": "32002197",
+              "postal_suburb": "SYDNEY NSW",
+              "postal_postcode": "2000"
+            }
+          }
+        ]
+      },
+      "replay_report": {
+        "records_in": 1000,
+        "records_with_output": 1000,
+        "record_errors": {},
+        "fields": [
+          {
+            "target": "entity.legal_name",
+            "source_paths": [
+              "Licensee"
+            ],
+            "records": 1000,
+            "source_present": 1000,
+            "emitted": 999,
+            "coverage_of_records": 0.999,
+            "error_rate_of_present": 0.0,
+            "errors": {},
+            "error_examples": {}
+          },
+          {
+            "target": "entity.trading_name",
+            "source_paths": [
+              "Trading As"
+            ],
+            "records": 1000,
+            "source_present": 992,
+            "emitted": 992,
+            "coverage_of_records": 0.992,
+            "error_rate_of_present": 0.0,
+            "errors": {},
+            "error_examples": {}
+          },
+          {
+            "target": "address.full",
+            "source_paths": [
+              "Street Address"
+            ],
+            "records": 1000,
+            "source_present": 955,
+            "emitted": 954,
+            "coverage_of_records": 0.954,
+            "error_rate_of_present": 0.0,
+            "errors": {},
+            "error_examples": {},
+            "entity": "premises"
+          },
+          {
+            "target": "address.locality",
+            "source_paths": [
+              "Suburb"
+            ],
+            "records": 1000,
+            "source_present": 969,
+            "emitted": 954,
+            "coverage_of_records": 0.954,
+            "error_rate_of_present": 0.0,
+            "errors": {},
+            "error_examples": {},
+            "entity": "premises"
+          },
+          {
+            "target": "address.postcode",
+            "source_paths": [
+              "Postcode"
+            ],
+            "records": 1000,
+            "source_present": 968,
+            "emitted": 953,
+            "coverage_of_records": 0.953,
+            "error_rate_of_present": 0.0,
+            "errors": {},
+            "error_examples": {},
+            "entity": "premises"
+          },
+          {
+            "target": "ext.licence.number",
+            "source_paths": [
+              "Licence Number"
+            ],
+            "records": 1000,
+            "source_present": 1000,
+            "emitted": 1000,
+            "coverage_of_records": 1.0,
+            "error_rate_of_present": 0.0,
+            "errors": {},
+            "error_examples": {},
+            "entity": "licence"
+          },
+          {
+            "target": "ext.licence.category",
+            "source_paths": [
+              "Licence Category"
+            ],
+            "records": 1000,
+            "source_present": 1000,
+            "emitted": 1000,
+            "coverage_of_records": 1.0,
+            "error_rate_of_present": 0.0,
+            "errors": {},
+            "error_examples": {},
+            "entity": "licence"
+          },
+          {
+            "target": "ext.establishment.capacity",
+            "source_paths": [
+              "Patron Capacity (if applicable)"
+            ],
+            "records": 1000,
+            "source_present": 593,
+            "emitted": 593,
+            "coverage_of_records": 0.593,
+            "error_rate_of_present": 0.0,
+            "errors": {},
+            "error_examples": {},
+            "entity": "premises"
+          },
+          {
+            "target": "ext.establishment.lga",
+            "source_paths": [
+              "Council"
+            ],
+            "records": 1000,
+            "source_present": 971,
+            "emitted": 956,
+            "coverage_of_records": 0.956,
+            "error_rate_of_present": 0.0,
+            "errors": {},
+            "error_examples": {},
+            "entity": "premises"
+          },
+          {
+            "target": "ext.establishment.region",
+            "source_paths": [
+              "Region"
+            ],
+            "records": 1000,
+            "source_present": 971,
+            "emitted": 971,
+            "coverage_of_records": 0.971,
+            "error_rate_of_present": 0.0,
+            "errors": {},
+            "error_examples": {},
+            "entity": "premises"
+          },
+          {
+            "target": "ext.establishment.region",
+            "source_paths": [
+              "Metro/Regional"
+            ],
+            "records": 1000,
+            "source_present": 1000,
+            "emitted": 1000,
+            "coverage_of_records": 1.0,
+            "error_rate_of_present": 0.0,
+            "errors": {},
+            "error_examples": {},
+            "entity": "premises"
+          },
+          {
+            "target": "ext.establishment.geo",
+            "source_paths": [
+              "Latitude",
+              "Longitude"
+            ],
+            "records": 1000,
+            "source_present": 954,
+            "emitted": 954,
+            "coverage_of_records": 0.954,
+            "error_rate_of_present": 0.0,
+            "errors": {},
+            "error_examples": {},
+            "entity": "premises"
+          },
+          {
+            "target": "address.full",
+            "source_paths": [
+              "Postal Address"
+            ],
+            "records": 1000,
+            "source_present": 1000,
+            "emitted": 1000,
+            "coverage_of_records": 1.0,
+            "error_rate_of_present": 0.0,
+            "errors": {},
+            "error_examples": {},
+            "entity": "subject"
+          },
+          {
+            "target": "address.locality",
+            "source_paths": [
+              "Postal Suburb"
+            ],
+            "records": 1000,
+            "source_present": 1000,
+            "emitted": 999,
+            "coverage_of_records": 0.999,
+            "error_rate_of_present": 0.0,
+            "errors": {},
+            "error_examples": {},
+            "entity": "subject"
+          },
+          {
+            "target": "address.postcode",
+            "source_paths": [
+              "Postal Postcode"
+            ],
+            "records": 1000,
+            "source_present": 1000,
+            "emitted": 1000,
+            "coverage_of_records": 1.0,
+            "error_rate_of_present": 0.0,
+            "errors": {},
+            "error_examples": {},
+            "entity": "subject"
+          }
+        ],
+        "relationships": {
+          "HOLDS_LICENCE": 1000,
+          "OPERATES_ESTABLISHMENT": 1000,
+          "LICENCE_AT_ESTABLISHMENT": 1000
+        }
+      }
+    }
+  }
+}

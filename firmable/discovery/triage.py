@@ -21,6 +21,11 @@ QUERIES = ["business", "company", "register", "licence", "licensed", "permit", "
 ROWS = 100
 
 MACHINE_FORMATS = {"CSV", "XLSX", "XLS", "JSON", "XML", "ZIP", "TSV", "TXT", "API", "GEOJSON"}
+LICENCE_HEADING = re.compile(
+    r"^[ \t]*(?:#{1,6}[ \t]+|\*{1,2})?(?:licen[cs]e|terms and conditions|terms of use)"
+    r":?(?:\*{1,2})?:?[ \t]*\r?$",
+    re.IGNORECASE | re.MULTILINE,
+)
 
 # (feature name, weight, regex, which text it looks at)
 FEATURES = [
@@ -57,8 +62,10 @@ def _text(p: dict) -> dict:
     tags = " ".join(t.get("name", "") for t in p.get("tags", []))
     org = (p.get("organization") or {}).get("title") or ""
     title = p.get("title") or ""
+    # CKAN notes can append licence terms that identify the publisher.
+    notes = LICENCE_HEADING.split(p.get("notes") or "", maxsplit=1)[0]
     return {"title": title.lower(), "org": org.lower(),
-            "all": f"{title} {p.get('notes') or ''} {tags} {res_text}".lower()}
+            "all": f"{title} {notes} {tags} {res_text}".lower()}
 
 
 def score_package(p: dict) -> tuple[float, list[str]]:

@@ -1,0 +1,20 @@
+Traceback (most recent call last):
+  File "C:\Users\Quang\AppData\Local\Programs\Python\Python310\lib\runpy.py", line 196, in _run_module_as_main
+    return _run_code(code, main_globals, None,
+  File "C:\Users\Quang\AppData\Local\Programs\Python\Python310\lib\runpy.py", line 86, in _run_code
+    exec(code, run_globals)
+  File "D:\code\github_code\firmable-case-study\firmable\cli.py", line 260, in <module>
+    main()
+  File "D:\code\github_code\firmable-case-study\firmable\cli.py", line 256, in main
+    a.fn(a)
+  File "D:\code\github_code\firmable-case-study\firmable\rawdata\cli.py", line 32, in cmd_raw_onboard
+    st = onboard_extension(man[sid], doc, OUT_RD_MAPPINGS, feedback=a.feedback,
+  File "D:\code\github_code\firmable-case-study\firmable\agent\onboard.py", line 592, in onboard_extension
+    wrong = [f for f in verdict.get("fields", []) if f.get("verdict") == "wrong"]
+  File "D:\code\github_code\firmable-case-study\firmable\agent\onboard.py", line 472, in _drive
+    "licence": source["licence"], "advertised_format": source["advertised_format"],
+  File "D:\code\github_code\firmable-case-study\firmable\agent\onboard.py", line 143, in agent_round
+    and no submission until the budget ran out, losing the work. The draft is the agent's, unchanged; it still
+  File "D:\code\github_code\firmable-case-study\firmable\llm.py", line 86, in chat
+    raise BudgetExceeded(f"request would exceed total token budget {TOTAL_TOKEN_BUDGET}")
+firmable.llm.BudgetExceeded: request would exceed total token budget 6600000

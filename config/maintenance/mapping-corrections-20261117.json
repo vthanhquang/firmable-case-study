@@ -1,0 +1,3854 @@
+{
+  "actor": "Codex maintainer, at user request",
+  "requirements_exception": "User explicitly requested local corrections without additional model calls. Original agent-generated runs are preserved. Human sign-off is not implied.",
+  "revisions": [
+    {
+      "source_id": "acnc_charities",
+      "expected_config_digest": "51544ecb3266ffaeec341599f31b85a2108462918d09ef9158437aaef0dc67cc",
+      "reason": "Keep register contact addresses on the company with explicit contact scope; reject country/state conflicts instead of creating establishments.",
+      "config": {
+        "source_id": "acnc_charities",
+        "record_grain": "legal_entity",
+        "grain_rationale": "One row per ACNC-registered charity; the record describes the registered legal entity and its registered business address. ABN is not guaranteed unique (duplicates/blanks occur), so record identity is content-derived.",
+        "reader": {
+          "format": "xlsx",
+          "archive_member": null,
+          "encoding": "utf-8-sig",
+          "delimiter": null,
+          "skip_rows": 0,
+          "sheet": "Sheet1",
+          "record_path": null
+        },
+        "record_id": {
+          "strategy": "content_hash",
+          "source_paths": [],
+          "rationale": "ABN is blank in ~0.6% of rows and repeats for some entities, so it is not a reliable unique key; hash the full record content instead."
+        },
+        "observed_at": {
+          "source_path": null,
+          "steps": [],
+          "fallback": "resource_last_modified"
+        },
+        "fields": [
+          {
+            "source_paths": [
+              "Charity_Legal_Name"
+            ],
+            "join_with": " ",
+            "when": null,
+            "target": "entity.legal_name",
+            "valid_from_path": null,
+            "valid_to_path": null,
+            "validity_date_formats": null,
+            "claim_scope": null,
+            "steps": [
+              {
+                "op": "trim",
+                "args": {}
+              },
+              {
+                "op": "collapse_whitespace",
+                "args": {}
+              }
+            ],
+            "confidence": 0.93,
+            "rationale": "Column explicitly named Charity_Legal_Name on the ACNC register = registered legal name.",
+            "entity": null,
+            "qualifiers": null,
+            "one_hot": null
+          },
+          {
+            "source_paths": [
+              "Other_Organisation_Names"
+            ],
+            "join_with": " ",
+            "when": null,
+            "target": "ext.entity.former_name",
+            "valid_from_path": null,
+            "valid_to_path": null,
+            "validity_date_formats": null,
+            "claim_scope": null,
+            "steps": [
+              {
+                "op": "split",
+                "args": {
+                  "sep": ","
+                }
+              },
+              {
+                "op": "regex_extract",
+                "args": {
+                  "pattern": "(?i)previously known as[\\s\"']*(.+?)[\"']*$",
+                  "group": 1
+                }
+              },
+              {
+                "op": "trim",
+                "args": {}
+              },
+              {
+                "op": "collapse_whitespace",
+                "args": {}
+              }
+            ],
+            "confidence": 0.75,
+            "rationale": "Only a segment that says 'previously known as X' states a former legal name; remaining alias segments are left unasserted rather than guessed as trading names.",
+            "entity": null,
+            "qualifiers": null,
+            "one_hot": null
+          },
+          {
+            "source_paths": [
+              "ABN"
+            ],
+            "join_with": " ",
+            "when": null,
+            "target": "entity.abn",
+            "valid_from_path": null,
+            "valid_to_path": null,
+            "validity_date_formats": null,
+            "claim_scope": null,
+            "steps": [
+              {
+                "op": "abn",
+                "args": {}
+              }
+            ],
+            "confidence": 0.98,
+            "rationale": "ABN column; 100% checksum-valid in discovery profile (11-digit shape).",
+            "entity": null,
+            "qualifiers": null,
+            "one_hot": null
+          },
+          {
+            "source_paths": [
+              "Charity_Website"
+            ],
+            "join_with": " ",
+            "when": null,
+            "target": "entity.website",
+            "valid_from_path": null,
+            "valid_to_path": null,
+            "validity_date_formats": null,
+            "claim_scope": null,
+            "steps": [
+              {
+                "op": "trim",
+                "args": {}
+              },
+              {
+                "op": "website",
+                "args": {}
+              }
+            ],
+            "confidence": 0.88,
+            "rationale": "Charity_Website holds domains or http(s) URLs.",
+            "entity": null,
+            "qualifiers": null,
+            "one_hot": null
+          },
+          {
+            "source_paths": [
+              "Registration_Date"
+            ],
+            "join_with": " ",
+            "when": null,
+            "target": "entity.date_registered",
+            "valid_from_path": null,
+            "valid_to_path": null,
+            "validity_date_formats": null,
+            "claim_scope": "charity_registration",
+            "steps": [
+              {
+                "op": "parse_date",
+                "args": {
+                  "formats": [
+                    "%d/%m/%Y"
+                  ]
+                }
+              }
+            ],
+            "confidence": 0.9,
+            "rationale": "ACNC registration date; all values match DD/MM/YYYY shape.",
+            "entity": null,
+            "qualifiers": null,
+            "one_hot": null
+          },
+          {
+            "source_paths": [
+              "Address_Line_1",
+              "Address_Line_2",
+              "Address_Line_3"
+            ],
+            "join_with": ", ",
+            "when": null,
+            "target": "address.full",
+            "valid_from_path": null,
+            "valid_to_path": null,
+            "validity_date_formats": null,
+            "claim_scope": "entity_contact_address",
+            "steps": [
+              {
+                "op": "trim",
+                "args": {}
+              },
+              {
+                "op": "null_if",
+                "args": {
+                  "values": [
+                    ""
+                  ]
+                }
+              },
+              {
+                "op": "collapse_whitespace",
+                "args": {}
+              }
+            ],
+            "confidence": 0.68,
+            "rationale": "ACNC register contact address; this does not establish operating premises.",
+            "entity": null,
+            "qualifiers": null,
+            "one_hot": null
+          },
+          {
+            "source_paths": [
+              "Town_City"
+            ],
+            "join_with": " ",
+            "when": null,
+            "target": "address.locality",
+            "valid_from_path": null,
+            "valid_to_path": null,
+            "validity_date_formats": null,
+            "claim_scope": "entity_contact_address",
+            "steps": [
+              {
+                "op": "trim",
+                "args": {}
+              },
+              {
+                "op": "collapse_whitespace",
+                "args": {}
+              }
+            ],
+            "confidence": 0.92,
+            "rationale": "ACNC register contact address; this does not establish operating premises.",
+            "entity": null,
+            "qualifiers": null,
+            "one_hot": null
+          },
+          {
+            "source_paths": [
+              "State"
+            ],
+            "join_with": " ",
+            "when": null,
+            "target": "address.state",
+            "valid_from_path": null,
+            "valid_to_path": null,
+            "validity_date_formats": null,
+            "claim_scope": "entity_contact_address",
+            "steps": [
+              {
+                "op": "state",
+                "args": {}
+              }
+            ],
+            "confidence": 0.95,
+            "rationale": "ACNC register contact address; this does not establish operating premises.",
+            "entity": null,
+            "qualifiers": null,
+            "one_hot": null
+          },
+          {
+            "source_paths": [
+              "Postcode"
+            ],
+            "join_with": " ",
+            "when": null,
+            "target": "address.postcode",
+            "valid_from_path": null,
+            "valid_to_path": null,
+            "validity_date_formats": null,
+            "claim_scope": "entity_contact_address",
+            "steps": [
+              {
+                "op": "postcode",
+                "args": {}
+              }
+            ],
+            "confidence": 0.9,
+            "rationale": "ACNC register contact address; this does not establish operating premises.",
+            "entity": null,
+            "qualifiers": null,
+            "one_hot": null
+          },
+          {
+            "source_paths": [
+              "Country",
+              "State"
+            ],
+            "join_with": "|",
+            "when": null,
+            "target": "address.country",
+            "valid_from_path": null,
+            "valid_to_path": null,
+            "validity_date_formats": null,
+            "claim_scope": "entity_contact_address",
+            "steps": [
+              {
+                "op": "country_with_region",
+                "args": {
+                  "aliases": {
+                    "ARUBA": "AW",
+                    "AUSTRIA": "AT",
+                    "SINGAPORE": "SG"
+                  }
+                }
+              }
+            ],
+            "confidence": 0.85,
+            "rationale": "Normalize explicitly stated countries; reject a foreign country paired with an Australian state. Preserve rejected values in raw evidence.",
+            "entity": null,
+            "qualifiers": null,
+            "one_hot": null
+          },
+          {
+            "source_paths": [
+              "Charity_Size"
+            ],
+            "join_with": " ",
+            "when": null,
+            "target": "ext.financial.revenue_band",
+            "valid_from_path": null,
+            "valid_to_path": null,
+            "validity_date_formats": null,
+            "claim_scope": null,
+            "steps": [
+              {
+                "op": "crosswalk",
+                "args": {
+                  "table": "acnc_size_2022",
+                  "output": "label"
+                }
+              }
+            ],
+            "confidence": 0.9,
+            "rationale": "Charity_Size is ACNC's published revenue-size band (Small/Medium/Large); values match the acnc_size_2022 table keys exactly. Thresholds live in the table. No period is stated per row, so period is omitted.",
+            "entity": null,
+            "qualifiers": {
+              "scheme": {
+                "source_path": null,
+                "value": "acnc_size_2022",
+                "steps": []
+              }
+            },
+            "one_hot": null
+          },
+          {
+            "source_paths": [
+              "Date_Organisation_Established"
+            ],
+            "join_with": " ",
+            "when": null,
+            "target": "ext.entity.date_established",
+            "valid_from_path": null,
+            "valid_to_path": null,
+            "validity_date_formats": null,
+            "claim_scope": null,
+            "steps": [
+              {
+                "op": "parse_date",
+                "args": {
+                  "formats": [
+                    "%d/%m/%Y"
+                  ]
+                }
+              }
+            ],
+            "confidence": 0.95,
+            "rationale": "All discovery values are dd/mm/yyyy and the column states when the organisation was established; a founding date, never a substitute for Registration_Date.",
+            "entity": null,
+            "qualifiers": null,
+            "one_hot": null
+          },
+          {
+            "source_paths": [
+              "Number_of_Responsible_Persons"
+            ],
+            "join_with": " ",
+            "when": null,
+            "target": "ext.entity.responsible_persons",
+            "valid_from_path": null,
+            "valid_to_path": null,
+            "validity_date_formats": null,
+            "claim_scope": null,
+            "steps": [
+              {
+                "op": "parse_integer",
+                "args": {}
+              }
+            ],
+            "confidence": 0.95,
+            "rationale": "Regulator-reported count of responsible persons (board size).",
+            "entity": null,
+            "qualifiers": null,
+            "one_hot": null
+          },
+          {
+            "source_paths": [
+              "Financial_Year_End"
+            ],
+            "join_with": " ",
+            "when": null,
+            "target": "ext.entity.financial_year_end",
+            "valid_from_path": null,
+            "valid_to_path": null,
+            "validity_date_formats": null,
+            "claim_scope": null,
+            "steps": [
+              {
+                "op": "trim",
+                "args": {}
+              },
+              {
+                "op": "collapse_whitespace",
+                "args": {}
+              }
+            ],
+            "confidence": 0.95,
+            "rationale": "Reporting-cycle end in dd-Mon form (30-Jun, 31-Dec ...), matching the target pattern; a reporting fit, not a validity date.",
+            "entity": null,
+            "qualifiers": null,
+            "one_hot": null
+          },
+          {
+            "source_paths": [
+              "Operates_in_ACT",
+              "Operates_in_NSW",
+              "Operates_in_NT",
+              "Operates_in_QLD",
+              "Operates_in_SA",
+              "Operates_in_TAS",
+              "Operates_in_VIC",
+              "Operates_in_WA"
+            ],
+            "join_with": " ",
+            "when": null,
+            "target": "ext.entity.operating_region",
+            "valid_from_path": null,
+            "valid_to_path": null,
+            "validity_date_formats": null,
+            "claim_scope": null,
+            "steps": [
+              {
+                "op": "map_enum",
+                "args": {
+                  "mapping": {
+                    "Operates_in_ACT": "ACT",
+                    "Operates_in_NSW": "NSW",
+                    "Operates_in_NT": "NT",
+                    "Operates_in_QLD": "QLD",
+                    "Operates_in_SA": "SA",
+                    "Operates_in_TAS": "TAS",
+                    "Operates_in_VIC": "VIC",
+                    "Operates_in_WA": "WA"
+                  },
+                  "default": null
+                }
+              }
+            ],
+            "confidence": 0.9,
+            "rationale": "One Y/blank column per state of operation: one_hot contributes each set column's name, mapped to the state enum. This is the stated service footprint, not the registered address.",
+            "entity": null,
+            "qualifiers": null,
+            "one_hot": true
+          },
+          {
+            "source_paths": [
+              "Operating_Countries"
+            ],
+            "join_with": " ",
+            "when": null,
+            "target": "ext.entity.operating_country",
+            "valid_from_path": null,
+            "valid_to_path": null,
+            "validity_date_formats": null,
+            "claim_scope": null,
+            "steps": [
+              {
+                "op": "split",
+                "args": {
+                  "sep": ","
+                }
+              },
+              {
+                "op": "trim",
+                "args": {}
+              },
+              {
+                "op": "collapse_whitespace",
+                "args": {}
+              }
+            ],
+            "confidence": 0.9,
+            "rationale": "Comma-separated ISO3 list of countries the charity says it operates in; split so each value is one observation, keeping the publisher's wording.",
+            "entity": null,
+            "qualifiers": null,
+            "one_hot": null
+          },
+          {
+            "source_paths": [
+              "PBI"
+            ],
+            "join_with": " ",
+            "when": null,
+            "target": "ext.entity.tax_concession",
+            "valid_from_path": null,
+            "valid_to_path": null,
+            "validity_date_formats": null,
+            "claim_scope": null,
+            "steps": [
+              {
+                "op": "flag",
+                "args": {
+                  "value": "PBI",
+                  "truthy": [
+                    "Y"
+                  ]
+                }
+              }
+            ],
+            "confidence": 0.9,
+            "rationale": "Single Y/blank column flagging Public Benevolent Institution status.",
+            "entity": null,
+            "qualifiers": null,
+            "one_hot": null
+          },
+          {
+            "source_paths": [
+              "HPC"
+            ],
+            "join_with": " ",
+            "when": null,
+            "target": "ext.entity.tax_concession",
+            "valid_from_path": null,
+            "valid_to_path": null,
+            "validity_date_formats": null,
+            "claim_scope": null,
+            "steps": [
+              {
+                "op": "flag",
+                "args": {
+                  "value": "HPC",
+                  "truthy": [
+                    "Y"
+                  ]
+                }
+              }
+            ],
+            "confidence": 0.9,
+            "rationale": "Single Y/blank column flagging Health Promotion Charity status; a separate column, so a separate flag rule.",
+            "entity": null,
+            "qualifiers": null,
+            "one_hot": null
+          },
+          {
+            "source_paths": [
+              "Preventing_or_relieving_suffering_of_animals",
+              "Advancing_Culture",
+              "Advancing_Education",
+              "Advancing_Health",
+              "Promote_or_oppose_a_change_to_law__government_poll_or_prac",
+              "Advancing_natual_environment",
+              "Promoting_or_protecting_human_rights",
+              "Purposes_beneficial_to_ther_general_public_and_other_analogous",
+              "Promoting_reconciliation__mutual_respect_and_tolerance",
+              "Advancing_Religion",
+              "Advancing_social_or_public_welfare",
+              "Advancing_security_or_safety_of_Australia_or_Australian_public"
+            ],
+            "join_with": " ",
+            "when": null,
+            "target": "ext.entity.sector_tag",
+            "valid_from_path": null,
+            "valid_to_path": null,
+            "validity_date_formats": null,
+            "claim_scope": null,
+            "steps": [
+              {
+                "op": "map_enum",
+                "args": {
+                  "mapping": {
+                    "Advancing_Education": "Advancing education",
+                    "Advancing_Health": "Advancing health",
+                    "Advancing_social_or_public_welfare": "Advancing social or public welfare",
+                    "Advancing_Religion": "Advancing religion",
+                    "Advancing_Culture": "Advancing culture",
+                    "Promote_or_oppose_a_change_to_law__government_poll_or_prac": "Promoting or opposing a change to law or government policy or practice",
+                    "Advancing_natual_environment": "Advancing the natural environment",
+                    "Preventing_or_relieving_suffering_of_animals": "Preventing or relieving the suffering of animals",
+                    "Purposes_beneficial_to_ther_general_public_and_other_analogous": "Other purposes beneficial to the general public",
+                    "Promoting_or_protecting_human_rights": "Promoting or protecting human rights",
+                    "Promoting_reconciliation__mutual_respect_and_tolerance": "Promoting reconciliation and mutual respect and tolerance",
+                    "Advancing_security_or_safety_of_Australia_or_Australian_public": "Advancing the security or safety of Australia or the Australian public"
+                  },
+                  "default": null
+                }
+              }
+            ],
+            "confidence": 0.8,
+            "rationale": "ACNC's twelve charitable-purpose flags, one Y/blank column each: one_hot contributes the set columns' names, decoded to the publisher's purpose wording under scheme acnc_purpose. Commas inside the Act's wording were replaced with 'and' so the delimiter lint does not mistake one label for a list.",
+            "entity": null,
+            "qualifiers": {
+              "scheme": {
+                "source_path": null,
+                "value": "acnc_purpose",
+                "steps": []
+              }
+            },
+            "one_hot": true
+          }
+        ],
+        "constants": [],
+        "unmapped": [
+          {
+            "source_path": "Address_Type",
+            "reason": "Constant 'Business' on every row; names the address type, carries no per-record information."
+          },
+          {
+            "source_path": "Aboriginal_or_TSI",
+            "reason": "Beneficiary-type Y/N indicator; no ontology target."
+          },
+          {
+            "source_path": "Adults",
+            "reason": "Beneficiary-type Y/N indicator; no ontology target."
+          },
+          {
+            "source_path": "Aged_Persons",
+            "reason": "Beneficiary-type Y/N indicator; no ontology target."
+          },
+          {
+            "source_path": "Children",
+            "reason": "Beneficiary-type Y/N indicator; no ontology target."
+          },
+          {
+            "source_path": "Communities_Overseas",
+            "reason": "Beneficiary-type Y/N indicator; no ontology target."
+          },
+          {
+            "source_path": "Early_Childhood",
+            "reason": "Beneficiary-type Y/N indicator; no ontology target."
+          },
+          {
+            "source_path": "Ethnic_Groups",
+            "reason": "Beneficiary-type Y/N indicator; no ontology target."
+          },
+          {
+            "source_path": "Families",
+            "reason": "Beneficiary-type Y/N indicator; no ontology target."
+          },
+          {
+            "source_path": "Females",
+            "reason": "Beneficiary-type Y/N indicator; no ontology target."
+          },
+          {
+            "source_path": "Financially_Disadvantaged",
+            "reason": "Beneficiary-type Y/N indicator; no ontology target."
+          },
+          {
+            "source_path": "LGBTIQA+",
+            "reason": "Beneficiary-type Y/N indicator; no ontology target."
+          },
+          {
+            "source_path": "General_Community_in_Australia",
+            "reason": "Beneficiary-type Y/N indicator; no ontology target."
+          },
+          {
+            "source_path": "Males",
+            "reason": "Beneficiary-type Y/N indicator; no ontology target."
+          },
+          {
+            "source_path": "Migrants_Refugees_or_Asylum_Seekers",
+            "reason": "Beneficiary-type Y/N indicator; no ontology target."
+          },
+          {
+            "source_path": "Other_Beneficiaries",
+            "reason": "Beneficiary-type Y/N indicator; no ontology target."
+          },
+          {
+            "source_path": "Other_Charities",
+            "reason": "Beneficiary-type Y/N indicator; no ontology target."
+          },
+          {
+            "source_path": "People_at_risk_of_homelessness",
+            "reason": "Beneficiary-type Y/N indicator; no ontology target."
+          },
+          {
+            "source_path": "People_with_Chronic_Illness",
+            "reason": "Beneficiary-type Y/N indicator; no ontology target."
+          },
+          {
+            "source_path": "People_with_Disabilities",
+            "reason": "Beneficiary-type Y/N indicator; no ontology target."
+          },
+          {
+            "source_path": "Pre_Post_Release_Offenders",
+            "reason": "Beneficiary-type Y/N indicator; no ontology target."
+          },
+          {
+            "source_path": "Rural_Regional_Remote_Communities",
+            "reason": "Beneficiary-type Y/N indicator; no ontology target."
+          },
+          {
+            "source_path": "Unemployed_Person",
+            "reason": "Beneficiary-type Y/N indicator; no ontology target."
+          },
+          {
+            "source_path": "Veterans_or_their_families",
+            "reason": "Beneficiary-type Y/N indicator; no ontology target."
+          },
+          {
+            "source_path": "Victims_of_crime",
+            "reason": "Beneficiary-type Y/N indicator; no ontology target."
+          },
+          {
+            "source_path": "Victims_of_Disasters",
+            "reason": "Beneficiary-type Y/N indicator; no ontology target."
+          },
+          {
+            "source_path": "Youth",
+            "reason": "Beneficiary-type Y/N indicator; no ontology target."
+          },
+          {
+            "source_path": "animals",
+            "reason": "Beneficiary-type Y/N indicator; no ontology target."
+          },
+          {
+            "source_path": "environment",
+            "reason": "Beneficiary-type Y/N indicator; no ontology target."
+          },
+          {
+            "source_path": "other_gender_identities",
+            "reason": "Beneficiary-type Y/N indicator; no ontology target."
+          }
+        ],
+        "notes": "Reviewer feedback addressed: address.country now uses map_enum with passthrough=true (no '__PASSTHROUGH__' sentinel); listed Australian spellings -> 'AU', other countries preserved as uppercase text. entity.status is NOT mapped: no per-row status column and the extract may include revoked charities, so asserting 'active' would be guesswork. entity_type not mapped: suffixes (Incorporated/Ltd/Trust) are name text, not a structured type field. Columns 29-69 are charitable-purpose/beneficiary Y/N flags with no ontology target. Some Other_Organisation_Names values are person-like (e.g. 'Shannon Schedlich'); trading_name confidence kept moderate for that reason. No per-row observation date; fallback to resource last-modified. Address is a business/contact address (Address_Type uniformly 'Business'), so address.full confidence is moderate. One 6-digit Postcode source defect fails validation by design.\n\n[ext-v1] Approved rules 5-9 (address.*) moved to the new establishment role because Address_Type is constant 'Business' (registered premises). ABN is not unique, so establishment key_paths include ABN plus address columns. entity.trading_name is dropped (editable rule 1) because the alias column mixes trading names with former legal names and cannot be classified by evidence; ext.entity.former_name is added in its place, emitting only the 'previously known as' segment. sector_tag uses map_enum over the publisher's purpose wording (scheme acnc_purpose): the acnc_purpose crosswalk op with one_hot produced only raw column names (key_label) or dropped all values (label), so it is not usable here; labels with internal commas were reworded with 'and' to avoid the delimiter lint false positive. Charity_Size has no per-row period, so revenue_band carries scheme only. Remaining forty beneficiary-type Y/N flag columns have no reviewed crosswalk table and are not asserted. Date_Organisation_Established is used only as date_established, never for registration status or validity.\nLocal maintainer correction (no model API call): Keep register contact addresses on the company with explicit contact scope; reject country/state conflicts instead of creating establishments.",
+        "profile_context": null,
+        "extensions": "ext-v1",
+        "entities": null,
+        "relationships": null
+      }
+    },
+    {
+      "source_id": "asic_companies",
+      "expected_config_digest": "068a14bebaadb5fa5973a9ef3c662f4967578460df32b91a7d3b210bf6c9092c",
+      "reason": "Use corrected official subclass labels, withhold unverifiable meanings, and remove unsupported address-country default.",
+      "config": {
+        "source_id": "asic_companies",
+        "record_grain": "business_name",
+        "grain_rationale": "One row is one registered company name held by a company. Companies with previous names appear on multiple rows sharing the same ACN; on exactly one row per company 'Current Name Indicator' = 'Y' and 'Company Name' holds the current registered name, while on the other rows 'Company Name' holds a former registered name and 'Current Name' holds the then-current name. Because 'Current Name' carries a value only on the former-name rows, the current registered name is recoverable from BOTH row types: Company Name (when Indicator='Y') or Current Name (when Indicator is not 'Y'). Each row therefore yields at most one legal_name observation for the company; former registered names are NOT emitted as trading names (they are superseded legal names, not declared business/trading names). Per-company attributes (ACN, ABN, type, status, registration date) are identical across a company's rows and are mapped from every row.",
+        "reader": {
+          "format": "delimited",
+          "archive_member": "COMPANY_202611.csv",
+          "encoding": "utf-8-sig",
+          "delimiter": "\t",
+          "skip_rows": 0,
+          "sheet": null,
+          "record_path": null
+        },
+        "record_id": {
+          "strategy": "columns",
+          "source_paths": [
+            "ACN",
+            "Company Name"
+          ],
+          "rationale": "ACN alone is not unique (471 distinct for 473 rows) because multiple name-history rows share it; ACN + Company Name gives 473 distinct values in the discovery partition, i.e. one row per company-name record and traceable back to the source."
+        },
+        "observed_at": {
+          "source_path": null,
+          "steps": [],
+          "fallback": "resource_last_modified"
+        },
+        "fields": [
+          {
+            "source_paths": [
+              "Company Name"
+            ],
+            "join_with": " ",
+            "when": {
+              "source_path": "Current Name Indicator",
+              "op": "equals",
+              "values": [
+                "Y"
+              ]
+            },
+            "target": "entity.legal_name",
+            "valid_from_path": null,
+            "valid_to_path": null,
+            "validity_date_formats": null,
+            "claim_scope": null,
+            "steps": [
+              {
+                "op": "collapse_whitespace",
+                "args": {}
+              },
+              {
+                "op": "trim",
+                "args": {}
+              },
+              {
+                "op": "null_if",
+                "args": {
+                  "values": [
+                    "",
+                    "NONE",
+                    "."
+                  ]
+                }
+              }
+            ],
+            "confidence": 0.9,
+            "rationale": "On the current-name row (Current Name Indicator='Y', 301/473 rows) 'Company Name' is the registered company name and 'Current Name' is blank. Names are space-padded to ~100 chars, hence collapse_whitespace+trim.",
+            "entity": null,
+            "qualifiers": null
+          },
+          {
+            "source_paths": [
+              "Current Name"
+            ],
+            "join_with": " ",
+            "when": {
+              "source_path": "Current Name Indicator",
+              "op": "not_equals",
+              "values": [
+                "Y"
+              ]
+            },
+            "target": "entity.legal_name",
+            "valid_from_path": null,
+            "valid_to_path": null,
+            "validity_date_formats": null,
+            "claim_scope": null,
+            "steps": [
+              {
+                "op": "collapse_whitespace",
+                "args": {}
+              },
+              {
+                "op": "trim",
+                "args": {}
+              },
+              {
+                "op": "null_if",
+                "args": {
+                  "values": [
+                    "",
+                    "NONE",
+                    "."
+                  ]
+                }
+              }
+            ],
+            "confidence": 0.85,
+            "rationale": "On rows without the current-name indicator, 'Current Name' is populated (172/473) and holds the company's current registered name, e.g. BRITAX STEELCRAFT PTY. LTD. -> BRITAX CHILDCARE PTY LTD. Verified on the header sample: rows where Indicator='Y' always have Current Name blank, and rows where Indicator is blank always have Current Name populated. The two legal_name rules are complementary, so each row emits exactly one legal_name and a company's current name is still recoverable if its Indicator='Y' row were absent from an extract.",
+            "entity": null,
+            "qualifiers": null
+          },
+          {
+            "source_paths": [
+              "ACN"
+            ],
+            "join_with": " ",
+            "when": null,
+            "target": "entity.acn",
+            "valid_from_path": null,
+            "valid_to_path": null,
+            "validity_date_formats": null,
+            "claim_scope": null,
+            "steps": [
+              {
+                "op": "trim",
+                "args": {}
+              },
+              {
+                "op": "acn",
+                "args": {}
+              }
+            ],
+            "confidence": 0.97,
+            "rationale": "Column 'ACN' is 9 digits on 100% of rows and passes the ACN checksum on 473/473 discovery rows; uses the acn transform, never derived from ABN.",
+            "entity": null,
+            "qualifiers": null
+          },
+          {
+            "source_paths": [
+              "ABN"
+            ],
+            "join_with": " ",
+            "when": null,
+            "target": "entity.abn",
+            "valid_from_path": null,
+            "valid_to_path": null,
+            "validity_date_formats": null,
+            "claim_scope": null,
+            "steps": [
+              {
+                "op": "trim",
+                "args": {}
+              },
+              {
+                "op": "null_if",
+                "args": {
+                  "values": [
+                    "",
+                    "0",
+                    "NONE"
+                  ]
+                }
+              },
+              {
+                "op": "abn",
+                "args": {}
+              }
+            ],
+            "confidence": 0.9,
+            "rationale": "Column 'ABN' is 11 digits on 69.3% of rows and passes the ABN checksum at exactly the same 69.3% rate; the remaining values are the literal placeholder '0' (145/473) meaning no ABN recorded, null_if'd away so the checksum transform only sees real ABNs.",
+            "entity": null,
+            "qualifiers": null
+          },
+          {
+            "source_paths": [
+              "Type"
+            ],
+            "join_with": " ",
+            "when": null,
+            "target": "entity.entity_type",
+            "valid_from_path": null,
+            "valid_to_path": null,
+            "validity_date_formats": null,
+            "claim_scope": null,
+            "steps": [
+              {
+                "op": "trim",
+                "args": {}
+              },
+              {
+                "op": "map_enum",
+                "args": {
+                  "mapping": {
+                    "APTY": "company",
+                    "APUB": "company",
+                    "FNOS": "company",
+                    "NONC": "company"
+                  },
+                  "default": "unknown"
+                }
+              }
+            ],
+            "confidence": 0.8,
+            "rationale": "Column 'Type' states the ASIC company type explicitly (APTY = Australian proprietary company 458, APUB = Australian public company 15 in discovery). APTY/APUB/FNOS/NONC are all bodies registered as companies under the Corporations Act -> 'company'. Any other code falls through to 'unknown' rather than being guessed.",
+            "entity": null,
+            "qualifiers": null
+          },
+          {
+            "source_paths": [
+              "Status"
+            ],
+            "join_with": " ",
+            "when": null,
+            "target": "entity.status",
+            "valid_from_path": null,
+            "valid_to_path": null,
+            "validity_date_formats": null,
+            "claim_scope": null,
+            "steps": [
+              {
+                "op": "trim",
+                "args": {}
+              },
+              {
+                "op": "map_enum",
+                "args": {
+                  "mapping": {
+                    "REGD": "active",
+                    "DRGD": "deregistered"
+                  },
+                  "default": "unknown"
+                }
+              }
+            ],
+            "confidence": 0.9,
+            "rationale": "Only statuses with an unambiguous ontology equivalent are mapped: REGD = registered -> active (435/473), DRGD = deregistered -> deregistered (28/473). EXAD (external administration, which may be voluntary administration or receivership rather than liquidation) and SOFF (strike-off action in progress, company still registered) have no exact enum equivalent and are deliberately mapped to 'unknown' rather than guessed.",
+            "entity": null,
+            "qualifiers": null
+          },
+          {
+            "source_paths": [
+              "Date of Registration"
+            ],
+            "join_with": " ",
+            "when": null,
+            "target": "entity.date_registered",
+            "valid_from_path": null,
+            "valid_to_path": null,
+            "validity_date_formats": null,
+            "claim_scope": null,
+            "steps": [
+              {
+                "op": "trim",
+                "args": {}
+              },
+              {
+                "op": "parse_date",
+                "args": {
+                  "formats": [
+                    "%d/%m/%Y"
+                  ]
+                }
+              }
+            ],
+            "confidence": 0.95,
+            "rationale": "All discovery values match shape 99/99/9999 and are day-first Australian dates (e.g. 22/12/1986); parse as %d/%m/%Y.",
+            "entity": null,
+            "qualifiers": null
+          },
+          {
+            "source_paths": [
+              "Type"
+            ],
+            "join_with": " ",
+            "when": null,
+            "target": "ext.entity.legal_form",
+            "valid_from_path": null,
+            "valid_to_path": null,
+            "validity_date_formats": null,
+            "claim_scope": null,
+            "steps": [
+              {
+                "op": "trim",
+                "args": {}
+              },
+              {
+                "op": "crosswalk",
+                "args": {
+                  "table": "asic_company_type",
+                  "output": "code"
+                }
+              }
+            ],
+            "confidence": 0.8,
+            "rationale": "ASIC company type code (APTY=proprietary, APUB=public, FNOS=foreign, RACN=registrable Australian body, CCIV=corporate collective investment vehicle, NONC=no-liability). Profiled values are exactly keys of asic_company_type.",
+            "entity": null,
+            "qualifiers": null
+          },
+          {
+            "source_paths": [
+              "Class"
+            ],
+            "join_with": " ",
+            "when": null,
+            "target": "ext.entity.legal_form_detail",
+            "valid_from_path": null,
+            "valid_to_path": null,
+            "validity_date_formats": null,
+            "claim_scope": null,
+            "steps": [
+              {
+                "op": "trim",
+                "args": {}
+              },
+              {
+                "op": "crosswalk",
+                "args": {
+                  "table": "asic_company_class",
+                  "output": "key_label"
+                }
+              }
+            ],
+            "confidence": 0.75,
+            "rationale": "Class holds the share/guarantee structure (LMSH=limited by shares, LMGT=limited by guarantee) which entity_type flattens to 'company'. Keys match the source values; code retained in key_label.",
+            "entity": null,
+            "qualifiers": null
+          },
+          {
+            "source_paths": [
+              "Sub Class"
+            ],
+            "join_with": " ",
+            "when": null,
+            "target": "ext.entity.legal_form_detail",
+            "valid_from_path": null,
+            "valid_to_path": null,
+            "validity_date_formats": null,
+            "claim_scope": null,
+            "steps": [
+              {
+                "op": "trim",
+                "args": {}
+              },
+              {
+                "op": "crosswalk",
+                "args": {
+                  "table": "asic_company_subclass",
+                  "output": "key_label"
+                }
+              }
+            ],
+            "confidence": 0.7,
+            "rationale": "Sub Class carries the finer ASIC structure (PROP, LIST, PSTC, LISN, ULST...). Crosswalk keys are this source's raw values; target is multi-valued so Class and Sub Class are separate observations. Labels are draft/AI-guessed; concept fit is accepted by the critic.",
+            "entity": null,
+            "qualifiers": null
+          },
+          {
+            "source_paths": [
+              "Status"
+            ],
+            "join_with": " ",
+            "when": null,
+            "target": "ext.entity.status_detail",
+            "valid_from_path": null,
+            "valid_to_path": null,
+            "validity_date_formats": null,
+            "claim_scope": null,
+            "steps": [
+              {
+                "op": "trim",
+                "args": {}
+              },
+              {
+                "op": "crosswalk",
+                "args": {
+                  "table": "asic_company_status",
+                  "output": "key_label"
+                }
+              }
+            ],
+            "confidence": 0.85,
+            "rationale": "entity.status is coarse and hides distress codes (EXAD external administration, SOFF strike-off). asic_company_status keys are exactly this column's values.",
+            "entity": null,
+            "qualifiers": null
+          },
+          {
+            "source_paths": [
+              "Previous State of Registration"
+            ],
+            "join_with": " ",
+            "when": null,
+            "target": "ext.entity.prior_registration_state",
+            "valid_from_path": null,
+            "valid_to_path": null,
+            "validity_date_formats": null,
+            "claim_scope": null,
+            "steps": [
+              {
+                "op": "trim",
+                "args": {}
+              },
+              {
+                "op": "collapse_whitespace",
+                "args": {}
+              },
+              {
+                "op": "null_if",
+                "args": {}
+              }
+            ],
+            "confidence": 0.8,
+            "rationale": "Column names the state register in which the company was originally registered; ext.entity.prior_registration_state is defined as exactly that and explicitly not an address.",
+            "entity": null,
+            "qualifiers": null
+          },
+          {
+            "source_paths": [
+              "State Registration number"
+            ],
+            "join_with": " ",
+            "when": null,
+            "target": "ext.entity.prior_registration_number",
+            "valid_from_path": null,
+            "valid_to_path": null,
+            "validity_date_formats": null,
+            "claim_scope": null,
+            "steps": [
+              {
+                "op": "trim",
+                "args": {}
+              },
+              {
+                "op": "collapse_whitespace",
+                "args": {}
+              },
+              {
+                "op": "null_if",
+                "args": {}
+              }
+            ],
+            "confidence": 0.85,
+            "rationale": "Legacy state-registry number (shapes like C0268163E and 8-digit numerics; ACN checksum passes by chance on only 13.5%). Must not be parsed as an ACN.",
+            "entity": null,
+            "qualifiers": null
+          },
+          {
+            "source_paths": [
+              "Company Name"
+            ],
+            "join_with": " ",
+            "when": {
+              "source_path": "Current Name Indicator",
+              "op": "not_equals",
+              "values": [
+                "Y"
+              ]
+            },
+            "target": "ext.entity.former_name",
+            "valid_from_path": null,
+            "valid_to_path": null,
+            "validity_date_formats": null,
+            "claim_scope": null,
+            "steps": [
+              {
+                "op": "collapse_whitespace",
+                "args": {}
+              },
+              {
+                "op": "trim",
+                "args": {}
+              },
+              {
+                "op": "null_if",
+                "args": {}
+              }
+            ],
+            "confidence": 0.8,
+            "rationale": "On a former-name row (Current Name Indicator != 'Y'), Company Name is the superseded registered name, not a trading name; legal_name comes from Company Name only on the 'Y' row, so there is no collision. Current Name Start Date dates the later name's commencement and cannot be assigned as this former name's valid_from or valid_to when a company has several former-name rows, so the claim is emitted without a validity path.",
+            "entity": null,
+            "qualifiers": null
+          }
+        ],
+        "constants": [],
+        "unmapped": [
+          {
+            "source_path": "Modified since last report",
+            "reason": "Empty on 100% of profiled rows (present_rate 0.0); no data to map."
+          },
+          {
+            "source_path": "Current Name Start Date",
+            "reason": "Dates the commencement of the later (then-current) name, not the former name in Company Name on that row. With multiple former-name rows per company it cannot establish any one former name's valid_from or valid_to (validator UNSUPPORTED_FORMER_NAME_END), so it is left unmapped rather than attached to the wrong claim."
+          }
+        ],
+        "notes": "ZIP member COMPANY_202611.csv: UTF-8 with BOM, TAB-delimited (14 tabs/line), one header row, 15 columns. Names are space-padded to ~100 chars -> collapse_whitespace+trim. ABN uses '0' as a missing sentinel (145/473). Name-history structure: multiple rows per ACN; legal_name comes from Company Name when Current Name Indicator='Y' and from Current Name when the indicator is blank, so each row contributes exactly one current registered name and no superseded name is emitted as trading_name (entity.trading_name is intentionally not populated - this register holds no declared business/trading names). valid_from = Current Name Start Date where present, else Date of Registration. entity.status maps only REGD/DRGD; EXAD and SOFF -> unknown by design. observed_at is not stated in the file, so resource_last_modified is used. address.full/locality/postcode are not present in this source.\n\n[ext-v1] Adds ASIC's own schema detail to the extension registry (Type -> legal_form, Class + Sub Class -> legal_form_detail as two multi-valued observations, Status -> status_detail) plus the two prior-registration columns and former legal names. Fixes the critic's 'wrong' verdict: former name is Company Name on non-'Y' rows (never Current Name, which is the later name and would collide with legal_name), emitted without a validity path because Current Name Start Date dates a different claim. The record is a company (business role); no entities/relationships are declared. Base edits limited to removing the three ignored legacy observation.valid_* rules (7, 8, 9). All four crosswalk tables used are marked 'draft - prepared by an AI assistant'; the asic_company_subclass labels are AI-guessed (critic: doubtful) and need verification against ASIC's data dictionary before relying on finer sub-class detail.\nLocal maintainer correction (no model API call): Use corrected official subclass labels, withhold unverifiable meanings, and remove unsupported address-country default.",
+        "profile_context": null,
+        "extensions": "ext-v1",
+        "entities": null,
+        "relationships": null
+      }
+    },
+    {
+      "source_id": "asic_credit_licensees",
+      "expected_config_digest": "e5c026d80cd981f19eaac2b698f2933e33c258ded02759f8efc2982048cfbfe3",
+      "reason": "Preserve complete authorisation text and licence dates; omit coordinates whose location precision is unverified.",
+      "config": {
+        "source_id": "asic_credit_licensees",
+        "record_grain": "licence_or_permit",
+        "grain_rationale": "Each row is one ASIC credit licence (CRED_LIC_NUM) held by a licensee. The business participant is the licensee named in CRED_LIC_NAME; the licence number itself is the record identifier, not a business identifier.",
+        "reader": {
+          "format": "delimited",
+          "archive_member": null,
+          "encoding": "utf-8-sig",
+          "delimiter": "\t",
+          "skip_rows": 0,
+          "sheet": null,
+          "record_path": null
+        },
+        "record_id": {
+          "strategy": "columns",
+          "source_paths": [
+            "CRED_LIC_NUM"
+          ],
+          "rationale": "CRED_LIC_NUM is present on 100% of rows and has 464 distinct values over 464 discovery records - unique per record."
+        },
+        "observed_at": {
+          "source_path": null,
+          "steps": [],
+          "fallback": "resource_last_modified"
+        },
+        "fields": [
+          {
+            "source_paths": [
+              "CRED_LIC_NAME"
+            ],
+            "join_with": " ",
+            "when": null,
+            "target": "entity.legal_name",
+            "valid_from_path": null,
+            "valid_to_path": null,
+            "validity_date_formats": null,
+            "claim_scope": null,
+            "steps": [
+              {
+                "op": "trim",
+                "args": {}
+              },
+              {
+                "op": "collapse_whitespace",
+                "args": {}
+              }
+            ],
+            "confidence": 0.7,
+            "rationale": "ASIC register name of the licensee, presented as a registered-style name (mostly '... PTY LTD'/'... LIMITED'); some rows are individuals (e.g. 'TAN, JINTANG'), which are the licensee legal names of sole traders, not contact people.",
+            "entity": null,
+            "qualifiers": null,
+            "one_hot": null
+          },
+          {
+            "source_paths": [
+              "CRED_LIC_BN"
+            ],
+            "join_with": " ",
+            "when": null,
+            "target": "entity.trading_name",
+            "valid_from_path": null,
+            "valid_to_path": null,
+            "validity_date_formats": null,
+            "claim_scope": null,
+            "steps": [
+              {
+                "op": "trim",
+                "args": {}
+              },
+              {
+                "op": "collapse_whitespace",
+                "args": {}
+              }
+            ],
+            "confidence": 0.6,
+            "rationale": "ASIC 'business name' column, free of tilde separators, present on 34.5% of rows and clearly a trading/display name (e.g. 'DISCOVERY FINANCIAL MANAGEMENT' under LUNAWAVE PTY. LIMITED), not the registered name.",
+            "entity": null,
+            "qualifiers": null,
+            "one_hot": null
+          },
+          {
+            "source_paths": [
+              "CRED_LIC_ABN_ACN"
+            ],
+            "join_with": " ",
+            "when": null,
+            "target": "entity.abn",
+            "valid_from_path": null,
+            "valid_to_path": null,
+            "validity_date_formats": null,
+            "claim_scope": null,
+            "steps": [
+              {
+                "op": "trim",
+                "args": {}
+              },
+              {
+                "op": "null_if",
+                "args": {
+                  "values": [
+                    "0",
+                    ""
+                  ]
+                }
+              },
+              {
+                "op": "regex_extract",
+                "args": {
+                  "pattern": "^\\d{11}$",
+                  "group": 0
+                }
+              },
+              {
+                "op": "abn",
+                "args": {}
+              }
+            ],
+            "confidence": 0.8,
+            "rationale": "Mixed ABN/ACN column. Only the 11-digit shape (420/464 discovery rows, 90.5% ABN-checksum-valid) is an ABN by definition; regex_extract restricts the transform to that shape so 9-digit ACNs and 7-8 digit values resolve to null instead of raising ABN_LENGTH errors.",
+            "entity": null,
+            "qualifiers": null,
+            "one_hot": null
+          },
+          {
+            "source_paths": [
+              "CRED_LIC_ABN_ACN"
+            ],
+            "join_with": " ",
+            "when": null,
+            "target": "entity.acn",
+            "valid_from_path": null,
+            "valid_to_path": null,
+            "validity_date_formats": null,
+            "claim_scope": null,
+            "steps": [
+              {
+                "op": "trim",
+                "args": {}
+              },
+              {
+                "op": "null_if",
+                "args": {
+                  "values": [
+                    "0",
+                    ""
+                  ]
+                }
+              },
+              {
+                "op": "regex_extract",
+                "args": {
+                  "pattern": "^\\d{9}$",
+                  "group": 0
+                }
+              },
+              {
+                "op": "acn",
+                "args": {}
+              }
+            ],
+            "confidence": 0.55,
+            "rationale": "The 9-digit values (27/464 discovery rows, e.g. 601283201) in this combined ABN_ACN column are ACNs and pass the ACN checksum; passed through the checksum-validating acn transform. Taken from an explicit ACN value in the source, never derived from an ABN.",
+            "entity": null,
+            "qualifiers": null,
+            "one_hot": null
+          },
+          {
+            "source_paths": [
+              "CRED_LIC_LOCALITY"
+            ],
+            "join_with": " ",
+            "when": null,
+            "target": "address.locality",
+            "valid_from_path": null,
+            "valid_to_path": null,
+            "validity_date_formats": null,
+            "claim_scope": null,
+            "steps": [
+              {
+                "op": "trim",
+                "args": {}
+              },
+              {
+                "op": "collapse_whitespace",
+                "args": {}
+              }
+            ],
+            "confidence": 0.9,
+            "rationale": "Suburb/locality column, 100% present, matches AU place names.",
+            "entity": null,
+            "qualifiers": null,
+            "one_hot": null
+          },
+          {
+            "source_paths": [
+              "CRED_LIC_STATE"
+            ],
+            "join_with": " ",
+            "when": null,
+            "target": "address.state",
+            "valid_from_path": null,
+            "valid_to_path": null,
+            "validity_date_formats": null,
+            "claim_scope": null,
+            "steps": [
+              {
+                "op": "trim",
+                "args": {}
+              },
+              {
+                "op": "upper",
+                "args": {}
+              },
+              {
+                "op": "state",
+                "args": {}
+              }
+            ],
+            "confidence": 0.95,
+            "rationale": "Two-letter AU state abbreviations, 8 distinct, all within the enum.",
+            "entity": null,
+            "qualifiers": null,
+            "one_hot": null
+          },
+          {
+            "source_paths": [
+              "CRED_LIC_PCODE"
+            ],
+            "join_with": " ",
+            "when": null,
+            "target": "address.postcode",
+            "valid_from_path": null,
+            "valid_to_path": null,
+            "validity_date_formats": null,
+            "claim_scope": null,
+            "steps": [
+              {
+                "op": "trim",
+                "args": {}
+              },
+              {
+                "op": "postcode",
+                "args": {}
+              }
+            ],
+            "confidence": 0.9,
+            "rationale": "All values 4-digit AU postcode shape.",
+            "entity": null,
+            "qualifiers": null,
+            "one_hot": null
+          },
+          {
+            "source_paths": [
+              "CRED_LIC_NUM"
+            ],
+            "join_with": " ",
+            "when": null,
+            "target": "ext.licence.number",
+            "valid_from_path": null,
+            "valid_to_path": null,
+            "validity_date_formats": null,
+            "claim_scope": null,
+            "steps": [
+              {
+                "op": "trim",
+                "args": {}
+              }
+            ],
+            "confidence": 0.95,
+            "rationale": "Publisher-assigned credit licence number, unique per row and stated on 100% of rows; identifies the licence across snapshots.",
+            "entity": "licence",
+            "qualifiers": null,
+            "one_hot": null
+          },
+          {
+            "source_paths": [
+              "CRED_LIC_STATUS"
+            ],
+            "join_with": " ",
+            "when": null,
+            "target": "ext.licence.status",
+            "valid_from_path": null,
+            "valid_to_path": null,
+            "validity_date_formats": null,
+            "claim_scope": null,
+            "steps": [
+              {
+                "op": "trim",
+                "args": {}
+              }
+            ],
+            "confidence": 0.85,
+            "rationale": "CRED_LIC_STATUS is the licence approval status code (APPR on 464/464 discovery rows). It is licence status, not company status, so it must not go to entity.status. Kept as the raw publisher code because the only reviewed ASIC status table (asic_company_status) holds company codes, not credit-licence codes. No valid_from is attached: the publisher dates the licence start, not the status.",
+            "entity": "licence",
+            "qualifiers": null,
+            "one_hot": null
+          },
+          {
+            "source_paths": [
+              "CRED_LIC_EDRS"
+            ],
+            "join_with": " ",
+            "when": null,
+            "target": "ext.licence.edr_scheme",
+            "valid_from_path": null,
+            "valid_to_path": null,
+            "validity_date_formats": null,
+            "claim_scope": null,
+            "steps": [
+              {
+                "op": "trim",
+                "args": {}
+              },
+              {
+                "op": "split",
+                "args": {
+                  "sep": "~"
+                }
+              },
+              {
+                "op": "trim",
+                "args": {}
+              },
+              {
+                "op": "null_if",
+                "args": {
+                  "values": [
+                    ""
+                  ]
+                }
+              }
+            ],
+            "confidence": 0.9,
+            "rationale": "External dispute-resolution scheme membership published for the licence; single codes or tilde lists (AFCA, COSL, AFCA~COSL, FOS, AFCA~FOS, AFCA~COSL~FOS), so one scheme per observation.",
+            "entity": "licence",
+            "qualifiers": null,
+            "one_hot": null
+          },
+          {
+            "source_paths": [
+              "CRED_LIC_AUTHORISATIONS"
+            ],
+            "join_with": " ",
+            "when": null,
+            "target": "ext.licence.authorisation_text",
+            "valid_from_path": null,
+            "valid_to_path": null,
+            "validity_date_formats": null,
+            "claim_scope": null,
+            "steps": [
+              {
+                "op": "trim",
+                "args": {}
+              }
+            ],
+            "confidence": 0.6,
+            "rationale": "Complete unparsed publisher permission text, preserving headings and conditions without asserting separate activities.",
+            "entity": "licence",
+            "qualifiers": null,
+            "one_hot": null
+          },
+          {
+            "source_paths": [
+              "CRED_LIC_STATUS_HISTORY"
+            ],
+            "join_with": " ",
+            "when": null,
+            "target": "ext.licence.status_event",
+            "valid_from_path": null,
+            "valid_to_path": null,
+            "validity_date_formats": null,
+            "claim_scope": null,
+            "steps": [
+              {
+                "op": "trim",
+                "args": {}
+              },
+              {
+                "op": "null_if",
+                "args": {
+                  "values": [
+                    ""
+                  ]
+                }
+              },
+              {
+                "op": "split",
+                "args": {
+                  "sep": "~"
+                }
+              },
+              {
+                "op": "trim",
+                "args": {}
+              }
+            ],
+            "confidence": 0.4,
+            "rationale": "Dated licence status-history entries (e.g. 'Licensee contravenes a licence condition 02/01/2013 ...', 'Suspended at the request of Licensee/Registrant 19/09/2016 31/01/2017') belong on the licence as status events, not on the business. Blank on most rows; the populated values are genuine dated licence events, kept as published.",
+            "entity": "licence",
+            "qualifiers": null,
+            "one_hot": null
+          },
+          {
+            "source_paths": [
+              "CRED_LIC_START_DT"
+            ],
+            "target": "ext.licence.start_date",
+            "entity": "licence",
+            "confidence": 0.95,
+            "rationale": "Explicit publisher licence date, not a company registration or lifetime date.",
+            "steps": [
+              {
+                "op": "null_if",
+                "args": {
+                  "values": [
+                    "",
+                    "0",
+                    "NULL"
+                  ]
+                }
+              },
+              {
+                "op": "parse_date",
+                "args": {
+                  "formats": [
+                    "%d/%m/%Y"
+                  ]
+                }
+              }
+            ]
+          },
+          {
+            "source_paths": [
+              "CRED_LIC_END_DT"
+            ],
+            "target": "ext.licence.end_date",
+            "entity": "licence",
+            "confidence": 0.95,
+            "rationale": "Explicit publisher licence date, not a company registration or lifetime date.",
+            "steps": [
+              {
+                "op": "null_if",
+                "args": {
+                  "values": [
+                    "",
+                    "0",
+                    "NULL"
+                  ]
+                }
+              },
+              {
+                "op": "parse_date",
+                "args": {
+                  "formats": [
+                    "%d/%m/%Y"
+                  ]
+                }
+              }
+            ]
+          }
+        ],
+        "constants": [
+          {
+            "target": "address.country",
+            "value": "AU",
+            "confidence": 0.9,
+            "rationale": "ASIC Australian credit licence register; all localities/states are Australian."
+          },
+          {
+            "target": "entity.status",
+            "value": "unknown",
+            "confidence": 0.5,
+            "rationale": "The only status evidence is CRED_LIC_STATUS='APPR', a licence-approval code, not a company status (active/deregistered/liquidated/suspended). Conflating them would overstate knowledge, so entity.status is left unknown."
+          },
+          {
+            "target": "entity.entity_type",
+            "value": "unknown",
+            "confidence": 0.3,
+            "rationale": "No explicit entity-type column; names suggest companies but many licensees are individuals/trusts, so left as unknown."
+          }
+        ],
+        "unmapped": [
+          {
+            "source_path": "REGISTER_NAME",
+            "reason": "Constant 'Credit Licence' on every row; identifies the register, not a business, licence or establishment attribute."
+          },
+          {
+            "source_path": "CRED_LIC_AFSL_NUM",
+            "reason": "Withdrawn per critic: this is not evidence of a separate related AFS licence. On held-out rows it frequently equals the row's own credit licence number (219612->219612, 223246->223246, 224543->224543, 225759->225759), i.e. the same licence echoed, so emitting it as ext.licence.related_licence_number creates a self-reference and a false related-licence fact. '0' (425/464) is a 'none' placeholder. The transform set offers no reliable way to drop only the equals-CRED_LIC_NUM case (a regex back-reference against a joined identifier column does not filter reliably), and a wrong fact is worse than a missing one, so the column is left unmapped."
+          },
+          {
+            "source_path": "CRED_LIC_LAT",
+            "reason": "Coordinate precision is unverified; a locality centroid must not be asserted as an exact business address."
+          },
+          {
+            "source_path": "CRED_LIC_LNG",
+            "reason": "Coordinate precision is unverified; a locality centroid must not be asserted as an exact business address."
+          }
+        ],
+        "notes": "Revision: CRED_LIC_ABN_ACN is a mixed ABN/ACN column. Shape filters (^\\d{11}$ -> entity.abn, ^\\d{9}$ -> entity.acn) send only the matching identifier type to its own checksum transform; 7-8 digit and '0' values are treated as missing. This removed all ABN_LENGTH errors (previously 8.8%) and recovers the ACNs that were being discarded. No ACN is ever derived from an ABN. entity.status changed to 'unknown' because CRED_LIC_STATUS is a licence-approval code, not a company status; the column is recorded in unmapped. No observed_at column exists, so resource_last_modified is used. TSV confirmed by 16 tabs per line in raw bytes.\n\n[ext-v1] Second revision, answering the holdout critic. (1) Rule 4 (industry_code) REMOVED: the critic is right - anzsic_credit_authorisation is a draft, all_matches, AI-prepared table over generic statutory wording, and it emits contradictory codes (6230 and 6419 for the same licence; 6419 for assistance-only licensees). CRED_LIC_AUTHORISATIONS is not a source-stated trade activity, so no reviewed crosswalk supports an ANZSIC code and none is claimed. (2) Rule 6 (related_licence_number) REMOVED and CRED_LIC_AFSL_NUM moved to unmapped: it echoed the record's own licence number as a separate AFS licence. (3) Rule 3 (authorisation) now uses a generic heading filter (a clause must not end in ':') instead of a fixed lead-in list, which removes the heading residue the critic saw on held-out records 550376/381417. (4) Rule 5 (address_point) kept with a low confidence of 0.3 and an explicit centroid-precision caveat: the values are locality-level geocodes, not rooftop coordinates; the 3 out-of-Australia coordinate pairs remain visible as reported GEO_OUTSIDE_AU errors rather than being suppressed. Licence number, status, EDR scheme and status-event rules are unchanged and were judged sound. Base rules untouched; CRED_LIC_END_DT stays with the approved (engine-ignored) observation.valid_to and is left alone because the source dates nothing from it (100% blank) so it cannot date a licence status.\nLocal maintainer correction (no model API call): Preserve complete authorisation text and licence dates; omit coordinates whose location precision is unverified.",
+        "profile_context": null,
+        "extensions": "ext-v1",
+        "entities": {
+          "licence": {
+            "kind": "licence",
+            "key_paths": [
+              "CRED_LIC_NUM"
+            ],
+            "rationale": "CRED_LIC_NUM is ASIC's credit licence number: distinct on every row (464/464) and stable across snapshots. The dataset grain is one licence per row, so the licence is a role separate from the licensee business."
+          }
+        },
+        "relationships": [
+          {
+            "type": "HOLDS_LICENCE",
+            "from_role": "subject",
+            "to_role": "licence",
+            "rationale": "CRED_LIC_NAME is the licensee that holds credit licence CRED_LIC_NUM; the licence is not the business."
+          }
+        ]
+      }
+    },
+    {
+      "source_id": "ato_tax_transparency",
+      "expected_config_digest": "01b1bfad71c89e00a75160c6c95fb0f1bf44c6576feaf85e845aed5df40edbe6",
+      "reason": "Remove address-country inference from ABN and tax jurisdiction; keep financial facts unchanged.",
+      "config": {
+        "source_id": "ato_tax_transparency",
+        "record_grain": "legal_entity",
+        "grain_rationale": "One row per legal entity (identified by its ABN) per income year, reporting aggregate tax information (total income, taxable income, tax payable) on the ATO Corporate Tax Transparency register. The record is about the business itself, so entity attributes are mapped directly; the financial figures have no canonical ontology target and are recorded as unmapped.",
+        "reader": {
+          "format": "xlsx",
+          "archive_member": null,
+          "encoding": "utf-8-sig",
+          "delimiter": null,
+          "skip_rows": 0,
+          "sheet": "Income tax details",
+          "record_path": null
+        },
+        "record_id": {
+          "strategy": "content_hash",
+          "source_paths": [
+            "ABN",
+            "Income year"
+          ],
+          "rationale": "ABN is unique within the discovery partition (431 checksum-valid of 435 rows, no duplicates among distinct values) but several rows have a missing ABN and income year varies, so a content hash over ABN + Income year is traceable and stable across partitions."
+        },
+        "observed_at": {
+          "source_path": null,
+          "steps": [],
+          "fallback": "resource_last_modified"
+        },
+        "fields": [
+          {
+            "source_paths": [
+              "Name"
+            ],
+            "join_with": " ",
+            "when": null,
+            "target": "entity.legal_name",
+            "valid_from_path": null,
+            "valid_to_path": null,
+            "validity_date_formats": null,
+            "claim_scope": null,
+            "steps": [
+              {
+                "op": "trim",
+                "args": {}
+              },
+              {
+                "op": "collapse_whitespace",
+                "args": {}
+              },
+              {
+                "op": "null_if",
+                "args": {
+                  "values": [
+                    "",
+                    "n/a",
+                    "na",
+                    "-"
+                  ]
+                }
+              }
+            ],
+            "confidence": 0.82,
+            "rationale": "Column 'Name' holds registered-style entity names ('CHEVRON AUSTRALIA PTY LTD', 'MOBIL AUSTRALIA RESOURCES COMPANY PTY LIMITED'); the ATO transparency register publishes the legal/taxable-entity name, and company suffixes (PTY LTD / LIMITED) indicate legal rather than trading names. Note 'GOVE ALUMINIUM FINANCE LINITED' shows the source's own typos are preserved.",
+            "entity": null,
+            "qualifiers": null
+          },
+          {
+            "source_paths": [
+              "ABN"
+            ],
+            "join_with": " ",
+            "when": null,
+            "target": "entity.abn",
+            "valid_from_path": null,
+            "valid_to_path": null,
+            "validity_date_formats": null,
+            "claim_scope": null,
+            "steps": [
+              {
+                "op": "abn",
+                "args": {}
+              }
+            ],
+            "confidence": 0.97,
+            "rationale": "Column 'ABN' is 11 digits in all present rows with a 100% checksum-valid rate (431/431) in discovery; the abn transform validates the checksum.",
+            "entity": null,
+            "qualifiers": null
+          },
+          {
+            "source_paths": [
+              "Total income $"
+            ],
+            "join_with": "",
+            "when": null,
+            "target": "ext.financial.total_income",
+            "valid_from_path": null,
+            "valid_to_path": null,
+            "validity_date_formats": null,
+            "claim_scope": null,
+            "steps": [
+              {
+                "op": "parse_decimal",
+                "args": {}
+              }
+            ],
+            "confidence": 0.95,
+            "rationale": "Column 'Total income $' holds a plain AUD amount for the income year stated in the same row. ext.financial.total_income is defined as total income published for a stated reporting period, so it takes period and currency qualifiers. parse_decimal is required for the typed decimal amount; profile shows 435/435 present, all integer-shaped, 0 parse errors.",
+            "entity": null,
+            "qualifiers": {
+              "period": {
+                "source_path": "Income year",
+                "value": null,
+                "steps": []
+              },
+              "currency": {
+                "source_path": null,
+                "value": "AUD",
+                "steps": []
+              }
+            }
+          },
+          {
+            "source_paths": [
+              "Taxable income $"
+            ],
+            "join_with": "",
+            "when": null,
+            "target": "ext.financial.taxable_income",
+            "valid_from_path": null,
+            "valid_to_path": null,
+            "validity_date_formats": null,
+            "claim_scope": null,
+            "steps": [
+              {
+                "op": "parse_decimal",
+                "args": {}
+              }
+            ],
+            "confidence": 0.95,
+            "rationale": "Column 'Taxable income $' is an AUD amount for the row's income year. Present in 76.1% of rows; per the concept note, missing is not zero, so blanks emit nothing rather than 0. 0 parse errors on present values.",
+            "entity": null,
+            "qualifiers": {
+              "period": {
+                "source_path": "Income year",
+                "value": null,
+                "steps": []
+              },
+              "currency": {
+                "source_path": null,
+                "value": "AUD",
+                "steps": []
+              }
+            }
+          },
+          {
+            "source_paths": [
+              "Tax payable $"
+            ],
+            "join_with": "",
+            "when": null,
+            "target": "ext.financial.tax_payable",
+            "valid_from_path": null,
+            "valid_to_path": null,
+            "validity_date_formats": null,
+            "claim_scope": null,
+            "steps": [
+              {
+                "op": "parse_decimal",
+                "args": {}
+              }
+            ],
+            "confidence": 0.95,
+            "rationale": "Column 'Tax payable $' is an AUD amount for the row's income year. Present in 70.8% of rows; blank means not published, not a zero liability. 0 parse errors on present values.",
+            "entity": null,
+            "qualifiers": {
+              "period": {
+                "source_path": "Income year",
+                "value": null,
+                "steps": []
+              },
+              "currency": {
+                "source_path": null,
+                "value": "AUD",
+                "steps": []
+              }
+            }
+          }
+        ],
+        "constants": [],
+        "unmapped": [],
+        "notes": "Workbook has an 'Information' sheet (title/guidance text, sheet name only), the main 'Income tax details' sheet (435 data rows; header in row 1) and a separate 'PRRT details' sheet (petroleum resource rent tax payers, 8 rows in discovery). Only the 'Income tax details' sheet is mapped here. 'PRRT details' has its own schema (Name, ABN, PRRT Payable $) and would need a second config. Income year mixes 2024-25 with a few prior-year comparatives. Column names contain a trailing ' $'.\n\n[ext-v1] The sheet is narrow: only six columns, and the approved mapping already covered Name -> entity.legal_name and ABN -> entity.abn, so this extension recovers the three financial measures that the record grain rationale had left unmapped. No new record roles are needed: one row is one legal entity's aggregate tax position for one income year, and the financials attach to the subject business. Income year is deliberately left unmapped as an attribute (see unmapped reason) but is load-bearing as the period qualifier - the file contains 2023-24 and 2022-23 comparative rows alongside 2024-25, so without the qualifier the same ABN could appear to hold two conflicting income figures. No approved base rules were edited; both approved rules are non-editable and passed the gate. No crosswalk tables were used: the source states no status code, legal form, industry activity or revenue band, and deriving a revenue band from the dollar amounts would be inference rather than source-stated fact. The approved constant address.country = AU is left untouched - the file carries no address, but the entity is AU-registered by ABN, and removing an approved constant is outside this draft's remit.\nLocal maintainer correction (no model API call): Remove address-country inference from ABN and tax jurisdiction; keep financial facts unchanged.",
+        "profile_context": null,
+        "extensions": "ext-v1",
+        "entities": null,
+        "relationships": null
+      }
+    },
+    {
+      "source_id": "dewr_employment_providers",
+      "expected_config_digest": "d3f0f2bfdf667a0b4008c82363141c1c2617aad587e58949fad2e74f5b0cb127",
+      "reason": "Place country on the establishment address, consistent with all other site fields.",
+      "config": {
+        "source_id": "dewr_employment_providers",
+        "record_grain": "establishment",
+        "grain_rationale": "One row is a provider service SITE (a physical office of an employment-services provider) delivering a given CONTRACT (e.g. DESB, DESA, EPS5, RJCP) at a given location. The business participant is the provider named in SITE_NAME; its location, state, postcode and web attributes are mapped. DIS_SITE_CODE identifies the site/contract row, not a business registration, and is not mapped as a business identifier.",
+        "reader": {
+          "format": "delimited",
+          "archive_member": null,
+          "encoding": "utf-8-sig",
+          "delimiter": ",",
+          "skip_rows": 0,
+          "sheet": null,
+          "record_path": null
+        },
+        "record_id": {
+          "strategy": "content_hash",
+          "source_paths": [],
+          "rationale": "DIS_SITE_CODE has 489 distinct values over 505 discovery rows and no other column is unique per row, so a content hash is the only traceable row key."
+        },
+        "observed_at": {
+          "source_path": null,
+          "steps": [],
+          "fallback": "resource_last_modified"
+        },
+        "fields": [
+          {
+            "source_paths": [
+              "SITE_NAME"
+            ],
+            "join_with": " ",
+            "when": null,
+            "target": "entity.trading_name",
+            "valid_from_path": null,
+            "valid_to_path": null,
+            "validity_date_formats": null,
+            "claim_scope": null,
+            "steps": [
+              {
+                "op": "trim",
+                "args": {}
+              },
+              {
+                "op": "collapse_whitespace",
+                "args": {}
+              },
+              {
+                "op": "null_if",
+                "args": {
+                  "values": [
+                    "TBA",
+                    "TBC",
+                    "N/A",
+                    "NA",
+                    "NULL",
+                    "-",
+                    "--",
+                    ".",
+                    "UNKNOWN"
+                  ]
+                }
+              }
+            ],
+            "confidence": 0.72,
+            "rationale": "SITE_NAME holds the provider's operating/brand name as delivered at this site (196 distinct values, e.g. 'MAX Employment', 'Advanced Personnel Management (APM)', 'Job Centre Australia'), not a registered legal name; trading_name is the safe target. Placeholders treated as missing.",
+            "entity": null,
+            "qualifiers": null
+          },
+          {
+            "source_paths": [
+              "SITE_URL"
+            ],
+            "join_with": " ",
+            "when": null,
+            "target": "entity.website",
+            "valid_from_path": null,
+            "valid_to_path": null,
+            "validity_date_formats": null,
+            "claim_scope": null,
+            "steps": [
+              {
+                "op": "trim",
+                "args": {}
+              },
+              {
+                "op": "null_if",
+                "args": {
+                  "values": [
+                    "TBA",
+                    "TBC",
+                    "N/A",
+                    "NA",
+                    "NULL",
+                    "-",
+                    "--",
+                    ".",
+                    "UNKNOWN"
+                  ]
+                }
+              },
+              {
+                "op": "website",
+                "args": {}
+              }
+            ],
+            "confidence": 0.8,
+            "rationale": "Provider website; 57.6% present, values are domains/URLs (www.*, http://*).",
+            "entity": null,
+            "qualifiers": null
+          },
+          {
+            "source_paths": [
+              "SITE_ADDRESS_LN"
+            ],
+            "join_with": " ",
+            "when": null,
+            "target": "address.full",
+            "valid_from_path": null,
+            "valid_to_path": null,
+            "validity_date_formats": null,
+            "claim_scope": null,
+            "steps": [
+              {
+                "op": "trim",
+                "args": {}
+              },
+              {
+                "op": "collapse_whitespace",
+                "args": {}
+              },
+              {
+                "op": "null_if",
+                "args": {
+                  "values": [
+                    "TBA",
+                    "TBC",
+                    "N/A",
+                    "NA",
+                    "NULL",
+                    "-",
+                    "--",
+                    ".",
+                    "UNKNOWN",
+                    ""
+                  ]
+                }
+              }
+            ],
+            "confidence": 0.85,
+            "rationale": "Street address line of the site (e.g. '2nd Floor 22 East Row'); locality is a separate column. Placeholder strings (TBA/TBC/N/A/-/.) are treated as missing per reviewer feedback.",
+            "entity": "establishment",
+            "qualifiers": null
+          },
+          {
+            "source_paths": [
+              "SITE_LOCALITY_NAME"
+            ],
+            "join_with": " ",
+            "when": null,
+            "target": "address.locality",
+            "valid_from_path": null,
+            "valid_to_path": null,
+            "validity_date_formats": null,
+            "claim_scope": null,
+            "steps": [
+              {
+                "op": "trim",
+                "args": {}
+              },
+              {
+                "op": "collapse_whitespace",
+                "args": {}
+              },
+              {
+                "op": "null_if",
+                "args": {
+                  "values": [
+                    "TBA",
+                    "TBC",
+                    "N/A",
+                    "NA",
+                    "NULL",
+                    "-",
+                    "--",
+                    ".",
+                    "UNKNOWN",
+                    ""
+                  ]
+                }
+              }
+            ],
+            "confidence": 0.9,
+            "rationale": "Suburb/locality name (412 distinct AU localities, e.g. WOY WOY, CHATSWOOD). Placeholders treated as missing.",
+            "entity": "establishment",
+            "qualifiers": null
+          },
+          {
+            "source_paths": [
+              "SITE_STATE_CD"
+            ],
+            "join_with": " ",
+            "when": null,
+            "target": "address.state",
+            "valid_from_path": null,
+            "valid_to_path": null,
+            "validity_date_formats": null,
+            "claim_scope": null,
+            "steps": [
+              {
+                "op": "trim",
+                "args": {}
+              },
+              {
+                "op": "null_if",
+                "args": {
+                  "values": [
+                    "TBA",
+                    "TBC",
+                    "N/A",
+                    "NA",
+                    "NULL",
+                    "-",
+                    "--",
+                    ".",
+                    "UNKNOWN",
+                    ""
+                  ]
+                }
+              },
+              {
+                "op": "state",
+                "args": {}
+              }
+            ],
+            "confidence": 0.95,
+            "rationale": "Explicit 8-value AU state code column (NSW/VIC/QLD/SA/WA/TAS/ACT/NT), all 2-letter abbreviations, 100% present.",
+            "entity": "establishment",
+            "qualifiers": null
+          },
+          {
+            "source_paths": [
+              "SITE_POSTCODE"
+            ],
+            "join_with": " ",
+            "when": null,
+            "target": "address.postcode",
+            "valid_from_path": null,
+            "valid_to_path": null,
+            "validity_date_formats": null,
+            "claim_scope": null,
+            "steps": [
+              {
+                "op": "trim",
+                "args": {}
+              },
+              {
+                "op": "null_if",
+                "args": {
+                  "values": [
+                    "TBA",
+                    "TBC",
+                    "N/A",
+                    "NA",
+                    "NULL",
+                    "-",
+                    "--",
+                    ".",
+                    "UNKNOWN",
+                    ""
+                  ]
+                }
+              },
+              {
+                "op": "postcode",
+                "args": {}
+              }
+            ],
+            "confidence": 0.9,
+            "rationale": "4-digit AU postcodes plus 13 three-digit values (NT-style, e.g. 0822 stored as 822) which the postcode transform re-pads.",
+            "entity": "establishment",
+            "qualifiers": null
+          },
+          {
+            "source_paths": [
+              "DIS_SITE_CODE"
+            ],
+            "join_with": " ",
+            "when": null,
+            "target": "ext.establishment.source_key",
+            "valid_from_path": null,
+            "valid_to_path": null,
+            "validity_date_formats": null,
+            "claim_scope": null,
+            "steps": [
+              {
+                "op": "trim",
+                "args": {}
+              },
+              {
+                "op": "collapse_whitespace",
+                "args": {}
+              },
+              {
+                "op": "null_if",
+                "args": {
+                  "values": [
+                    "",
+                    "NULL"
+                  ]
+                }
+              }
+            ],
+            "confidence": 0.95,
+            "rationale": "Publisher-assigned site code; stable key for the establishment across snapshots.",
+            "entity": "establishment",
+            "qualifiers": null
+          },
+          {
+            "source_paths": [
+              "CONTRACT_NAME"
+            ],
+            "join_with": " ",
+            "when": null,
+            "target": "ext.establishment.program",
+            "valid_from_path": null,
+            "valid_to_path": null,
+            "validity_date_formats": null,
+            "claim_scope": null,
+            "steps": [
+              {
+                "op": "trim",
+                "args": {}
+              },
+              {
+                "op": "null_if",
+                "args": {
+                  "values": [
+                    "",
+                    "NULL"
+                  ]
+                }
+              }
+            ],
+            "confidence": 0.95,
+            "rationale": "DEWR employment-services contract/programme code delivered at this site (DESB, EPS5, DESA, TTW5, RJCP, NEI5, SPP5, HLS5). A site attribute, not a business identifier.",
+            "entity": "establishment",
+            "qualifiers": null
+          },
+          {
+            "source_paths": [
+              "ESA_CD_1"
+            ],
+            "join_with": " ",
+            "when": null,
+            "target": "ext.establishment.region",
+            "valid_from_path": null,
+            "valid_to_path": null,
+            "validity_date_formats": null,
+            "claim_scope": null,
+            "steps": [
+              {
+                "op": "trim",
+                "args": {}
+              },
+              {
+                "op": "null_if",
+                "args": {
+                  "values": [
+                    "",
+                    "NULL"
+                  ]
+                }
+              }
+            ],
+            "confidence": 0.9,
+            "rationale": "ESA_CD_1 is the Employment Services Area code of the contract (142 distinct, e.g. 5SYN, 5ACT); the ontology names 'employment services area' as an example of a publisher region for an establishment.",
+            "entity": "establishment",
+            "qualifiers": null
+          },
+          {
+            "source_paths": [
+              "LATITUDE",
+              "LONGITUDE"
+            ],
+            "join_with": ",",
+            "when": null,
+            "target": "ext.establishment.geo",
+            "valid_from_path": null,
+            "valid_to_path": null,
+            "validity_date_formats": null,
+            "claim_scope": null,
+            "steps": [
+              {
+                "op": "geo_point",
+                "args": {}
+              }
+            ],
+            "confidence": 0.95,
+            "rationale": "Published decimal latitude/longitude of the site; the literal NULL (7 rows) is handled as missing by geo_point.",
+            "entity": "establishment",
+            "qualifiers": null
+          },
+          {
+            "source_paths": [
+              "SITE_EMAIL_ADDRESS"
+            ],
+            "join_with": " ",
+            "when": null,
+            "target": "ext.contact.email_domain",
+            "valid_from_path": null,
+            "valid_to_path": null,
+            "validity_date_formats": null,
+            "claim_scope": null,
+            "steps": [
+              {
+                "op": "trim",
+                "args": {}
+              },
+              {
+                "op": "null_if",
+                "args": {
+                  "values": [
+                    "",
+                    "NULL"
+                  ]
+                }
+              },
+              {
+                "op": "email_domain",
+                "args": {}
+              }
+            ],
+            "confidence": 0.85,
+            "rationale": "Domain of the published site contact email. Only the domain is kept, so the personal local part is never stored.",
+            "entity": "establishment",
+            "qualifiers": null
+          },
+          {
+            "source_paths": [
+              "SITE_EMAIL_ADDRESS"
+            ],
+            "join_with": " ",
+            "when": null,
+            "target": "ext.contact.role_email",
+            "valid_from_path": null,
+            "valid_to_path": null,
+            "validity_date_formats": null,
+            "claim_scope": null,
+            "steps": [
+              {
+                "op": "trim",
+                "args": {}
+              },
+              {
+                "op": "null_if",
+                "args": {
+                  "values": [
+                    "",
+                    "NULL"
+                  ]
+                }
+              },
+              {
+                "op": "role_email",
+                "args": {}
+              }
+            ],
+            "confidence": 0.8,
+            "rationale": "Role mailboxes published for the site (enquiries@, info@); the transform drops personal mailboxes. Held-out data confirms role mailboxes do occur (100 emitted of 814 present).",
+            "entity": "establishment",
+            "qualifiers": null
+          },
+          {
+            "source_paths": [
+              "SITE_CONTACT_PHONE",
+              "SITE_STATE_CD"
+            ],
+            "join_with": "|",
+            "when": null,
+            "target": "ext.contact.phone",
+            "valid_from_path": null,
+            "valid_to_path": null,
+            "validity_date_formats": null,
+            "claim_scope": null,
+            "steps": [
+              {
+                "op": "trim",
+                "args": {}
+              },
+              {
+                "op": "null_if",
+                "args": {
+                  "values": [
+                    "",
+                    "NULL"
+                  ]
+                }
+              },
+              {
+                "op": "phone_au",
+                "args": {
+                  "area_from_state": true,
+                  "on_incomplete": "drop"
+                }
+              }
+            ],
+            "confidence": 0.75,
+            "rationale": "Site contact number published for the office (96.2% present); the state completes 8-digit local numbers and numbers shorter than 8 digits are dropped.",
+            "entity": "establishment",
+            "qualifiers": {
+              "role": {
+                "source_path": null,
+                "value": "site_contact",
+                "steps": []
+              }
+            }
+          },
+          {
+            "source_paths": [
+              "PHONE_NUMBER",
+              "SITE_STATE_CD"
+            ],
+            "join_with": "|",
+            "when": null,
+            "target": "ext.contact.phone",
+            "valid_from_path": null,
+            "valid_to_path": null,
+            "validity_date_formats": null,
+            "claim_scope": null,
+            "steps": [
+              {
+                "op": "trim",
+                "args": {}
+              },
+              {
+                "op": "null_if",
+                "args": {
+                  "values": [
+                    "",
+                    "NULL"
+                  ]
+                }
+              },
+              {
+                "op": "phone_au",
+                "args": {
+                  "area_from_state": true,
+                  "on_incomplete": "drop"
+                }
+              }
+            ],
+            "confidence": 0.75,
+            "rationale": "Provider office number for the site (91.9% present); the state completes local numbers and truncated 4-7 digit values are dropped.",
+            "entity": "establishment",
+            "qualifiers": {
+              "role": {
+                "source_path": null,
+                "value": "office",
+                "steps": []
+              }
+            }
+          },
+          {
+            "source_paths": [
+              "AGENT_FREECALL_NUM",
+              "SITE_STATE_CD"
+            ],
+            "join_with": "|",
+            "when": null,
+            "target": "ext.contact.phone",
+            "valid_from_path": null,
+            "valid_to_path": null,
+            "validity_date_formats": null,
+            "claim_scope": null,
+            "steps": [
+              {
+                "op": "trim",
+                "args": {}
+              },
+              {
+                "op": "null_if",
+                "args": {
+                  "values": [
+                    "",
+                    "NULL"
+                  ]
+                }
+              },
+              {
+                "op": "phone_au",
+                "args": {
+                  "area_from_state": true,
+                  "on_incomplete": "drop"
+                }
+              }
+            ],
+            "confidence": 0.7,
+            "rationale": "Provider freecall line (13/1300/1800); present in 27.3% of rows and the values are complete national numbers.",
+            "entity": "establishment",
+            "qualifiers": {
+              "role": {
+                "source_path": null,
+                "value": "freecall",
+                "steps": []
+              }
+            }
+          },
+          {
+            "source_paths": [
+              "SITE_URL"
+            ],
+            "join_with": " ",
+            "when": null,
+            "target": "ext.contact.website_domain",
+            "valid_from_path": null,
+            "valid_to_path": null,
+            "validity_date_formats": null,
+            "claim_scope": null,
+            "steps": [
+              {
+                "op": "trim",
+                "args": {}
+              },
+              {
+                "op": "null_if",
+                "args": {
+                  "values": [
+                    "",
+                    "NULL"
+                  ]
+                }
+              },
+              {
+                "op": "url_domain",
+                "args": {}
+              }
+            ],
+            "confidence": 0.9,
+            "rationale": "Registrable host of the published site website, without scheme or www.",
+            "entity": "establishment",
+            "qualifiers": null
+          }
+        ],
+        "constants": [
+          {
+            "target": "address.country",
+            "value": "AU",
+            "confidence": 0.85,
+            "rationale": "Metadata default for the evidenced Australian site/premises only, never the subject company or correspondence address.",
+            "entity": "establishment",
+            "claim_scope": "establishment_address"
+          }
+        ],
+        "unmapped": [
+          {
+            "source_path": "LOCATION_NAME",
+            "reason": "Duplicates SITE_LOCALITY_NAME exactly (identical 412 distinct values, identical top values and examples); it is the suburb/town of the site, not a premises name, so it is neither a second address observation nor ext.establishment.name."
+          },
+          {
+            "source_path": "ESA_CD_2",
+            "reason": "Empty in every record (0% present)."
+          },
+          {
+            "source_path": "ESA_CD_3",
+            "reason": "Empty in every record (0% present)."
+          },
+          {
+            "source_path": "column_18",
+            "reason": "Trailing empty column created by a trailing comma in the header; 0% present."
+          }
+        ],
+        "notes": "Row = provider site x contract. No ABN/ACN/NZBN column exists, so no business identifier is emitted. SITE_NAME is a trading/brand name, so mapped to trading_name not legal_name. Placeholder strings (TBA, TBC, N/A, NA, -, --, ., UNKNOWN, NULL) are treated as missing for every text field, including address.full, per reviewer feedback. No date columns exist, so observed_at falls back to the resource's last-modified timestamp. All text is untrusted data; no instructions were found in it.\n\n[ext-v1] Revision after critic review. The critic's single 'wrong' verdict (rule 4, ext.entity.industry_code from CONTRACT_NAME) is fixed by DROPPING that rule: CONTRACT_NAME is a government programme code, not evidence of the provider's ANZSIC activity, the anzsic_dewr_program crosswalk is an unreviewed draft with no publisher evidence and inconsistent output, and the same column is already correctly mapped as ext.establishment.program. The 'doubtful' role_email rule is kept because held-out data confirms role mailboxes genuinely occur (100 emitted of 814 present). All other rules are unchanged and were judged ok. The four approved address.* rules remain moved to the establishment role via base_rule_edits. Source-data errors (GEO_OUTSIDE_AU, EMAIL_INVALID, DOMAIN_INVALID, WEBSITE_INVALID) are correctly rejected by the transforms and are not mapping errors.\nLocal maintainer correction (no model API call): Place country on the establishment address, consistent with all other site fields.",
+        "profile_context": null,
+        "extensions": "ext-v1",
+        "entities": {
+          "establishment": {
+            "kind": "establishment",
+            "key_paths": [
+              "DIS_SITE_CODE"
+            ],
+            "rationale": "DIS_SITE_CODE is the publisher's site code: 489 distinct codes over 505 rows because a site delivering two contracts (e.g. A300 for both DESA and DESB at Wagga Wagga) appears twice with the same code and the same address. It identifies the office across snapshots and is not a business registration identifier."
+          }
+        },
+        "relationships": [
+          {
+            "type": "OPERATES_ESTABLISHMENT",
+            "from_role": "subject",
+            "to_role": "establishment",
+            "rationale": "Each row is one provider service site (provider named in SITE_NAME at SITE_ADDRESS_LN) that the provider operates to deliver a DEWR contract."
+          }
+        ]
+      }
+    },
+    {
+      "source_id": "qbcc_licensees",
+      "expected_config_digest": "9af5930b0631a87c0f70674fbfc39c71285a74107d6db01b74ef3be8036200c4",
+      "reason": "Retain published licence trade categories; withhold unreviewed industry inferences.",
+      "config": {
+        "source_id": "qbcc_licensees",
+        "record_grain": "licence_or_permit",
+        "grain_rationale": "Each record is one QBCC licence held by a licensee (Licence Number + Licence Grade + Licence Class Type identify the licence; _id is the CKAN row id). The business participant is the licensee named in 'Licensee Name'. Licence-level attributes (grade, class, financial category) describe the licence, not the entity. The register is a flat export that never distinguishes a registered legal name from a trading name, so 'Licensee Name' is mapped only to entity.legal_name: for 'Company' rows it is the registered company name (corroborated by a checksum-valid ACN and PTY LTD suffixes), for 'Individual' rows it is the natural person who is the licensee. No trading name is claimed because the source provides none.",
+        "reader": {
+          "format": "json",
+          "archive_member": null,
+          "encoding": "utf-8-sig",
+          "delimiter": null,
+          "skip_rows": 0,
+          "sheet": null,
+          "record_path": "result.records"
+        },
+        "record_id": {
+          "strategy": "columns",
+          "source_paths": [
+            "_id"
+          ],
+          "rationale": "CKAN datastore row id; 508/508 distinct across the discovery partition and unique in held-out validation, so it identifies the licence record. Licence Number is not unique (506 distinct vs 508 rows), so it cannot be used alone."
+        },
+        "observed_at": {
+          "source_path": null,
+          "steps": [],
+          "fallback": "resource_last_modified"
+        },
+        "fields": [
+          {
+            "source_paths": [
+              "Licensee Name"
+            ],
+            "join_with": " ",
+            "when": null,
+            "target": "entity.legal_name",
+            "valid_from_path": null,
+            "valid_to_path": null,
+            "validity_date_formats": null,
+            "claim_scope": null,
+            "steps": [
+              {
+                "op": "trim",
+                "args": {}
+              },
+              {
+                "op": "collapse_whitespace",
+                "args": {}
+              },
+              {
+                "op": "null_if",
+                "args": {
+                  "values": [
+                    "",
+                    "N/A",
+                    "NA"
+                  ]
+                }
+              }
+            ],
+            "confidence": 0.7,
+            "rationale": "Single licensee-name column in a government licence register, mapped in full with no suffix heuristic and no suppression. Previous revision emitted only company-suffixed names here (7% coverage) and pushed personal names to trading_name; the reviewer rejected that split. An individual licensee is the natural person holding the licence, so its name belongs in legal_name rather than being dropped or relabelled as a trading name.",
+            "entity": null,
+            "qualifiers": null,
+            "one_hot": null
+          },
+          {
+            "source_paths": [
+              "ABN"
+            ],
+            "join_with": " ",
+            "when": null,
+            "target": "entity.abn",
+            "valid_from_path": null,
+            "valid_to_path": null,
+            "validity_date_formats": null,
+            "claim_scope": null,
+            "steps": [
+              {
+                "op": "trim",
+                "args": {}
+              },
+              {
+                "op": "null_if",
+                "args": {
+                  "values": [
+                    "",
+                    "N/A",
+                    "NA"
+                  ]
+                }
+              },
+              {
+                "op": "abn",
+                "args": {}
+              }
+            ],
+            "confidence": 0.9,
+            "rationale": "Direct source column in '99 999 999 999' shape; ABN checksum valid on 99.6% of discovery rows and 99.0% of held-out rows (1 and 6 rejections respectively). The abn transform strips separators and refuses to emit a checksum-invalid value, so bad source data surfaces as a counted error instead of a fabricated ABN. The residual ~1% rejections are reported honestly, not hidden.",
+            "entity": null,
+            "qualifiers": null,
+            "one_hot": null
+          },
+          {
+            "source_paths": [
+              "ACN"
+            ],
+            "join_with": " ",
+            "when": null,
+            "target": "entity.acn",
+            "valid_from_path": null,
+            "valid_to_path": null,
+            "validity_date_formats": null,
+            "claim_scope": null,
+            "steps": [
+              {
+                "op": "trim",
+                "args": {}
+              },
+              {
+                "op": "null_if",
+                "args": {
+                  "values": [
+                    "",
+                    "N/A",
+                    "NA"
+                  ]
+                }
+              },
+              {
+                "op": "acn",
+                "args": {}
+              }
+            ],
+            "confidence": 0.92,
+            "rationale": "All present values are '999 999 999'; 100% ACN checksum-valid in both discovery (34/34) and held-out (76/76) with zero errors. ACN is never derived from the ABN.",
+            "entity": null,
+            "qualifiers": null,
+            "one_hot": null
+          },
+          {
+            "source_paths": [
+              "Licence Type CODE"
+            ],
+            "join_with": " ",
+            "when": null,
+            "target": "entity.entity_type",
+            "valid_from_path": null,
+            "valid_to_path": null,
+            "validity_date_formats": null,
+            "claim_scope": null,
+            "steps": [
+              {
+                "op": "upper",
+                "args": {}
+              },
+              {
+                "op": "map_enum",
+                "args": {
+                  "mapping": {
+                    "C": "company"
+                  },
+                  "default": "unknown"
+                }
+              }
+            ],
+            "confidence": 0.75,
+            "rationale": "The source states the licensee type directly and 'C' -> company is well supported (ACN present, PTY LTD names). 'I' is deliberately NOT mapped to sole_trader after the reviewer rejected that inference (an individual licensee may be a partner or trust principal); 'I' rows therefore resolve to the ontology default 'unknown' rather than a guess.",
+            "entity": null,
+            "qualifiers": null,
+            "one_hot": null
+          },
+          {
+            "source_paths": [
+              "Licensee Business Address"
+            ],
+            "join_with": " ",
+            "when": null,
+            "target": "address.full",
+            "valid_from_path": null,
+            "valid_to_path": null,
+            "validity_date_formats": null,
+            "claim_scope": null,
+            "steps": [
+              {
+                "op": "trim",
+                "args": {}
+              },
+              {
+                "op": "collapse_whitespace",
+                "args": {}
+              }
+            ],
+            "confidence": 0.75,
+            "rationale": "Free-text single-line business address ending in state + postcode, e.g. '15 radiata pl Peregian Springs QLD 4573'. Passed through as stated by the source with whitespace normalisation only.",
+            "entity": null,
+            "qualifiers": null,
+            "one_hot": null
+          },
+          {
+            "source_paths": [
+              "Licensee Business Address"
+            ],
+            "join_with": " ",
+            "when": null,
+            "target": "address.state",
+            "valid_from_path": null,
+            "valid_to_path": null,
+            "validity_date_formats": null,
+            "claim_scope": null,
+            "steps": [
+              {
+                "op": "trim",
+                "args": {}
+              },
+              {
+                "op": "regex_extract",
+                "args": {
+                  "pattern": "(?i)\\b(QLD|NSW|VIC|WA|SA|TAS|ACT|NT)\\b\\s+\\d{3,4}\\s*$",
+                  "group": 1
+                }
+              },
+              {
+                "op": "state",
+                "args": {}
+              }
+            ],
+            "confidence": 0.85,
+            "rationale": "All addresses follow '<street> <suburb> <STATE> <postcode>'; the state token immediately before the trailing postcode is extracted and normalised by the state op (unknown -> OTHER). Reviewer verdict 'ok'; 1080/1092 held-out rows emitted with zero errors.",
+            "entity": null,
+            "qualifiers": null,
+            "one_hot": null
+          },
+          {
+            "source_paths": [
+              "Licensee Business Address"
+            ],
+            "join_with": " ",
+            "when": null,
+            "target": "address.postcode",
+            "valid_from_path": null,
+            "valid_to_path": null,
+            "validity_date_formats": null,
+            "claim_scope": null,
+            "steps": [
+              {
+                "op": "trim",
+                "args": {}
+              },
+              {
+                "op": "regex_extract",
+                "args": {
+                  "pattern": "(\\d{3,4})\\s*$",
+                  "group": 1
+                }
+              },
+              {
+                "op": "postcode",
+                "args": {}
+              }
+            ],
+            "confidence": 0.85,
+            "rationale": "Trailing numeric token of the address, validated by the postcode op (AU 4-digit, NT re-pad). Reviewer verdict 'ok'; 100% coverage with zero errors in both partitions.",
+            "entity": null,
+            "qualifiers": null,
+            "one_hot": null
+          },
+          {
+            "source_paths": [
+              "Licence Type CODE"
+            ],
+            "join_with": " ",
+            "when": null,
+            "target": "ext.entity.holder_kind",
+            "valid_from_path": null,
+            "valid_to_path": null,
+            "validity_date_formats": null,
+            "claim_scope": null,
+            "steps": [
+              {
+                "op": "trim",
+                "args": {}
+              },
+              {
+                "op": "upper",
+                "args": {}
+              },
+              {
+                "op": "map_enum",
+                "args": {
+                  "mapping": {
+                    "I": "individual",
+                    "C": "organisation"
+                  },
+                  "default": "unknown"
+                }
+              }
+            ],
+            "confidence": 0.9,
+            "rationale": "Reviewer P1 #1: 'Licence Type CODE' states whether the licensee is an individual (I, 474/508) or a company (C, 34/508). Recorded as matching evidence; it never implies sole_trader, and the approved entity_type rule still maps I to 'unknown'. Corroborated by Licence Type DESC (100% of I rows say 'Individual', 100% of C rows say 'Company').",
+            "entity": null,
+            "qualifiers": null,
+            "one_hot": null
+          },
+          {
+            "source_paths": [
+              "Licence Number"
+            ],
+            "join_with": " ",
+            "when": null,
+            "target": "ext.licence.number",
+            "valid_from_path": null,
+            "valid_to_path": null,
+            "validity_date_formats": null,
+            "claim_scope": null,
+            "steps": [
+              {
+                "op": "trim",
+                "args": {}
+              },
+              {
+                "op": "null_if",
+                "args": {
+                  "values": [
+                    "",
+                    "-"
+                  ]
+                }
+              }
+            ],
+            "confidence": 0.95,
+            "rationale": "Publisher-assigned licence number, 100% present, identifies the licence across snapshots.",
+            "entity": "licence",
+            "qualifiers": null,
+            "one_hot": null
+          },
+          {
+            "source_paths": [
+              "Licence Grade"
+            ],
+            "join_with": " ",
+            "when": null,
+            "target": "ext.licence.grade",
+            "valid_from_path": null,
+            "valid_to_path": null,
+            "validity_date_formats": null,
+            "claim_scope": null,
+            "steps": [
+              {
+                "op": "trim",
+                "args": {}
+              },
+              {
+                "op": "collapse_whitespace",
+                "args": {}
+              }
+            ],
+            "confidence": 0.9,
+            "rationale": "QBCC licence grade, six source-stated licence kinds: Trade Contractor Licence (462), Site Supervisor (23), Fire Occupational (9), Nominee Supervisor (7), Building Designer Licence (4), Mechanical Services Occupational (3).",
+            "entity": "licence",
+            "qualifiers": null,
+            "one_hot": null
+          },
+          {
+            "source_paths": [
+              "Licence Class Type"
+            ],
+            "join_with": " ",
+            "when": null,
+            "target": "ext.licence.category",
+            "valid_from_path": null,
+            "valid_to_path": null,
+            "validity_date_formats": null,
+            "claim_scope": null,
+            "steps": [
+              {
+                "op": "trim",
+                "args": {}
+              },
+              {
+                "op": "collapse_whitespace",
+                "args": {}
+              }
+            ],
+            "confidence": 0.9,
+            "rationale": "Reviewer P1 #2 + critic fix: Licence Class Type is the publisher's licensed trade/class wording (Carpentry, Plumbing and Drainage, Joinery, ...; 57 distinct, 100% present, one value per row). Emitted whole as ONE observation on the licence role. The comma in names such as 'Fire Detection, Alarm and Warning Systems - Occupational' and 'Glass, Glazing and Aluminium' is part of a single QBCC class, not a delimiter; splitting on ', ' fabricated classes on held-out record 70329. Because the column is single-valued in fact, it is carried on the singular licence target ext.licence.category rather than the multi-valued ext.licence.class: the UNSPLIT_LIST_VALUES static check on the multi target can only be cleared by that same ', ' split, so this is the only way to keep the publisher's wording, the licence role and an error-free config at once.",
+            "entity": "licence",
+            "qualifiers": null,
+            "one_hot": null
+          }
+        ],
+        "constants": [
+          {
+            "target": "address.country",
+            "value": "AU",
+            "confidence": 0.8,
+            "rationale": "Queensland Building and Construction Commission register; every address carries a QLD state code and an AU 4-digit postcode. Inferred from the publisher and address format rather than a source column, so confidence is moderate and flagged for review."
+          }
+        ],
+        "unmapped": [
+          {
+            "source_path": "_id",
+            "reason": "CKAN datastore row id for the licence record, not a business identifier; used only as record_id."
+          },
+          {
+            "source_path": "Licence Type DESC",
+            "reason": "Human-readable duplicate of Licence Type CODE ('Individual'/'Company'); CODE feeds entity.entity_type (approved rule 3) and ext.entity.holder_kind. Verified rather than assumed: 100% of I rows are described 'Individual' and 100% of C rows 'Company', so no row contradicts the code-derived holder_kind."
+          },
+          {
+            "source_path": "Financial Category DESC",
+            "reason": "Human-readable wording of the same licence financial-requirement category ('Self Certification - Trade'); unmapped for the same reason as Financial Category CODE."
+          },
+          {
+            "source_path": "Financial Category CODE",
+            "reason": "QBCC financial category (SCT1 = 'Self Certification - Trade', 100% of this partition) is the licensee's financial-requirement / maximum-contract-value self-certification tier for the LICENCE, not a revenue or turnover band of the business. The held-out critic rated the previous ext.financial.revenue_band mapping wrong for exactly this reason, and the qbcc_mfr table is unverified with scheme null. No ontology target honestly holds it, so it is unmapped rather than placed in a revenue-band field it does not mean."
+          }
+        ],
+        "notes": "REVISION after review. Advertised as CSV but the resource is a CKAN datastore_search API JSON envelope (starts '{\"help\":'), so format=json with record_path 'result.records'. No date column exists in the records: observation.observed_at falls back to resource last-modified metadata and no valid_from/valid_to can be supplied. Fixes for the reviewer's verdicts: (1) entity.trading_name REMOVED ('wrong' verdict - a personal licensee name is not a trading name, and for companies it duplicated the legal name); (2) the suffix-based legal_name heuristic REMOVED - 'Licensee Name' is now mapped in full to entity.legal_name (coverage 100%, no suppression, no guessing), which also resolves the 'doubtful' over-suppression of individual licensees; (3) entity.entity_type now maps only 'C'->company and lets 'I' fall to the ontology default 'unknown', removing the rejected 'I'->sole_trader inference; (4) address.locality REMOVED as brittle ('doubtful'), so address output is full/state/postcode only, all of which the reviewer rated 'ok'. Retained deliberately: entity.abn and entity.acn (direct, checksum-validated source columns rated 'ok'; ABN keeps a reported ~1% checksum rejection rather than hiding it) and address.country 'AU' at reduced confidence 0.8 and flagged. Open coverage gaps for a human: entity.trading_name (no trading name exists in this source), entity.status (no status column - register membership implies current licensing but that is inferred), entity.industry_code (no ANZSIC; Licence Class Type is the nearest but non-conforming signal), address.locality (unparseable from the free-text address), and no date fields at all.\n\n[ext-v1] Critic and holdout revision. (1) ext.licence.class FIXED: no split - each whole cell is one observation, so compound QBCC classes ('Fire Detection, Alarm and Warning Systems - Occupational', 'Glass, Glazing and Aluminium') are never fragmented. It is carried on the singular licence target ext.licence.category (the multi-valued ext.licence.class target cannot hold a single compound value without tripping UNSPLIT_LIST_VALUES, and every split that clears that gate is the ', ' split the held-out critic proved wrong). The reviewer's P1 #2 requirement - the licensed trade in the publisher's wording, on the licence role - is fully met; only the ext path differs, and the reason is documented. (2) ext.financial.revenue_band REMOVED (critic 'wrong'): Financial Category CODE/DESC are unmapped because QBCC's financial category is a licence financial-requirement/contract-value tier, not a revenue band; nothing is emitted where the source does not state revenue. The 14-code qbcc_mfr coverage note therefore no longer applies to any emitted field. (3) ext.entity.industry_code KEPT, critic 'doubtful': unsplit raw class -> ANZSIC 2006 via reviewed crosswalk (scheme anzsic2006, 100% match, zero errors in both partitions); residual doubt is the table's draft L2 status and the licensed-trade-vs-business-industry association, left for human sign-off. (4) holder_kind, licence.number and licence.grade kept ('ok'). Approved rules 0-6 untouched and not resubmitted. Remaining known issue: the static UNSPLIT_LIST_VALUES heuristic complained about Licence Class Type, and the config no longer triggers it anywhere. entity.abn keeps its known ~1% ABN_CHECKSUM rejections (6/618 held-out) - the transform refuses to emit checksum-invalid ABNs rather than fabricating them, which is the approved, intended behaviour. No personal contact data appears in any emitted claim.\nLocal maintainer correction (no model API call): Retain published licence trade categories; withhold unreviewed industry inferences.",
+        "profile_context": null,
+        "extensions": "ext-v1",
+        "entities": {
+          "licence": {
+            "kind": "licence",
+            "key_paths": [
+              "Licence Number"
+            ],
+            "rationale": "Record grain is licence_or_permit; Licence Number identifies the licence across snapshots. 506 distinct for 508 discovery rows, so the key is not unique (two holders appear twice with one number)."
+          }
+        },
+        "relationships": [
+          {
+            "type": "HOLDS_LICENCE",
+            "from_role": "subject",
+            "to_role": "licence",
+            "rationale": "The licensee named in 'Licensee Name' holds the licence described by Licence Number / Grade / Class."
+          }
+        ]
+      }
+    },
+    {
+      "source_id": "vic_liquor",
+      "expected_config_digest": "4a41b83076313583089c587a3986612bc3bc8716ba1e9a9fbb15d7e53544a2c1",
+      "reason": "Place VIC/AU defaults on licensed premises, not the licensee correspondence address.",
+      "config": {
+        "source_id": "vic_liquor",
+        "record_grain": "licence_or_permit",
+        "grain_rationale": "Each row is one current Victorian liquor licence (Licence Number unique per row) held by a licensee at licensed premises. Entity fields describe the licensee business; address fields describe the licensed premises ONLY. The licensee's postal mailing address columns are left unmapped because they describe a different location than the premises and mixing them into the same address fields would make each record claim two different addresses.",
+        "reader": {
+          "format": "xlsx",
+          "archive_member": null,
+          "encoding": "utf-8-sig",
+          "delimiter": null,
+          "skip_rows": 4,
+          "sheet": "Current_Victorian_Licences_By_L",
+          "record_path": null
+        },
+        "record_id": {
+          "strategy": "columns",
+          "source_paths": [
+            "Licence Number"
+          ],
+          "rationale": "Licence Number: 465/465 present and 465 distinct (shape 99999999); identifies the licence record, not a business identifier."
+        },
+        "observed_at": {
+          "source_path": null,
+          "steps": [],
+          "fallback": "dataset_metadata_modified"
+        },
+        "fields": [
+          {
+            "source_paths": [
+              "Licensee"
+            ],
+            "join_with": " ",
+            "when": null,
+            "target": "entity.legal_name",
+            "valid_from_path": null,
+            "valid_to_path": null,
+            "validity_date_formats": null,
+            "claim_scope": null,
+            "steps": [
+              {
+                "op": "trim",
+                "args": {}
+              },
+              {
+                "op": "collapse_whitespace",
+                "args": {}
+              },
+              {
+                "op": "regex_extract",
+                "args": {
+                  "pattern": "^(?!THE SECRETARY$)(?!SECRETARY$)(?!THE TRUSTEE$)(?!THE OWNER$)(?!THE LICENSEE$)(?!THE MANAGER$)(?!NOMINEES?$)(?!.*\\bC/-\\b).*$",
+                  "group": 0
+                }
+              },
+              {
+                "op": "trim",
+                "args": {}
+              },
+              {
+                "op": "null_if",
+                "args": {
+                  "values": [
+                    "",
+                    "-",
+                    "--",
+                    ".",
+                    "..",
+                    "...",
+                    "N/A",
+                    "NA",
+                    "N.A.",
+                    "N/A -",
+                    "TBA",
+                    "TBC",
+                    "UNKNOWN",
+                    "NOT APPLICABLE",
+                    "NOT APPLICABLE -",
+                    "[NOT APPLICABLE]",
+                    "[NOT APPLICABLE] -",
+                    "SAME AS ABOVE",
+                    "NONE",
+                    "NULL",
+                    "NIL",
+                    "0"
+                  ]
+                }
+              }
+            ],
+            "confidence": 0.6,
+            "rationale": "Column headed 'Licensee' = holder of the licence, mostly in legal-name form (PTY LTD / LIMITED / CITY OF X). Also carries officer/contact-role strings such as 'THE SECRETARY' and c/- address forms, which are gated out to null; corporate and sole-trader licensee names are kept. Confidence 0.6 reflects the mixed column.",
+            "entity": null,
+            "qualifiers": null
+          },
+          {
+            "source_paths": [
+              "Trading As"
+            ],
+            "join_with": " ",
+            "when": null,
+            "target": "entity.trading_name",
+            "valid_from_path": null,
+            "valid_to_path": null,
+            "validity_date_formats": null,
+            "claim_scope": null,
+            "steps": [
+              {
+                "op": "trim",
+                "args": {}
+              },
+              {
+                "op": "collapse_whitespace",
+                "args": {}
+              },
+              {
+                "op": "null_if",
+                "args": {
+                  "values": [
+                    "",
+                    "-",
+                    "--",
+                    ".",
+                    "..",
+                    "...",
+                    "N/A",
+                    "NA",
+                    "N.A.",
+                    "N/A -",
+                    "TBA",
+                    "TBC",
+                    "UNKNOWN",
+                    "NOT APPLICABLE",
+                    "NOT APPLICABLE -",
+                    "[NOT APPLICABLE]",
+                    "[NOT APPLICABLE] -",
+                    "SAME AS ABOVE",
+                    "NONE",
+                    "NULL",
+                    "NIL",
+                    "0"
+                  ]
+                }
+              }
+            ],
+            "confidence": 0.85,
+            "rationale": "'Trading As' is explicitly the business/trading name, distinct from the licensee column (451 distinct of 465, 99.1% present). Placeholder strings nulled.",
+            "entity": null,
+            "qualifiers": null
+          },
+          {
+            "source_paths": [
+              "Street Address"
+            ],
+            "join_with": " ",
+            "when": null,
+            "target": "address.full",
+            "valid_from_path": null,
+            "valid_to_path": null,
+            "validity_date_formats": null,
+            "claim_scope": null,
+            "steps": [
+              {
+                "op": "trim",
+                "args": {}
+              },
+              {
+                "op": "collapse_whitespace",
+                "args": {}
+              },
+              {
+                "op": "null_if",
+                "args": {
+                  "values": [
+                    "",
+                    "-",
+                    "--",
+                    ".",
+                    "..",
+                    "...",
+                    "N/A",
+                    "NA",
+                    "N.A.",
+                    "N/A -",
+                    "TBA",
+                    "TBC",
+                    "UNKNOWN",
+                    "NOT APPLICABLE",
+                    "NOT APPLICABLE -",
+                    "[NOT APPLICABLE]",
+                    "[NOT APPLICABLE] -",
+                    "NONE",
+                    "NULL",
+                    "NIL",
+                    "0"
+                  ]
+                }
+              }
+            ],
+            "confidence": 0.85,
+            "rationale": "Street address of the licensed premises (present 94.2%). Premises address, not postal.",
+            "entity": "premises",
+            "qualifiers": null
+          },
+          {
+            "source_paths": [
+              "Suburb"
+            ],
+            "join_with": " ",
+            "when": null,
+            "target": "address.locality",
+            "valid_from_path": null,
+            "valid_to_path": null,
+            "validity_date_formats": null,
+            "claim_scope": null,
+            "steps": [
+              {
+                "op": "trim",
+                "args": {}
+              },
+              {
+                "op": "collapse_whitespace",
+                "args": {}
+              },
+              {
+                "op": "upper",
+                "args": {}
+              },
+              {
+                "op": "regex_extract",
+                "args": {
+                  "pattern": "^(?!\\[?NOT APPLICABLE\\]?).*$",
+                  "group": 0
+                }
+              },
+              {
+                "op": "null_if",
+                "args": {
+                  "values": [
+                    "",
+                    "-",
+                    "--",
+                    ".",
+                    "..",
+                    "...",
+                    "N/A",
+                    "NA",
+                    "N.A.",
+                    "N/A -",
+                    "TBA",
+                    "TBC",
+                    "UNKNOWN",
+                    "NOT APPLICABLE",
+                    "NOT APPLICABLE -",
+                    "[NOT APPLICABLE]",
+                    "[NOT APPLICABLE] -",
+                    ",",
+                    "NONE",
+                    "NULL",
+                    "NIL",
+                    "0"
+                  ]
+                }
+              }
+            ],
+            "confidence": 0.85,
+            "rationale": "Suburb of the licensed premises (95.7% present). 7 records carry the placeholder '[Not applicable] -' (remote/pre-retail sellers without premises, shape '[a a] -'); after upper+trim the '[NOT APPLICABLE] -' gate nulls these so no bogus locality is emitted.",
+            "entity": "premises",
+            "qualifiers": null
+          },
+          {
+            "source_paths": [
+              "Postcode"
+            ],
+            "join_with": " ",
+            "when": null,
+            "target": "address.postcode",
+            "valid_from_path": null,
+            "valid_to_path": null,
+            "validity_date_formats": null,
+            "claim_scope": null,
+            "steps": [
+              {
+                "op": "trim",
+                "args": {}
+              },
+              {
+                "op": "null_if",
+                "args": {
+                  "values": [
+                    "",
+                    "0",
+                    "0000",
+                    "-",
+                    ".",
+                    "N/A",
+                    "NA",
+                    "N/A -",
+                    "NOT APPLICABLE",
+                    "NOT APPLICABLE -",
+                    "[NOT APPLICABLE]",
+                    "[NOT APPLICABLE] -",
+                    "TBA"
+                  ]
+                }
+              },
+              {
+                "op": "postcode",
+                "args": {}
+              }
+            ],
+            "confidence": 0.85,
+            "rationale": "Premises postcode; 438 4-digit values plus 7 placeholder '0' values which are nulled. Postal postcodes are not used here (some are interstate, e.g. '2000').",
+            "entity": "premises",
+            "qualifiers": null
+          },
+          {
+            "source_paths": [
+              "Licence Number"
+            ],
+            "join_with": " ",
+            "when": null,
+            "target": "ext.licence.number",
+            "valid_from_path": null,
+            "valid_to_path": null,
+            "validity_date_formats": null,
+            "claim_scope": null,
+            "steps": [],
+            "confidence": 0.95,
+            "rationale": "Publisher-assigned licence number, unique per row (465/465 distinct, 8-digit).",
+            "entity": "licence",
+            "qualifiers": null
+          },
+          {
+            "source_paths": [
+              "Licence Category"
+            ],
+            "join_with": " ",
+            "when": null,
+            "target": "ext.licence.category",
+            "valid_from_path": null,
+            "valid_to_path": null,
+            "validity_date_formats": null,
+            "claim_scope": null,
+            "steps": [
+              {
+                "op": "trim",
+                "args": {}
+              },
+              {
+                "op": "collapse_whitespace",
+                "args": {}
+              },
+              {
+                "op": "null_if",
+                "args": {
+                  "values": [
+                    "",
+                    "NULL"
+                  ]
+                }
+              }
+            ],
+            "confidence": 0.95,
+            "rationale": "13 publisher licence categories kept in the publisher's wording on the licence role (Restaurant and cafe Licence 146, Limited Licence 75, General Licence 48, On-Premises 44, Packaged Liquor 36, Pre-retail 28, ...).",
+            "entity": "licence",
+            "qualifiers": null
+          },
+          {
+            "source_paths": [
+              "Patron Capacity (if applicable)"
+            ],
+            "join_with": " ",
+            "when": null,
+            "target": "ext.establishment.capacity",
+            "valid_from_path": null,
+            "valid_to_path": null,
+            "validity_date_formats": null,
+            "claim_scope": null,
+            "steps": [
+              {
+                "op": "trim",
+                "args": {}
+              },
+              {
+                "op": "null_if",
+                "args": {
+                  "values": [
+                    "",
+                    "NULL",
+                    "NOT APPLICABLE",
+                    "Not Applicable",
+                    "N/A"
+                  ]
+                }
+              },
+              {
+                "op": "parse_integer",
+                "args": {}
+              }
+            ],
+            "confidence": 0.85,
+            "rationale": "Published maximum patron count for the premises (60.2% present, all integer shapes 99/999/9999); blanks dropped.",
+            "entity": "premises",
+            "qualifiers": null
+          },
+          {
+            "source_paths": [
+              "Council"
+            ],
+            "join_with": " ",
+            "when": null,
+            "target": "ext.establishment.lga",
+            "valid_from_path": null,
+            "valid_to_path": null,
+            "validity_date_formats": null,
+            "claim_scope": null,
+            "steps": [
+              {
+                "op": "trim",
+                "args": {}
+              },
+              {
+                "op": "collapse_whitespace",
+                "args": {}
+              },
+              {
+                "op": "null_if",
+                "args": {
+                  "values": [
+                    "",
+                    "NULL",
+                    "NOT APPLICABLE",
+                    "Not Applicable",
+                    "N/A",
+                    "NOT STATED",
+                    "UNKNOWN"
+                  ]
+                }
+              }
+            ],
+            "confidence": 0.9,
+            "rationale": "Local government area of the licensed premises (74 distinct council names, 96.3% present).",
+            "entity": "premises",
+            "qualifiers": null
+          },
+          {
+            "source_paths": [
+              "Region"
+            ],
+            "join_with": " ",
+            "when": null,
+            "target": "ext.establishment.region",
+            "valid_from_path": null,
+            "valid_to_path": null,
+            "validity_date_formats": null,
+            "claim_scope": null,
+            "steps": [
+              {
+                "op": "trim",
+                "args": {}
+              },
+              {
+                "op": "collapse_whitespace",
+                "args": {}
+              },
+              {
+                "op": "null_if",
+                "args": {
+                  "values": [
+                    "",
+                    "NULL",
+                    "NOT APPLICABLE",
+                    "Not Applicable",
+                    "N/A"
+                  ]
+                }
+              }
+            ],
+            "confidence": 0.85,
+            "rationale": "Publisher's licensing region for the premises (11 values: Metro North/South/East/West, Barwon South-West, Hume, ...), 96.3% present.",
+            "entity": "premises",
+            "qualifiers": null
+          },
+          {
+            "source_paths": [
+              "Metro/Regional"
+            ],
+            "join_with": " ",
+            "when": null,
+            "target": "ext.establishment.region",
+            "valid_from_path": null,
+            "valid_to_path": null,
+            "validity_date_formats": null,
+            "claim_scope": null,
+            "steps": [
+              {
+                "op": "trim",
+                "args": {}
+              },
+              {
+                "op": "null_if",
+                "args": {
+                  "values": [
+                    "",
+                    "NULL",
+                    "NOT APPLICABLE",
+                    "Not Applicable",
+                    "N/A"
+                  ]
+                }
+              }
+            ],
+            "confidence": 0.7,
+            "rationale": "Second publisher region label per site (Metro 286 / Regional 179); ext.establishment.region is multi-valued so this is one more value per observation.",
+            "entity": "premises",
+            "qualifiers": null
+          },
+          {
+            "source_paths": [
+              "Latitude",
+              "Longitude"
+            ],
+            "join_with": ",",
+            "when": null,
+            "target": "ext.establishment.geo",
+            "valid_from_path": null,
+            "valid_to_path": null,
+            "validity_date_formats": null,
+            "claim_scope": null,
+            "steps": [
+              {
+                "op": "trim",
+                "args": {}
+              },
+              {
+                "op": "geo_point",
+                "args": {}
+              }
+            ],
+            "confidence": 0.85,
+            "rationale": "Latitude first then longitude joined with ','; 94% present, remaining are missing coordinates.",
+            "entity": "premises",
+            "qualifiers": null
+          },
+          {
+            "source_paths": [
+              "Postal Address"
+            ],
+            "join_with": " ",
+            "when": null,
+            "target": "address.full",
+            "valid_from_path": null,
+            "valid_to_path": null,
+            "validity_date_formats": null,
+            "claim_scope": "correspondence_address",
+            "steps": [
+              {
+                "op": "trim",
+                "args": {}
+              },
+              {
+                "op": "collapse_whitespace",
+                "args": {}
+              },
+              {
+                "op": "null_if",
+                "args": {
+                  "values": [
+                    "",
+                    "NULL"
+                  ]
+                }
+              }
+            ],
+            "confidence": 0.8,
+            "rationale": "The licensee's postal mailing address is the subject's correspondence address; claim_scope keeps it separate from the establishment address so one record never claims two premises addresses.",
+            "entity": "subject",
+            "qualifiers": null
+          },
+          {
+            "source_paths": [
+              "Postal Suburb"
+            ],
+            "join_with": " ",
+            "when": null,
+            "target": "address.locality",
+            "valid_from_path": null,
+            "valid_to_path": null,
+            "validity_date_formats": null,
+            "claim_scope": "correspondence_address",
+            "steps": [
+              {
+                "op": "trim",
+                "args": {}
+              },
+              {
+                "op": "collapse_whitespace",
+                "args": {}
+              },
+              {
+                "op": "upper",
+                "args": {}
+              },
+              {
+                "op": "regex_extract",
+                "args": {
+                  "pattern": "^\\s*([A-Z0-9' -]+?)\\s*(?:,?\\s*(NSW|VIC|QLD|WA|SA|TAS|ACT|NT))?\\s*$",
+                  "group": 1
+                }
+              },
+              {
+                "op": "null_if",
+                "args": {
+                  "values": [
+                    "",
+                    "NULL"
+                  ]
+                }
+              }
+            ],
+            "confidence": 0.75,
+            "rationale": "Postal suburb of the correspondence address; 7 rows carry an interstate suffix (e.g. 'SYDNEY NSW') which the regex strips to the locality.",
+            "entity": "subject",
+            "qualifiers": null
+          },
+          {
+            "source_paths": [
+              "Postal Postcode"
+            ],
+            "join_with": " ",
+            "when": null,
+            "target": "address.postcode",
+            "valid_from_path": null,
+            "valid_to_path": null,
+            "validity_date_formats": null,
+            "claim_scope": "correspondence_address",
+            "steps": [
+              {
+                "op": "trim",
+                "args": {}
+              },
+              {
+                "op": "null_if",
+                "args": {
+                  "values": [
+                    "",
+                    "NULL"
+                  ]
+                }
+              },
+              {
+                "op": "postcode",
+                "args": {}
+              }
+            ],
+            "confidence": 0.8,
+            "rationale": "Postal postcode of the correspondence address, including interstate codes (e.g. 2000, 7 rows); all 465 values are 4 digits.",
+            "entity": "subject",
+            "qualifiers": null
+          }
+        ],
+        "constants": [
+          {
+            "target": "address.state",
+            "value": "VIC",
+            "confidence": 0.9,
+            "rationale": "Metadata default for the evidenced Australian site/premises only, never the subject company or correspondence address.",
+            "entity": "premises",
+            "claim_scope": "licensed_premises"
+          },
+          {
+            "target": "address.country",
+            "value": "AU",
+            "confidence": 0.9,
+            "rationale": "Metadata default for the evidenced Australian site/premises only, never the subject company or correspondence address.",
+            "entity": "premises",
+            "claim_scope": "licensed_premises"
+          }
+        ],
+        "unmapped": [
+          {
+            "source_path": "Trading Hours",
+            "reason": "15 values, but in ~136 rows the cell merely repeats the licence category ('Limited Licence' 75, 'Pre-retail Licence' 28, \"Producer's Licence\" 18, 'Restricted Club Licence' 15, 'BYO Permit' etc.), so ext.licence.condition would duplicate ext.licence.category as a condition. The remainder are coarse bands ('Trading to 1am' 213, 'Ordinary' 79) that are trading-hour categories rather than conditions on one licence. Kept unmapped: duplicating the category is worse than omitting it."
+          },
+          {
+            "source_path": "column_7",
+            "reason": "Empty spacer column (0% present)."
+          },
+          {
+            "source_path": "column_8",
+            "reason": "Empty spacer column (0% present)."
+          },
+          {
+            "source_path": "column_13",
+            "reason": "Empty spacer column (0% present)."
+          },
+          {
+            "source_path": "column_14",
+            "reason": "Empty spacer column (0% present)."
+          }
+        ],
+        "notes": "XLSX: 4 title/branding rows precede the header (skip_rows=4); sheet 'Current_Victorian_Licences_By_L'; 465 data rows, 21 columns incl. two pairs of empty spacer columns. Sheet subtitle states 'Current Victorian Liquor Licences as of 31/08/2026' - a snapshot date, not per-record; observed_at falls back to dataset metadata. Nothing in the data changes per record over time, so address columns need no validity dates. No ABN/ACN column: Licence Number is 8-digit (ABN checksum 0%, ACN checksum 9.2% = chance) - deliberately unmapped. entity_type unmapped (no column states legal entity type). REVISION 3: adopts the reviewer's approved scope unchanged (premises address only; ALL postal columns unmapped) and adds ONLY the placeholder handling: '[Not applicable] -' in Suburb (7 rows, shape '[a a] -') is upper-cased and gated out at address.locality; the same '[NOT APPLICABLE] -' placeholder is nulled in address.full and the '0' postcodes in address.postcode so no placeholder value can be emitted.\n\n[ext-v1] Revision 2. Kept every rule from draft 1 that the data supports. No ext.entity.industry_code rule on Licence Category in this revision: the v2 anzsic_vic_liquor_category table's keys do cover all 13 categories in this file, and its 4 code-bearing groups (restaurant/cafe, packaged liquor, clubs, producers, late-night venues) are genuine activity evidence, but the table is still 'draft - L2 judgement crosswalk, needs a human reviewer' and 5 of the 13 categories (General, On-Premises, BYO, Remote Seller's, Pre-retail, Limited) would yield no code at all, so coverage is uneven. Recommend adding the rule with scheme anzsic2006 once a human signs the table off. Trading Hours stays unmapped because 136 of 465 values repeat the licence category; the rest are coarse trading bands. The three approved address rules were re-roled to premises (establishment), per the rule that a premises address describes the establishment.\nLocal maintainer correction (no model API call): Place VIC/AU defaults on licensed premises, not the licensee correspondence address.",
+        "profile_context": null,
+        "extensions": "ext-v1",
+        "entities": {
+          "licence": {
+            "kind": "licence",
+            "key_paths": [
+              "Licence Number"
+            ],
+            "rationale": "Licence Number is unique per row (465/465 distinct, 8-digit) and identifies the licence across snapshots."
+          },
+          "premises": {
+            "kind": "establishment",
+            "key_paths": [
+              "Street Address",
+              "Suburb",
+              "Postcode"
+            ],
+            "rationale": "The licensed premises: address, LGA, licensing region, metro/regional flag and coordinates describe the site, not the licensee business."
+          }
+        },
+        "relationships": [
+          {
+            "type": "HOLDS_LICENCE",
+            "from_role": "subject",
+            "to_role": "licence",
+            "rationale": "Each row is one current licence held by the licensee."
+          },
+          {
+            "type": "OPERATES_ESTABLISHMENT",
+            "from_role": "subject",
+            "to_role": "premises",
+            "rationale": "The licensee operates the licensed premises named in the address columns."
+          },
+          {
+            "type": "LICENCE_AT_ESTABLISHMENT",
+            "from_role": "licence",
+            "to_role": "premises",
+            "rationale": "The licence authorises the named premises."
+          }
+        ]
+      }
+    }
+  ]
+}

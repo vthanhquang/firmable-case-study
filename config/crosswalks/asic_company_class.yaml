@@ -1,0 +1,16 @@
+name: asic_company_class
+version: 1
+kind: code
+target: ext.entity.legal_form_detail
+derivation_level: L1
+review_status: draft - prepared by an AI assistant; verify against ASIC's help file
+source: ASIC Company Dataset help file (Class column). Complete set in the 2026-11 snapshot.
+output_format: "{key}: {label}"
+unlisted: error
+entries:
+  LMSH: {label: Limited by shares}
+  LMGT: {label: Limited by guarantee, flags: [usually_not_for_profit]}
+  LMSG: {label: Limited by both shares and guarantee}
+  UNLM: {label: Unlimited}
+  NLIA: {label: No liability}
+  NONE: {code: null, label: No class recorded}

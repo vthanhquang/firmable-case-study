@@ -9,7 +9,7 @@ from firmable import ids, ontology
 from firmable.identity import resolve as R
 from firmable.mapping import transforms as T
 from firmable.mapping.engine import Engine
-from firmable.mapping.schema import MappingConfig, ReaderSpec
+from firmable.mapping.schema import MappingConfig, ProfileContextDraft, ReaderSpec
 from firmable.mapping.validate import holdout_issues, static_issues
 from firmable.sources.readers import iter_records
 
@@ -150,6 +150,43 @@ def test_enum_default_guess_is_rejected():
     assert not any(i["code"] == "ENUM_DEFAULT_GUESS" for i in static_issues(ok, {"Name", "ABN"}))
 
 
+@pytest.mark.parametrize(("label", "value", "flagged"), [
+    ("An individual or Sole trader", "sole_trader", True),
+    ("Sole trader / individual", "sole_trader", True),
+    ("An individual or Sole trader", "unknown", False),
+    ("Sole trader", "sole_trader", False),
+])
+def test_combined_entity_type_requires_evidence(label, value, flagged):
+    cfg = _cfg(fields=[{"source_paths": ["Type"], "target": "entity.entity_type", "confidence": 0.8,
+                        "rationale": "source type column", "steps": [{"op": "map_enum", "args": {
+                            "mapping": {label: value}, "default": "unknown"}}]}])
+    issues = static_issues(cfg, {"Type", "ABN"})
+    assert any(i["code"] == "AMBIGUOUS_ENTITY_TYPE" and i["severity"] == "error" for i in issues) == flagged
+
+
+def test_record_dates_are_ignored_and_reported():
+    fields = [*_cfg().fields, {"source_paths": ["Registered"], "target": "observation.valid_from",
+                              "confidence": 0.8, "rationale": "registration start date",
+                              "steps": [{"op": "parse_date", "args": {"formats": ["%Y-%m-%d"]}}]}]
+    cfg = _cfg(record_grain="licence_or_permit", fields=fields)
+    rows = [{"Name": "ACME PTY LTD", "ABN": GOOD_ABN, "Registered": "2020-02-01"}]
+    issues, _ = holdout_issues(cfg, rows, rows, {})
+    assert [(i["code"], i["severity"]) for i in issues] == [("RECORD_VALIDITY_IGNORED", "warning")]
+    observations = Engine(cfg, {}).process(rows[0])
+    assert observations and all(o["valid_from"] is None for o in observations)
+
+
+def test_terminal_status_cannot_end_on_its_deregistration_date():
+    cfg = _cfg(fields=[{"source_paths": ["Status"], "target": "entity.status", "confidence": 0.8,
+                        "rationale": "company status", "steps": [],
+                        "valid_to_path": "Deregistered", "validity_date_formats": ["%Y-%m-%d"]}])
+    rows = [{"Status": "deregistered", "Deregistered": "2026-05-20"}]
+    issues, _ = holdout_issues(cfg, rows, rows, {})
+    assert [(i["code"], i["severity"]) for i in issues] == [("TERMINAL_STATUS_VALID_TO", "error")]
+    observations = Engine(cfg, {}).process(rows[0])
+    assert [(o["value"], o["valid_to"]) for o in observations] == [("deregistered", None)]
+
+
 def test_engine_emits_one_observation_per_claim_with_envelope():
     eng = Engine(_cfg(), {"licence": "cc-by", "resource_last_modified": "2026-01-01T00:00:00+00:00"})
     obs = eng.process({"Name": " ACME PTY LTD ", "ABN": GOOD_ABN})
@@ -195,9 +232,63 @@ def test_rule_level_validity_dates_a_historical_claim():
 def test_approved_config_digests_survive_dsl_growth():
     import glob
     from firmable.agent.review import current_approval
+    import os
     for p in glob.glob("outputs/mappings/*.json"):
         sid = p.replace("\\", "/").rsplit("/", 1)[1][:-5]
+        if not os.path.exists(f"outputs/mappings/{sid}.approvals.jsonl"):
+            continue   # a newly onboarded source awaiting its first review has no approval to preserve
         assert current_approval(sid), f"{sid}: approval no longer matches its config digest"
+
+
+def test_profile_context_extends_only_unmapped_columns_and_keeps_reported_zero():
+    from firmable.mapping.context_benchmark import expected
+
+    column, target = "Tax payable $", "context.tax.tax_payable_aud"
+    base = _cfg(unmapped=[{"source_path": column, "reason": "outside the core schema"}])
+    draft = ProfileContextDraft(fields=[{"source_paths": [column], "target": target,
+                                        "steps": [{"op": "parse_integer"}], "confidence": 0.99,
+                                        "rationale": "publisher-reported whole AUD"}])
+    cfg = draft.extend(base)
+    assert cfg.fields[:-1] == base.fields
+    assert cfg.record_id == base.record_id and cfg.reader == base.reader
+    assert not cfg.unmapped and base.unmapped
+    assert not ontology.load().has(target)
+    columns = {"ABN", "Name", column}
+    assert not static_issues(cfg, columns)
+    claims = Engine(cfg, {}).process({"ABN": GOOD_ABN, "Name": "Acme", column: "0"})
+    assert [(item["value"], item["source_fields"]) for item in claims if item["field"] == target] == [(0, [column])]
+    assert expected("ato_tax_transparency", {column: "0"}) == {(target, 0, (column,))}
+    assert not expected("ato_tax_transparency", {column: None})
+    with pytest.raises(ValueError, match="previously unmapped"):
+        draft.extend(_cfg())
+    assert "CONTEXT_GRAIN_MISMATCH" in {
+        item["code"] for item in static_issues(cfg.model_copy(update={"record_grain": "establishment"}), columns)
+    }
+
+
+def test_semantic_gates_refuse_historic_jurisdiction_and_unclassified_aliases():
+    cfg = _cfg(fields=[
+        {"source_paths": ["Previous State of Registration"], "target": "address.state", "steps": [{"op": "state"}],
+         "confidence": 0.4, "rationale": "publisher lists historic jurisdiction"},
+        {"source_paths": ["Other_Organisation_Names"], "target": "entity.trading_name", "confidence": 0.5,
+         "rationale": "names the organisation may be known by"},
+    ])
+    findings = static_issues(cfg, {"ABN", "Previous State of Registration", "Other_Organisation_Names"})
+    assert {item["code"] for item in findings if item["severity"] == "error"} == {
+        "REGISTRATION_JURISDICTION_AS_ADDRESS", "AMBIGUOUS_ALIAS_AS_TRADING_NAME",
+    }
+
+
+def test_distinct_claim_scopes_survive_when_the_same_value_reappears():
+    cfg = _cfg(fields=[
+        {"source_paths": ["Former"], "target": "entity.legal_name", "claim_scope": "former_legal_name",
+         "confidence": 0.8, "rationale": "documented former name"},
+        {"source_paths": ["Current"], "target": "entity.legal_name", "claim_scope": "current_legal_name",
+         "confidence": 0.9, "rationale": "documented current name"},
+    ])
+    obs = Engine(cfg, {}).process({"ABN": "1", "Former": "ACME", "Current": "ACME"})
+    assert {claim["claim_scope"] for claim in obs} == {"former_legal_name", "current_legal_name"}
+    assert len({claim["observation_id"] for claim in obs}) == 2
 
 
 def test_holdout_flags_placeholder_values():
@@ -275,6 +366,23 @@ def test_cluster_never_holds_two_abns():
     assert cl.try_union("b", "c") == "CLUSTER_WOULD_HOLD_TWO_ABNS"
 
 
+def test_cluster_cannot_join_holder_mismatch_through_bridge():
+    recs = {key: {"abn": {GOOD_ABN}, "acn": set()} for key in ("a", "b", "c")}
+    cl = R.Clusters(recs, [("a", "c")])
+    assert cl.try_union("a", "b") is None
+    assert cl.try_union("b", "c") == "CLUSTER_WOULD_JOIN_HOLDER_MISMATCH"
+
+
+def test_evidence_policy_refers_a_shared_identifier_with_an_unrelated_company_licensee():
+    company = _rec("register", abn=[GOOD_ABN], names=["DOVER PTY LTD"])
+    licence = _rec("licences", abn=[GOOD_ABN], names=["BALM PTY LTD"]) | {"grain": "licence_or_permit"}
+    assert R.evidence(company, licence, policy="strict-v2")[0] >= R.THRESHOLD
+    score, rule, evidence, conflicts = R.evidence(company, licence, policy=R.EVIDENCE_POLICY)
+    assert score < R.THRESHOLD and rule == R.LICENCE_NAME_MISMATCH_RULE
+    assert any(signal["type"] == "LICENCE_HOLDER_NAME_CONFLICT" for signal in evidence)
+    assert not conflicts
+
+
 def test_unlinked_records_sharing_an_anchor_get_distinct_keys(monkeypatch):
     recs = {"s1::a": {**_rec("s1", abn=[GOOD_ABN], names=["Acme Pty Ltd"]), "legal": {"ACME PTY LTD"}},
             "s2::b": {**_rec("s2", abn=[GOOD_ABN], names=["Acme Pty Ltd"]), "legal": {"ACME PTY LTD"}},
@@ -283,11 +391,29 @@ def test_unlinked_records_sharing_an_anchor_get_distinct_keys(monkeypatch):
     res = R.resolve(policy="strict-v2")
     k = res["key_of"]
     assert k["s1::a"] == k["s2::b"] != k["s3::c"]  # person with the company's ABN: not merged, own key
+    loose = R.resolve(policy="strict-v2", threshold=0.75)
+    assert all(d["decision"] == "REVIEW" for d in loose["decisions"] if d["rule"] == R.HOLDER_MISMATCH_RULE)
+
+
+def test_unlinked_queue_keeps_positive_evidence_even_when_identifier_conflicts(monkeypatch):
+    recs = {"a": _rec("a", abn=[GOOD_ABN], names=["SPINAL RESEARCH TOWER"]),
+            "b": _rec("b", abn=["53004085616"], names=["SPINAL RESEARCH XYZABC"]),
+            "c": _rec("c", names=["UNITED AID"]),
+            "d": _rec("d", names=["UNITED AID"])}
+    monkeypatch.setattr(R, "load_records", lambda exclude=frozenset(): recs)
+    result = R.resolve()
+    queue = R._unlinked_queue(recs, result["decisions"], set())
+    assert [q["source_record"] for q in queue] == ["c", "d", "a", "b"]
+    assert queue[0]["reason"] == "AMBIGUOUS_NAME"
+    assert queue[2]["candidate_decision"] == "NON_MATCH"
+    assert queue[2]["contradictions"]
 
 
 def test_resolver_policy():
     a = _rec("s1", abn=[GOOD_ABN], names=["Acme Pty Ltd"])
-    assert R.evidence(a, _rec("s2", abn=[GOOD_ABN], names=["Totally Different"]))[1] == "abn_equal"
+    different_holder = _rec("s2", abn=[GOOD_ABN], names=["Totally Different"])
+    assert R.evidence(a, different_holder, policy="strict-v1")[1] == "abn_equal"
+    assert R.evidence(a, different_holder)[1] == R.HOLDER_MISMATCH_RULE
     s, rule, _, contra = R.evidence(a, _rec("s2", abn=["53004085616"], names=["ACME PTY. LIMITED"]))
     assert s == 0.0 and contra  # same name, different valid ABN -> veto
     assert R.evidence(_rec("s1", names=["Acme Proprietary Limited"]), _rec("s2", names=["ACME PTY LTD"]))[1] == "registered_name_exact"

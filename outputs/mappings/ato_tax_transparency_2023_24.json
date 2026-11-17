@@ -1,0 +1,107 @@
+{
+  "status": "PENDING_REVIEW",
+  "run_id": "20261112T205404-d08c5f",
+  "prompt_version": "prompts-v9",
+  "model": "deepseek-v4-flash",
+  "ontology_sha256": "639b80ea6333146c7ac714cd940fcdf6b2945f451e95333b0be21174bedee5da",
+  "snapshot_sha256": "6b47837efab92e1eb2b0cacc46945376a5b185c1b16814146c3282a1921b0c75",
+  "config_digest": "25a340246ac8b541e3e920f6428f0c534e57597d8835c44cf6ae9de490c1ddc9",
+  "config": {
+    "source_id": "ato_tax_transparency_2023_24",
+    "record_grain": "legal_entity",
+    "grain_rationale": "Each record is a legal entity (identified by ABN) with its tax information for an income year. The business participant's legal name and ABN are mapped; the financial figures are outside the ontology.",
+    "reader": {
+      "format": "xlsx",
+      "archive_member": null,
+      "encoding": "utf-8-sig",
+      "delimiter": null,
+      "skip_rows": 0,
+      "sheet": "Income tax details",
+      "record_path": null
+    },
+    "record_id": {
+      "strategy": "content_hash",
+      "source_paths": [],
+      "rationale": "Neither Name (526 distinct/527) nor ABN (524 distinct/527, 2 missing) is unique per record, so a content hash is the traceable record id."
+    },
+    "observed_at": {
+      "source_path": null,
+      "steps": [],
+      "fallback": "resource_last_modified"
+    },
+    "fields": [
+      {
+        "source_paths": [
+          "Name"
+        ],
+        "join_with": " ",
+        "when": null,
+        "target": "entity.legal_name",
+        "valid_from_path": null,
+        "valid_to_path": null,
+        "validity_date_formats": null,
+        "claim_scope": null,
+        "steps": [
+          {
+            "op": "trim",
+            "args": {}
+          },
+          {
+            "op": "collapse_whitespace",
+            "args": {}
+          }
+        ],
+        "confidence": 0.95,
+        "rationale": "The ATO corporate tax transparency report lists entities by their registered legal name; names carry legal-form suffixes (PTY LTD, PTY LIMITED, LIMITED).",
+        "entity": null,
+        "qualifiers": null
+      },
+      {
+        "source_paths": [
+          "ABN"
+        ],
+        "join_with": " ",
+        "when": null,
+        "target": "entity.abn",
+        "valid_from_path": null,
+        "valid_to_path": null,
+        "validity_date_formats": null,
+        "claim_scope": null,
+        "steps": [
+          {
+            "op": "abn",
+            "args": {}
+          }
+        ],
+        "confidence": 0.98,
+        "rationale": "ABN column is 11 digits and 100% checksum-valid across the discovery partition; 2 records legitimately have no ABN.",
+        "entity": null,
+        "qualifiers": null
+      }
+    ],
+    "constants": [],
+    "unmapped": [
+      {
+        "source_path": "Total income $",
+        "reason": "Financial figure (total income) not in the ontology."
+      },
+      {
+        "source_path": "Taxable income $",
+        "reason": "Financial figure (taxable income) not in the ontology."
+      },
+      {
+        "source_path": "Tax payable $",
+        "reason": "Financial figure (tax payable) not in the ontology."
+      },
+      {
+        "source_path": "Income year",
+        "reason": "Tax income year the figures relate to; not an entity attribute, and not a statement of when the name/ABN claim was observed. Kept as an observation-level fact only."
+      }
+    ],
+    "notes": "Mapped the main data sheet 'Income tax details'. The 'Information' sheet is front-matter with no tabular records; the 'PRRT details' sheet (16 records: Name, ABN, PRRT Payable $) is a separate supplementary table not covered by this config. Restricting to one sheet keeps one row = one legal entity; no publisher documentation was supplied, so semantics rest on the sheet headers and the report's published structure.",
+    "profile_context": null,
+    "extensions": null,
+    "entities": null,
+    "relationships": null
+  }
+}

@@ -3,7 +3,41 @@
   "config_digest": "f1d943df55f301f8287f039186ed11aefb5fd9d44e403c1e4aca057c9c319652",
   "holdout_records": 1182,
   "rare_value_records": 62,
-  "errors": [],
+  "errors": [
+   {
+    "code": "AMBIGUOUS_ALIAS_AS_TRADING_NAME",
+    "severity": "error",
+    "message": "An unclassified alias or former legal name does not establish a trading name.",
+    "target": "entity.trading_name",
+    "source_paths": [
+     "Other_Organisation_Names"
+    ]
+   },
+   {
+    "code": "UNSPLIT_LIST_VALUES",
+    "severity": "error",
+    "message": "28/131 values look like delimiter-separated lists; split them so each value is its own observation",
+    "target": "entity.trading_name",
+    "examples": [
+     "@CCSE.ORG.AU, @CHARITYCONSULTANTS.ORG.AU, @INDIGENOUSCONSULTANTS.ORG.AU, @NFPCCC",
+     "Hope Arabic Church - South Australia, \u0643\u0646\u064a\u0633\u0629 \u0627\u0644\u0631\u062c\u0627\u0621 \u0627\u0644\u0639\u0631\u0628\u064a\u0629 - \u062c\u0646\u0648\u0628 \u0623\u0633\u062a\u0631\u0627\u0644\u064a\u0627",
+     "Aboriginal Community Justice Charity Organisation (DCSS), Aboriginal Justice, Ab",
+     "First Light, First Light Widowed Association, Previously known as \"First Light W"
+    ]
+   },
+   {
+    "code": "FORMER_NAME_AS_TRADING_NAME",
+    "severity": "error",
+    "message": "4 trading-name values describe a former name ('previously known as ...'); a former name is not a trading name",
+    "target": "entity.trading_name",
+    "examples": [
+     "First Light, First Light Widowed Association, Previously known as \"First Light W",
+     "Previously known as Sydney Markets Foundation Incorporated",
+     "Previously known as URGENT ACTION FUND FOR WOMEN'S HUMAN RIGHTS ASIA & PACIFIC L",
+     "Interchange Connect, Previously known as Interchange Shoalhaven Inc"
+    ]
+   }
+  ],
   "warnings": [
    "SOME_ERRORS:entity.website",
    "SOME_ERRORS:address.postcode"
@@ -14,14 +48,20 @@
   "holdout_records": 1163,
   "rare_value_records": 36,
   "errors": [],
-  "warnings": []
+  "warnings": [
+   "RECORD_VALIDITY_IGNORED:observation.valid_from",
+   "RECORD_VALIDITY_IGNORED:observation.valid_from",
+   "RECORD_VALIDITY_IGNORED:observation.valid_to"
+  ]
  },
  "asic_credit_licensees": {
   "config_digest": "93e42b99014c322d168ee0c545d44f1bf6f2d61aba6e01df63336e42ba1e7b45",
   "holdout_records": 1174,
   "rare_value_records": 38,
   "errors": [],
-  "warnings": []
+  "warnings": [
+   "RECORD_VALIDITY_IGNORED:observation.valid_from"
+  ]
  },
  "ato_tax_transparency": {
   "config_digest": "78133ba75c7f0f4cfd321fc27b28ff75aaec21454ac96fbe43e84b214c77f85b",

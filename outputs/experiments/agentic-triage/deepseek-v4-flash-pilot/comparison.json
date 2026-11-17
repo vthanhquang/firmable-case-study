@@ -1,0 +1,727 @@
+{
+  "evidence_sha256": "464524c2c5116ae93ebd7a8edb87c4ac2485f7e37845623f2d097324da97aff5",
+  "sampled_datasets": 20,
+  "reference_kind": "AI-assisted audit",
+  "metadata_shortlist": {
+    "KEEP": {
+      "YES": 11,
+      "NO": 7,
+      "UNCERTAIN": 2
+    },
+    "EXCLUDE": {
+      "YES": 0,
+      "NO": 0,
+      "UNCERTAIN": 0
+    },
+    "REVIEW": {
+      "YES": 0,
+      "NO": 0,
+      "UNCERTAIN": 0
+    }
+  },
+  "evidence_availability_gate": {
+    "KEEP": {
+      "YES": 10,
+      "NO": 3,
+      "UNCERTAIN": 0
+    },
+    "EXCLUDE": {
+      "YES": 0,
+      "NO": 0,
+      "UNCERTAIN": 0
+    },
+    "REVIEW": {
+      "YES": 1,
+      "NO": 4,
+      "UNCERTAIN": 2
+    }
+  },
+  "agentic_triage": {
+    "KEEP": {
+      "YES": 6,
+      "NO": 0,
+      "UNCERTAIN": 0
+    },
+    "EXCLUDE": {
+      "YES": 0,
+      "NO": 3,
+      "UNCERTAIN": 0
+    },
+    "REVIEW": {
+      "YES": 5,
+      "NO": 4,
+      "UNCERTAIN": 2
+    }
+  },
+  "controller_overrides": 8,
+  "provider_failures": 0,
+  "rows": [
+    {
+      "rank": 1,
+      "dataset_id": "42bad3df-f2e0-4c9c-bef0-0a4328927718",
+      "title": "Suitable Operator Register (SOR) for Environmentally Relevant Activities (ERAs)",
+      "decision": "KEEP",
+      "evidence_id": "r1",
+      "reason": "Inspected rows of the SOR register expose corporation entity types, named customer (company) names with company suffixes, and valid ACN business numbers, establishing business identity records.",
+      "controller_override": false,
+      "inspections": [
+        {
+          "resource_id": "r1",
+          "kind": "records",
+          "error": null
+        }
+      ],
+      "inspected_resources": [
+        {
+          "id": "r1",
+          "kind": "records"
+        }
+      ],
+      "reference_label": "YES"
+    },
+    {
+      "rank": 4,
+      "dataset_id": "7b8656f9-606d-4337-af29-66b89b2eeefb",
+      "title": "ASIC - Company Dataset",
+      "decision": "REVIEW",
+      "evidence_id": null,
+      "reason": "The model returned an invalid decision.",
+      "controller_override": true,
+      "inspections": [],
+      "inspected_resources": [],
+      "reference_label": "YES"
+    },
+    {
+      "rank": 7,
+      "dataset_id": "f63fae34-3d33-48df-a32d-ac19cb94a08d",
+      "title": "Consultancies, contractors and Contracts over 10K  - OIC",
+      "decision": "KEEP",
+      "evidence_id": "r1",
+      "reason": "The inspected published field list for this resource exposes business identities via 'Supplier Name' and 'Supplier Address' alongside award date, value and procurement method, establishing supplier-level rows.",
+      "controller_override": false,
+      "inspections": [
+        {
+          "resource_id": "r1",
+          "kind": "publisher_fields",
+          "error": null
+        },
+        {
+          "resource_id": "r2",
+          "kind": "unavailable",
+          "error": null
+        },
+        {
+          "resource_id": "r3",
+          "kind": "unavailable",
+          "error": null
+        },
+        {
+          "resource_id": "r4",
+          "kind": null,
+          "error": "Inspection limit reached."
+        },
+        {
+          "resource_id": "r5",
+          "kind": null,
+          "error": "Inspection limit reached."
+        },
+        {
+          "resource_id": "r6",
+          "kind": null,
+          "error": "Inspection limit reached."
+        },
+        {
+          "resource_id": "r7",
+          "kind": null,
+          "error": "Inspection limit reached."
+        },
+        {
+          "resource_id": "r8",
+          "kind": null,
+          "error": "Inspection limit reached."
+        }
+      ],
+      "inspected_resources": [
+        {
+          "id": "r1",
+          "kind": "publisher_fields"
+        },
+        {
+          "id": "r2",
+          "kind": "unavailable"
+        },
+        {
+          "id": "r3",
+          "kind": "unavailable"
+        }
+      ],
+      "reference_label": "YES"
+    },
+    {
+      "rank": 9,
+      "dataset_id": "28e07054-ae9f-4a81-a766-06686274039f",
+      "title": "Contractor Central",
+      "decision": "REVIEW",
+      "evidence_id": "r1",
+      "reason": "All three resources (CSV export, Socrata metadata, and records) returned HTTP 403, so no evidence of business identity fields could be verified; the description also indicates the page is deprecated in favour of Tenders ACT.",
+      "controller_override": false,
+      "inspections": [
+        {
+          "resource_id": "r1",
+          "kind": "unavailable",
+          "error": null
+        },
+        {
+          "resource_id": "r3",
+          "kind": "unavailable",
+          "error": null
+        },
+        {
+          "resource_id": "r2",
+          "kind": "unavailable",
+          "error": null
+        }
+      ],
+      "inspected_resources": [
+        {
+          "id": "r1",
+          "kind": "unavailable"
+        },
+        {
+          "id": "r3",
+          "kind": "unavailable"
+        },
+        {
+          "id": "r2",
+          "kind": "unavailable"
+        }
+      ],
+      "reference_label": "UNCERTAIN"
+    },
+    {
+      "rank": 11,
+      "dataset_id": "507fb507-aac7-4beb-bd84-8d369e3c709f",
+      "title": "Owner Builder Permit",
+      "decision": "REVIEW",
+      "evidence_id": null,
+      "reason": "The model returned an invalid decision.",
+      "controller_override": true,
+      "inspections": [
+        {
+          "resource_id": "r1",
+          "kind": "publisher_scope",
+          "error": null
+        },
+        {
+          "resource_id": "r2",
+          "kind": "publisher_scope",
+          "error": null
+        }
+      ],
+      "inspected_resources": [
+        {
+          "id": "r1",
+          "kind": "publisher_scope"
+        },
+        {
+          "id": "r2",
+          "kind": "publisher_scope"
+        }
+      ],
+      "reference_label": "NO"
+    },
+    {
+      "rank": 12,
+      "dataset_id": "5bd7fcab-e315-42cb-8daf-50b7efc2027e",
+      "title": "ABN Bulk Extract",
+      "decision": "KEEP",
+      "evidence_id": "r1",
+      "reason": "The sampled rows for the ABN Bulk Extract Part 1 resource expose business identity fields such as ABN, ASICNumber, EntityType, NonIndividualName/NonIndividualNameText, and BusinessAddress, which identify organisations.",
+      "controller_override": false,
+      "inspections": [
+        {
+          "resource_id": "r1",
+          "kind": "records",
+          "error": null
+        },
+        {
+          "resource_id": "r2",
+          "kind": "records",
+          "error": null
+        },
+        {
+          "resource_id": "r3",
+          "kind": "resource_index",
+          "error": null
+        },
+        {
+          "resource_id": "r4",
+          "kind": null,
+          "error": "Inspection limit reached."
+        }
+      ],
+      "inspected_resources": [
+        {
+          "id": "r1",
+          "kind": "records"
+        },
+        {
+          "id": "r2",
+          "kind": "records"
+        },
+        {
+          "id": "r3",
+          "kind": "resource_index"
+        }
+      ],
+      "reference_label": "YES"
+    },
+    {
+      "rank": 14,
+      "dataset_id": "a265ef83-1190-4c63-ac51-a0ca3966c666",
+      "title": "Victorian liquor licences split by licence type",
+      "decision": "KEEP",
+      "evidence_id": "r1",
+      "reason": "The published field description exposes Licensee name and Business name fields, identifying businesses in a liquor licence register.",
+      "controller_override": false,
+      "inspections": [
+        {
+          "resource_id": "r1",
+          "kind": "publisher_fields",
+          "error": null
+        },
+        {
+          "resource_id": "r2",
+          "kind": "unavailable",
+          "error": null
+        },
+        {
+          "resource_id": "r3",
+          "kind": "unavailable",
+          "error": null
+        },
+        {
+          "resource_id": "r4",
+          "kind": null,
+          "error": "Inspection limit reached."
+        }
+      ],
+      "inspected_resources": [
+        {
+          "id": "r1",
+          "kind": "publisher_fields"
+        },
+        {
+          "id": "r2",
+          "kind": "unavailable"
+        },
+        {
+          "id": "r3",
+          "kind": "unavailable"
+        }
+      ],
+      "reference_label": "YES"
+    },
+    {
+      "rank": 19,
+      "dataset_id": "ab7eddce-84df-4098-bc8f-500d0d9776d1",
+      "title": "ASIC - Australian Financial Services Licensee Dataset",
+      "decision": "REVIEW",
+      "evidence_id": null,
+      "reason": "The model returned an invalid decision.",
+      "controller_override": true,
+      "inspections": [
+        {
+          "resource_id": "r1",
+          "kind": "records",
+          "error": null
+        },
+        {
+          "resource_id": "r2",
+          "kind": "records",
+          "error": null
+        }
+      ],
+      "inspected_resources": [
+        {
+          "id": "r1",
+          "kind": "records"
+        },
+        {
+          "id": "r2",
+          "kind": "records"
+        }
+      ],
+      "reference_label": "YES"
+    },
+    {
+      "rank": 20,
+      "dataset_id": "abe00ded-8175-42cc-b054-3abd215f3eb8",
+      "title": "Limousine and taxi service licence values \u2013 Queensland",
+      "decision": "EXCLUDE",
+      "evidence_id": "r1",
+      "reason": "Published fields for both taxi and limousine resources are limited to service area, licence type, transfer date and transfer price \u2014 no business names, trading names, licence numbers or supplier identifiers are exposed.",
+      "controller_override": false,
+      "inspections": [
+        {
+          "resource_id": "r2",
+          "kind": "unavailable",
+          "error": null
+        },
+        {
+          "resource_id": "r3",
+          "kind": "unavailable",
+          "error": null
+        },
+        {
+          "resource_id": "r1",
+          "kind": "publisher_fields",
+          "error": null
+        },
+        {
+          "resource_id": "r4",
+          "kind": null,
+          "error": "Inspection limit reached."
+        }
+      ],
+      "inspected_resources": [
+        {
+          "id": "r2",
+          "kind": "unavailable"
+        },
+        {
+          "id": "r3",
+          "kind": "unavailable"
+        },
+        {
+          "id": "r1",
+          "kind": "publisher_fields"
+        }
+      ],
+      "reference_label": "NO"
+    },
+    {
+      "rank": 21,
+      "dataset_id": "b050b242-4487-4306-abf5-07ca073e5594",
+      "title": "ACNC Registered Charities",
+      "decision": "KEEP",
+      "evidence_id": "r1",
+      "reason": "Sample rows expose charity business identities with valid ABN values (11/11), legal names (Charity_Legal_Name with company suffixes), alternate organisation names, websites, and registered addresses.",
+      "controller_override": false,
+      "inspections": [
+        {
+          "resource_id": "r1",
+          "kind": "records",
+          "error": null
+        }
+      ],
+      "inspected_resources": [
+        {
+          "id": "r1",
+          "kind": "records"
+        }
+      ],
+      "reference_label": "YES"
+    },
+    {
+      "rank": 24,
+      "dataset_id": "f642b13c-bbe3-4e17-b6dd-f91cf273e4d0",
+      "title": "Outdoor Dining Permits",
+      "decision": "REVIEW",
+      "evidence_id": null,
+      "reason": "The model returned an invalid decision.",
+      "controller_override": true,
+      "inspections": [],
+      "inspected_resources": [],
+      "reference_label": "YES"
+    },
+    {
+      "rank": 26,
+      "dataset_id": "0a06174a-6a9e-4d8c-854f-a41320a46dcf",
+      "title": "PROV Approved Public Record Office Victoria Storage Suppliers (APROSS) 19_20",
+      "decision": "EXCLUDE",
+      "evidence_id": "r1",
+      "reason": "The resource's fields are aggregate counts and categories, not individual business identities.",
+      "controller_override": false,
+      "inspections": [
+        {
+          "resource_id": "r1",
+          "kind": "records",
+          "error": null
+        }
+      ],
+      "inspected_resources": [
+        {
+          "id": "r1",
+          "kind": "records"
+        }
+      ],
+      "reference_label": "NO"
+    },
+    {
+      "rank": 28,
+      "dataset_id": "173aed8d-d598-46b8-a21d-0ee3c0434902",
+      "title": "Building Permit Activity Monthly Summaries",
+      "decision": "REVIEW",
+      "evidence_id": "r2",
+      "reason": "The monthly workbook resources returned HTTP 403, and the only readable evidence (r1) is publisher-scope documentation stating workbooks summarize permit activity rather than showing any business identity fields.",
+      "controller_override": false,
+      "inspections": [
+        {
+          "resource_id": "r2",
+          "kind": "unavailable",
+          "error": null
+        },
+        {
+          "resource_id": "r5",
+          "kind": "unavailable",
+          "error": null
+        },
+        {
+          "resource_id": "r1",
+          "kind": "publisher_scope",
+          "error": null
+        },
+        {
+          "resource_id": "r3",
+          "kind": null,
+          "error": "Inspection limit reached."
+        },
+        {
+          "resource_id": "r4",
+          "kind": null,
+          "error": "Inspection limit reached."
+        },
+        {
+          "resource_id": "r6",
+          "kind": null,
+          "error": "Inspection limit reached."
+        }
+      ],
+      "inspected_resources": [
+        {
+          "id": "r2",
+          "kind": "unavailable"
+        },
+        {
+          "id": "r5",
+          "kind": "unavailable"
+        },
+        {
+          "id": "r1",
+          "kind": "publisher_scope"
+        }
+      ],
+      "reference_label": "NO"
+    },
+    {
+      "rank": 30,
+      "dataset_id": "1d494197-302f-4b67-adf5-1ba085b776df",
+      "title": "State Theatre Company South Australia Whistle-Blower's Disclosure 2013-2024",
+      "decision": "REVIEW",
+      "evidence_id": null,
+      "reason": "The model returned an invalid decision.",
+      "controller_override": true,
+      "inspections": [],
+      "inspected_resources": [],
+      "reference_label": "NO"
+    },
+    {
+      "rank": 32,
+      "dataset_id": "3a3661a8-ee5d-4165-be5c-018634ca7202",
+      "title": "ABN Lookup web services",
+      "decision": "REVIEW",
+      "evidence_id": "r1",
+      "reason": "Resource is a service definition requiring authentication, not actual records.",
+      "controller_override": false,
+      "inspections": [
+        {
+          "resource_id": "r1",
+          "kind": "service_definition",
+          "error": null
+        },
+        {
+          "resource_id": "r2",
+          "kind": "service_definition",
+          "error": null
+        }
+      ],
+      "inspected_resources": [
+        {
+          "id": "r1",
+          "kind": "service_definition"
+        },
+        {
+          "id": "r2",
+          "kind": "service_definition"
+        }
+      ],
+      "reference_label": "UNCERTAIN"
+    },
+    {
+      "rank": 38,
+      "dataset_id": "553b3049-2b8b-46a2-95e6-640d7986a8c1",
+      "title": "National Public Toilet Map",
+      "decision": "EXCLUDE",
+      "evidence_id": "r1",
+      "reason": "The sampled rows expose public toilet facilities (FacilityID, FacilityType values like 'Park or reserve'/'Sporting facility', address, coordinates, accessibility attributes) with no business names, suppliers, or trading names \u2014 non-business records.",
+      "controller_override": false,
+      "inspections": [
+        {
+          "resource_id": "r1",
+          "kind": "records",
+          "error": null
+        }
+      ],
+      "inspected_resources": [
+        {
+          "id": "r1",
+          "kind": "records"
+        }
+      ],
+      "reference_label": "NO"
+    },
+    {
+      "rank": 40,
+      "dataset_id": "5ddbf57c-94c3-4dd2-b41c-c1e90b9a3841",
+      "title": "IPGOD2020",
+      "decision": "KEEP",
+      "evidence_id": "r2",
+      "reason": "design-party-activity.csv exposes organisation-level party records with party_name, party_type 'organisation', and valid ABNs identifying businesses.",
+      "controller_override": false,
+      "inspections": [
+        {
+          "resource_id": "r3",
+          "kind": "records",
+          "error": null
+        },
+        {
+          "resource_id": "r2",
+          "kind": "records",
+          "error": null
+        }
+      ],
+      "inspected_resources": [
+        {
+          "id": "r3",
+          "kind": "records"
+        },
+        {
+          "id": "r2",
+          "kind": "records"
+        }
+      ],
+      "reference_label": "YES"
+    },
+    {
+      "rank": 43,
+      "dataset_id": "7c190e42-7e49-48a4-a0ab-4d4418f9055b",
+      "title": "FY 2022-23_QBCC_Contracts disclosure report",
+      "decision": "REVIEW",
+      "evidence_id": null,
+      "reason": "The model returned an invalid decision.",
+      "controller_override": true,
+      "inspections": [
+        {
+          "resource_id": "r2",
+          "kind": "unavailable",
+          "error": null
+        },
+        {
+          "resource_id": "r3",
+          "kind": "unavailable",
+          "error": null
+        },
+        {
+          "resource_id": "r1",
+          "kind": "related_fields",
+          "error": null
+        },
+        {
+          "resource_id": "r4",
+          "kind": null,
+          "error": "Inspection limit reached."
+        }
+      ],
+      "inspected_resources": [
+        {
+          "id": "r2",
+          "kind": "unavailable"
+        },
+        {
+          "id": "r3",
+          "kind": "unavailable"
+        },
+        {
+          "id": "r1",
+          "kind": "related_fields"
+        }
+      ],
+      "reference_label": "YES"
+    },
+    {
+      "rank": 48,
+      "dataset_id": "b9ad9403-81a9-4dec-8391-30a39835c025",
+      "title": "Integrated Forestry Operations Approvals (IFOAs)",
+      "decision": "REVIEW",
+      "evidence_id": null,
+      "reason": "The model returned an invalid decision.",
+      "controller_override": true,
+      "inspections": [
+        {
+          "resource_id": "r1",
+          "kind": "publisher_scope",
+          "error": null
+        },
+        {
+          "resource_id": "r3",
+          "kind": "unavailable",
+          "error": null
+        }
+      ],
+      "inspected_resources": [
+        {
+          "id": "r1",
+          "kind": "publisher_scope"
+        },
+        {
+          "id": "r3",
+          "kind": "unavailable"
+        }
+      ],
+      "reference_label": "NO"
+    },
+    {
+      "rank": 50,
+      "dataset_id": "bf0ba362-b348-4851-90b3-4e129c01c614",
+      "title": "Contact with lobbyists register - Public Sector Commission",
+      "decision": "REVIEW",
+      "evidence_id": null,
+      "reason": "The model returned an invalid decision.",
+      "controller_override": true,
+      "inspections": [
+        {
+          "resource_id": "r1",
+          "kind": "publisher_fields",
+          "error": null
+        },
+        {
+          "resource_id": "r2",
+          "kind": "unavailable",
+          "error": null
+        }
+      ],
+      "inspected_resources": [
+        {
+          "id": "r1",
+          "kind": "publisher_fields"
+        },
+        {
+          "id": "r2",
+          "kind": "unavailable"
+        }
+      ],
+      "reference_label": "YES"
+    }
+  ]
+}

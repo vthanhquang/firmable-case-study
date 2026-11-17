@@ -38,7 +38,8 @@ def page(tmp_path, monkeypatch):
               {"round": 1, "digest": "d1", "config": cfg, "holdout_report": report, "holdout_issues": [],
                "critic": {"summary": "ok", "fields": []}}]}
     (runs / "s" / "r1" / "state.json").write_text(json.dumps(st))
-    (maps / "s.json").write_text(json.dumps({"run_id": "r1", "status": "PENDING_REVIEW", "config": cfg}))
+    (maps / "s.json").write_text(json.dumps({"run_id": "r1", "status": "PENDING_REVIEW", "config": cfg,
+                                             "snapshot_sha256": st["snapshot_sha256"]}))
     alt = full(dict(CFG, fields=[dict(CFG["fields"][0], target="entity.trading_name")]))
     (out / "experiments" / "alt" / "s.json").write_text(json.dumps({"config": alt}))
     rv.approve("s", "Jane", "human")
@@ -54,3 +55,15 @@ def test_page_shows_mapping_unmapped_and_trace(page):
 def test_page_shows_decision_and_second_opinion(page):
     assert "Latest review decision:** approved by Jane" in page and "not yet decided" not in page
     assert "Second opinion" in page and "check these first" in page
+
+
+def test_experimental_report_does_not_offer_main_mapping_approval(page, tmp_path):
+    state_path = rv.RUNS / "s" / "r1" / "state.json"
+    state = json.loads(state_path.read_text(encoding="utf-8"))
+    state["experiment"] = "trial"
+    state_path.write_text(json.dumps(state), encoding="utf-8")
+
+    rv.write_report("s", "r1", out_dir=tmp_path / "trial")
+    report = (tmp_path / "trial" / "s.md").read_text(encoding="utf-8")
+    assert "outside the approval queue" in report
+    assert "firmable.cli approve" not in report

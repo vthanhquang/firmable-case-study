@@ -1,0 +1,30 @@
+name: qbcc_mfr
+version: 2
+kind: band
+target: ext.financial.revenue_band
+derivation_level: L1
+review_status: draft - band labels from the publisher; turnover caps NOT verified
+source: >
+  QBCC Minimum Financial Requirements category. Each category caps the licensee's allowable annual
+  turnover, but the caps have not been verified for this table, so min_aud / max_aud are null.
+  Codes and labels are the complete set in the full live register (195,064 rows fetched 2026-11-12):
+  SC2 73,738; SCT1 49,268; N/A 47,341; 2 9,874; 1 9,582; 3 2,701; 4 499; 5 489; 7 392; EMRSC1 391;
+  6 348; EMRSC2 259; EMR1-2 142; EMR3-7 40. The 32,000-row DataStore prefix used by the case study held
+  only SCT1. "No Financials Required" is not a revenue band (no claim).
+currency: AUD
+unlisted: error
+entries:
+  SCT1: {label: "SCT1: Self Certification - Trade", min_aud: null, max_aud: null, verified: false}
+  SC2: {label: "SC2: Self Certification - Builder/Trade", min_aud: null, max_aud: null, verified: false}
+  "1": {label: "1: Category 1", min_aud: null, max_aud: null, verified: false}
+  "2": {label: "2: Category 2", min_aud: null, max_aud: null, verified: false}
+  "3": {label: "3: Category 3", min_aud: null, max_aud: null, verified: false}
+  "4": {label: "4: Category 4", min_aud: null, max_aud: null, verified: false}
+  "5": {label: "5: Category 5", min_aud: null, max_aud: null, verified: false}
+  "6": {label: "6: Category 6", min_aud: null, max_aud: null, verified: false}
+  "7": {label: "7: Category 7", min_aud: null, max_aud: null, verified: false}
+  EMRSC1: {label: "EMRSC1: Estimated MR SC1", min_aud: null, max_aud: null, verified: false}
+  EMRSC2: {label: "EMRSC2: Estimated MR SC2", min_aud: null, max_aud: null, verified: false}
+  EMR1-2: {label: "EMR1-2: Estimated MR Cat 1-2", min_aud: null, max_aud: null, verified: false}
+  EMR3-7: {label: "EMR3-7: Estimated MR Cat 3-7", min_aud: null, max_aud: null, verified: false}
+  N/A: {code: null, label: No Financials Required}

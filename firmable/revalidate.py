@@ -30,7 +30,8 @@ def run() -> dict:
                     "warnings": [i["code"] + ":" + str(i.get("target")) for i in issues if i["severity"] == "warning"]}
         print(sid, "errors:", [(i["code"], i.get("target")) for i in out[sid]["errors"]], flush=True)
     OUT_EVAL.mkdir(parents=True, exist_ok=True)
-    (OUT_EVAL / "revalidation_current_gates.json").write_text(json.dumps(out, indent=1, default=str), encoding="utf-8")
+    (OUT_EVAL / "revalidation_current_gates.json").write_text(
+        json.dumps(out, indent=1, default=str), encoding="utf-8", newline="\n")
     return out
 
 

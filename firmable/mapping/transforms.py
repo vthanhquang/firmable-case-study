@@ -19,6 +19,11 @@ class TransformError(ValueError):
         self.code = code
 
 
+class TransformDrop(TransformError):
+    """A value the config deliberately discards (a truncated phone, a personal mailbox). It is counted
+    and shown to the reviewer as `dropped`, separately from errors, and never emitted."""
+
+
 _STATES = {
     "NSW": "NSW", "NEW SOUTH WALES": "NSW", "VIC": "VIC", "VICTORIA": "VIC", "QLD": "QLD",
     "QUEENSLAND": "QLD", "WA": "WA", "WESTERN AUSTRALIA": "WA", "SA": "SA", "SOUTH AUSTRALIA": "SA",
@@ -170,7 +175,207 @@ def op_website(v, **_):
     return s
 
 
+def op_parse_integer(v, **_):
+    v = _str(v)
+    if v is None or not v.strip():
+        return None
+    s = v.strip()
+    if not re.fullmatch(r"[+-]?(?:[0-9]+|[0-9]{1,3}(?:,[0-9]{3})+)(?:\.0+)?", s):
+        raise TransformError("INTEGER_UNPARSEABLE", repr(s))
+    return int(s.partition(".")[0].replace(",", ""))
+
+
+def op_split_regex(v, pattern: str = ";", **_):
+    """Split on a regular expression (e.g. ',\\s*|;\\s*'). Produces a list."""
+    v = _str(v)
+    if v is None:
+        return None
+    if len(pattern) > 100:
+        raise TransformError("REGEX_TOO_LONG", "")
+    parts = [p.strip() for p in re.split(pattern, v[:5000])]
+    return [p for p in parts if p] or None
+
+
+TRUTHY = ("Y", "YES", "TRUE", "1", "T")
+
+
+def op_flag(v, value: str = "", truthy: list[str] | None = None, **_):
+    """A Y/blank flag column -> `value` when the flag is set, else nothing. Used for one-column-per-tag sources."""
+    v = _str(v)
+    if v is None or not value:
+        return None
+    return value if v.strip().upper() in {t.upper() for t in (truthy or TRUTHY)} else None
+
+
+def op_crosswalk(v, table: str = "", output: str = "code", **_):
+    """Look a raw code up in a human-reviewed crosswalk table (config/crosswalks/<table>.yaml)."""
+    from .. import crosswalk
+    v = _str(v)
+    if v is None or not v.strip():
+        return None
+    if output not in ("code", "label", "key_label"):
+        raise TransformError("CROSSWALK_OUTPUT_INVALID", output)
+    try:
+        values, matched = crosswalk.lookup(table, v, output)
+    except crosswalk.CrosswalkMissing as e:
+        raise TransformError("CROSSWALK_MISSING", str(e))
+    if not matched:
+        if crosswalk.load(table).get("unlisted", "error") == "null":
+            raise TransformDrop("CROSSWALK_UNLISTED", repr(v[:80]))
+        raise TransformError("CROSSWALK_UNLISTED", repr(v[:80]))
+    if not values:
+        raise TransformDrop("CROSSWALK_NO_INFERENCE", repr(v[:80]))
+    return values if len(values) > 1 else values[0]
+
+
+def op_parse_decimal(v, **_):
+    """Parse an amount: '$1,234.50', '115,090,768', '(1,200)' (negative). Whole numbers come back as int."""
+    v = _str(v)
+    if v is None or not v.strip():
+        return None
+    s = v.strip().replace("$", "").replace(" ", "")
+    negative = s.startswith("(") and s.endswith(")")
+    s = s.strip("()")
+    if not re.fullmatch(r"[+-]?(?:[0-9]+|[0-9]{1,3}(?:,[0-9]{3})+)(?:\.[0-9]+)?", s):
+        raise TransformError("DECIMAL_UNPARSEABLE", repr(v))
+    n = float(s.replace(",", ""))
+    n = -n if negative else n
+    return int(n) if n.is_integer() and "." not in s.rstrip("0").rstrip(".") else n
+
+
+_AREA = {"NSW": "2", "ACT": "2", "VIC": "3", "TAS": "3", "QLD": "7", "SA": "8", "WA": "8", "NT": "8"}
+
+
+def op_phone_au(v, area_from_state: bool = False, on_incomplete: str = "error", **_):
+    """Australian phone -> E.164 (+61...). Input may be 'number|STATE' (two columns joined with '|'):
+    an 8-digit local number then takes the state's area code when area_from_state=true.
+    Numbers that cannot be completed (under 8 digits, or 8 digits without a state) raise
+    PHONE_INCOMPLETE, or are dropped and counted when on_incomplete='drop'."""
+    v = _str(v)
+    if v is None or not v.strip():
+        return None
+    number, _, state = v.partition("|")
+    d = ids.digits(number)
+    if not d:
+        return None
+    if d.startswith("61") and len(d) in (11, 12):
+        d = "0" + d[2:] if not d[2:].startswith(("13", "18")) else d[2:]
+    out = None
+    if len(d) == 10 and d.startswith("0"):
+        out = "+61" + d[1:]
+    elif len(d) == 10 and d.startswith(("1300", "1800")):
+        out = "+61" + d
+    elif len(d) == 9 and d.startswith("4"):
+        out = "+61" + d
+    elif len(d) == 8 and area_from_state and state.strip().upper() in _AREA:
+        out = "+61" + _AREA[state.strip().upper()] + d
+    if out is None:
+        exc = TransformDrop if on_incomplete == "drop" else TransformError
+        raise exc("PHONE_INCOMPLETE", f"{len(d)} digits")
+    return out
+
+
+_EMAIL = re.compile(r"^\s*([A-Za-z0-9._%+'-]+)@([A-Za-z0-9-]+(?:\.[A-Za-z0-9-]+)+)\s*$")
+ROLE_MAILBOXES = {"info", "enquiries", "enquiry", "admin", "administration", "reception", "contact", "contactus",
+                  "hello", "office", "mail", "accounts", "sales", "support", "service", "services", "employment",
+                  "jobs", "careers", "recruitment", "bookings", "general", "team", "help", "helpdesk", "connect"}
+
+
+def op_email_domain(v, **_):
+    """The domain of an email address, lower-cased. The local part (often a person's name) is discarded."""
+    v = _str(v)
+    if v is None or not v.strip():
+        return None
+    m = _EMAIL.match(v)
+    if not m:
+        raise TransformError("EMAIL_INVALID", "unparseable address")   # never echo the value: it may be personal
+    return m.group(2).lower()
+
+
+def op_role_email(v, **_):
+    """Keep the whole address only for a role mailbox (info@, enquiries@ ...); personal mailboxes are dropped."""
+    v = _str(v)
+    if v is None or not v.strip():
+        return None
+    m = _EMAIL.match(v)
+    if not m:
+        raise TransformError("EMAIL_INVALID", "unparseable address")
+    local = m.group(1).lower()
+    if local not in ROLE_MAILBOXES:
+        raise TransformDrop("PERSONAL_MAILBOX_DROPPED", "")
+    return f"{local}@{m.group(2).lower()}"
+
+
+def op_url_domain(v, **_):
+    """Host of a URL or bare domain, lower-cased, without scheme, path, port or a leading 'www.'."""
+    v = _str(v)
+    if v is None or not v.strip():
+        return None
+    s = v.strip().lower()
+    s = re.sub(r"^[a-z]+://", "", s).split("/")[0].split("?")[0].split(":")[0]
+    if s.startswith("www."):
+        s = s[4:]
+    if "@" in s or not re.fullmatch(r"[a-z0-9-]+(?:\.[a-z0-9-]+)+", s):
+        raise TransformError("DOMAIN_INVALID", repr(v[:80]))
+    return s
+
+
+# Australia including its external territories (Christmas Island 105.6E, Cocos 96.8E, Norfolk 167.9E):
+# a DEWR site on Christmas Island is Australian. Mainland-only boxes misreport them as foreign.
+AU_BBOX = {"lat": (-55.0, -9.0), "lon": (96.0, 168.5)}
+
+
+def op_geo_point(v, **_):
+    """'lat,lon' (two columns joined with ',') -> 'lat,lon' rounded to 6 dp, inside Australia's bounding box.
+    A literal NULL / blank part is missing, not an error."""
+    v = _str(v)
+    if v is None:
+        return None
+    parts = [p.strip() for p in v.split(",")]
+    if len(parts) != 2 or any(p.upper() in ("", "NULL", "NONE", "NAN", "0") for p in parts):
+        return None
+    try:
+        lat, lon = float(parts[0]), float(parts[1])
+    except ValueError:
+        raise TransformError("GEO_UNPARSEABLE", repr(v[:60]))
+    if not (AU_BBOX["lat"][0] <= lat <= AU_BBOX["lat"][1] and AU_BBOX["lon"][0] <= lon <= AU_BBOX["lon"][1]):
+        raise TransformError("GEO_OUTSIDE_AU", f"{lat},{lon}")
+    return f"{lat:.6f},{lon:.6f}"
+
+
+def op_country_with_region(v, aliases: dict[str, str] | None = None):
+    """Normalize an explicitly stated country, rejecting conflicts with an AU state.
+
+    Input is country|state. Missing and unrecognised countries are never guessed from the state.
+    The config supplies any additional verified ISO country aliases it wants to support.
+    """
+    if v is None:
+        return None
+    parts = str(v).split("|")
+    # The generic gatherer omits empty columns; a lone state supplies no country evidence.
+    au_regions = {"NSW", "VIC", "QLD", "SA", "WA", "TAS", "NT", "ACT", "NEW SOUTH WALES", "VICTORIA",
+                  "QUEENSLAND", "SOUTH AUSTRALIA", "WESTERN AUSTRALIA", "TASMANIA", "NORTHERN TERRITORY", "AUSTRALIAN CAPITAL TERRITORY"}
+    if len(parts) == 1:
+        if parts[0].strip().upper().rstrip(".") in au_regions:
+            return None
+        parts.append("")
+    if len(parts) != 2:
+        raise TransformError("COUNTRY_INPUT_INVALID", "Expected country|state")
+    country, region = (part.strip().upper().rstrip(".") for part in parts)
+    if not country or country in {"NULL", "NONE", "N/A"}:
+        return None
+    mapping = {"AU": "AU", "AUS": "AU", "AUSTRALIA": "AU", "NZ": "NZ", "NZL": "NZ", "NEW ZEALAND": "NZ"}
+    mapping.update({key.upper(): value.upper() for key, value in (aliases or {}).items()})
+    code = mapping.get(country)
+    if code is None or not re.fullmatch(r"[A-Z]{2}", code):
+        raise TransformError("COUNTRY_UNMAPPED", "Unrecognised country retained only in source evidence")
+    if code != "AU" and region in au_regions:
+        raise TransformError("COUNTRY_REGION_CONFLICT", "Stated country contradicts the Australian state")
+    return code
+
+
 OPS = {
+    "country_with_region": (op_country_with_region, "Country and state joined by '|'; normalize explicit country aliases and reject contradictory AU state evidence."),
     "trim": (op_trim, "Strip leading/trailing whitespace."),
     "collapse_whitespace": (op_collapse_whitespace, "Collapse internal runs of whitespace."),
     "upper": (op_upper, "Uppercase."),
@@ -186,6 +391,18 @@ OPS = {
     "split": (op_split, "args {sep: str} - one cell -> many values (one observation each)."),
     "regex_extract": (op_regex_extract, "args {pattern: str, group: int} - first match or null."),
     "website": (op_website, "Basic sanity check for a URL/domain."),
+    "parse_integer": (op_parse_integer, "Parse a whole integer, retaining zero and signs. Accepts comma grouping."),
+    "split_regex": (op_split_regex, "args {pattern: regex} - split one cell into many values on a pattern."),
+    "flag": (op_flag, "args {value: str, truthy: [str]} - a Y/blank flag column -> `value` when set, else nothing."),
+    "crosswalk": (op_crosswalk, "args {table: name, output: code|label|key_label} - look the raw value up in a "
+                                "human-reviewed table (see list_crosswalks). Unlisted raw values are errors."),
+    "parse_decimal": (op_parse_decimal, "Parse an amount ('$1,234.50', '(1,200)' negative). Whole numbers -> int."),
+    "phone_au": (op_phone_au, "args {area_from_state: bool, on_incomplete: error|drop} - AU phone -> E.164. Join the "
+                              "number with a state column using join_with '|' to complete 8-digit local numbers."),
+    "email_domain": (op_email_domain, "Email address -> its domain. The personal local part is discarded."),
+    "role_email": (op_role_email, "Keep a role mailbox (info@, enquiries@ ...); personal mailboxes are dropped."),
+    "url_domain": (op_url_domain, "URL or bare domain -> host without scheme/path/www."),
+    "geo_point": (op_geo_point, "Two columns joined with ',' (lat,lon) -> 'lat,lon' inside Australia; NULL -> missing."),
 }
 
 

@@ -1,0 +1,20 @@
+Traceback (most recent call last):
+  File "C:\Users\Quang\AppData\Local\Programs\Python\Python310\lib\runpy.py", line 196, in _run_module_as_main
+    return _run_code(code, main_globals, None,
+  File "C:\Users\Quang\AppData\Local\Programs\Python\Python310\lib\runpy.py", line 86, in _run_code
+    exec(code, run_globals)
+  File "D:\code\github_code\firmable-case-study\firmable\cli.py", line 260, in <module>
+    main()
+  File "D:\code\github_code\firmable-case-study\firmable\cli.py", line 256, in main
+    a.fn(a)
+  File "D:\code\github_code\firmable-case-study\firmable\rawdata\cli.py", line 32, in cmd_raw_onboard
+    st = onboard_extension(man[sid], doc, OUT_RD_MAPPINGS, feedback=a.feedback,
+  File "D:\code\github_code\firmable-case-study\firmable\agent\onboard.py", line 587, in onboard_extension
+    run.checkpoint("INSPECTED")
+  File "D:\code\github_code\firmable-case-study\firmable\agent\onboard.py", line 467, in _drive
+    for round_no in range(start_round, MAX_REVISIONS + 1):
+  File "D:\code\github_code\firmable-case-study\firmable\agent\onboard.py", line 143, in agent_round
+    m = llm.chat(run.messages, stage=f"propose_r{round_no}", source_id=run.sid, run_id=run.run_id,
+  File "D:\code\github_code\firmable-case-study\firmable\llm.py", line 80, in chat
+    raise BudgetExceeded(f"run token budget {TOKEN_BUDGET} exhausted")
+firmable.llm.BudgetExceeded: run token budget 600000 exhausted

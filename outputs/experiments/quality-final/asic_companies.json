@@ -1,0 +1,304 @@
+{
+  "status": "PENDING_REVIEW",
+  "run_id": "20261112T021259-c6bc15",
+  "prompt_version": "prompts-v9",
+  "model": "deepseek-v4-flash",
+  "ontology_sha256": "639b80ea6333146c7ac714cd940fcdf6b2945f451e95333b0be21174bedee5da",
+  "snapshot_sha256": "bb7935a163292c6d195bd2d5788863164f191198b3f29257fb332785f998bcea",
+  "config_digest": "494843832d4ceabdaf94a82934a6a0c98df96abda0fa897de4e0ac93a00ba59b",
+  "config": {
+    "source_id": "asic_companies",
+    "record_grain": "legal_entity",
+    "grain_rationale": "Each row is one name-history entry for one ASIC-registered company: the same ACN repeats across rows when a company has changed name (a current-name row with Current Name Indicator=Y and blank Current Name, plus former-name rows whose separate Current Name column holds the current legal name). Mapped targets are the business participant's attributes (legal name, ACN, ABN, status, type, registration date).",
+    "reader": {
+      "format": "delimited",
+      "archive_member": "COMPANY_202611.csv",
+      "encoding": "utf-8-sig",
+      "delimiter": "\t",
+      "skip_rows": 0,
+      "sheet": null,
+      "record_path": null
+    },
+    "record_id": {
+      "strategy": "content_hash",
+      "source_paths": [],
+      "rationale": "ACN is not unique per record (471 distinct ACNs over 473 profiled rows; the same ACN repeats on current-name and former-name rows). No column identifies a row, so content_hash is used."
+    },
+    "observed_at": {
+      "source_path": null,
+      "steps": [],
+      "fallback": "resource_last_modified"
+    },
+    "fields": [
+      {
+        "source_paths": [
+          "Company Name"
+        ],
+        "join_with": "",
+        "when": {
+          "source_path": "Current Name",
+          "op": "absent",
+          "values": []
+        },
+        "target": "entity.legal_name",
+        "valid_from_path": "Current Name Start Date",
+        "valid_to_path": null,
+        "validity_date_formats": [
+          "%d/%m/%Y"
+        ],
+        "claim_scope": "current_legal_name",
+        "steps": [
+          {
+            "op": "collapse_whitespace",
+            "args": {}
+          },
+          {
+            "op": "trim",
+            "args": {}
+          }
+        ],
+        "confidence": 0.8,
+        "rationale": "Publisher help file: on the row that carries no separate Current Name (the current-name row, indicator=Y), Company Name is the company's current registered legal name. Current Name Start Date is attached as that claim's start where present (usually blank on these rows, giving a null valid_from rather than a guess). Values are right-padded, so collapse_whitespace then trim."
+      },
+      {
+        "source_paths": [
+          "Current Name"
+        ],
+        "join_with": "",
+        "when": {
+          "source_path": "Current Name",
+          "op": "present",
+          "values": []
+        },
+        "target": "entity.legal_name",
+        "valid_from_path": "Current Name Start Date",
+        "valid_to_path": null,
+        "validity_date_formats": [
+          "%d/%m/%Y"
+        ],
+        "claim_scope": "current_legal_name",
+        "steps": [
+          {
+            "op": "collapse_whitespace",
+            "args": {}
+          },
+          {
+            "op": "trim",
+            "args": {}
+          }
+        ],
+        "confidence": 0.82,
+        "rationale": "Help file: on a history row the Current Name column holds the company's current legal name and Current Name Start Date dates the start of that name (day-first, e.g. 28/01/2016). That start is the only validity bound the source states for the current name."
+      },
+      {
+        "source_paths": [
+          "Company Name"
+        ],
+        "join_with": "",
+        "when": {
+          "source_path": "Current Name",
+          "op": "present",
+          "values": []
+        },
+        "target": "entity.legal_name",
+        "valid_from_path": null,
+        "valid_to_path": null,
+        "validity_date_formats": [],
+        "claim_scope": "former_legal_name",
+        "steps": [
+          {
+            "op": "collapse_whitespace",
+            "args": {}
+          },
+          {
+            "op": "trim",
+            "args": {}
+          }
+        ],
+        "confidence": 0.72,
+        "rationale": "Help file: where a row carries a separate Current Name, the Company Name on that row is a former registered name, so scope former_legal_name with no validity bounds - the extract does not establish when a former name stopped being valid. The condition is a value test on the name columns rather than the fragile Y/blank indicator."
+      },
+      {
+        "source_paths": [
+          "ACN"
+        ],
+        "join_with": "",
+        "when": null,
+        "target": "entity.acn",
+        "valid_from_path": null,
+        "valid_to_path": null,
+        "validity_date_formats": [],
+        "claim_scope": null,
+        "steps": [
+          {
+            "op": "acn",
+            "args": {}
+          }
+        ],
+        "confidence": 0.95,
+        "rationale": "Column named ACN, 9-digit shape on 473/473 profiled rows, checksum-valid on 100% of values; use the acn transform."
+      },
+      {
+        "source_paths": [
+          "ABN"
+        ],
+        "join_with": "",
+        "when": null,
+        "target": "entity.abn",
+        "valid_from_path": null,
+        "valid_to_path": null,
+        "validity_date_formats": [],
+        "claim_scope": null,
+        "steps": [
+          {
+            "op": "trim",
+            "args": {}
+          },
+          {
+            "op": "null_if",
+            "args": {
+              "values": [
+                "0",
+                "00",
+                ""
+              ]
+            }
+          },
+          {
+            "op": "abn",
+            "args": {}
+          }
+        ],
+        "confidence": 0.9,
+        "rationale": "Help file: ABN '0' is a missing value (145/473 discovery rows). null_if runs before the checksum-validating abn transform; the remaining 11-digit values validate (69.3% of rows emitted)."
+      },
+      {
+        "source_paths": [
+          "Status"
+        ],
+        "join_with": "",
+        "when": null,
+        "target": "entity.status",
+        "valid_from_path": null,
+        "valid_to_path": null,
+        "validity_date_formats": [],
+        "claim_scope": null,
+        "steps": [
+          {
+            "op": "map_enum",
+            "args": {
+              "mapping": {
+                "REGD": "active",
+                "DRGD": "deregistered",
+                "EXAD": "unknown",
+                "SOFF": "unknown"
+              },
+              "default": "unknown",
+              "passthrough": false
+            }
+          }
+        ],
+        "confidence": 0.65,
+        "rationale": "Help file: REGD registered, DRGD deregistered, EXAD covers BOTH receivership and liquidation, SOFF is strike-off action in progress. REGD->active and DRGD->deregistered are exact. EXAD is mapped explicitly to unknown rather than in_liquidation, because a receivership-only company is not in liquidation and the code cannot establish which applies. SOFF is mapped explicitly to unknown because the company is still registered while strike-off action is in progress and no canonical value fits. Both are stated explicitly rather than silently defaulted."
+      },
+      {
+        "source_paths": [
+          "Type"
+        ],
+        "join_with": "",
+        "when": null,
+        "target": "entity.entity_type",
+        "valid_from_path": null,
+        "valid_to_path": null,
+        "validity_date_formats": [],
+        "claim_scope": null,
+        "steps": [
+          {
+            "op": "map_enum",
+            "args": {
+              "mapping": {
+                "APTY": "company",
+                "APUB": "company"
+              },
+              "default": "unknown",
+              "passthrough": false
+            }
+          }
+        ],
+        "confidence": 0.75,
+        "rationale": "Type states the ASIC company type explicitly: APTY Australian proprietary company, APUB Australian public company (both profiled, including the LMGT/APUB rows). Both are companies; unlisted codes default to unknown."
+      },
+      {
+        "source_paths": [
+          "Date of Registration"
+        ],
+        "join_with": "",
+        "when": null,
+        "target": "entity.date_registered",
+        "valid_from_path": null,
+        "valid_to_path": null,
+        "validity_date_formats": [],
+        "claim_scope": "company_registration",
+        "steps": [
+          {
+            "op": "trim",
+            "args": {}
+          },
+          {
+            "op": "parse_date",
+            "args": {
+              "formats": [
+                "%d/%m/%Y"
+              ]
+            }
+          }
+        ],
+        "confidence": 0.9,
+        "rationale": "Help file: company registration event with day-first dates; all 473 profiled values match 99/99/9999 and held-out values parsed correctly."
+      }
+    ],
+    "constants": [
+      {
+        "target": "address.country",
+        "value": "AU",
+        "confidence": 0.85,
+        "rationale": "ASIC is the Australian register; every record is an Australian-registered body. No address columns exist, so only the country is defensible."
+      }
+    ],
+    "unmapped": [
+      {
+        "source_path": "Current Name Indicator",
+        "reason": "Row-level flag duplicating the name-column pattern (Y rows carry the current name in Company Name with Current Name blank); conditions are taken from the name columns themselves, so the flag is not an entity attribute."
+      },
+      {
+        "source_path": "Current Name Start Date",
+        "reason": "Dates the current-name claim only; used as valid_from_path on both current-name rules, not a standalone entity date."
+      },
+      {
+        "source_path": "Class",
+        "reason": "ASIC internal class code (LMSH limited by shares, LMGT limited by guarantee); no canonical target and no entity_type evidence beyond 'company'."
+      },
+      {
+        "source_path": "Sub Class",
+        "reason": "ASIC sub-class code (PROP/PSTC/LISN/ULSN...); no canonical target."
+      },
+      {
+        "source_path": "Previous State of Registration",
+        "reason": "Historical jurisdiction of registration, not the entity's current address; mapping it to address.state would assert a current location the register does not establish."
+      },
+      {
+        "source_path": "State Registration number",
+        "reason": "State-level registration number (mixed alphanumeric, padded); not an ACN/ABN/NZBN and the ontology has no field for it."
+      },
+      {
+        "source_path": "Modified since last report",
+        "reason": "Empty in every profiled row (present_rate 0.0); carries no information."
+      },
+      {
+        "source_path": "Date of Deregistration",
+        "reason": "Dates the end of the company registration, not the validity of any name/type/address claim; using it as valid_to would wrongly end the row's name claim and the engine ignores legacy observation.valid_to for entity history. The deregistered fact is carried by entity.status."
+      }
+    ],
+    "notes": "Reader settings from evidence: zip member COMPANY_202611.csv, utf-8-sig (BOM), tab-delimited (14 tabs per line; commas occur only inside names), no title rows. Legal names are split per the publisher help file into three complementary rules so every row yields a name: Company Name is the current legal name when no Current Name is carried on the row; Current Name is the current legal name on history rows (dated by Current Name Start Date); and Company Name on those history rows is a former legal name with no validity bounds. Dry run: 473/473 records with output, zero field errors, and 100% of rows now produce a legal_name (636 current from Company Name, 364 current from Current Name, plus 364 former-name observations). entity.status: EXAD (receivership OR liquidation) and SOFF (strike-off in progress) are mapped explicitly to unknown rather than asserting a liquidation or deregistration the source cannot establish. No address columns exist beyond the AU country constant. Record grain is the row (company name-history entry), so record_id is a content hash rather than ACN."
+  }
+}

@@ -1,4 +1,4 @@
-"""Shadow-run a challenger matching policy against the active one and diff the outcome.
+"""Compare two matching policies against the same input and diff their outcomes.
 
 This is the Part-5 "change" procedure in miniature: nothing is overwritten. We compare pair decisions
 and cluster memberships, list exactly which links/clusters would change, and which canonical entity
@@ -20,8 +20,8 @@ def _clusters(res) -> dict:
     return {e: m for e, m in out.items() if len(m) > 1}
 
 
-def run(challenger: str = "strict-v2") -> dict:
-    base, chal = resolve(policy=POLICY_VERSION), resolve(policy=challenger)
+def run(challenger: str = POLICY_VERSION, baseline: str = "strict-v1") -> dict:
+    base, chal = resolve(policy=baseline), resolve(policy=challenger)
     db = {(d["a"], d["b"]): d for d in base["decisions"]}
     dc = {(d["a"], d["b"]): d for d in chal["decisions"]}
     changed = []
@@ -43,22 +43,23 @@ def run(challenger: str = "strict-v2") -> dict:
     merged = [e for e, ms in cc.items() if len({member_b.get(m) for m in ms}) > 1]
     # Blast radius of promotion: which entity profiles would actually change? (reverse index entity -> decisions)
     from ..profiles.build import _fingerprint, materialise_with_policy
-    pa, pb = materialise_with_policy(POLICY_VERSION), materialise_with_policy(challenger)
+    pa, pb = materialise_with_policy(baseline), materialise_with_policy(challenger)
     member_to_new = {m: e for e, p in pb.items() for m in p["member_records"]}
     profile_changes = 0
     for e, p in pa.items():
         targets = {member_to_new.get(m) for m in p["member_records"]}
         if len(targets) != 1 or None in targets or _fingerprint(pb[targets.pop()]) != _fingerprint(p):
             profile_changes += 1
-    out = {"active_policy": POLICY_VERSION, "challenger_policy": challenger,
-           "multi_source_profiles_active": len(pa), "multi_source_profiles_challenger": len(pb),
+    out = {"baseline_policy": baseline, "challenger_policy": challenger,
+           "multi_source_profiles_baseline": len(pa), "multi_source_profiles_challenger": len(pb),
            "profiles_to_recompute_on_promotion": profile_changes,
            "pairs_compared": len(set(db) | set(dc)), "decisions_changed": len(changed),
-           "links_active": sum(d["decision"] == "LINK" for d in base["decisions"]),
+           "links_baseline": sum(d["decision"] == "LINK" for d in base["decisions"]),
            "links_challenger": sum(d["decision"] == "LINK" for d in chal["decisions"]),
            "clusters_split_or_shrunk": len(split), "clusters_newly_merged": len(merged),
            "entity_keys_kept": len(set(cb) & set(cc)),
            "changed_decisions": changed, "split_clusters": split}
     OUT_EVAL.mkdir(parents=True, exist_ok=True)
-    (OUT_EVAL / f"matcher_{POLICY_VERSION}_vs_{challenger}.json").write_text(json.dumps(out, indent=1), encoding="utf-8")
+    (OUT_EVAL / f"matcher_{baseline}_vs_{challenger}.json").write_text(
+        json.dumps(out, indent=1), encoding="utf-8", newline="\n")
     return {k: v for k, v in out.items() if k not in ("changed_decisions", "split_clusters")}

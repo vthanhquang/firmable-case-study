@@ -1,0 +1,568 @@
+{
+  "status": "PENDING_REVIEW",
+  "run_id": "20261112T013823-1df524",
+  "prompt_version": "prompts-v7",
+  "model": "deepseek-v4-flash",
+  "ontology_sha256": "639b80ea6333146c7ac714cd940fcdf6b2945f451e95333b0be21174bedee5da",
+  "snapshot_sha256": "69be72862e8728bfda782fc8438d8f6b16bf00f2ef99089e9c4dc2d85a8f6833",
+  "config_digest": "51e9ade621df846929372bc654adbc5e59ae982c352845a03b2591bb3964c088",
+  "config": {
+    "source_id": "acnc_charities",
+    "record_grain": "legal_entity",
+    "grain_rationale": "One record = one charity entry on the ACNC Register. Records describe the registered legal entity itself (registered name, ABN, registration date, registered address), so those are the business participant's own attributes. Remaining columns are charity classification (size, purposes, beneficiary groups, operating states/countries) with no canonical target.",
+    "reader": {
+      "format": "xlsx",
+      "archive_member": null,
+      "encoding": "utf-8-sig",
+      "delimiter": null,
+      "skip_rows": 0,
+      "sheet": "Sheet1",
+      "record_path": null
+    },
+    "record_id": {
+      "strategy": "content_hash",
+      "source_paths": [
+        "ABN",
+        "Charity_Legal_Name",
+        "Registration_Date"
+      ],
+      "rationale": "ABN alone is not unique: 6 held-out records shared an ABN key, discovery had a duplicate pair, and blank-ABN rows collide on a null key. A content hash over ABN + legal name + registration date stays traceable to a source row while separating repeated entries."
+    },
+    "observed_at": {
+      "source_path": null,
+      "steps": [],
+      "fallback": "resource_last_modified"
+    },
+    "fields": [
+      {
+        "source_paths": [
+          "Charity_Legal_Name"
+        ],
+        "join_with": "",
+        "when": null,
+        "target": "entity.legal_name",
+        "valid_from_path": null,
+        "valid_to_path": null,
+        "validity_date_formats": [],
+        "steps": [
+          {
+            "op": "trim",
+            "args": {}
+          },
+          {
+            "op": "collapse_whitespace",
+            "args": {}
+          },
+          {
+            "op": "null_if",
+            "args": {
+              "values": [
+                ""
+              ]
+            }
+          }
+        ],
+        "confidence": 0.95,
+        "rationale": "Header Charity_Legal_Name on a government charity register; values are registered legal names with legal-form suffixes (Inc, Incorporated, Ltd, 'The Trustee For ...')."
+      },
+      {
+        "source_paths": [
+          "ABN"
+        ],
+        "join_with": "",
+        "when": null,
+        "target": "entity.abn",
+        "valid_from_path": null,
+        "valid_to_path": null,
+        "validity_date_formats": [],
+        "steps": [
+          {
+            "op": "abn",
+            "args": {}
+          }
+        ],
+        "confidence": 0.97,
+        "rationale": "All values 11 digits, abn_checksum_valid_rate 1.0 on discovery; validated by the abn transform."
+      },
+      {
+        "source_paths": [
+          "Charity_Website"
+        ],
+        "join_with": "",
+        "when": null,
+        "target": "entity.website",
+        "valid_from_path": null,
+        "valid_to_path": null,
+        "validity_date_formats": [],
+        "steps": [
+          {
+            "op": "trim",
+            "args": {}
+          },
+          {
+            "op": "null_if",
+            "args": {
+              "values": [
+                ""
+              ]
+            }
+          },
+          {
+            "op": "regex_extract",
+            "args": {
+              "pattern": "(?:https?://)?(?:www\\.)?[A-Za-z0-9][A-Za-z0-9-]*(?:\\.[A-Za-z0-9][A-Za-z0-9-]*)+",
+              "group": 0
+            }
+          },
+          {
+            "op": "website",
+            "args": {}
+          }
+        ],
+        "confidence": 0.82,
+        "rationale": "Most cells hold one domain or URL. A minority concatenate multiple sites, parentheticals and prose (e.g. 'HTTPS://WWW.ALLMYLINKS.COM/... AND WWW.CHARITYCONSULTANTS.ORG.AU (WWWW.NFPCCC.AU)'); regex_extract takes the first well-formed domain so the cell yields a valid site instead of a rejected blob, then website applies the sanity check."
+      },
+      {
+        "source_paths": [
+          "Registration_Date"
+        ],
+        "join_with": "",
+        "when": null,
+        "target": "entity.date_registered",
+        "valid_from_path": null,
+        "valid_to_path": null,
+        "validity_date_formats": [],
+        "steps": [
+          {
+            "op": "parse_date",
+            "args": {
+              "formats": [
+                "%d/%m/%Y"
+              ]
+            }
+          }
+        ],
+        "confidence": 0.9,
+        "rationale": "ACNC registration date, day-first dd/mm/yyyy (476/480 in that shape). Dates the registration, not the record envelope."
+      },
+      {
+        "source_paths": [
+          "Address_Line_1",
+          "Address_Line_2",
+          "Address_Line_3"
+        ],
+        "join_with": " ",
+        "when": null,
+        "target": "address.full",
+        "valid_from_path": null,
+        "valid_to_path": null,
+        "validity_date_formats": [],
+        "steps": [
+          {
+            "op": "trim",
+            "args": {}
+          },
+          {
+            "op": "null_if",
+            "args": {
+              "values": [
+                ""
+              ]
+            }
+          },
+          {
+            "op": "collapse_whitespace",
+            "args": {}
+          }
+        ],
+        "confidence": 0.85,
+        "rationale": "Registered address street lines; Line_1 90.6% present, Lines 2-3 sparse unit/level extras."
+      },
+      {
+        "source_paths": [
+          "Town_City"
+        ],
+        "join_with": "",
+        "when": null,
+        "target": "address.locality",
+        "valid_from_path": null,
+        "valid_to_path": null,
+        "validity_date_formats": [],
+        "steps": [
+          {
+            "op": "trim",
+            "args": {}
+          },
+          {
+            "op": "null_if",
+            "args": {
+              "values": [
+                ""
+              ]
+            }
+          },
+          {
+            "op": "collapse_whitespace",
+            "args": {}
+          }
+        ],
+        "confidence": 0.93,
+        "rationale": "Suburb/locality names; casing varies in source."
+      },
+      {
+        "source_paths": [
+          "State"
+        ],
+        "join_with": "",
+        "when": null,
+        "target": "address.state",
+        "valid_from_path": null,
+        "valid_to_path": null,
+        "validity_date_formats": [],
+        "steps": [
+          {
+            "op": "state",
+            "args": {}
+          }
+        ],
+        "confidence": 0.95,
+        "rationale": "Abbreviation column, 10 distinct values; normalised to state enum."
+      },
+      {
+        "source_paths": [
+          "Postcode"
+        ],
+        "join_with": "",
+        "when": null,
+        "target": "address.postcode",
+        "valid_from_path": null,
+        "valid_to_path": null,
+        "validity_date_formats": [],
+        "steps": [
+          {
+            "op": "regex_extract",
+            "args": {
+              "pattern": "\\d{4}",
+              "group": 0
+            }
+          },
+          {
+            "op": "postcode",
+            "args": {}
+          }
+        ],
+        "confidence": 0.85,
+        "rationale": "Usually a 4-digit AU postcode, but dirty cells occur ('80571', '139658', 'Cloverdale'). regex_extract takes the first 4-digit run so an over-long cell yields the plausible postcode, and cells with no 4-digit run become null rather than errors."
+      },
+      {
+        "source_paths": [
+          "Country"
+        ],
+        "join_with": "",
+        "when": {
+          "source_path": "Country",
+          "op": "in",
+          "values": [
+            "Australia",
+            "AUSTRALIA",
+            "AU",
+            "australia",
+            "Aus"
+          ]
+        },
+        "target": "address.country",
+        "valid_from_path": null,
+        "valid_to_path": null,
+        "validity_date_formats": [],
+        "steps": [
+          {
+            "op": "trim",
+            "args": {}
+          },
+          {
+            "op": "upper",
+            "args": {}
+          },
+          {
+            "op": "map_enum",
+            "args": {
+              "mapping": {
+                "AUSTRALIA": "AU",
+                "AU": "AU"
+              },
+              "default": "AU",
+              "passthrough": false
+            }
+          }
+        ],
+        "confidence": 0.9,
+        "rationale": "Free-text AU register field with 'Australia'/'AUSTRALIA' on 99.8% of populated rows. The when-condition fires only for Australian values (case variants), so non-Australian or mistyped entries ('Singapore', 'Austria') are never rendered as AU."
+      },
+      {
+        "source_paths": [
+          "Other_Organisation_Names"
+        ],
+        "join_with": "",
+        "when": null,
+        "target": "entity.trading_name",
+        "valid_from_path": null,
+        "valid_to_path": null,
+        "validity_date_formats": [],
+        "steps": [
+          {
+            "op": "trim",
+            "args": {}
+          },
+          {
+            "op": "null_if",
+            "args": {
+              "values": [
+                "",
+                "Admin",
+                "NSP"
+              ]
+            }
+          },
+          {
+            "op": "collapse_whitespace",
+            "args": {}
+          }
+        ],
+        "confidence": 0.45,
+        "rationale": "Column explicitly holds OTHER names used by the charity (ACNC 'other organisation names'), i.e. names other than the registered legal name. Held-out values such as \"Donnybrook Men's Shed Inc.\" and 'Walker Close Community Centre' are genuine alternative/trading names, so trading_name is the right target rather than legal_name. Confidence is only moderate: the column also carries acronyms, person-like strings and near-duplicates of the legal name that cannot be filtered declaratively."
+      }
+    ],
+    "constants": [],
+    "unmapped": [
+      {
+        "source_path": "Address_Type",
+        "reason": "Constant 'Business' on all 480 scanned rows; an address label, not a canonical fact."
+      },
+      {
+        "source_path": "Date_Organisation_Established",
+        "reason": "When the organisation was established in the world, not a validity date for any canonical claim."
+      },
+      {
+        "source_path": "Charity_Size",
+        "reason": "ACNC revenue-size class (Small/Medium/Large); no canonical target and not an entity_type."
+      },
+      {
+        "source_path": "Number_of_Responsible_Persons",
+        "reason": "Count of officeholders; people counts are not entity fields."
+      },
+      {
+        "source_path": "Financial_Year_End",
+        "reason": "Accounting period end (30-Jun etc.), not an entity date or claim validity date."
+      },
+      {
+        "source_path": "Operates_in_ACT",
+        "reason": "Operational-reach flag; not the registered address state."
+      },
+      {
+        "source_path": "Operates_in_NSW",
+        "reason": "Operational-reach flag; not the registered address state."
+      },
+      {
+        "source_path": "Operates_in_NT",
+        "reason": "Operational-reach flag; not the registered address state."
+      },
+      {
+        "source_path": "Operates_in_QLD",
+        "reason": "Operational-reach flag; not the registered address state."
+      },
+      {
+        "source_path": "Operates_in_SA",
+        "reason": "Operational-reach flag; not the registered address state."
+      },
+      {
+        "source_path": "Operates_in_TAS",
+        "reason": "Operational-reach flag; not the registered address state."
+      },
+      {
+        "source_path": "Operates_in_VIC",
+        "reason": "Operational-reach flag; not the registered address state."
+      },
+      {
+        "source_path": "Operates_in_WA",
+        "reason": "Operational-reach flag; not the registered address state."
+      },
+      {
+        "source_path": "Operating_Countries",
+        "reason": "Comma-separated ISO3 operating country codes (AUS, PNG, NZL); describes where the charity operates, not the country of its registered address."
+      },
+      {
+        "source_path": "PBI",
+        "reason": "Public Benevolent Institution tax concession flag; no canonical target."
+      },
+      {
+        "source_path": "HPC",
+        "reason": "Health Promotion Charity tax concession flag; no canonical target."
+      },
+      {
+        "source_path": "Preventing_or_relieving_suffering_of_animals",
+        "reason": "Charitable purpose flag; no canonical target."
+      },
+      {
+        "source_path": "Advancing_Culture",
+        "reason": "Charitable purpose flag; no canonical target."
+      },
+      {
+        "source_path": "Advancing_Education",
+        "reason": "Charitable purpose flag; no canonical target."
+      },
+      {
+        "source_path": "Advancing_Health",
+        "reason": "Charitable purpose flag; no canonical target."
+      },
+      {
+        "source_path": "Promote_or_oppose_a_change_to_law__government_poll_or_prac",
+        "reason": "Charitable purpose flag; no canonical target."
+      },
+      {
+        "source_path": "Advancing_natual_environment",
+        "reason": "Charitable purpose flag; no canonical target."
+      },
+      {
+        "source_path": "Promoting_or_protecting_human_rights",
+        "reason": "Charitable purpose flag; no canonical target."
+      },
+      {
+        "source_path": "Purposes_beneficial_to_ther_general_public_and_other_analogous",
+        "reason": "Charitable purpose flag; no canonical target."
+      },
+      {
+        "source_path": "Promoting_reconciliation__mutual_respect_and_tolerance",
+        "reason": "Charitable purpose flag; no canonical target."
+      },
+      {
+        "source_path": "Advancing_Religion",
+        "reason": "Charitable purpose flag; no canonical target."
+      },
+      {
+        "source_path": "Advancing_social_or_public_welfare",
+        "reason": "Charitable purpose flag; no canonical target."
+      },
+      {
+        "source_path": "Advancing_security_or_safety_of_Australia_or_Australian_public",
+        "reason": "Charitable purpose flag; no canonical target."
+      },
+      {
+        "source_path": "Aboriginal_or_TSI",
+        "reason": "Beneficiary group flag; no canonical target."
+      },
+      {
+        "source_path": "Adults",
+        "reason": "Beneficiary group flag; no canonical target."
+      },
+      {
+        "source_path": "Aged_Persons",
+        "reason": "Beneficiary group flag; no canonical target."
+      },
+      {
+        "source_path": "Children",
+        "reason": "Beneficiary group flag; no canonical target."
+      },
+      {
+        "source_path": "Communities_Overseas",
+        "reason": "Beneficiary group flag; no canonical target."
+      },
+      {
+        "source_path": "Early_Childhood",
+        "reason": "Beneficiary group flag; no canonical target."
+      },
+      {
+        "source_path": "Ethnic_Groups",
+        "reason": "Beneficiary group flag; no canonical target."
+      },
+      {
+        "source_path": "Families",
+        "reason": "Beneficiary group flag; no canonical target."
+      },
+      {
+        "source_path": "Females",
+        "reason": "Beneficiary group flag; no canonical target."
+      },
+      {
+        "source_path": "Financially_Disadvantaged",
+        "reason": "Beneficiary group flag; no canonical target."
+      },
+      {
+        "source_path": "LGBTIQA+",
+        "reason": "Beneficiary group flag; no canonical target."
+      },
+      {
+        "source_path": "General_Community_in_Australia",
+        "reason": "Beneficiary group flag; no canonical target."
+      },
+      {
+        "source_path": "Males",
+        "reason": "Beneficiary group flag; no canonical target."
+      },
+      {
+        "source_path": "Migrants_Refugees_or_Asylum_Seekers",
+        "reason": "Beneficiary group flag; no canonical target."
+      },
+      {
+        "source_path": "Other_Beneficiaries",
+        "reason": "Beneficiary group flag; no canonical target."
+      },
+      {
+        "source_path": "Other_Charities",
+        "reason": "Beneficiary group flag; no canonical target."
+      },
+      {
+        "source_path": "People_at_risk_of_homelessness",
+        "reason": "Beneficiary group flag; no canonical target."
+      },
+      {
+        "source_path": "People_with_Chronic_Illness",
+        "reason": "Beneficiary group flag; no canonical target."
+      },
+      {
+        "source_path": "People_with_Disabilities",
+        "reason": "Beneficiary group flag; no canonical target."
+      },
+      {
+        "source_path": "Pre_Post_Release_Offenders",
+        "reason": "Beneficiary group flag; no canonical target."
+      },
+      {
+        "source_path": "Rural_Regional_Remote_Communities",
+        "reason": "Beneficiary group flag; no canonical target."
+      },
+      {
+        "source_path": "Unemployed_Person",
+        "reason": "Beneficiary group flag; no canonical target."
+      },
+      {
+        "source_path": "Veterans_or_their_families",
+        "reason": "Beneficiary group flag; no canonical target."
+      },
+      {
+        "source_path": "Victims_of_crime",
+        "reason": "Beneficiary group flag; no canonical target."
+      },
+      {
+        "source_path": "Victims_of_Disasters",
+        "reason": "Beneficiary group flag; no canonical target."
+      },
+      {
+        "source_path": "Youth",
+        "reason": "Beneficiary group flag; no canonical target."
+      },
+      {
+        "source_path": "animals",
+        "reason": "Beneficiary group flag; no canonical target."
+      },
+      {
+        "source_path": "environment",
+        "reason": "Beneficiary group flag; no canonical target."
+      },
+      {
+        "source_path": "other_gender_identities",
+        "reason": "Beneficiary group flag; no canonical target."
+      }
+    ],
+    "notes": "Revision after critic review. (1) record_id switched from columns[ABN] to content_hash over ABN+legal name+registration date because 6 held-out records shared an ABN and blank-ABN rows collide. (2) entity.website now extracts the first well-formed domain before the website check, so cells listing several URLs no longer produce WEBSITE_INVALID. (3) address.postcode extracts the first 4-digit run so '80571'/'139658'/'Cloverdale' style cells resolve or null out instead of erroring. (4) address.country: passthrough disabled and the rule guarded by a when-condition restricting it to Australian values; the unconditional 'AU' constant was removed so no duplicate conflicting observation is emitted. (5) Other_Organisation_Names is now mapped to entity.trading_name (per critic 'missed' suggestion) at low confidence because the column mixes genuine alternative names with acronyms and person-like strings. entity.status and entity.entity_type are deliberately unmapped: the register lists currently registered charities only, and no column states a legal form plainly enough to avoid guessing."
+  }
+}

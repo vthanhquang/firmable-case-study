@@ -1,0 +1,100 @@
+<!doctype html>
+<html lang="en" data-type="software">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="description" content="Explore the Firmable case study shortlist, audit decisions, and source previews.">
+  <meta name="page-type" content="software">
+  <meta name="site-kind" content="software">
+  <meta property="og:title" content="Firmable Case Study">
+  <meta property="og:description" content="Follow public records through schema mapping, entity matching, and company profiles.">
+  <meta name="theme-color" content="#f8f8f4">
+  <title>Demo · Firmable Case Study</title>
+  <link rel="icon" type="image/png" href="/favicon.png">
+  <link rel="stylesheet" href="/style.css">
+  <script type="module" src="/app.js"></script>
+</head>
+<body>
+  <a class="skip-link" href="#main">Skip to content</a>
+  <header class="site-header">
+    <div class="wrap masthead">
+      <a class="brand" href="/" aria-label="Firmable Case Study home">
+        <span class="mark" aria-hidden="true"><i></i><i></i><i></i></span>
+        <strong>Firmable</strong>
+        <span class="brand-context">Case study</span>
+      </a>
+      <nav class="part-nav" aria-label="Case study parts">
+        <a href="/" data-part="demo" aria-current="page">Demo</a>
+        <a href="/?part=discovery" data-part="discovery">Discovery</a>
+        <a href="/?part=mapping" data-part="mapping">Mapping</a>
+        <a href="/?part=identity" data-part="identity">Identity</a>
+        <a href="/?part=profiles" data-part="profiles">Profiles</a>
+        <a href="/?part=write-up" data-part="write-up">Write-up</a>
+        <a href="/?part=architecture" data-part="architecture">Architecture</a>
+      </nav>
+    </div>
+  </header>
+  <main id="main" class="wrap" tabindex="-1">
+    <div id="discovery" hidden>
+      <section class="overview" aria-labelledby="page-title">
+        <div class="page-intro" data-enter>
+          <p class="eyebrow">Part 1 of 5</p>
+          <h1 id="page-title">Discovery &amp; triage</h1>
+          <p class="intro">From the Australian open-data catalogue to a shortlist of business datasets. Explore the ranking, the audit, and the records behind each decision.</p>
+        </div>
+        <div id="summary" class="summary" aria-label="Discovery results" aria-busy="true"></div>
+        <div class="overview-grid">
+          <section class="overview-block" aria-labelledby="outcome-title">
+            <div class="block-title"><h2 id="outcome-title">Audit outcome</h2><span class="quiet-label" id="audit-review-status">Audit review</span></div>
+            <div id="outcome"></div>
+          </section>
+          <section class="overview-block pilot-block" aria-labelledby="evidence-title">
+            <div class="block-title"><h2 id="evidence-title">Ranking and evidence</h2></div>
+            <p id="ranking-result" class="pilot-result"></p>
+            <a class="text-button" href="/discovery-audit.csv" download>Download audit CSV <span aria-hidden="true">↓</span></a>
+          </section>
+        </div>
+      </section>
+      <section class="catalogue" aria-labelledby="dataset-title">
+        <div class="section-heading">
+          <div><h2 id="dataset-title">Explore the datasets</h2><p>Open an entry to see its ranking signals, audit verdict, and source preview.</p></div>
+          <button id="show-method" class="text-button" type="button">How it was ranked <span aria-hidden="true">↗</span></button>
+        </div>
+        <div class="toolbar">
+          <div class="view-nav" aria-label="Dataset lists">
+            <button type="button" data-view="audit" aria-pressed="true">Audit sample <span id="audit-tab-count"></span></button>
+            <button type="button" data-view="all" aria-pressed="false">Full shortlist <span id="all-tab-count"></span></button>
+          </div>
+          <div class="filters">
+            <label class="search"><span class="search-icon" aria-hidden="true"></span><span class="sr-only">Search datasets</span><input id="search" type="search" placeholder="Search datasets" autocomplete="off"></label>
+            <label id="verdict-field" class="filter"><span class="sr-only">Filter by audit verdict</span><select id="verdict"><option value="">All verdicts</option><option>Yes</option><option>No</option><option>Uncertain</option></select></label>
+          </div>
+        </div>
+        <p id="load-error" role="status" hidden>Results could not be loaded. Reload the page to try again.</p>
+        <div class="table-scroll">
+          <table class="dataset-table">
+            <caption class="sr-only">Ranked business dataset candidates</caption>
+            <thead><tr><th scope="col" class="rank-cell">Rank</th><th scope="col">Dataset</th><th scope="col" class="format-cell">Format</th><th scope="col" class="result-cell" id="verdict-column">Verdict</th><th scope="col" class="points-cell">Points</th><th scope="col" class="detail-column"><span class="sr-only">Details</span></th></tr></thead>
+            <tbody id="datasets"></tbody>
+          </table>
+        </div>
+        <p id="empty" class="empty" hidden>No datasets match your search.</p>
+        <p id="list-count" class="list-count" aria-live="polite"></p>
+      </section>
+    </div>
+    <div id="part-content" hidden></div>
+  </main>
+  <footer class="wrap footer"><span>Firmable Case Study</span><span id="snapshot-date"></span></footer>
+  <dialog id="detail" class="drawer" aria-labelledby="detail-title">
+    <div class="drawer-shell">
+      <div class="drawer-bar"><p id="detail-label" class="eyebrow"></p><button type="button" class="icon-button" id="close-detail" aria-label="Close details" autofocus>×</button></div>
+      <div class="drawer-content" id="detail-content"></div>
+      <div class="drawer-footer" id="drawer-footer" hidden>
+        <button type="button" id="prev-dataset">← Previous</button>
+        <span id="detail-position"></span>
+        <button type="button" id="next-dataset">Next →</button>
+      </div>
+    </div>
+  </dialog>
+</body>
+</html>

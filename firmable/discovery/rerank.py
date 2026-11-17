@@ -20,11 +20,12 @@ from ..paths import HTTP_CACHE, OUT_DISCOVERY
 from .triage import PORTAL, confidence, discover, score_package
 
 TOP_N = 150
-ID_COLS = re.compile(r"\b(abn|acn|nzbn)\b|australian business number|company number", re.I)
-NAME_COLS = re.compile(r"(business|company|legal|trading|entity|organi[sz]ation|supplier|vendor|contractor|provider|"
-                       r"employer|operator|licensee|holder|applicant|party|charity|recipient|tenderer|firm)[ _]*(name)?|"
-                       r"^name$", re.I)
-AGG_COLS = re.compile(r"(count|total|number|percent|average|median|rate|sum|value|amount)", re.I)
+ID_COLS = re.compile(r"\b(?:abn|acn|nzbn|business number|company number)\b")
+ID_QUALIFIERS = re.compile(r"\b(?:status|date|type|flag|required|valid|validation)\b")
+ENTITY_ROLE = re.compile(r"\b(?:business|company|legal|trading|entity|organi[sz]ation|supplier|vendor|contractor|"
+                         r"provider|employer|operator|licensee|licen[cs]e holder|charity|tenderer|firm|non individual)\b")
+NON_ENTITY = re.compile(r"\b(?:business unit|contact person|(?:first|given|last|family) name)\b")
+AGG_COLS = re.compile(r"\b(?:counts?|totals?|number of|percent(?:age)?|average|median|rate|sum|value|amount|price)\b")
 UA = {"User-Agent": "firmable-case-study/0.1"}
 
 
@@ -75,9 +76,14 @@ def _columns(pkg: dict) -> tuple[list[str], str]:
 def column_score(cols: list[str]) -> tuple[float, list[str]]:
     if not cols:
         return 0.0, ["columns_unavailable(0)"]
-    ids = [c for c in cols if ID_COLS.search(c)]
-    names = [c for c in cols if NAME_COLS.search(c.strip())]
-    aggs = [c for c in cols if AGG_COLS.search(c)]
+    labels = []
+    for col in cols:
+        words = re.sub(r"([a-z])([A-Z])", r"\1 \2", col)
+        labels.append((col, re.sub(r"[^a-z0-9]+", " ", words.lower()).strip()))
+    eligible = [(c, label) for c, label in labels if not (AGG_COLS.search(label) or NON_ENTITY.search(label))]
+    ids = [c for c, label in eligible if ID_COLS.search(label) and not ID_QUALIFIERS.search(label)]
+    names = [c for c, label in eligible if {"name", "names"}.intersection(label.split()) and ENTITY_ROLE.search(label)]
+    aggs = [c for c, label in labels if AGG_COLS.search(label)]
     s, why = 0.0, []
     if ids:
         s += 3; why.append(f"identifier_column:{ids[0]}(+3)")

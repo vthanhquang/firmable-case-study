@@ -3,11 +3,14 @@
 - **Latest review decision:** approved by claude-code (AI assistant acting for the candidate) (ai_assistant_proxy) at 2026-11-09T20:58:46+00:00
 - **Status:** PENDING_REVIEW  (run `20261110T035350-5f82db`, prompt `prompts-v1`, model `deepseek-v4-flash`)
 - **Dataset:** ASIC – Credit Licensee Dataset — Australian Securities and Investments Commission (ASIC)
-- **Resource:** Credit Licence Dataset - Current (TSV), sha256 `74fc2f5f73e64331…`
+- **Resource:** Credit Licence Dataset - Current (TSV), sha256 `74fc2f5f73e64331dd36538e1fee47ed474c33c161f7c9bf990efe7aa5f8a218`
 - **Licence:** cc-by
 - **Agent effort:** 2 proposal(s), 12 tool calls, 11 model calls, 150,259 prompt + 10,979 completion tokens, 79s model time
 
-## Final proposal (v1, digest `9f9a398f76545ac5`)
+**Current extraction:** Legacy record-level validity rules below have no effect on
+claims. Check each claim's validity paths before approving.
+
+## Final proposal (v1, digest `93e42b99014c322d168ee0c545d44f1bf6f2d61aba6e01df63336e42ba1e7b45`)
 
 **Record grain:** `licence_or_permit` — Each row is one ASIC credit licence (CRED_LIC_NUM) held by a licensee. The business participant is the licensee named in CRED_LIC_NAME; the licence number itself is the record identifier, not a business identifier.
 
@@ -19,10 +22,10 @@
 
 | source column(s) | canonical target | transforms | conf. | held-out emitted / present | errors | rationale |
 |---|---|---|---|---|---|---|
-| CRED_LIC_NAME | `entity.legal_name` | trim, collapse_whitespace | 0.7 | 1136 / 1136 |  | ASIC register name of the licensee, presented as a registered-style name (mostly '... PTY LTD'/'... LIMITED'); some rows are individuals (e.g. 'TAN, JINTANG'),  |
-| CRED_LIC_BN | `entity.trading_name` | trim, collapse_whitespace | 0.6 | 370 / 370 |  | ASIC 'business name' column, free of tilde separators, present on 34.5% of rows and clearly a trading/display name (e.g. 'DISCOVERY FINANCIAL MANAGEMENT' under  |
-| CRED_LIC_ABN_ACN | `entity.abn` | trim, null_if({"values": ["0", ""]}), regex_extract({"pattern": "^\\d{11}$", "group": 0}), abn | 0.8 | 1023 / 1136 |  | Mixed ABN/ACN column. Only the 11-digit shape (420/464 discovery rows, 90.5% ABN-checksum-valid) is an ABN by definition; regex_extract restricts the transform  |
-| CRED_LIC_ABN_ACN | `entity.acn` | trim, null_if({"values": ["0", ""]}), regex_extract({"pattern": "^\\d{9}$", "group": 0}), acn | 0.55 | 91 / 1136 |  | The 9-digit values (27/464 discovery rows, e.g. 601283201) in this combined ABN_ACN column are ACNs and pass the ACN checksum; passed through the checksum-valid |
+| CRED_LIC_NAME | `entity.legal_name` | trim, collapse_whitespace | 0.7 | 1136 / 1136 |  | ASIC register name of the licensee, presented as a registered-style name (mostly '... PTY LTD'/'... LIMITED'); some rows are individuals (e.g. 'TAN, JINTANG'), which are the licensee legal names of sole traders, not contact people. |
+| CRED_LIC_BN | `entity.trading_name` | trim, collapse_whitespace | 0.6 | 370 / 370 |  | ASIC 'business name' column, free of tilde separators, present on 34.5% of rows and clearly a trading/display name (e.g. 'DISCOVERY FINANCIAL MANAGEMENT' under LUNAWAVE PTY. LIMITED), not the registered name. |
+| CRED_LIC_ABN_ACN | `entity.abn` | trim, null_if({"values": ["0", ""]}), regex_extract({"pattern": "^\\d{11}$", "group": 0}), abn | 0.8 | 1023 / 1136 |  | Mixed ABN/ACN column. Only the 11-digit shape (420/464 discovery rows, 90.5% ABN-checksum-valid) is an ABN by definition; regex_extract restricts the transform to that shape so 9-digit ACNs and 7-8 digit values resolve to null instead of raising ABN_LENGTH errors. |
+| CRED_LIC_ABN_ACN | `entity.acn` | trim, null_if({"values": ["0", ""]}), regex_extract({"pattern": "^\\d{9}$", "group": 0}), acn | 0.55 | 91 / 1136 |  | The 9-digit values (27/464 discovery rows, e.g. 601283201) in this combined ABN_ACN column are ACNs and pass the ACN checksum; passed through the checksum-validating acn transform. Taken from an explicit ACN value in the source, never derived from an ABN. |
 | CRED_LIC_LOCALITY | `address.locality` | trim, collapse_whitespace | 0.9 | 1136 / 1136 |  | Suburb/locality column, 100% present, matches AU place names. |
 | CRED_LIC_STATE | `address.state` | trim, upper, state | 0.95 | 1136 / 1136 |  | Two-letter AU state abbreviations, 8 distinct, all within the enum. |
 | CRED_LIC_PCODE | `address.postcode` | trim, postcode | 0.9 | 1136 / 1136 |  | All values 4-digit AU postcode shape. |

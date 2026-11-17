@@ -1,0 +1,342 @@
+{
+  "status": "PENDING_REVIEW",
+  "run_id": "20261112T023946-7cb0f3",
+  "prompt_version": "prompts-v9",
+  "model": "deepseek-v4-flash",
+  "ontology_sha256": "639b80ea6333146c7ac714cd940fcdf6b2945f451e95333b0be21174bedee5da",
+  "snapshot_sha256": "0034e176b580405064272e688c7bf51230f051880263cdeeb5107ac00bd7a979",
+  "config_digest": "c3ab79de711e2257cd0982e981cb7ab0a89501e15cdd31b679bc03f3883aafb2",
+  "config": {
+    "source_id": "dewr_employment_providers",
+    "record_grain": "establishment",
+    "grain_rationale": "One record is one contracted employment-services SITE (delivery location) at which a provider organisation delivers a particular contract program (DESA/DESB/EPS5/TTW5/RJCP/NEI5 etc.). The business participant is the provider organisation named in SITE_NAME; its attributes (trading name, website, site address) are mapped. DIS_SITE_CODE is the department-issued site/delivery-point identifier, not a business identifier, so it is not mapped as an entity field. CONTRACT_NAME is the program that the record's grain is defined by, but it is a contract attribute, not an entity field, so it stays unmapped.",
+    "reader": {
+      "format": "delimited",
+      "archive_member": null,
+      "encoding": "utf-8-sig",
+      "delimiter": ",",
+      "skip_rows": 0,
+      "sheet": null,
+      "record_path": null
+    },
+    "record_id": {
+      "strategy": "content_hash",
+      "source_paths": [],
+      "rationale": "DIS_SITE_CODE is not unique per row (489 distinct over 505 discovery rows; the same site code repeats once per contract program, e.g. A230 DESB vs A290 DESB), and no other column is unique either, so a content hash over the whole row is the only traceable identifier."
+    },
+    "observed_at": {
+      "source_path": null,
+      "steps": [],
+      "fallback": "resource_last_modified"
+    },
+    "fields": [
+      {
+        "source_paths": [
+          "SITE_NAME"
+        ],
+        "join_with": " ",
+        "when": null,
+        "target": "entity.trading_name",
+        "valid_from_path": null,
+        "valid_to_path": null,
+        "validity_date_formats": [],
+        "claim_scope": null,
+        "steps": [
+          {
+            "op": "collapse_whitespace",
+            "args": {}
+          },
+          {
+            "op": "trim",
+            "args": {}
+          },
+          {
+            "op": "null_if",
+            "args": {
+              "values": [
+                "",
+                "NULL",
+                "null",
+                "TBA",
+                "N/A",
+                "NA",
+                "-"
+              ]
+            }
+          }
+        ],
+        "confidence": 0.62,
+        "rationale": "SITE_NAME is the name the provider trades under at the delivery site, e.g. 'MAX Employment', 'Advanced Personnel Management (APM)', 'Job Centre Australia', 'ORS Employment Solutions'. These are service-delivery/brand names rather than registered legal names (the file contains no ACN/ABN and no legal-name column), so this is mapped to trading_name only. A few values carry legal-form suffixes ('OCTEC Limited', 'The Salvation Army Employment Plus'), but the register does not assert that these are the registered legal names and the same column also holds brand labels, so the whole column is kept as trading_name rather than splitting it by suffix guesswork."
+      },
+      {
+        "source_paths": [
+          "SITE_ADDRESS_LN"
+        ],
+        "join_with": " ",
+        "when": null,
+        "target": "address.full",
+        "valid_from_path": null,
+        "valid_to_path": null,
+        "validity_date_formats": [],
+        "claim_scope": "licensed_premises",
+        "steps": [
+          {
+            "op": "collapse_whitespace",
+            "args": {}
+          },
+          {
+            "op": "trim",
+            "args": {}
+          },
+          {
+            "op": "null_if",
+            "args": {
+              "values": [
+                "",
+                "NULL",
+                "null",
+                "TBA",
+                "TBC",
+                "N/A",
+                "NA",
+                "-",
+                "UNKNOWN"
+              ]
+            }
+          }
+        ],
+        "confidence": 0.72,
+        "rationale": "Street address line of the contracted delivery site. Scope is the site/premises at which employment services are delivered under the contract, not the organisation's registered office. Values sometimes embed suburb text because the source line is free text. Placeholder strings ('TBA' seen in held-out rows) are nulled rather than emitted as an address."
+      },
+      {
+        "source_paths": [
+          "SITE_LOCALITY_NAME"
+        ],
+        "join_with": " ",
+        "when": null,
+        "target": "address.locality",
+        "valid_from_path": null,
+        "valid_to_path": null,
+        "validity_date_formats": [],
+        "claim_scope": "licensed_premises",
+        "steps": [
+          {
+            "op": "collapse_whitespace",
+            "args": {}
+          },
+          {
+            "op": "trim",
+            "args": {}
+          },
+          {
+            "op": "null_if",
+            "args": {
+              "values": [
+                "",
+                "NULL",
+                "null",
+                "TBA",
+                "N/A",
+                "NA",
+                "-"
+              ]
+            }
+          }
+        ],
+        "confidence": 0.8,
+        "rationale": "Locality/suburb of the site; duplicates LOCATION_NAME exactly in the sample (412 distinct in both)."
+      },
+      {
+        "source_paths": [
+          "SITE_STATE_CD"
+        ],
+        "join_with": " ",
+        "when": null,
+        "target": "address.state",
+        "valid_from_path": null,
+        "valid_to_path": null,
+        "validity_date_formats": [],
+        "claim_scope": "licensed_premises",
+        "steps": [
+          {
+            "op": "trim",
+            "args": {}
+          },
+          {
+            "op": "null_if",
+            "args": {
+              "values": [
+                "",
+                "NULL",
+                "null",
+                "TBA",
+                "N/A",
+                "NA",
+                "-"
+              ]
+            }
+          },
+          {
+            "op": "state",
+            "args": {}
+          }
+        ],
+        "confidence": 0.9,
+        "rationale": "Two-letter AU state/territory code of the site; 8 distinct values, all standard abbreviations."
+      },
+      {
+        "source_paths": [
+          "SITE_POSTCODE"
+        ],
+        "join_with": " ",
+        "when": null,
+        "target": "address.postcode",
+        "valid_from_path": null,
+        "valid_to_path": null,
+        "validity_date_formats": [],
+        "claim_scope": "licensed_premises",
+        "steps": [
+          {
+            "op": "trim",
+            "args": {}
+          },
+          {
+            "op": "null_if",
+            "args": {
+              "values": [
+                "",
+                "NULL",
+                "null",
+                "TBA",
+                "N/A",
+                "NA",
+                "-"
+              ]
+            }
+          },
+          {
+            "op": "postcode",
+            "args": {}
+          }
+        ],
+        "confidence": 0.9,
+        "rationale": "4-digit AU postcode of the site; 13 rows have 3-digit values which are NT postcodes and need re-padding, which the postcode transform handles."
+      },
+      {
+        "source_paths": [
+          "SITE_URL"
+        ],
+        "join_with": " ",
+        "when": null,
+        "target": "entity.website",
+        "valid_from_path": null,
+        "valid_to_path": null,
+        "validity_date_formats": [],
+        "claim_scope": null,
+        "steps": [
+          {
+            "op": "trim",
+            "args": {}
+          },
+          {
+            "op": "null_if",
+            "args": {
+              "values": [
+                "",
+                "NULL",
+                "null",
+                "TBA",
+                "N/A",
+                "NA",
+                "-"
+              ]
+            }
+          },
+          {
+            "op": "regex_extract",
+            "args": {
+              "pattern": "(?:https?://)?(?:[A-Za-z0-9](?:[A-Za-z0-9-]*[A-Za-z0-9])?\\.)+[A-Za-z]{2,}(?:/[^\\s]*)?",
+              "group": 0
+            }
+          },
+          {
+            "op": "regex_extract",
+            "args": {
+              "pattern": "^(?:https?://)?(.*?)/?$",
+              "group": 1
+            }
+          },
+          {
+            "op": "website",
+            "args": {}
+          }
+        ],
+        "confidence": 0.6,
+        "rationale": "Provider website, often organisation-level and repeated across that provider's sites (www.apm.net.au x46). 57.6% present. Held-out rows show the column is dirty: some cells hold a bare phone number ('467027758') or 'TTY: 03 96143062'. A domain regex first extracts only a URL-shaped token (dropping 'TTY: 03 96143062' and digit-only cells to null), and the scheme/trailing slash are stripped so http://maxsolutions.com.au/ and www.apm.net.au emit in the same shape before the website check."
+      }
+    ],
+    "constants": [
+      {
+        "target": "address.country",
+        "value": "AU",
+        "confidence": 0.9,
+        "rationale": "Australian Government (DEWR) employment-services provider register; all site state codes are AU states/territories and postcodes are Australian."
+      }
+    ],
+    "unmapped": [
+      {
+        "source_path": "DIS_SITE_CODE",
+        "reason": "Department-issued site/delivery-point identifier (shape a99/a999, repeats once per contract program). Record's own site ID, not a business identifier, and not unique per record."
+      },
+      {
+        "source_path": "CONTRACT_NAME",
+        "reason": "Employment-services contract program code (DESA, DESB, EPS5, TTW5, RJCP, NEI5...). It is the discriminator that makes the record grain a contracted delivery programme, but it describes a government contract, not the legal entity: there is no contract/entity field for it in the ontology and it is not an ANZSIC code, so it cannot go to entity.industry_code or entity.entity_type."
+      },
+      {
+        "source_path": "LOCATION_NAME",
+        "reason": "Site town label, duplicating SITE_LOCALITY_NAME; mapping both would emit duplicate address.locality observations."
+      },
+      {
+        "source_path": "SITE_CONTACT_PHONE",
+        "reason": "Site contact phone number; the ontology has no telephone field."
+      },
+      {
+        "source_path": "PHONE_NUMBER",
+        "reason": "Site phone number (mixed 4-10 digit values); no telephone target in the ontology."
+      },
+      {
+        "source_path": "AGENT_FREECALL_NUM",
+        "reason": "Agent freecall/helpline number; telephone data, no ontology target. 72.7% blank."
+      },
+      {
+        "source_path": "SITE_EMAIL_ADDRESS",
+        "reason": "Site contact email address; no email field in the ontology. Many are personal-name mailboxes, i.e. contact details rather than entity attributes."
+      },
+      {
+        "source_path": "ESA_CD_1",
+        "reason": "Employment Services Area / contract region code (5SYW, 4CAL, 5ACT...). A departmental service-area classification, not an ANZSIC industry code, so it cannot map to entity.industry_code; it also does not cleanly decompose into a state value and is not mapped to address.state."
+      },
+      {
+        "source_path": "ESA_CD_2",
+        "reason": "Entirely blank in discovery (present_rate 0.0)."
+      },
+      {
+        "source_path": "ESA_CD_3",
+        "reason": "Entirely blank in discovery (present_rate 0.0)."
+      },
+      {
+        "source_path": "LATITUDE",
+        "reason": "Geocoordinate of the site; 7 rows literally contain 'NULL' and the ontology has no coordinate target."
+      },
+      {
+        "source_path": "LONGITUDE",
+        "reason": "Geocoordinate of the site; same rationale as LATITUDE."
+      },
+      {
+        "source_path": "column_18",
+        "reason": "Empty column produced by a trailing comma in the header row; contains no data."
+      }
+    ],
+    "notes": "Header is on line 1 (skip_rows=0). No ABN/ACN/NZBN column exists in the file, so no identifier is mapped. entity.legal_name is deliberately left unmapped: SITE_NAME carries trading/brand names ('MAX Employment', 'Advanced Personnel Management (APM)') and is not asserted to be the registered legal name, even where a few values happen to carry a legal suffix. entity.status left unmapped: the register lists currently contracted delivery sites and has no legal-entity registration status column. entity.entity_type left unmapped (defaults to unknown): no column states the provider's legal form. No publisher documentation was supplied, so code semantics for CONTRACT_NAME and ESA_CD_* are inferred from values and remain unvalidated. Revision after review: placeholder 'TBA' is now nulled in address fields, and SITE_URL is domain-extracted and scheme-normalised so phone/'TTY:' cells drop to null instead of being rejected as invalid websites; confidence on entity.website lowered to 0.6 because the column is mixed-purpose in the source."
+  }
+}

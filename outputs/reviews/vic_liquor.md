@@ -4,11 +4,11 @@
 - **Latest review decision:** approved by claude-code (AI assistant acting for the candidate) (ai_assistant_proxy) at 2026-11-09T22:43:12+00:00
 - **Status:** PENDING_REVIEW  (run `20261110T054156-0453b4`, prompt `prompts-v4`, model `deepseek-v4-flash`)
 - **Dataset:** Victorian liquor licences by location — Liquor Control Victoria
-- **Resource:** August 2026 (XLSX), sha256 `b0a00e0846f430dc…`
+- **Resource:** August 2026 (XLSX), sha256 `b0a00e0846f430dc3eb2bc32fde3e4136caa9142c60d127e8c1419fbc34fb36e`
 - **Licence:** cc-by
 - **Agent effort:** 1 proposal(s), 7 tool calls, 6 model calls, 62,988 prompt + 5,267 completion tokens, 39s model time
 
-## Final proposal (v0, digest `3974d55e7dff6033`)
+## Final proposal (v0, digest `3974d55e7dff60335e3eb408af6208fe30eebf960afcb41b8e1f6d5a6a11d6a0`)
 
 **Record grain:** `licence_or_permit` — Each row is one current Victorian liquor licence (Licence Number unique per row) held by a licensee at licensed premises. Entity fields describe the licensee business; address fields describe the licensed premises ONLY. The licensee's postal mailing address columns are left unmapped because they describe a different location than the premises and mixing them into the same address fields would make each record claim two different addresses.
 
@@ -20,11 +20,11 @@
 
 | source column(s) | canonical target | transforms | conf. | held-out emitted / present | errors | rationale |
 |---|---|---|---|---|---|---|
-| Licensee | `entity.legal_name` | trim, collapse_whitespace, regex_extract({"pattern": "^(?!THE SECRETARY$)(?!SECRETARY$)(?!THE TRUSTEE$)(?!THE OWNER$)(?! | 0.6 | 1159 / 1160 |  | Column headed 'Licensee' = holder of the licence, mostly in legal-name form (PTY LTD / LIMITED / CITY OF X). Also carries officer/contact-role strings such as ' |
-| Trading As | `entity.trading_name` | trim, collapse_whitespace, null_if({"values": ["", "-", "--", ".", "..", "...", "N/A", "NA", "N.A.", "N/A -", "TBA", "TB | 0.85 | 1150 / 1152 |  | 'Trading As' is explicitly the business/trading name, distinct from the licensee column (451 distinct of 465, 99.1% present). Placeholder strings nulled. |
-| Street Address | `address.full` | trim, collapse_whitespace, null_if({"values": ["", "-", "--", ".", "..", "...", "N/A", "NA", "N.A.", "N/A -", "TBA", "TB | 0.85 | 1103 / 1104 |  | Street address of the licensed premises (present 94.2%). Premises address, not postal. |
-| Suburb | `address.locality` | trim, collapse_whitespace, upper, regex_extract({"pattern": "^(?!\\[?NOT APPLICABLE\\]?).*$", "group": 0}), null_if({"va | 0.85 | 1102 / 1114 |  | Suburb of the licensed premises (95.7% present). 7 records carry the placeholder '[Not applicable] -' (remote/pre-retail sellers without premises, shape '[a a]  |
-| Postcode | `address.postcode` | trim, null_if({"values": ["", "0", "0000", "-", ".", "N/A", "NA", "N/A -", "NOT APPLICABLE", "NOT APPLICABLE -", "[NOT A | 0.85 | 1102 / 1115 |  | Premises postcode; 438 4-digit values plus 7 placeholder '0' values which are nulled. Postal postcodes are not used here (some are interstate, e.g. '2000'). |
+| Licensee | `entity.legal_name` | trim, collapse_whitespace, regex_extract({"pattern": "^(?!THE SECRETARY$)(?!SECRETARY$)(?!THE TRUSTEE$)(?!THE OWNER$)(?!THE LICENSEE$)(?!THE MANAGER$)(?!NOMINEES?$)(?!.*\\bC/-\\b).*$", "group": 0}), trim, null_if({"values": ["", "-", "--", ".", "..", "...", "N/A", "NA", "N.A.", "N/A -", "TBA", "TBC", "UNKNOWN", "NOT APPLICABLE", "NOT APPLICABLE -", "[NOT APPLICABLE]", "[NOT APPLICABLE] -", "SAME AS ABOVE", "NONE", "NULL", "NIL", "0"]}) | 0.6 | 1159 / 1160 |  | Column headed 'Licensee' = holder of the licence, mostly in legal-name form (PTY LTD / LIMITED / CITY OF X). Also carries officer/contact-role strings such as 'THE SECRETARY' and c/- address forms, which are gated out to null; corporate and sole-trader licensee names are kept. Confidence 0.6 reflects the mixed column. |
+| Trading As | `entity.trading_name` | trim, collapse_whitespace, null_if({"values": ["", "-", "--", ".", "..", "...", "N/A", "NA", "N.A.", "N/A -", "TBA", "TBC", "UNKNOWN", "NOT APPLICABLE", "NOT APPLICABLE -", "[NOT APPLICABLE]", "[NOT APPLICABLE] -", "SAME AS ABOVE", "NONE", "NULL", "NIL", "0"]}) | 0.85 | 1150 / 1152 |  | 'Trading As' is explicitly the business/trading name, distinct from the licensee column (451 distinct of 465, 99.1% present). Placeholder strings nulled. |
+| Street Address | `address.full` | trim, collapse_whitespace, null_if({"values": ["", "-", "--", ".", "..", "...", "N/A", "NA", "N.A.", "N/A -", "TBA", "TBC", "UNKNOWN", "NOT APPLICABLE", "NOT APPLICABLE -", "[NOT APPLICABLE]", "[NOT APPLICABLE] -", "NONE", "NULL", "NIL", "0"]}) | 0.85 | 1103 / 1104 |  | Street address of the licensed premises (present 94.2%). Premises address, not postal. |
+| Suburb | `address.locality` | trim, collapse_whitespace, upper, regex_extract({"pattern": "^(?!\\[?NOT APPLICABLE\\]?).*$", "group": 0}), null_if({"values": ["", "-", "--", ".", "..", "...", "N/A", "NA", "N.A.", "N/A -", "TBA", "TBC", "UNKNOWN", "NOT APPLICABLE", "NOT APPLICABLE -", "[NOT APPLICABLE]", "[NOT APPLICABLE] -", ",", "NONE", "NULL", "NIL", "0"]}) | 0.85 | 1102 / 1114 |  | Suburb of the licensed premises (95.7% present). 7 records carry the placeholder '[Not applicable] -' (remote/pre-retail sellers without premises, shape '[a a] -'); after upper+trim the '[NOT APPLICABLE] -' gate nulls these so no bogus locality is emitted. |
+| Postcode | `address.postcode` | trim, null_if({"values": ["", "0", "0000", "-", ".", "N/A", "NA", "N/A -", "NOT APPLICABLE", "NOT APPLICABLE -", "[NOT APPLICABLE]", "[NOT APPLICABLE] -", "TBA"]}), postcode | 0.85 | 1102 / 1115 |  | Premises postcode; 438 4-digit values plus 7 placeholder '0' values which are nulled. Postal postcodes are not used here (some are interstate, e.g. '2000'). |
 
 **Constants:**
 - `address.state` = `VIC` (conf 0.9): Victorian liquor licence register published by Liquor Control Victoria; licensed premises are in Victoria.

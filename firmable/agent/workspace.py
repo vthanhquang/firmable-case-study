@@ -14,7 +14,7 @@ from collections import Counter
 
 from .. import ids, ontology
 from ..mapping import transforms
-from ..mapping.schema import MappingConfig, ReaderSpec
+from ..mapping.schema import ExtensionDraft, MappingConfig, ProfileContextDraft, ReaderSpec
 from ..mapping.validate import run_engine, static_issues
 from ..paths import ROOT
 from ..sources.inspect import inspect_file
@@ -37,10 +37,22 @@ def _bucket(rec: dict) -> int:
     return int(_digest(rec), 16) % 10
 
 
+_EMAIL_IN_TEXT = re.compile(r"([A-Za-z0-9._%+'-]+)@([A-Za-z0-9-]+(?:\.[A-Za-z0-9-]+)+)")
+_MOBILE_IN_TEXT = re.compile(r"(?<!\d)(?:\+?61\s?|0)4\d{2}\s?\d{3}\s?\d{3}(?!\d)")
+
+
+def mask_personal(s: str) -> str:
+    """Review section 6: personal mailboxes and mobile numbers never leave the machine. Model-facing text
+    keeps the shape (domain, role mailbox, 'mobile') so the agent can still choose a mapping."""
+    s = _EMAIL_IN_TEXT.sub(lambda m: m.group(0) if m.group(1).lower() in transforms.ROLE_MAILBOXES
+                           else f"<personal>@{m.group(2)}", s)
+    return _MOBILE_IN_TEXT.sub("<mobile number>", s)
+
+
 def _short(v, n=80):
     if v is None:
         return None
-    s = str(v)
+    s = mask_personal(str(v))
     return s if len(s) <= n else s[:n] + "..."
 
 
@@ -57,8 +69,34 @@ class Workspace:
         self.path = ROOT / source["snapshot"]["path"]
         self._pools: dict[str, tuple] = {}
         self.rare_count: dict[str, int] = {}
-        self.reader: ReaderSpec | None = None
+        base = source.get("profile_context_base")
+        self.context_base = MappingConfig.model_validate(base) if base else None
+        ext = source.get("extension_base")
+        self.ext_base = MappingConfig.model_validate(ext) if ext else None
+        locked = self.context_base or self.ext_base
+        self.reader: ReaderSpec | None = locked.reader if locked else None
         self.inspection = inspect_file(self.path)
+        self.ext_editable: set[int] = set()     # base rules a current gate fails on (extension mode)
+        self.ext_base_findings: list[dict] = []
+        self.ext_last_discarded: list[str] = []
+        self.ext_last_changes: list[dict] = []
+        if self.ext_base:
+            self._ext_base_gate()
+
+    def _ext_base_gate(self):
+        """Run today's gates (including the extension gates) over the approved base. Rules that fail are the
+        only base rules the agent may replace or remove."""
+        from ..mapping.validate import holdout_issues
+        disc, hold, cols, _ = self.pool(self.ext_base.reader)
+        issues, _ = holdout_issues(self.ext_base, disc, hold, self.source)
+        issues = static_issues(self.ext_base, set(cols)) + issues
+        self.ext_base_findings = [i for i in issues if i["severity"] == "error"]
+        failing = {(i.get("target"), tuple(i.get("source_paths") or ())) for i in self.ext_base_findings}
+        failing_targets = {t for t, _ in failing}
+        for idx, rule in enumerate(self.ext_base.fields):
+            if (rule.target, tuple(rule.source_paths)) in failing or (
+                    rule.target in failing_targets and (rule.target, ()) in failing):
+                self.ext_editable.add(idx)
 
     # ---- sampling ---------------------------------------------------------------------------
     def pool(self, spec: ReaderSpec):
@@ -136,6 +174,9 @@ class Workspace:
             spec = ReaderSpec.model_validate(reader)
         except Exception as e:
             return {"ok": False, "error": "READER_SPEC_INVALID", "detail": str(e)[:600]}
+        locked = self.context_base or self.ext_base
+        if locked and spec != locked.reader:
+            return {"ok": False, "error": "READER_LOCKED", "detail": "Use the frozen base mapping reader."}
         try:
             disc, hold, cols, scanned = self.pool(spec)
         except ReaderError as e:
@@ -171,36 +212,87 @@ class Workspace:
         return {"partition": "discovery", "records": len(disc), "columns": out}
 
     def tool_get_ontology(self) -> dict:
-        onto = ontology.load()
-        return {"ontology_version": onto.version, "mappable_targets": onto.describe(),
+        if self.ext_base:
+            onto = ontology.load(None, "ext-v1")
+            return {"ontology_version": onto.version, "mappable_targets": onto.describe(),
+                    "extension_note": "ext.* targets come from the extension registry. Each says which record role "
+                                      "it attaches to (business / licence / establishment / any), its required "
+                                      "qualifiers, whether it must come from a crosswalk table, and whether it is "
+                                      "multi-valued (split lists so each value is one observation)."}
+        onto = ontology.load("v1" if self.context_base else None)
+        targets = [d for d in onto.describe() if d["path"].startswith("context.")] if self.context_base else onto.describe()
+        return {"ontology_version": onto.version, "mappable_targets": targets,
                 "envelope_note": "observation.valid_from/valid_to/observed_at targets set the record's envelope "
                                  "(when the claim became true / stopped / was stated), not an entity field."}
 
     def tool_list_transforms(self) -> dict:
         return {"ops": transforms.describe()}
 
-    def parse_config(self, config_json: str) -> tuple[MappingConfig | None, list[dict]]:
+    def tool_list_crosswalks(self) -> dict:
+        from .. import crosswalk
+        return {"tables": crosswalk.describe(),
+                "note": "Human-reviewed lookup tables. Reference one with a step {op: crosswalk, args: {table, "
+                        "output}}. Use a table only when its keys are the values this source actually holds."}
+
+    def parse_config(self, config_json: str | dict) -> tuple[MappingConfig | None, list[dict]]:
         try:
-            data = json.loads(config_json)
-        except json.JSONDecodeError as e:
+            data = config_json.copy() if isinstance(config_json, dict) else json.loads(config_json)
+        except (TypeError, json.JSONDecodeError) as e:
             return None, [{"code": "CONFIG_NOT_JSON", "severity": "error", "message": str(e)[:300]}]
-        if isinstance(data, dict):
+        if isinstance(data, dict) and not (self.context_base or self.ext_base):
             data["source_id"] = self.source["source_id"]
         try:
-            cfg = MappingConfig.model_validate(data)
+            if self.ext_base:
+                cfg, self.ext_last_discarded, self.ext_last_changes = \
+                    ExtensionDraft.model_validate(data).apply(self.ext_base, self.ext_editable)
+            elif self.context_base:
+                cfg = ProfileContextDraft.model_validate(data).extend(self.context_base)
+            else:
+                cfg = MappingConfig.model_validate(data)
         except Exception as e:
             return None, [{"code": "CONFIG_SCHEMA_INVALID", "severity": "error", "message": str(e)[:1500]}]
         disc, _, cols, _ = self.pool(cfg.reader)
-        return cfg, static_issues(cfg, set(cols))
+        issues = static_issues(cfg, set(cols))
+        if self.context_base:
+            issues = [item for item in issues if item.get("target", "").startswith("context.")]
+        if self.ext_base:
+            issues += [{"code": "EDIT_DISCARDED", "severity": "warning", "message": m} for m in self.ext_last_discarded]
+        return cfg, issues
 
-    def tool_dry_run(self, config_json: str) -> dict:
+    def ext_scope(self, cfg: MappingConfig) -> set[int]:
+        """Indices (in cfg.fields) of rules this extension run is responsible for: added, edited or replaced
+        rules, plus base rules a current gate fails on. Unchanged approved rules are not re-judged."""
+        base = [r.model_dump_json() for r in self.ext_base.fields]
+        failing = {self.ext_base.fields[i].model_dump_json() for i in self.ext_editable}
+        return {i for i, r in enumerate(cfg.fields) if r.model_dump_json() not in base or r.model_dump_json() in failing}
+
+    def tool_dry_run(self, config_json: str | dict) -> dict:
         cfg, issues = self.parse_config(config_json)
         if cfg is None or any(i["severity"] == "error" for i in issues):
             return {"ok": False, "issues": issues}
         disc, _, _, _ = self.pool(cfg.reader)
         eng, obs = run_engine(cfg, disc, self.source)
         rep = eng.report()
+        if self.context_base:
+            rep["fields"] = [field for field in rep["fields"] if field["target"].startswith("context.")]
+            obs = [item for item in obs if item["field"].startswith("context.")]
+        if self.ext_base:
+            from ..mapping.validate import list_issues
+            scope = self.ext_scope(cfg)
+            rep["fields"] = [f for i, f in enumerate(rep["fields"]) if i in scope]
+            targets = {cfg.fields[i].target for i in scope}
+            obs = [o for o in obs if o["field"] in targets]
+            issues = issues + list_issues(obs, ontology.load(None, "ext-v1"))
+            # Compact report: every turn re-sends history, so a full report per dry run inflates cost quickly.
+            rep["fields"] = [{k: f[k] for k in ("target", "source_paths", "entity", "source_present", "emitted",
+                                                "errors", "dropped", "error_examples") if f.get(k)}
+                             for f in rep["fields"]]
         first_ids = list(dict.fromkeys(o["source_record_id"] for o in obs))[:2]
-        examples = [{"field": o["field"], "value": _short(o["value"]), "raw": _short(o["raw_value"])}
+        examples = [{"field": o["field"], "value": _short(o["value"]), "raw": _short(o["raw_value"]),
+                     **({"entity_role": o["entity_role"]} if o.get("entity_role") else {}),
+                     **({"qualifiers": o["qualifiers"]} if o.get("qualifiers") else {})}
                     for o in obs if o["source_record_id"] in first_ids]
-        return {"ok": True, "partition": "discovery", "issues": issues, "report": rep, "example_observations": examples}
+        out = {"ok": True, "partition": "discovery", "issues": issues, "report": rep, "example_observations": examples}
+        if self.ext_base:
+            out["change_log"] = self.ext_last_changes
+        return out

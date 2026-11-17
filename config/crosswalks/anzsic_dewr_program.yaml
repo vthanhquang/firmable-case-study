@@ -1,0 +1,21 @@
+name: anzsic_dewr_program
+version: 1
+kind: code
+target: ext.entity.industry_code
+scheme: anzsic2006
+derivation_level: L2
+review_status: draft - programme codes decoded by an AI assistant; entries marked verified false need DEWR's programme list
+source: >
+  DEWR employment-services contract codes (CONTRACT_NAME, 8 values) to the provider's activity in
+  ANZSIC 2006. A site delivering a programme under contract is evidence of the provider's activity.
+  The programme label also feeds the DELIVERS_PROGRAM_FOR relationship.
+unlisted: error
+entries:
+  EPS5: {code: "7211", label: Employment Placement and Recruitment Services, programme: Workforce Australia Services (code meaning unverified), verified: false}
+  DESA: {code: "7211", label: Employment Placement and Recruitment Services, programme: Disability Employment Services - Disability Management Service}
+  DESB: {code: "7211", label: Employment Placement and Recruitment Services, programme: Disability Employment Services - Employment Support Service}
+  TTW5: {code: "7211", label: Employment Placement and Recruitment Services, programme: Transition to Work}
+  RJCP: {code: "7211", label: Employment Placement and Recruitment Services, programme: Remote Jobs and Communities Program}
+  SPP5: {code: "7211", label: Employment Placement and Recruitment Services, programme: unverified programme code, verified: false}
+  HLS5: {code: "7212", label: Labour Supply Services, programme: Harvest Labour Services}
+  NEI5: {code: null, label: No industry inferred, programme: New Enterprise Incentive Scheme / Self-Employment Assistance (code meaning unverified), verified: false}

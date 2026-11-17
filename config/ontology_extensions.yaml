@@ -1,0 +1,239 @@
+# Extension-concept registry (ext-v1), kept BESIDE the core ontology (firmable_ontology.yaml).
+#
+# Source: review "Getting More Out of the Raw Source Files", sections 5.2-5.5.
+# The core ontology stays the contract for entity/address fields. A mapping config that declares
+# `extensions: ext-v1` may also target the concepts below, as `ext.<family>.<concept>`.
+# A column that fits neither stays unmapped (its raw row is still kept, see firmable/rawstore.py).
+#
+# Concept keys:
+#   type          string | enum | date | integer | decimal | point | phone | domain | email
+#   multi         the concept may hold several values per record; emit one observation each.
+#                 Values must already be split: the held-out gate rejects unsplit delimiter lists.
+#   temporal      valid_from / valid_to are expected when the source gives them
+#   qualifiers    {name: required|optional}; qualifier values travel with the observation
+#                 (period, currency, scheme, role). A claim missing a required qualifier is rejected.
+#   crosswalk     a step `crosswalk` to a human-reviewed table is REQUIRED (no free-text codes)
+#   personal_data never | always | mobile_numbers  -> observation.privacy = "personal"
+#   max_level     highest derivation level allowed for this concept at ingest (L1, or L2 for
+#                 judgement crosswalks). Derived L2 facts (growth, group candidates) are computed
+#                 downstream, never at ingest.
+#
+# Families and the record role they attach to (rule.entity, see mapping/schema.py):
+#   entity, financial -> a business role (the implicit `subject`, or a declared role of kind business)
+#   licence           -> a declared role of kind licence
+#   establishment     -> a declared role of kind establishment
+#   contact           -> any role
+#
+# Promotion rule (review 5.4): a concept moves into the core ontology when at least two independent
+# sources map to it and a human approves the definition. Candidates today: entity.former_name
+# (ASIC former names, ACNC "previously known as"), financial.revenue_band (ACNC size, QBCC MFR).
+
+version: ext-v1
+review_status: draft - concept definitions prepared by an AI assistant; human approval pending
+
+families:
+  entity:
+    former_name:
+      type: string
+      multi: true
+      temporal: true
+      notes: >
+        A legal name the business held before its current one. Use valid_from/valid_to paths when the
+        source dates the name. Never a trading name.
+    legal_form:
+      type: enum
+      values: [proprietary_company, public_company, listed_public_company, foreign_company,
+               registered_body, incorporated_association, cooperative, other, unknown]
+      crosswalk: true
+      notes: Registrar's company type, decoded through a crosswalk table. Unknown codes -> unknown.
+    legal_form_detail:
+      type: string
+      multi: true
+      crosswalk: true
+      notes: >
+        Finer legal structure stated by the registrar (limited by shares/guarantee, listed,
+        superannuation trustee, non-profit). Value is "CODE: label" from a crosswalk table.
+    status_detail:
+      type: string
+      crosswalk: true
+      notes: >
+        The registrar's full status code and label ("EXAD: External administration"). The core
+        entity.status enum stays coarse; distress codes live here.
+    date_established:
+      type: date
+      notes: Founding / establishment date. Not a registration date.
+    sector_tag:
+      type: string
+      multi: true
+      qualifiers: {scheme: required}
+      notes: >
+        A source-stated activity or beneficiary tag, e.g. scheme acnc_purpose or acnc_beneficiary.
+        Keep the publisher's wording.
+    industry_code:
+      type: string
+      pattern: '^(?:[A-S]|[0-9]{2,4})$'
+      multi: true
+      crosswalk: true
+      max_level: L2
+      qualifiers: {scheme: required}
+      notes: >
+        ANZSIC 2006 division letter, subdivision, group or class, produced only through a reviewed
+        crosswalk table from a source-stated activity (trade class, licence category, purpose).
+        The raw source value is kept in raw_value. scheme = anzsic2006.
+    operating_region:
+      type: enum
+      values: [ACT, NSW, NT, QLD, SA, TAS, VIC, WA, NATIONAL, OVERSEAS]
+      multi: true
+      notes: Where the business says it operates (service footprint), not where it is registered.
+    operating_country:
+      type: string
+      multi: true
+      notes: Country the business says it operates in, as the source writes it (one per observation).
+    tax_concession:
+      type: enum
+      values: [PBI, HPC, DGR]
+      multi: true
+      notes: Tax-concession status stated by the regulator (Public Benevolent Institution, Health Promotion Charity).
+    responsible_persons:
+      type: integer
+      notes: Number of responsible persons (board size) the regulator reports.
+    financial_year_end:
+      type: string
+      pattern: '^[0-9]{2}-[A-Z][a-z]{2}$'
+      notes: Reporting-cycle end as dd-Mon (e.g. 30-Jun). Used to schedule refreshes.
+    prior_registration_state:
+      type: string
+      notes: State of original incorporation before national registration. Not an address.
+    prior_registration_number:
+      type: string
+      notes: Legacy state registration number.
+    address_point:
+      type: point
+      notes: >
+        lat,lon of the business's OWN stated address (e.g. a licensee's business address). A premises or
+        site location is ext.establishment.geo on an establishment role instead.
+    holder_kind:
+      type: enum
+      values: [individual, organisation, unknown]
+      notes: >
+        Whether the source says the record's holder is a natural person or an organisation. This is
+        matching evidence. It never implies sole_trader.
+
+  financial:
+    total_income:
+      type: decimal
+      qualifiers: {period: required, currency: required}
+      notes: Total income as published for a stated reporting period. A fact for a period, not a current attribute.
+    taxable_income:
+      type: decimal
+      qualifiers: {period: required, currency: required}
+      notes: Taxable income for the period. Missing is not zero.
+    tax_payable:
+      type: decimal
+      qualifiers: {period: required, currency: required}
+      notes: Tax payable for the period.
+    revenue_band:
+      type: string
+      crosswalk: true
+      qualifiers: {scheme: required, period: optional}
+      notes: >
+        A revenue/turnover band from a named scheme (acnc_size_2022, qbcc_mfr). The value must be a
+        label of that scheme's crosswalk table; band thresholds live in the table, not in the claim.
+
+  licence:
+    number:
+      type: string
+      key: true
+      notes: Publisher-assigned licence number. Identifies the licence across snapshots.
+    issuer:
+      type: string
+      notes: Licensing body.
+    class:
+      type: string
+      multi: true
+      notes: Licence class / licensed trade in the publisher's wording.
+    grade:
+      type: string
+      notes: Kind of licence (contractor, supervisor, nominee ...).
+    category:
+      type: string
+      notes: Licence category in the publisher's wording.
+    authorisation:
+      type: string
+      multi: true
+      notes: One authorised activity per observation (split the publisher's list).
+    authorisation_text:
+      type: string
+      notes: Complete publisher authorisation text, including headings and conditions. Unparsed source evidence, not independent permission claims.
+    start_date:
+      type: date
+      notes: Publisher-stated commencement of the licence, not the business establishment or registration date.
+    end_date:
+      type: date
+      notes: Publisher-stated end of the licence, not the end of the business or all its claims.
+    status:
+      type: string
+      notes: Licence status as published (licence status, not company status).
+    condition:
+      type: string
+      multi: true
+      notes: Licence condition such as trading hours.
+    status_event:
+      type: string
+      multi: true
+      notes: A dated status-history entry (e.g. a contravention of a licence condition).
+    edr_scheme:
+      type: string
+      multi: true
+      notes: External dispute-resolution scheme membership.
+    related_licence_number:
+      type: string
+      notes: Number of another licence the same holder holds (e.g. an AFS licence number). 0 / blank = none.
+
+  establishment:
+    name:
+      type: string
+      notes: Site or premises name.
+    source_key:
+      type: string
+      key: true
+      notes: Publisher's site code. Identifies the site across snapshots.
+    geo:
+      type: point
+      notes: '"lat,lon" in decimal degrees inside Australia. The literal NULL is missing.'
+    lga:
+      type: string
+      notes: Local government area.
+    region:
+      type: string
+      multi: true
+      notes: Publisher's region (licensing region, metro/regional, employment services area).
+    capacity:
+      type: integer
+      notes: Published maximum patron count or similar capacity.
+    program:
+      type: string
+      multi: true
+      notes: Government programme or contract code delivered at this site.
+
+  contact:
+    phone:
+      type: phone
+      multi: true
+      personal_data: mobile_numbers
+      qualifiers: {role: optional}
+      notes: >
+        Phone number normalised to E.164 (+61...). Numbers shorter than 8 digits or without an area
+        code are rejected. Mobiles are personal data unless published as a business line.
+    email_domain:
+      type: domain
+      multi: true
+      notes: The domain of a published email address. Personal local parts are never stored.
+    role_email:
+      type: email
+      multi: true
+      notes: A role mailbox (info@, enquiries@, admin@ ...). Personal mailboxes are dropped by the transform.
+    website_domain:
+      type: domain
+      multi: true
+      notes: Registrable host of a published website (www. removed).

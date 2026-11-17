@@ -1,5 +1,5 @@
 """Part 4 profile assembly: winners, losers, variants, absence and per-field confidence parts."""
-from firmable.profiles.build import build_profile
+from firmable.profiles.build import EVIDENCE_PROFILE, _membership_conf, build_profile
 
 
 def _obs(src, rec, field, value, fc=0.9, rel=0.9, at="2026-01-01T00:00:00+00:00"):
@@ -8,11 +8,11 @@ def _obs(src, rec, field, value, fc=0.9, rel=0.9, at="2026-01-01T00:00:00+00:00"
             "source_fields": ["x"], "derivation_level": "L0", "extractor_version": "t"}
 
 
-def _profile(obs, link=0.97):
+def _profile(obs, link=0.97, **kwargs):
     idx = {}
     for o in obs:
         idx.setdefault(f"{o['source_id']}::{o['source_record_id']}", []).append(o)
-    return build_profile("fe_x", list(idx), idx, {k: link for k in idx})
+    return build_profile("fe_x", list(idx), idx, {k: link for k in idx}, **kwargs)
 
 
 def test_cross_source_disagreement_is_a_visible_conflict():
@@ -42,3 +42,42 @@ def test_agreement_raises_confidence_and_parts_are_kept_apart():
 def test_missing_fields_are_absent_not_blank():
     p = _profile([_obs("asic", "1", "entity.abn", "51824753556")])
     assert set(p["fields"]) == {"entity.abn"}
+
+
+def test_scoped_profiles_preserve_premises_charity_registration_and_former_names():
+    p = _profile([
+        _obs("asic_companies", "a", "entity.legal_name", "CURRENT PTY LTD") | {"claim_scope": "current_legal_name"},
+        _obs("asic_companies", "a", "entity.legal_name", "FORMER PTY LTD", fc=1) | {"claim_scope": "former_legal_name"},
+        _obs("asic_companies", "a", "entity.date_registered", "2000-01-01"),
+        _obs("acnc_charities", "b", "entity.date_registered", "2014-02-01"),
+        _obs("acnc_charities", "b", "address.locality", "Sydney"),
+        _obs("vic_liquor", "c", "address.full", "1 HIGH ST"),
+        _obs("vic_liquor", "c", "address.country", "AU") | {"derivation_level": "L3"},
+    ], version=EVIDENCE_PROFILE)
+    assert p["fields"]["entity.legal_name"]["value"] == "CURRENT PTY LTD"
+    assert p["historical_names"][0]["value"] == "FORMER PTY LTD"
+    assert p["fields"]["entity.date_registered"]["value"] == "2000-01-01"
+    assert {r["scope"] for r in p["registration_events"]} == {"company_registration", "charity_registration"}
+    assert p["primary_address_record"] == "acnc_charities::b"
+    assert "address.full" not in p["fields"] and "address.country" not in p["fields"]
+    assert p["locations"][1]["fields"]["address.full"]["value"] == "1 HIGH ST"
+    assert p["mapping_defaults"]["address.country"][0]["value"] == "AU"
+    assert p["conflicts"] == []
+
+
+def test_transitive_membership_cannot_outrank_the_bridge_to_its_anchor():
+    recs = {key: {"abn": {"abn"} if key == "anchor" else set(), "acn": set()} for key in ("anchor", "b", "c", "d")}
+    result = {"recs": recs, "clusters": {"anchor": list(recs)}, "decisions": [
+        {"a": a, "b": b, "score": score, "decision": "LINK"}
+        for a, b, score in [("anchor", "b", 0.97), ("b", "c", 0.86), ("c", "d", 0.97)]
+    ]}
+    assert _membership_conf(result, path_aware=True) == {"anchor": 0.97, "b": 0.97, "c": 0.86, "d": 0.86}
+
+
+def test_unrelated_corroborated_legal_names_require_review():
+    p = _profile([_obs("asic_companies", "a", "entity.legal_name", "DOVER PTY LTD", rel=0.97),
+                  _obs("ato_tax_transparency", "b", "entity.legal_name", "BALM PTY LTD", rel=0.9)],
+                 version=EVIDENCE_PROFILE)
+    winner = p["fields"]["entity.legal_name"]
+    assert winner["resolution"]["decision"] == "review_required"
+    assert winner["value_confidence"] <= 0.55

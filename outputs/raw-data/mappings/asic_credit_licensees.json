@@ -1,0 +1,568 @@
+{
+  "status": "PENDING_REVIEW",
+  "run_id": "20261117T041636-local-4b724c4f",
+  "prompt_version": "ext-prompts-v1",
+  "model": "local-maintainer",
+  "ontology_sha256": "a29ee80a20525fdb48d3c1adc7b43aeefb70c8d5bc5ec6fc37db0f126cafbc3b",
+  "snapshot_sha256": "74fc2f5f73e64331dd36538e1fee47ed474c33c161f7c9bf990efe7aa5f8a218",
+  "config_digest": "4b724c4f9636b1e38c53a66d6ee0648966cfe9ddec99da7b44ae1e343bc36047",
+  "config": {
+    "source_id": "asic_credit_licensees",
+    "record_grain": "licence_or_permit",
+    "grain_rationale": "Each row is one ASIC credit licence (CRED_LIC_NUM) held by a licensee. The business participant is the licensee named in CRED_LIC_NAME; the licence number itself is the record identifier, not a business identifier.",
+    "reader": {
+      "format": "delimited",
+      "archive_member": null,
+      "encoding": "utf-8-sig",
+      "delimiter": "\t",
+      "skip_rows": 0,
+      "sheet": null,
+      "record_path": null
+    },
+    "record_id": {
+      "strategy": "columns",
+      "source_paths": [
+        "CRED_LIC_NUM"
+      ],
+      "rationale": "CRED_LIC_NUM is present on 100% of rows and has 464 distinct values over 464 discovery records - unique per record."
+    },
+    "observed_at": {
+      "source_path": null,
+      "steps": [],
+      "fallback": "resource_last_modified"
+    },
+    "fields": [
+      {
+        "source_paths": [
+          "CRED_LIC_NAME"
+        ],
+        "join_with": " ",
+        "when": null,
+        "target": "entity.legal_name",
+        "valid_from_path": null,
+        "valid_to_path": null,
+        "validity_date_formats": null,
+        "claim_scope": null,
+        "steps": [
+          {
+            "op": "trim",
+            "args": {}
+          },
+          {
+            "op": "collapse_whitespace",
+            "args": {}
+          }
+        ],
+        "confidence": 0.7,
+        "rationale": "ASIC register name of the licensee, presented as a registered-style name (mostly '... PTY LTD'/'... LIMITED'); some rows are individuals (e.g. 'TAN, JINTANG'), which are the licensee legal names of sole traders, not contact people.",
+        "entity": null,
+        "qualifiers": null,
+        "one_hot": null
+      },
+      {
+        "source_paths": [
+          "CRED_LIC_BN"
+        ],
+        "join_with": " ",
+        "when": null,
+        "target": "entity.trading_name",
+        "valid_from_path": null,
+        "valid_to_path": null,
+        "validity_date_formats": null,
+        "claim_scope": null,
+        "steps": [
+          {
+            "op": "trim",
+            "args": {}
+          },
+          {
+            "op": "collapse_whitespace",
+            "args": {}
+          }
+        ],
+        "confidence": 0.6,
+        "rationale": "ASIC 'business name' column, free of tilde separators, present on 34.5% of rows and clearly a trading/display name (e.g. 'DISCOVERY FINANCIAL MANAGEMENT' under LUNAWAVE PTY. LIMITED), not the registered name.",
+        "entity": null,
+        "qualifiers": null,
+        "one_hot": null
+      },
+      {
+        "source_paths": [
+          "CRED_LIC_ABN_ACN"
+        ],
+        "join_with": " ",
+        "when": null,
+        "target": "entity.abn",
+        "valid_from_path": null,
+        "valid_to_path": null,
+        "validity_date_formats": null,
+        "claim_scope": null,
+        "steps": [
+          {
+            "op": "trim",
+            "args": {}
+          },
+          {
+            "op": "null_if",
+            "args": {
+              "values": [
+                "0",
+                ""
+              ]
+            }
+          },
+          {
+            "op": "regex_extract",
+            "args": {
+              "pattern": "^\\d{11}$",
+              "group": 0
+            }
+          },
+          {
+            "op": "abn",
+            "args": {}
+          }
+        ],
+        "confidence": 0.8,
+        "rationale": "Mixed ABN/ACN column. Only the 11-digit shape (420/464 discovery rows, 90.5% ABN-checksum-valid) is an ABN by definition; regex_extract restricts the transform to that shape so 9-digit ACNs and 7-8 digit values resolve to null instead of raising ABN_LENGTH errors.",
+        "entity": null,
+        "qualifiers": null,
+        "one_hot": null
+      },
+      {
+        "source_paths": [
+          "CRED_LIC_ABN_ACN"
+        ],
+        "join_with": " ",
+        "when": null,
+        "target": "entity.acn",
+        "valid_from_path": null,
+        "valid_to_path": null,
+        "validity_date_formats": null,
+        "claim_scope": null,
+        "steps": [
+          {
+            "op": "trim",
+            "args": {}
+          },
+          {
+            "op": "null_if",
+            "args": {
+              "values": [
+                "0",
+                ""
+              ]
+            }
+          },
+          {
+            "op": "regex_extract",
+            "args": {
+              "pattern": "^\\d{9}$",
+              "group": 0
+            }
+          },
+          {
+            "op": "acn",
+            "args": {}
+          }
+        ],
+        "confidence": 0.55,
+        "rationale": "The 9-digit values (27/464 discovery rows, e.g. 601283201) in this combined ABN_ACN column are ACNs and pass the ACN checksum; passed through the checksum-validating acn transform. Taken from an explicit ACN value in the source, never derived from an ABN.",
+        "entity": null,
+        "qualifiers": null,
+        "one_hot": null
+      },
+      {
+        "source_paths": [
+          "CRED_LIC_LOCALITY"
+        ],
+        "join_with": " ",
+        "when": null,
+        "target": "address.locality",
+        "valid_from_path": null,
+        "valid_to_path": null,
+        "validity_date_formats": null,
+        "claim_scope": null,
+        "steps": [
+          {
+            "op": "trim",
+            "args": {}
+          },
+          {
+            "op": "collapse_whitespace",
+            "args": {}
+          }
+        ],
+        "confidence": 0.9,
+        "rationale": "Suburb/locality column, 100% present, matches AU place names.",
+        "entity": null,
+        "qualifiers": null,
+        "one_hot": null
+      },
+      {
+        "source_paths": [
+          "CRED_LIC_STATE"
+        ],
+        "join_with": " ",
+        "when": null,
+        "target": "address.state",
+        "valid_from_path": null,
+        "valid_to_path": null,
+        "validity_date_formats": null,
+        "claim_scope": null,
+        "steps": [
+          {
+            "op": "trim",
+            "args": {}
+          },
+          {
+            "op": "upper",
+            "args": {}
+          },
+          {
+            "op": "state",
+            "args": {}
+          }
+        ],
+        "confidence": 0.95,
+        "rationale": "Two-letter AU state abbreviations, 8 distinct, all within the enum.",
+        "entity": null,
+        "qualifiers": null,
+        "one_hot": null
+      },
+      {
+        "source_paths": [
+          "CRED_LIC_PCODE"
+        ],
+        "join_with": " ",
+        "when": null,
+        "target": "address.postcode",
+        "valid_from_path": null,
+        "valid_to_path": null,
+        "validity_date_formats": null,
+        "claim_scope": null,
+        "steps": [
+          {
+            "op": "trim",
+            "args": {}
+          },
+          {
+            "op": "postcode",
+            "args": {}
+          }
+        ],
+        "confidence": 0.9,
+        "rationale": "All values 4-digit AU postcode shape.",
+        "entity": null,
+        "qualifiers": null,
+        "one_hot": null
+      },
+      {
+        "source_paths": [
+          "CRED_LIC_NUM"
+        ],
+        "join_with": " ",
+        "when": null,
+        "target": "ext.licence.number",
+        "valid_from_path": null,
+        "valid_to_path": null,
+        "validity_date_formats": null,
+        "claim_scope": null,
+        "steps": [
+          {
+            "op": "trim",
+            "args": {}
+          }
+        ],
+        "confidence": 0.95,
+        "rationale": "Publisher-assigned credit licence number, unique per row and stated on 100% of rows; identifies the licence across snapshots.",
+        "entity": "licence",
+        "qualifiers": null,
+        "one_hot": null
+      },
+      {
+        "source_paths": [
+          "CRED_LIC_STATUS"
+        ],
+        "join_with": " ",
+        "when": null,
+        "target": "ext.licence.status",
+        "valid_from_path": null,
+        "valid_to_path": null,
+        "validity_date_formats": null,
+        "claim_scope": null,
+        "steps": [
+          {
+            "op": "trim",
+            "args": {}
+          }
+        ],
+        "confidence": 0.85,
+        "rationale": "CRED_LIC_STATUS is the licence approval status code (APPR on 464/464 discovery rows). It is licence status, not company status, so it must not go to entity.status. Kept as the raw publisher code because the only reviewed ASIC status table (asic_company_status) holds company codes, not credit-licence codes. No valid_from is attached: the publisher dates the licence start, not the status.",
+        "entity": "licence",
+        "qualifiers": null,
+        "one_hot": null
+      },
+      {
+        "source_paths": [
+          "CRED_LIC_EDRS"
+        ],
+        "join_with": " ",
+        "when": null,
+        "target": "ext.licence.edr_scheme",
+        "valid_from_path": null,
+        "valid_to_path": null,
+        "validity_date_formats": null,
+        "claim_scope": null,
+        "steps": [
+          {
+            "op": "trim",
+            "args": {}
+          },
+          {
+            "op": "split",
+            "args": {
+              "sep": "~"
+            }
+          },
+          {
+            "op": "trim",
+            "args": {}
+          },
+          {
+            "op": "null_if",
+            "args": {
+              "values": [
+                ""
+              ]
+            }
+          }
+        ],
+        "confidence": 0.9,
+        "rationale": "External dispute-resolution scheme membership published for the licence; single codes or tilde lists (AFCA, COSL, AFCA~COSL, FOS, AFCA~FOS, AFCA~COSL~FOS), so one scheme per observation.",
+        "entity": "licence",
+        "qualifiers": null,
+        "one_hot": null
+      },
+      {
+        "source_paths": [
+          "CRED_LIC_AUTHORISATIONS"
+        ],
+        "join_with": " ",
+        "when": null,
+        "target": "ext.licence.authorisation_text",
+        "valid_from_path": null,
+        "valid_to_path": null,
+        "validity_date_formats": null,
+        "claim_scope": null,
+        "steps": [
+          {
+            "op": "trim",
+            "args": {}
+          }
+        ],
+        "confidence": 0.6,
+        "rationale": "Complete unparsed publisher permission text, preserving headings and conditions without asserting separate activities.",
+        "entity": "licence",
+        "qualifiers": null,
+        "one_hot": null
+      },
+      {
+        "source_paths": [
+          "CRED_LIC_STATUS_HISTORY"
+        ],
+        "join_with": " ",
+        "when": null,
+        "target": "ext.licence.status_event",
+        "valid_from_path": null,
+        "valid_to_path": null,
+        "validity_date_formats": null,
+        "claim_scope": null,
+        "steps": [
+          {
+            "op": "trim",
+            "args": {}
+          },
+          {
+            "op": "null_if",
+            "args": {
+              "values": [
+                ""
+              ]
+            }
+          },
+          {
+            "op": "split",
+            "args": {
+              "sep": "~"
+            }
+          },
+          {
+            "op": "trim",
+            "args": {}
+          }
+        ],
+        "confidence": 0.4,
+        "rationale": "Dated licence status-history entries (e.g. 'Licensee contravenes a licence condition 02/01/2013 ...', 'Suspended at the request of Licensee/Registrant 19/09/2016 31/01/2017') belong on the licence as status events, not on the business. Blank on most rows; the populated values are genuine dated licence events, kept as published.",
+        "entity": "licence",
+        "qualifiers": null,
+        "one_hot": null
+      },
+      {
+        "source_paths": [
+          "CRED_LIC_START_DT"
+        ],
+        "join_with": " ",
+        "when": null,
+        "target": "ext.licence.start_date",
+        "valid_from_path": null,
+        "valid_to_path": null,
+        "validity_date_formats": null,
+        "claim_scope": null,
+        "steps": [
+          {
+            "op": "null_if",
+            "args": {
+              "values": [
+                "",
+                "0",
+                "NULL"
+              ]
+            }
+          },
+          {
+            "op": "parse_date",
+            "args": {
+              "formats": [
+                "%d/%m/%Y"
+              ]
+            }
+          }
+        ],
+        "confidence": 0.95,
+        "rationale": "Explicit publisher licence date, not a company registration or lifetime date.",
+        "entity": "licence",
+        "qualifiers": null,
+        "one_hot": null
+      },
+      {
+        "source_paths": [
+          "CRED_LIC_END_DT"
+        ],
+        "join_with": " ",
+        "when": null,
+        "target": "ext.licence.end_date",
+        "valid_from_path": null,
+        "valid_to_path": null,
+        "validity_date_formats": null,
+        "claim_scope": null,
+        "steps": [
+          {
+            "op": "null_if",
+            "args": {
+              "values": [
+                "",
+                "0",
+                "NULL"
+              ]
+            }
+          },
+          {
+            "op": "parse_date",
+            "args": {
+              "formats": [
+                "%d/%m/%Y"
+              ]
+            }
+          }
+        ],
+        "confidence": 0.95,
+        "rationale": "Explicit publisher licence date, not a company registration or lifetime date.",
+        "entity": "licence",
+        "qualifiers": null,
+        "one_hot": null
+      }
+    ],
+    "constants": [
+      {
+        "target": "address.country",
+        "value": "AU",
+        "confidence": 0.9,
+        "rationale": "ASIC Australian credit licence register; all localities/states are Australian.",
+        "entity": null,
+        "claim_scope": null
+      },
+      {
+        "target": "entity.status",
+        "value": "unknown",
+        "confidence": 0.5,
+        "rationale": "The only status evidence is CRED_LIC_STATUS='APPR', a licence-approval code, not a company status (active/deregistered/liquidated/suspended). Conflating them would overstate knowledge, so entity.status is left unknown.",
+        "entity": null,
+        "claim_scope": null
+      },
+      {
+        "target": "entity.entity_type",
+        "value": "unknown",
+        "confidence": 0.3,
+        "rationale": "No explicit entity-type column; names suggest companies but many licensees are individuals/trusts, so left as unknown.",
+        "entity": null,
+        "claim_scope": null
+      }
+    ],
+    "unmapped": [
+      {
+        "source_path": "REGISTER_NAME",
+        "reason": "Constant 'Credit Licence' on every row; identifies the register, not a business, licence or establishment attribute."
+      },
+      {
+        "source_path": "CRED_LIC_AFSL_NUM",
+        "reason": "Withdrawn per critic: this is not evidence of a separate related AFS licence. On held-out rows it frequently equals the row's own credit licence number (219612->219612, 223246->223246, 224543->224543, 225759->225759), i.e. the same licence echoed, so emitting it as ext.licence.related_licence_number creates a self-reference and a false related-licence fact. '0' (425/464) is a 'none' placeholder. The transform set offers no reliable way to drop only the equals-CRED_LIC_NUM case (a regex back-reference against a joined identifier column does not filter reliably), and a wrong fact is worse than a missing one, so the column is left unmapped."
+      },
+      {
+        "source_path": "CRED_LIC_LAT",
+        "reason": "Coordinate precision is unverified; a locality centroid must not be asserted as an exact business address."
+      },
+      {
+        "source_path": "CRED_LIC_LNG",
+        "reason": "Coordinate precision is unverified; a locality centroid must not be asserted as an exact business address."
+      }
+    ],
+    "notes": "Revision: CRED_LIC_ABN_ACN is a mixed ABN/ACN column. Shape filters (^\\d{11}$ -> entity.abn, ^\\d{9}$ -> entity.acn) send only the matching identifier type to its own checksum transform; 7-8 digit and '0' values are treated as missing. This removed all ABN_LENGTH errors (previously 8.8%) and recovers the ACNs that were being discarded. No ACN is ever derived from an ABN. entity.status changed to 'unknown' because CRED_LIC_STATUS is a licence-approval code, not a company status; the column is recorded in unmapped. No observed_at column exists, so resource_last_modified is used. TSV confirmed by 16 tabs per line in raw bytes.\n\n[ext-v1] Second revision, answering the holdout critic. (1) Rule 4 (industry_code) REMOVED: the critic is right - anzsic_credit_authorisation is a draft, all_matches, AI-prepared table over generic statutory wording, and it emits contradictory codes (6230 and 6419 for the same licence; 6419 for assistance-only licensees). CRED_LIC_AUTHORISATIONS is not a source-stated trade activity, so no reviewed crosswalk supports an ANZSIC code and none is claimed. (2) Rule 6 (related_licence_number) REMOVED and CRED_LIC_AFSL_NUM moved to unmapped: it echoed the record's own licence number as a separate AFS licence. (3) Rule 3 (authorisation) now uses a generic heading filter (a clause must not end in ':') instead of a fixed lead-in list, which removes the heading residue the critic saw on held-out records 550376/381417. (4) Rule 5 (address_point) kept with a low confidence of 0.3 and an explicit centroid-precision caveat: the values are locality-level geocodes, not rooftop coordinates; the 3 out-of-Australia coordinate pairs remain visible as reported GEO_OUTSIDE_AU errors rather than being suppressed. Licence number, status, EDR scheme and status-event rules are unchanged and were judged sound. Base rules untouched; CRED_LIC_END_DT stays with the approved (engine-ignored) observation.valid_to and is left alone because the source dates nothing from it (100% blank) so it cannot date a licence status.\nLocal maintainer correction (no model API call): Preserve complete authorisation text and licence dates; omit coordinates whose location precision is unverified.",
+    "profile_context": null,
+    "extensions": "ext-v1",
+    "entities": {
+      "licence": {
+        "kind": "licence",
+        "key_paths": [
+          "CRED_LIC_NUM"
+        ],
+        "rationale": "CRED_LIC_NUM is ASIC's credit licence number: distinct on every row (464/464) and stable across snapshots. The dataset grain is one licence per row, so the licence is a role separate from the licensee business."
+      }
+    },
+    "relationships": [
+      {
+        "type": "HOLDS_LICENCE",
+        "from_role": "subject",
+        "to_role": "licence",
+        "rationale": "CRED_LIC_NAME is the licensee that holds credit licence CRED_LIC_NUM; the licence is not the business."
+      }
+    ]
+  },
+  "local_revision": {
+    "kind": "maintainer_correction",
+    "actor": "Codex maintainer, at user request",
+    "reason": "Preserve complete authorisation text and licence dates; omit coordinates whose location precision is unverified.",
+    "parent_run_id": "20261112T205520-34807e",
+    "parent_config_digest": "e5c026d80cd981f19eaac2b698f2933e33c258ded02759f8efc2982048cfbfe3",
+    "bundle_sha256": "14f2b563f29f736047da7f16303d0fbce2a9e6c25428984cdba2f68666491dc4",
+    "dependencies": {
+      "firmable_ontology.yaml": "639b80ea6333146c7ac714cd940fcdf6b2945f451e95333b0be21174bedee5da",
+      "config\\ontology_extensions.yaml": "61598d10cb0feb8f2de0daeb403bd68722ae4ef6beec5d758bd5ca3d5ad8a061",
+      "firmable\\mapping\\engine.py": "42402ccfbfb5a896ef14f2405be8f27ebf3d428030c9a2c2ec214b1a30d9056b",
+      "firmable\\mapping\\transforms.py": "9f96be7568e9693dee9a8f89303471ac3883e3ed5bccd748f259a24227886c65",
+      "firmable\\crosswalk.py": "ef1a7479dbe2ea3a5bc5ac86ed49dac849bc0990c36ddd3401107d862d0634cf"
+    },
+    "model_calls": 0,
+    "validation_scope": "Frozen replay sample partition; not an unseen holdout"
+  }
+}

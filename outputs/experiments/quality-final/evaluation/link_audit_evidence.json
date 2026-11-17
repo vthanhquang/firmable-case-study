@@ -1,0 +1,3670 @@
+[
+  {
+    "seed": 20261112,
+    "pair": 1,
+    "link_id": "lk_4e3e96f9325b7b4b",
+    "score": 0.8623,
+    "rule": "registered_name_exact",
+    "record_a": "asic_companies::671090618|CAO TRADING PTY LTD|Y",
+    "record_b": "vic_liquor::32063436",
+    "proxy_label": "CORRECT",
+    "proxy_reason": "Same legal name and ABN match, liquor licence trading name is consistent with a retail outlet of the company.",
+    "human_label": "",
+    "human_note": "",
+    "source_records": {
+      "id": 1,
+      "record_a": {
+        "source": "asic_companies",
+        "record_grain": "legal_entity",
+        "claims": {
+          "entity.legal_name": [
+            "CAO TRADING PTY LTD"
+          ],
+          "entity.acn": [
+            "671090618"
+          ],
+          "entity.abn": [
+            "37671090618"
+          ],
+          "entity.entity_type": [
+            "company"
+          ]
+        }
+      },
+      "record_b": {
+        "source": "vic_liquor",
+        "record_grain": "licence_or_permit",
+        "claims": {
+          "entity.legal_name": [
+            "CAO TRADING PTY LTD"
+          ],
+          "entity.trading_name": [
+            "IGA X-PRESS NORTH MELBOURNE PLUS LIQUOR"
+          ],
+          "address.locality": [
+            "NORTH MELBOURNE"
+          ],
+          "address.postcode": [
+            "3051"
+          ],
+          "address.state": [
+            "VIC"
+          ]
+        }
+      }
+    },
+    "match_evidence": [
+      {
+        "type": "NAME_EXACT_NORMALISED",
+        "value": "CAO TRADING PTY LTD"
+      },
+      {
+        "type": "EVIDENCE_SCORE_COMPONENTS",
+        "value": {
+          "rule_base": 0.817,
+          "name_claim_quality": 0.024,
+          "distinctive_name_tokens": 0.0123,
+          "legal_names_agree": 0.009
+        }
+      }
+    ],
+    "sample_strata": [
+      "cohort",
+      "random"
+    ]
+  },
+  {
+    "seed": 20261112,
+    "pair": 2,
+    "link_id": "lk_d12f46f7f9bed7fd",
+    "score": 0.8591,
+    "rule": "registered_name_exact",
+    "record_a": "ato_tax_transparency::h:5add0664e10f6069",
+    "record_b": "vic_liquor::32386478",
+    "proxy_label": "CORRECT",
+    "proxy_reason": "Same legal name and ABN match, licence trading name matches.",
+    "human_label": "",
+    "human_note": "",
+    "source_records": {
+      "id": 2,
+      "record_a": {
+        "source": "ato_tax_transparency",
+        "record_grain": "legal_entity",
+        "claims": {
+          "entity.legal_name": [
+            "GRILL'D PTY LTD"
+          ],
+          "entity.abn": [
+            "17106297394"
+          ]
+        }
+      },
+      "record_b": {
+        "source": "vic_liquor",
+        "record_grain": "licence_or_permit",
+        "claims": {
+          "entity.legal_name": [
+            "GRILL'D PTY LTD"
+          ],
+          "entity.trading_name": [
+            "GRILL'D"
+          ],
+          "address.locality": [
+            "LYNDHURST"
+          ],
+          "address.postcode": [
+            "3975"
+          ],
+          "address.state": [
+            "VIC"
+          ]
+        }
+      }
+    },
+    "match_evidence": [
+      {
+        "type": "NAME_EXACT_NORMALISED",
+        "value": "GRILL D PTY LTD"
+      },
+      {
+        "type": "EVIDENCE_SCORE_COMPONENTS",
+        "value": {
+          "rule_base": 0.817,
+          "name_claim_quality": 0.024,
+          "distinctive_name_tokens": 0.0091,
+          "legal_names_agree": 0.009
+        }
+      }
+    ],
+    "sample_strata": [
+      "random",
+      "cohort"
+    ]
+  },
+  {
+    "seed": 20261112,
+    "pair": 3,
+    "link_id": "lk_4caed5ed8ac9826e",
+    "score": 0.937,
+    "rule": "abn_equal",
+    "record_a": "asic_companies::004784454|ANGLO COAL (CALLIDE) NO. 2 PTY LIMITED|",
+    "record_b": "ato_tax_transparency::h:df6d462784b43681",
+    "proxy_label": "INCORRECT",
+    "proxy_reason": "Legal names differ (CALLIDE COAL NO. 2 vs BATCHFIRE CALLIDE NO. 2) despite same ABN; likely a name change but not same entity at same time.",
+    "human_label": "",
+    "human_note": "",
+    "source_records": {
+      "id": 3,
+      "record_a": {
+        "source": "asic_companies",
+        "record_grain": "legal_entity",
+        "claims": {
+          "entity.legal_name": [
+            "CALLIDE COAL NO. 2 PTY LTD"
+          ],
+          "entity.acn": [
+            "004784454"
+          ],
+          "entity.abn": [
+            "92004784454"
+          ],
+          "entity.entity_type": [
+            "company"
+          ]
+        }
+      },
+      "record_b": {
+        "source": "ato_tax_transparency",
+        "record_grain": "legal_entity",
+        "claims": {
+          "entity.legal_name": [
+            "BATCHFIRE CALLIDE NO. 2 PTY LTD"
+          ],
+          "entity.abn": [
+            "92004784454"
+          ]
+        }
+      }
+    },
+    "match_evidence": [
+      {
+        "type": "ABN_EQUAL_VALID",
+        "value": "92004784454"
+      },
+      {
+        "type": "ABN_CONTAINS_ACN"
+      },
+      {
+        "type": "NAME_SIMILARITY",
+        "value": 0.615
+      },
+      {
+        "type": "EVIDENCE_SCORE_COMPONENTS",
+        "value": {
+          "rule_base": 0.925,
+          "identifier_claim_quality": 0.0216,
+          "names_disagree": -0.0096
+        }
+      }
+    ],
+    "sample_strata": [
+      "cohort",
+      "random"
+    ]
+  },
+  {
+    "seed": 20261112,
+    "pair": 4,
+    "link_id": "lk_a1e2881e9de24e54",
+    "score": 0.8591,
+    "rule": "registered_name_exact",
+    "record_a": "ato_tax_transparency::h:5add0664e10f6069",
+    "record_b": "vic_liquor::32369727",
+    "proxy_label": "CORRECT",
+    "proxy_reason": "Same legal name and ABN match, licence trading name matches.",
+    "human_label": "",
+    "human_note": "",
+    "source_records": {
+      "id": 4,
+      "record_a": {
+        "source": "ato_tax_transparency",
+        "record_grain": "legal_entity",
+        "claims": {
+          "entity.legal_name": [
+            "GRILL'D PTY LTD"
+          ],
+          "entity.abn": [
+            "17106297394"
+          ]
+        }
+      },
+      "record_b": {
+        "source": "vic_liquor",
+        "record_grain": "licence_or_permit",
+        "claims": {
+          "entity.legal_name": [
+            "GRILL'D PTY LTD"
+          ],
+          "entity.trading_name": [
+            "GRILL'D"
+          ],
+          "address.locality": [
+            "ELTHAM"
+          ],
+          "address.postcode": [
+            "3095"
+          ],
+          "address.state": [
+            "VIC"
+          ]
+        }
+      }
+    },
+    "match_evidence": [
+      {
+        "type": "NAME_EXACT_NORMALISED",
+        "value": "GRILL D PTY LTD"
+      },
+      {
+        "type": "EVIDENCE_SCORE_COMPONENTS",
+        "value": {
+          "rule_base": 0.817,
+          "name_claim_quality": 0.024,
+          "distinctive_name_tokens": 0.0091,
+          "legal_names_agree": 0.009
+        }
+      }
+    ],
+    "sample_strata": [
+      "random",
+      "cohort"
+    ]
+  },
+  {
+    "seed": 20261112,
+    "pair": 5,
+    "link_id": "lk_61b9e972d7ab7100",
+    "score": 0.9755,
+    "rule": "abn_equal",
+    "record_a": "asic_companies::161098951|FIVE GROUP PTY LTD|",
+    "record_b": "ato_tax_transparency::h:d2e36ac2b3a0c047",
+    "proxy_label": "CORRECT",
+    "proxy_reason": "Exact legal name and ABN match.",
+    "human_label": "",
+    "human_note": "",
+    "source_records": {
+      "id": 5,
+      "record_a": {
+        "source": "asic_companies",
+        "record_grain": "legal_entity",
+        "claims": {
+          "entity.legal_name": [
+            "THE FIVE GROUP PTY LTD"
+          ],
+          "entity.acn": [
+            "161098951"
+          ],
+          "entity.abn": [
+            "62161098951"
+          ],
+          "entity.entity_type": [
+            "company"
+          ]
+        }
+      },
+      "record_b": {
+        "source": "ato_tax_transparency",
+        "record_grain": "legal_entity",
+        "claims": {
+          "entity.legal_name": [
+            "THE FIVE GROUP PTY LTD"
+          ],
+          "entity.abn": [
+            "62161098951"
+          ]
+        }
+      }
+    },
+    "match_evidence": [
+      {
+        "type": "ABN_EQUAL_VALID",
+        "value": "62161098951"
+      },
+      {
+        "type": "ABN_CONTAINS_ACN"
+      },
+      {
+        "type": "NAME_EXACT_NORMALISED",
+        "value": "FIVE GROUP PTY LTD"
+      },
+      {
+        "type": "EVIDENCE_SCORE_COMPONENTS",
+        "value": {
+          "rule_base": 0.925,
+          "identifier_claim_quality": 0.0216,
+          "name_claim_quality": 0.0162,
+          "distinctive_name_tokens": 0.0037,
+          "legal_names_agree": 0.009
+        }
+      }
+    ],
+    "sample_strata": [
+      "cohort",
+      "random"
+    ]
+  },
+  {
+    "seed": 20261112,
+    "pair": 6,
+    "link_id": "lk_f736e389df0ef3df",
+    "score": 0.9769,
+    "rule": "abn_equal",
+    "record_a": "asic_companies::000191248|CANTERBURY LEAGUE CLUB LIMITED|Y",
+    "record_b": "ato_tax_transparency::h:0729f29f5eaeacfc",
+    "proxy_label": "CORRECT",
+    "proxy_reason": "Exact legal name and ABN match.",
+    "human_label": "",
+    "human_note": "",
+    "source_records": {
+      "id": 6,
+      "record_a": {
+        "source": "asic_companies",
+        "record_grain": "legal_entity",
+        "claims": {
+          "entity.legal_name": [
+            "CANTERBURY LEAGUE CLUB LIMITED"
+          ],
+          "entity.acn": [
+            "000191248"
+          ],
+          "entity.abn": [
+            "84000191248"
+          ],
+          "entity.entity_type": [
+            "company"
+          ]
+        }
+      },
+      "record_b": {
+        "source": "ato_tax_transparency",
+        "record_grain": "legal_entity",
+        "claims": {
+          "entity.legal_name": [
+            "CANTERBURY LEAGUE CLUB LIMITED"
+          ],
+          "entity.abn": [
+            "84000191248"
+          ]
+        }
+      }
+    },
+    "match_evidence": [
+      {
+        "type": "ABN_EQUAL_VALID",
+        "value": "84000191248"
+      },
+      {
+        "type": "ABN_CONTAINS_ACN"
+      },
+      {
+        "type": "NAME_EXACT_NORMALISED",
+        "value": "CANTERBURY LEAGUE CLUB LTD"
+      },
+      {
+        "type": "EVIDENCE_SCORE_COMPONENTS",
+        "value": {
+          "rule_base": 0.925,
+          "identifier_claim_quality": 0.0216,
+          "name_claim_quality": 0.0162,
+          "distinctive_name_tokens": 0.005,
+          "legal_names_agree": 0.009
+        }
+      }
+    ],
+    "sample_strata": [
+      "cohort",
+      "random"
+    ]
+  },
+  {
+    "seed": 20261112,
+    "pair": 7,
+    "link_id": "lk_2ac26b4b19daa1e3",
+    "score": 0.977,
+    "rule": "abn_equal",
+    "record_a": "asic_companies::634920184|QGIF SWAN HOLDCO PTY LTD|Y",
+    "record_b": "ato_tax_transparency::h:319e066a0bdd175a",
+    "proxy_label": "CORRECT",
+    "proxy_reason": "Exact legal name and ABN match.",
+    "human_label": "",
+    "human_note": "",
+    "source_records": {
+      "id": 7,
+      "record_a": {
+        "source": "asic_companies",
+        "record_grain": "legal_entity",
+        "claims": {
+          "entity.legal_name": [
+            "QGIF SWAN HOLDCO PTY LTD"
+          ],
+          "entity.acn": [
+            "634920184"
+          ],
+          "entity.abn": [
+            "64634920184"
+          ],
+          "entity.entity_type": [
+            "company"
+          ]
+        }
+      },
+      "record_b": {
+        "source": "ato_tax_transparency",
+        "record_grain": "legal_entity",
+        "claims": {
+          "entity.legal_name": [
+            "QGIF SWAN HOLDCO PTY LTD"
+          ],
+          "entity.abn": [
+            "64634920184"
+          ]
+        }
+      }
+    },
+    "match_evidence": [
+      {
+        "type": "ABN_EQUAL_VALID",
+        "value": "64634920184"
+      },
+      {
+        "type": "ABN_CONTAINS_ACN"
+      },
+      {
+        "type": "NAME_EXACT_NORMALISED",
+        "value": "QGIF SWAN HOLDCO PTY LTD"
+      },
+      {
+        "type": "EVIDENCE_SCORE_COMPONENTS",
+        "value": {
+          "rule_base": 0.925,
+          "identifier_claim_quality": 0.0216,
+          "name_claim_quality": 0.0162,
+          "distinctive_name_tokens": 0.0052,
+          "legal_names_agree": 0.009
+        }
+      }
+    ],
+    "sample_strata": [
+      "cohort",
+      "random"
+    ]
+  },
+  {
+    "seed": 20261112,
+    "pair": 8,
+    "link_id": "lk_5de72de87b7ec0cb",
+    "score": 0.9774,
+    "rule": "abn_equal",
+    "record_a": "asic_companies::144808293|FLOORS N MORE PTY LTD|",
+    "record_b": "ato_tax_transparency::h:862b30d2342535ee",
+    "proxy_label": "CORRECT",
+    "proxy_reason": "Exact legal name and ABN match.",
+    "human_label": "",
+    "human_note": "",
+    "source_records": {
+      "id": 8,
+      "record_a": {
+        "source": "asic_companies",
+        "record_grain": "legal_entity",
+        "claims": {
+          "entity.legal_name": [
+            "FLOORING XTRA (AUST) PTY LTD"
+          ],
+          "entity.acn": [
+            "144808293"
+          ],
+          "entity.abn": [
+            "77144808293"
+          ],
+          "entity.entity_type": [
+            "company"
+          ]
+        }
+      },
+      "record_b": {
+        "source": "ato_tax_transparency",
+        "record_grain": "legal_entity",
+        "claims": {
+          "entity.legal_name": [
+            "FLOORING XTRA (AUST) PTY LTD"
+          ],
+          "entity.abn": [
+            "77144808293"
+          ]
+        }
+      }
+    },
+    "match_evidence": [
+      {
+        "type": "ABN_EQUAL_VALID",
+        "value": "77144808293"
+      },
+      {
+        "type": "ABN_CONTAINS_ACN"
+      },
+      {
+        "type": "NAME_EXACT_NORMALISED",
+        "value": "FLOORING XTRA AUST PTY LTD"
+      },
+      {
+        "type": "EVIDENCE_SCORE_COMPONENTS",
+        "value": {
+          "rule_base": 0.925,
+          "identifier_claim_quality": 0.0216,
+          "name_claim_quality": 0.0162,
+          "distinctive_name_tokens": 0.0056,
+          "legal_names_agree": 0.009
+        }
+      }
+    ],
+    "sample_strata": [
+      "cohort",
+      "random"
+    ]
+  },
+  {
+    "seed": 20261112,
+    "pair": 9,
+    "link_id": "lk_b5d1f497c9b57fcb",
+    "score": 0.9765,
+    "rule": "abn_equal",
+    "record_a": "asic_companies::131207611|CORPORATE TRAVEL MANAGEMENT LIMITED|Y",
+    "record_b": "ato_tax_transparency::h:8a90b38118b7c082",
+    "proxy_label": "CORRECT",
+    "proxy_reason": "Exact legal name and ABN match.",
+    "human_label": "",
+    "human_note": "",
+    "source_records": {
+      "id": 9,
+      "record_a": {
+        "source": "asic_companies",
+        "record_grain": "legal_entity",
+        "claims": {
+          "entity.legal_name": [
+            "CORPORATE TRAVEL MANAGEMENT LIMITED"
+          ],
+          "entity.acn": [
+            "131207611"
+          ],
+          "entity.abn": [
+            "17131207611"
+          ],
+          "entity.entity_type": [
+            "company"
+          ]
+        }
+      },
+      "record_b": {
+        "source": "ato_tax_transparency",
+        "record_grain": "legal_entity",
+        "claims": {
+          "entity.legal_name": [
+            "CORPORATE TRAVEL MANAGEMENT LIMITED"
+          ],
+          "entity.abn": [
+            "17131207611"
+          ]
+        }
+      }
+    },
+    "match_evidence": [
+      {
+        "type": "ABN_EQUAL_VALID",
+        "value": "17131207611"
+      },
+      {
+        "type": "ABN_CONTAINS_ACN"
+      },
+      {
+        "type": "NAME_EXACT_NORMALISED",
+        "value": "CORPORATE TRAVEL MANAGEMENT LTD"
+      },
+      {
+        "type": "EVIDENCE_SCORE_COMPONENTS",
+        "value": {
+          "rule_base": 0.925,
+          "identifier_claim_quality": 0.0216,
+          "name_claim_quality": 0.0162,
+          "distinctive_name_tokens": 0.0046,
+          "legal_names_agree": 0.009
+        }
+      }
+    ],
+    "sample_strata": [
+      "cohort",
+      "random"
+    ]
+  },
+  {
+    "seed": 20261112,
+    "pair": 10,
+    "link_id": "lk_97bba6518a1f36cc",
+    "score": 0.9758,
+    "rule": "abn_equal",
+    "record_a": "asic_companies::060313359|IRESS MARKET TECHNOLOGY LIMITED|",
+    "record_b": "ato_tax_transparency::h:0c70ed159af9b45f",
+    "proxy_label": "CORRECT",
+    "proxy_reason": "Exact legal name and ABN match.",
+    "human_label": "",
+    "human_note": "",
+    "source_records": {
+      "id": 10,
+      "record_a": {
+        "source": "asic_companies",
+        "record_grain": "legal_entity",
+        "claims": {
+          "entity.legal_name": [
+            "IRESS LIMITED"
+          ],
+          "entity.acn": [
+            "060313359"
+          ],
+          "entity.abn": [
+            "47060313359"
+          ],
+          "entity.entity_type": [
+            "company"
+          ]
+        }
+      },
+      "record_b": {
+        "source": "ato_tax_transparency",
+        "record_grain": "legal_entity",
+        "claims": {
+          "entity.legal_name": [
+            "IRESS LIMITED"
+          ],
+          "entity.abn": [
+            "47060313359"
+          ]
+        }
+      }
+    },
+    "match_evidence": [
+      {
+        "type": "ABN_EQUAL_VALID",
+        "value": "47060313359"
+      },
+      {
+        "type": "ABN_CONTAINS_ACN"
+      },
+      {
+        "type": "NAME_EXACT_NORMALISED",
+        "value": "IRESS LTD"
+      },
+      {
+        "type": "EVIDENCE_SCORE_COMPONENTS",
+        "value": {
+          "rule_base": 0.925,
+          "identifier_claim_quality": 0.0216,
+          "name_claim_quality": 0.0162,
+          "distinctive_name_tokens": 0.0039,
+          "legal_names_agree": 0.009
+        }
+      }
+    ],
+    "sample_strata": [
+      "cohort",
+      "random"
+    ]
+  },
+  {
+    "seed": 20261112,
+    "pair": 11,
+    "link_id": "lk_41b1712cd86c6a8a",
+    "score": 0.9805,
+    "rule": "abn_equal",
+    "record_a": "acnc_charities::h:692723b86ac15806",
+    "record_b": "asic_companies::000017685|LISMORE MUSICAL FESTIVAL SOCIETY|Y",
+    "proxy_label": "CORRECT",
+    "proxy_reason": "Same ABN 32000017685 and ACN 000017685; legal name matches.",
+    "human_label": "",
+    "human_note": "",
+    "source_records": {
+      "id": 11,
+      "record_a": {
+        "source": "acnc_charities",
+        "record_grain": "legal_entity",
+        "claims": {
+          "entity.abn": [
+            "32000017685"
+          ],
+          "entity.legal_name": [
+            "Lismore Musical Festival Society"
+          ],
+          "address.locality": [
+            "North Lismore"
+          ],
+          "address.state": [
+            "NSW"
+          ],
+          "address.postcode": [
+            "2480"
+          ]
+        }
+      },
+      "record_b": {
+        "source": "asic_companies",
+        "record_grain": "legal_entity",
+        "claims": {
+          "entity.legal_name": [
+            "LISMORE MUSICAL FESTIVAL SOCIETY"
+          ],
+          "entity.acn": [
+            "000017685"
+          ],
+          "entity.abn": [
+            "32000017685"
+          ],
+          "entity.entity_type": [
+            "company"
+          ]
+        }
+      }
+    },
+    "match_evidence": [
+      {
+        "type": "ABN_EQUAL_VALID",
+        "value": "32000017685"
+      },
+      {
+        "type": "ABN_CONTAINS_ACN"
+      },
+      {
+        "type": "NAME_EXACT_NORMALISED",
+        "value": "LISMORE MUSICAL FESTIVAL SOCIETY"
+      },
+      {
+        "type": "EVIDENCE_SCORE_COMPONENTS",
+        "value": {
+          "rule_base": 0.925,
+          "identifier_claim_quality": 0.0216,
+          "name_claim_quality": 0.019,
+          "distinctive_name_tokens": 0.0058,
+          "legal_names_agree": 0.009
+        }
+      }
+    ],
+    "sample_strata": [
+      "random",
+      "cohort"
+    ]
+  },
+  {
+    "seed": 20261112,
+    "pair": 12,
+    "link_id": "lk_c126da1604525d03",
+    "score": 0.8794,
+    "rule": "registered_name_exact_and_location",
+    "record_a": "acnc_charities::h:ba555eb9d38ea202",
+    "record_b": "vic_liquor::32103951",
+    "proxy_label": "CORRECT",
+    "proxy_reason": "Exact legal name Reservoir RSL Sub Branch Inc and same Reservoir VIC 3073 locality; trading name aligns.",
+    "human_label": "",
+    "human_note": "",
+    "source_records": {
+      "id": 12,
+      "record_a": {
+        "source": "acnc_charities",
+        "record_grain": "legal_entity",
+        "claims": {
+          "entity.abn": [
+            "67319793218"
+          ],
+          "entity.legal_name": [
+            "Reservoir Rsl Sub-Branch (Inc)"
+          ],
+          "address.locality": [
+            "Reservoir"
+          ],
+          "address.state": [
+            "VIC"
+          ],
+          "address.postcode": [
+            "3073"
+          ]
+        }
+      },
+      "record_b": {
+        "source": "vic_liquor",
+        "record_grain": "licence_or_permit",
+        "claims": {
+          "entity.legal_name": [
+            "RESERVOIR RSL SUB BRANCH INC"
+          ],
+          "entity.trading_name": [
+            "RESERVOIR RETURNED SERVICEMEN'S CLUB"
+          ],
+          "address.locality": [
+            "RESERVOIR"
+          ],
+          "address.postcode": [
+            "3073"
+          ],
+          "address.state": [
+            "VIC"
+          ]
+        }
+      }
+    },
+    "match_evidence": [
+      {
+        "type": "NAME_EXACT_NORMALISED",
+        "value": "RESERVOIR RSL SUB BRANCH INC"
+      },
+      {
+        "type": "LOCATION_AGREES"
+      },
+      {
+        "type": "EVIDENCE_SCORE_COMPONENTS",
+        "value": {
+          "rule_base": 0.817,
+          "name_claim_quality": 0.024,
+          "distinctive_name_tokens": 0.0134,
+          "legal_names_agree": 0.009,
+          "matching_location": 0.016
+        }
+      }
+    ],
+    "sample_strata": [
+      "cohort",
+      "random"
+    ]
+  },
+  {
+    "seed": 20261112,
+    "pair": 13,
+    "link_id": "lk_e05f6484bce85c67",
+    "score": 0.9757,
+    "rule": "abn_equal",
+    "record_a": "asic_companies::009872600|TEYS BROS. (HOLDINGS) PTY. LTD.|",
+    "record_b": "ato_tax_transparency::h:df085f180fd77e06",
+    "proxy_label": "CORRECT",
+    "proxy_reason": "Same legal name, ABN 38009872600 and ACN 009872600.",
+    "human_label": "",
+    "human_note": "",
+    "source_records": {
+      "id": 13,
+      "record_a": {
+        "source": "asic_companies",
+        "record_grain": "legal_entity",
+        "claims": {
+          "entity.legal_name": [
+            "TEYS AUSTRALIA PTY LTD"
+          ],
+          "entity.acn": [
+            "009872600"
+          ],
+          "entity.abn": [
+            "38009872600"
+          ],
+          "entity.entity_type": [
+            "company"
+          ]
+        }
+      },
+      "record_b": {
+        "source": "ato_tax_transparency",
+        "record_grain": "legal_entity",
+        "claims": {
+          "entity.legal_name": [
+            "TEYS AUSTRALIA PTY LTD"
+          ],
+          "entity.abn": [
+            "38009872600"
+          ]
+        }
+      }
+    },
+    "match_evidence": [
+      {
+        "type": "ABN_EQUAL_VALID",
+        "value": "38009872600"
+      },
+      {
+        "type": "ABN_CONTAINS_ACN"
+      },
+      {
+        "type": "NAME_EXACT_NORMALISED",
+        "value": "TEYS AUSTRALIA PTY LTD"
+      },
+      {
+        "type": "EVIDENCE_SCORE_COMPONENTS",
+        "value": {
+          "rule_base": 0.925,
+          "identifier_claim_quality": 0.0216,
+          "name_claim_quality": 0.0162,
+          "distinctive_name_tokens": 0.0038,
+          "legal_names_agree": 0.009
+        }
+      }
+    ],
+    "sample_strata": [
+      "cohort",
+      "random"
+    ]
+  },
+  {
+    "seed": 20261112,
+    "pair": 14,
+    "link_id": "lk_4cc29cfa54691a12",
+    "score": 0.9805,
+    "rule": "abn_equal",
+    "record_a": "acnc_charities::h:9667e7e135e7a3bc",
+    "record_b": "asic_companies::631928651|PLEDGE TO RESTORE LTD.|Y",
+    "proxy_label": "CORRECT",
+    "proxy_reason": "Same legal name, ABN 14631928651 and ACN 631928651.",
+    "human_label": "",
+    "human_note": "",
+    "source_records": {
+      "id": 14,
+      "record_a": {
+        "source": "acnc_charities",
+        "record_grain": "legal_entity",
+        "claims": {
+          "entity.abn": [
+            "14631928651"
+          ],
+          "entity.legal_name": [
+            "PLEDGE TO RESTORE LTD."
+          ],
+          "address.locality": [
+            "Mambourin"
+          ],
+          "address.state": [
+            "VIC"
+          ],
+          "address.postcode": [
+            "3024"
+          ]
+        }
+      },
+      "record_b": {
+        "source": "asic_companies",
+        "record_grain": "legal_entity",
+        "claims": {
+          "entity.legal_name": [
+            "PLEDGE TO RESTORE LTD."
+          ],
+          "entity.acn": [
+            "631928651"
+          ],
+          "entity.abn": [
+            "14631928651"
+          ],
+          "entity.entity_type": [
+            "company"
+          ]
+        }
+      }
+    },
+    "match_evidence": [
+      {
+        "type": "ABN_EQUAL_VALID",
+        "value": "14631928651"
+      },
+      {
+        "type": "ABN_CONTAINS_ACN"
+      },
+      {
+        "type": "NAME_EXACT_NORMALISED",
+        "value": "PLEDGE TO RESTORE LTD"
+      },
+      {
+        "type": "EVIDENCE_SCORE_COMPONENTS",
+        "value": {
+          "rule_base": 0.925,
+          "identifier_claim_quality": 0.0216,
+          "name_claim_quality": 0.019,
+          "distinctive_name_tokens": 0.0058,
+          "legal_names_agree": 0.009
+        }
+      }
+    ],
+    "sample_strata": [
+      "random",
+      "cohort"
+    ]
+  },
+  {
+    "seed": 20261112,
+    "pair": 15,
+    "link_id": "lk_564a553bfe1e8932",
+    "score": 0.8579,
+    "rule": "registered_name_exact",
+    "record_a": "ato_tax_transparency::h:8a89120c48020fce",
+    "record_b": "vic_liquor::32313522",
+    "proxy_label": "CORRECT",
+    "proxy_reason": "Exact legal name Nando's Australia Pty Ltd in ATO and VIC liquor records; no conflicting evidence.",
+    "human_label": "",
+    "human_note": "",
+    "source_records": {
+      "id": 15,
+      "record_a": {
+        "source": "ato_tax_transparency",
+        "record_grain": "legal_entity",
+        "claims": {
+          "entity.legal_name": [
+            "NANDO'S AUSTRALIA PTY LTD"
+          ],
+          "entity.abn": [
+            "20079066407"
+          ]
+        }
+      },
+      "record_b": {
+        "source": "vic_liquor",
+        "record_grain": "licence_or_permit",
+        "claims": {
+          "entity.legal_name": [
+            "NANDO'S AUSTRALIA PTY LTD"
+          ],
+          "entity.trading_name": [
+            "NANDO'S WATERFRONT CITY"
+          ],
+          "address.locality": [
+            "DOCKLANDS"
+          ],
+          "address.postcode": [
+            "3008"
+          ],
+          "address.state": [
+            "VIC"
+          ]
+        }
+      }
+    },
+    "match_evidence": [
+      {
+        "type": "NAME_EXACT_NORMALISED",
+        "value": "NANDO S AUSTRALIA PTY LTD"
+      },
+      {
+        "type": "EVIDENCE_SCORE_COMPONENTS",
+        "value": {
+          "rule_base": 0.817,
+          "name_claim_quality": 0.024,
+          "distinctive_name_tokens": 0.0079,
+          "legal_names_agree": 0.009
+        }
+      }
+    ],
+    "sample_strata": [
+      "random",
+      "cohort"
+    ]
+  },
+  {
+    "seed": 20261112,
+    "pair": 16,
+    "link_id": "lk_cded8fa0b1f4e263",
+    "score": 0.8647,
+    "rule": "registered_name_exact",
+    "record_a": "asic_companies::648276233|BANGKOK GANG PTY LTD|Y",
+    "record_b": "vic_liquor::32275130",
+    "proxy_label": "CORRECT",
+    "proxy_reason": "Exact legal name Bangkok Gang Pty Ltd matches; licensing locality is consistent.",
+    "human_label": "",
+    "human_note": "",
+    "source_records": {
+      "id": 16,
+      "record_a": {
+        "source": "asic_companies",
+        "record_grain": "legal_entity",
+        "claims": {
+          "entity.legal_name": [
+            "BANGKOK GANG PTY LTD"
+          ],
+          "entity.acn": [
+            "648276233"
+          ],
+          "entity.abn": [
+            "50648276233"
+          ],
+          "entity.entity_type": [
+            "company"
+          ]
+        }
+      },
+      "record_b": {
+        "source": "vic_liquor",
+        "record_grain": "licence_or_permit",
+        "claims": {
+          "entity.legal_name": [
+            "BANGKOK GANG PTY LTD"
+          ],
+          "entity.trading_name": [
+            "BANGKOK GANG"
+          ],
+          "address.locality": [
+            "KINGSVILLE"
+          ],
+          "address.postcode": [
+            "3012"
+          ],
+          "address.state": [
+            "VIC"
+          ]
+        }
+      }
+    },
+    "match_evidence": [
+      {
+        "type": "NAME_EXACT_NORMALISED",
+        "value": "BANGKOK GANG PTY LTD"
+      },
+      {
+        "type": "EVIDENCE_SCORE_COMPONENTS",
+        "value": {
+          "rule_base": 0.817,
+          "name_claim_quality": 0.024,
+          "distinctive_name_tokens": 0.0147,
+          "legal_names_agree": 0.009
+        }
+      }
+    ],
+    "sample_strata": [
+      "cohort",
+      "random"
+    ]
+  },
+  {
+    "seed": 20261112,
+    "pair": 17,
+    "link_id": "lk_b3c0ae7e37aaba8b",
+    "score": 0.9768,
+    "rule": "abn_equal",
+    "record_a": "asic_companies::003246357|HAMVILLA PTY LTD|",
+    "record_b": "ato_tax_transparency::h:7d70c096123b40fe",
+    "proxy_label": "CORRECT",
+    "proxy_reason": "Same ABN 31003246357; PTY LIMITED and PTY LTD are equivalent legal-name forms.",
+    "human_label": "",
+    "human_note": "",
+    "source_records": {
+      "id": 17,
+      "record_a": {
+        "source": "asic_companies",
+        "record_grain": "legal_entity",
+        "claims": {
+          "entity.legal_name": [
+            "PORTA PRODUCTS PTY LIMITED"
+          ],
+          "entity.acn": [
+            "003246357"
+          ],
+          "entity.abn": [
+            "31003246357"
+          ],
+          "entity.entity_type": [
+            "company"
+          ]
+        }
+      },
+      "record_b": {
+        "source": "ato_tax_transparency",
+        "record_grain": "legal_entity",
+        "claims": {
+          "entity.legal_name": [
+            "PORTA PRODUCTS PTY LTD"
+          ],
+          "entity.abn": [
+            "31003246357"
+          ]
+        }
+      }
+    },
+    "match_evidence": [
+      {
+        "type": "ABN_EQUAL_VALID",
+        "value": "31003246357"
+      },
+      {
+        "type": "ABN_CONTAINS_ACN"
+      },
+      {
+        "type": "NAME_EXACT_NORMALISED",
+        "value": "PORTA PRODUCTS PTY LTD"
+      },
+      {
+        "type": "EVIDENCE_SCORE_COMPONENTS",
+        "value": {
+          "rule_base": 0.925,
+          "identifier_claim_quality": 0.0216,
+          "name_claim_quality": 0.0162,
+          "distinctive_name_tokens": 0.0049,
+          "legal_names_agree": 0.009
+        }
+      }
+    ],
+    "sample_strata": [
+      "cohort",
+      "random"
+    ]
+  },
+  {
+    "seed": 20261112,
+    "pair": 18,
+    "link_id": "lk_b6dd495e9aad767d",
+    "score": 0.881,
+    "rule": "registered_name_exact_and_location",
+    "record_a": "acnc_charities::h:c7921a399beb80b3",
+    "record_b": "vic_liquor::36071148",
+    "proxy_label": "CORRECT",
+    "proxy_reason": "Exact distinctive legal name and same Torquay VIC 3228 locality; spelling variation only.",
+    "human_label": "",
+    "human_note": "",
+    "source_records": {
+      "id": 18,
+      "record_a": {
+        "source": "acnc_charities",
+        "record_grain": "legal_entity",
+        "claims": {
+          "entity.abn": [
+            "95834027136"
+          ],
+          "entity.legal_name": [
+            "Torquay Surf Lifesaving Club Inc."
+          ],
+          "address.locality": [
+            "TORQUAY"
+          ],
+          "address.state": [
+            "VIC"
+          ],
+          "address.postcode": [
+            "3228"
+          ]
+        }
+      },
+      "record_b": {
+        "source": "vic_liquor",
+        "record_grain": "licence_or_permit",
+        "claims": {
+          "entity.legal_name": [
+            "TORQUAY SURF LIFESAVING CLUB INC"
+          ],
+          "entity.trading_name": [
+            "TORQUAY SURF LIFE SAVING CLUB"
+          ],
+          "address.locality": [
+            "TORQUAY"
+          ],
+          "address.postcode": [
+            "3228"
+          ],
+          "address.state": [
+            "VIC"
+          ]
+        }
+      }
+    },
+    "match_evidence": [
+      {
+        "type": "NAME_EXACT_NORMALISED",
+        "value": "TORQUAY SURF LIFESAVING CLUB INC"
+      },
+      {
+        "type": "LOCATION_AGREES"
+      },
+      {
+        "type": "EVIDENCE_SCORE_COMPONENTS",
+        "value": {
+          "rule_base": 0.817,
+          "name_claim_quality": 0.024,
+          "distinctive_name_tokens": 0.0151,
+          "legal_names_agree": 0.009,
+          "matching_location": 0.016
+        }
+      }
+    ],
+    "sample_strata": [
+      "cohort",
+      "random"
+    ]
+  },
+  {
+    "seed": 20261112,
+    "pair": 19,
+    "link_id": "lk_0859e24e3517e0b8",
+    "score": 0.861,
+    "rule": "registered_name_exact",
+    "record_a": "asic_companies::686494468|EDDA & CO PTY LTD|Y",
+    "record_b": "vic_liquor::32325812",
+    "proxy_label": "CORRECT",
+    "proxy_reason": "Exact legal name Edda & Co Pty Ltd matches; Sister Lu is a trading name for the licensed premises.",
+    "human_label": "",
+    "human_note": "",
+    "source_records": {
+      "id": 19,
+      "record_a": {
+        "source": "asic_companies",
+        "record_grain": "legal_entity",
+        "claims": {
+          "entity.legal_name": [
+            "EDDA & CO PTY LTD"
+          ],
+          "entity.acn": [
+            "686494468"
+          ],
+          "entity.abn": [
+            "32686494468"
+          ],
+          "entity.entity_type": [
+            "company"
+          ]
+        }
+      },
+      "record_b": {
+        "source": "vic_liquor",
+        "record_grain": "licence_or_permit",
+        "claims": {
+          "entity.legal_name": [
+            "EDDA & CO PTY LTD"
+          ],
+          "entity.trading_name": [
+            "SISTER LU"
+          ],
+          "address.locality": [
+            "COWES"
+          ],
+          "address.postcode": [
+            "3922"
+          ],
+          "address.state": [
+            "VIC"
+          ]
+        }
+      }
+    },
+    "match_evidence": [
+      {
+        "type": "NAME_EXACT_NORMALISED",
+        "value": "EDDA & CO PTY LTD"
+      },
+      {
+        "type": "EVIDENCE_SCORE_COMPONENTS",
+        "value": {
+          "rule_base": 0.817,
+          "name_claim_quality": 0.024,
+          "distinctive_name_tokens": 0.011,
+          "legal_names_agree": 0.009
+        }
+      }
+    ],
+    "sample_strata": [
+      "cohort",
+      "random"
+    ]
+  },
+  {
+    "seed": 20261112,
+    "pair": 20,
+    "link_id": "lk_d7b06bd3e8b7c40f",
+    "score": 0.9778,
+    "rule": "abn_equal",
+    "record_a": "asic_companies::606680353|CENTURIA BASS CREDIT PTY LIMITED|Y",
+    "record_b": "ato_tax_transparency::h:d20b2427681576f1",
+    "proxy_label": "CORRECT",
+    "proxy_reason": "Same legal name and ABN 66606680353 across ASIC and ATO.",
+    "human_label": "",
+    "human_note": "",
+    "source_records": {
+      "id": 20,
+      "record_a": {
+        "source": "asic_companies",
+        "record_grain": "legal_entity",
+        "claims": {
+          "entity.legal_name": [
+            "CENTURIA BASS CREDIT PTY LIMITED"
+          ],
+          "entity.acn": [
+            "606680353"
+          ],
+          "entity.abn": [
+            "66606680353"
+          ],
+          "entity.entity_type": [
+            "company"
+          ]
+        }
+      },
+      "record_b": {
+        "source": "ato_tax_transparency",
+        "record_grain": "legal_entity",
+        "claims": {
+          "entity.legal_name": [
+            "CENTURIA BASS CREDIT PTY LIMITED"
+          ],
+          "entity.abn": [
+            "66606680353"
+          ]
+        }
+      }
+    },
+    "match_evidence": [
+      {
+        "type": "ABN_EQUAL_VALID",
+        "value": "66606680353"
+      },
+      {
+        "type": "ABN_CONTAINS_ACN"
+      },
+      {
+        "type": "NAME_EXACT_NORMALISED",
+        "value": "CENTURIA BASS CREDIT PTY LTD"
+      },
+      {
+        "type": "EVIDENCE_SCORE_COMPONENTS",
+        "value": {
+          "rule_base": 0.925,
+          "identifier_claim_quality": 0.0216,
+          "name_claim_quality": 0.0162,
+          "distinctive_name_tokens": 0.006,
+          "legal_names_agree": 0.009
+        }
+      }
+    ],
+    "sample_strata": [
+      "cohort",
+      "random"
+    ]
+  },
+  {
+    "seed": 20261112,
+    "pair": 21,
+    "link_id": "lk_7e99a32374aa7e7e",
+    "score": 0.9771,
+    "rule": "abn_equal",
+    "record_a": "asic_companies::626849241|B.I.G. INVEST AUSTRALIA PTY LTD|Y",
+    "record_b": "ato_tax_transparency::h:bf0ae18e51ed0c7f",
+    "proxy_label": "CORRECT",
+    "proxy_reason": "Same ABN 35626849241; names differ only punctuation.",
+    "human_label": "",
+    "human_note": "",
+    "source_records": {
+      "id": 21,
+      "record_a": {
+        "source": "asic_companies",
+        "record_grain": "legal_entity",
+        "claims": {
+          "entity.legal_name": [
+            "B.I.G. INVEST AUSTRALIA PTY LTD"
+          ],
+          "entity.acn": [
+            "626849241"
+          ],
+          "entity.abn": [
+            "35626849241"
+          ],
+          "entity.entity_type": [
+            "company"
+          ]
+        }
+      },
+      "record_b": {
+        "source": "ato_tax_transparency",
+        "record_grain": "legal_entity",
+        "claims": {
+          "entity.legal_name": [
+            "B.I.G INVEST AUSTRALIA PTY LTD"
+          ],
+          "entity.abn": [
+            "35626849241"
+          ]
+        }
+      }
+    },
+    "match_evidence": [
+      {
+        "type": "ABN_EQUAL_VALID",
+        "value": "35626849241"
+      },
+      {
+        "type": "ABN_CONTAINS_ACN"
+      },
+      {
+        "type": "NAME_EXACT_NORMALISED",
+        "value": "B I G INVEST AUSTRALIA PTY LTD"
+      },
+      {
+        "type": "EVIDENCE_SCORE_COMPONENTS",
+        "value": {
+          "rule_base": 0.925,
+          "identifier_claim_quality": 0.0216,
+          "name_claim_quality": 0.0162,
+          "distinctive_name_tokens": 0.0052,
+          "legal_names_agree": 0.009
+        }
+      }
+    ],
+    "sample_strata": [
+      "cohort",
+      "random"
+    ]
+  },
+  {
+    "seed": 20261112,
+    "pair": 22,
+    "link_id": "lk_21a1370c6ec1f06c",
+    "score": 0.858,
+    "rule": "registered_name_exact",
+    "record_a": "ato_tax_transparency::h:3fa58fac451ceab8",
+    "record_b": "vic_liquor::32067561",
+    "proxy_label": "CORRECT",
+    "proxy_reason": "Exact legal name ENDEAVOUR GROUP LIMITED; liquor record for its DAN MURPHY'S site in Ocean Grove.",
+    "human_label": "",
+    "human_note": "",
+    "source_records": {
+      "id": 22,
+      "record_a": {
+        "source": "ato_tax_transparency",
+        "record_grain": "legal_entity",
+        "claims": {
+          "entity.legal_name": [
+            "ENDEAVOUR GROUP LIMITED"
+          ],
+          "entity.abn": [
+            "77159767843"
+          ]
+        }
+      },
+      "record_b": {
+        "source": "vic_liquor",
+        "record_grain": "licence_or_permit",
+        "claims": {
+          "entity.legal_name": [
+            "ENDEAVOUR GROUP LIMITED"
+          ],
+          "entity.trading_name": [
+            "DAN MURPHY'S"
+          ],
+          "address.locality": [
+            "OCEAN GROVE"
+          ],
+          "address.postcode": [
+            "3226"
+          ],
+          "address.state": [
+            "VIC"
+          ]
+        }
+      }
+    },
+    "match_evidence": [
+      {
+        "type": "NAME_EXACT_NORMALISED",
+        "value": "ENDEAVOUR GROUP LTD"
+      },
+      {
+        "type": "EVIDENCE_SCORE_COMPONENTS",
+        "value": {
+          "rule_base": 0.817,
+          "name_claim_quality": 0.024,
+          "distinctive_name_tokens": 0.008,
+          "legal_names_agree": 0.009
+        }
+      }
+    ],
+    "sample_strata": [
+      "cohort",
+      "random"
+    ]
+  },
+  {
+    "seed": 20261112,
+    "pair": 23,
+    "link_id": "lk_daebadf291d7d609",
+    "score": 0.8624,
+    "rule": "registered_name_exact",
+    "record_a": "asic_companies::600041405|NEPA GLOBAL PTY. LTD.|Y",
+    "record_b": "vic_liquor::36302727",
+    "proxy_label": "CORRECT",
+    "proxy_reason": "Exact legal name NEPA GLOBAL PTY LTD aside from punctuation; same trading name and locality.",
+    "human_label": "",
+    "human_note": "",
+    "source_records": {
+      "id": 23,
+      "record_a": {
+        "source": "asic_companies",
+        "record_grain": "legal_entity",
+        "claims": {
+          "entity.legal_name": [
+            "NEPA GLOBAL PTY. LTD."
+          ],
+          "entity.acn": [
+            "600041405"
+          ],
+          "entity.abn": [
+            "47600041405"
+          ],
+          "entity.entity_type": [
+            "company"
+          ]
+        }
+      },
+      "record_b": {
+        "source": "vic_liquor",
+        "record_grain": "licence_or_permit",
+        "claims": {
+          "entity.legal_name": [
+            "NEPA GLOBAL PTY LTD"
+          ],
+          "entity.trading_name": [
+            "NEPA GLOBAL"
+          ],
+          "address.locality": [
+            "WILLIAMS LANDING"
+          ],
+          "address.postcode": [
+            "3027"
+          ],
+          "address.state": [
+            "VIC"
+          ]
+        }
+      }
+    },
+    "match_evidence": [
+      {
+        "type": "NAME_EXACT_NORMALISED",
+        "value": "NEPA GLOBAL PTY LTD"
+      },
+      {
+        "type": "EVIDENCE_SCORE_COMPONENTS",
+        "value": {
+          "rule_base": 0.817,
+          "name_claim_quality": 0.024,
+          "distinctive_name_tokens": 0.0124,
+          "legal_names_agree": 0.009
+        }
+      }
+    ],
+    "sample_strata": [
+      "cohort",
+      "random"
+    ]
+  },
+  {
+    "seed": 20261112,
+    "pair": 24,
+    "link_id": "lk_2d4e373fd56ed8ce",
+    "score": 0.859,
+    "rule": "registered_name_exact",
+    "record_a": "asic_companies::062326176|MEDINA PROPERTY SERVICES PTY LIMITED|Y",
+    "record_b": "vic_liquor::31962213",
+    "proxy_label": "CORRECT",
+    "proxy_reason": "Exact legal name MEDINA PROPERTY SERVICES PTY LIMITED; licence trading as Adina Apartment Hotel Pentridge.",
+    "human_label": "",
+    "human_note": "",
+    "source_records": {
+      "id": 24,
+      "record_a": {
+        "source": "asic_companies",
+        "record_grain": "legal_entity",
+        "claims": {
+          "entity.legal_name": [
+            "MEDINA PROPERTY SERVICES PTY LIMITED"
+          ],
+          "entity.acn": [
+            "062326176"
+          ],
+          "entity.abn": [
+            "36062326176"
+          ],
+          "entity.entity_type": [
+            "company"
+          ]
+        }
+      },
+      "record_b": {
+        "source": "vic_liquor",
+        "record_grain": "licence_or_permit",
+        "claims": {
+          "entity.legal_name": [
+            "MEDINA PROPERTY SERVICES PTY LIMITED"
+          ],
+          "entity.trading_name": [
+            "ADINA APARTMENT HOTEL PENTRIDGE MELBOURNE"
+          ],
+          "address.locality": [
+            "COBURG"
+          ],
+          "address.postcode": [
+            "3058"
+          ],
+          "address.state": [
+            "VIC"
+          ]
+        }
+      }
+    },
+    "match_evidence": [
+      {
+        "type": "NAME_EXACT_NORMALISED",
+        "value": "MEDINA PROPERTY SERVICES PTY LTD"
+      },
+      {
+        "type": "EVIDENCE_SCORE_COMPONENTS",
+        "value": {
+          "rule_base": 0.817,
+          "name_claim_quality": 0.024,
+          "distinctive_name_tokens": 0.009,
+          "legal_names_agree": 0.009
+        }
+      }
+    ],
+    "sample_strata": [
+      "cohort",
+      "cohort"
+    ]
+  },
+  {
+    "seed": 20261112,
+    "pair": 25,
+    "link_id": "lk_91af1a50de61283c",
+    "score": 0.9773,
+    "rule": "abn_equal",
+    "record_a": "asic_companies::000080179|BLACKWOOD HODGE (AUSTRALIA) PTY LTD|",
+    "record_b": "ato_tax_transparency::h:a08cd675f7cd0509",
+    "proxy_label": "CORRECT",
+    "proxy_reason": "Same legal name and ABN 62000080179.",
+    "human_label": "",
+    "human_note": "",
+    "source_records": {
+      "id": 25,
+      "record_a": {
+        "source": "asic_companies",
+        "record_grain": "legal_entity",
+        "claims": {
+          "entity.legal_name": [
+            "HITACHI CONSTRUCTION MACHINERY (AUSTRALIA) PTY LTD"
+          ],
+          "entity.acn": [
+            "000080179"
+          ],
+          "entity.abn": [
+            "62000080179"
+          ],
+          "entity.entity_type": [
+            "company"
+          ]
+        }
+      },
+      "record_b": {
+        "source": "ato_tax_transparency",
+        "record_grain": "legal_entity",
+        "claims": {
+          "entity.legal_name": [
+            "HITACHI CONSTRUCTION MACHINERY (AUSTRALIA) PTY LTD"
+          ],
+          "entity.abn": [
+            "62000080179"
+          ]
+        }
+      }
+    },
+    "match_evidence": [
+      {
+        "type": "ABN_EQUAL_VALID",
+        "value": "62000080179"
+      },
+      {
+        "type": "ABN_CONTAINS_ACN"
+      },
+      {
+        "type": "NAME_EXACT_NORMALISED",
+        "value": "HITACHI CONSTRUCTION MACHINERY AUSTRALIA PTY LTD"
+      },
+      {
+        "type": "EVIDENCE_SCORE_COMPONENTS",
+        "value": {
+          "rule_base": 0.925,
+          "identifier_claim_quality": 0.0216,
+          "name_claim_quality": 0.0162,
+          "distinctive_name_tokens": 0.0054,
+          "legal_names_agree": 0.009
+        }
+      }
+    ],
+    "sample_strata": [
+      "cohort",
+      "random"
+    ]
+  },
+  {
+    "seed": 20261112,
+    "pair": 26,
+    "link_id": "lk_df19b238f8a8ea7e",
+    "score": 0.9758,
+    "rule": "abn_equal",
+    "record_a": "asic_companies::004727753|CHARTIS AUSTRALIA INSURANCE LIMITED|",
+    "record_b": "ato_tax_transparency::h:5bb313525588baec",
+    "proxy_label": "CORRECT",
+    "proxy_reason": "Same legal name and ABN 93004727753.",
+    "human_label": "",
+    "human_note": "",
+    "source_records": {
+      "id": 26,
+      "record_a": {
+        "source": "asic_companies",
+        "record_grain": "legal_entity",
+        "claims": {
+          "entity.legal_name": [
+            "AIG AUSTRALIA LIMITED"
+          ],
+          "entity.acn": [
+            "004727753"
+          ],
+          "entity.abn": [
+            "93004727753"
+          ],
+          "entity.entity_type": [
+            "company"
+          ]
+        }
+      },
+      "record_b": {
+        "source": "ato_tax_transparency",
+        "record_grain": "legal_entity",
+        "claims": {
+          "entity.legal_name": [
+            "AIG AUSTRALIA LIMITED"
+          ],
+          "entity.abn": [
+            "93004727753"
+          ]
+        }
+      }
+    },
+    "match_evidence": [
+      {
+        "type": "ABN_EQUAL_VALID",
+        "value": "93004727753"
+      },
+      {
+        "type": "ABN_CONTAINS_ACN"
+      },
+      {
+        "type": "NAME_EXACT_NORMALISED",
+        "value": "AIG AUSTRALIA LTD"
+      },
+      {
+        "type": "EVIDENCE_SCORE_COMPONENTS",
+        "value": {
+          "rule_base": 0.925,
+          "identifier_claim_quality": 0.0216,
+          "name_claim_quality": 0.0162,
+          "distinctive_name_tokens": 0.0039,
+          "legal_names_agree": 0.009
+        }
+      }
+    ],
+    "sample_strata": [
+      "cohort",
+      "random"
+    ]
+  },
+  {
+    "seed": 20261112,
+    "pair": 27,
+    "link_id": "lk_05a33b5309b7c9e8",
+    "score": 0.8647,
+    "rule": "registered_name_exact",
+    "record_a": "asic_companies::073680501|KEG FRANCHISING PTY LTD|",
+    "record_b": "vic_liquor::36303359",
+    "proxy_label": "CORRECT",
+    "proxy_reason": "Exact legal name and trading name THE TABU VODKA CO.",
+    "human_label": "",
+    "human_note": "",
+    "source_records": {
+      "id": 27,
+      "record_a": {
+        "source": "asic_companies",
+        "record_grain": "legal_entity",
+        "claims": {
+          "entity.legal_name": [
+            "THE TABU VODKA CO PTY LTD"
+          ],
+          "entity.acn": [
+            "073680501"
+          ],
+          "entity.abn": [
+            "74073680501"
+          ],
+          "entity.entity_type": [
+            "company"
+          ]
+        }
+      },
+      "record_b": {
+        "source": "vic_liquor",
+        "record_grain": "licence_or_permit",
+        "claims": {
+          "entity.legal_name": [
+            "THE TABU VODKA CO PTY LTD"
+          ],
+          "entity.trading_name": [
+            "THE TABU VODKA CO"
+          ],
+          "address.locality": [
+            "MELBOURNE"
+          ],
+          "address.postcode": [
+            "3000"
+          ],
+          "address.state": [
+            "VIC"
+          ]
+        }
+      }
+    },
+    "match_evidence": [
+      {
+        "type": "NAME_EXACT_NORMALISED",
+        "value": "TABU VODKA CO PTY LTD"
+      },
+      {
+        "type": "EVIDENCE_SCORE_COMPONENTS",
+        "value": {
+          "rule_base": 0.817,
+          "name_claim_quality": 0.024,
+          "distinctive_name_tokens": 0.0147,
+          "legal_names_agree": 0.009
+        }
+      }
+    ],
+    "sample_strata": [
+      "cohort",
+      "random"
+    ]
+  },
+  {
+    "seed": 20261112,
+    "pair": 28,
+    "link_id": "lk_280d9d95277dc1b8",
+    "score": 0.8621,
+    "rule": "registered_name_exact",
+    "record_a": "asic_companies::138150553|SICHUAN HOUSE PTY LTD|Y",
+    "record_b": "vic_liquor::32255782",
+    "proxy_label": "CORRECT",
+    "proxy_reason": "Exact legal name and trading name SICHUAN HOUSE.",
+    "human_label": "",
+    "human_note": "",
+    "source_records": {
+      "id": 28,
+      "record_a": {
+        "source": "asic_companies",
+        "record_grain": "legal_entity",
+        "claims": {
+          "entity.legal_name": [
+            "SICHUAN HOUSE PTY LTD"
+          ],
+          "entity.acn": [
+            "138150553"
+          ],
+          "entity.abn": [
+            "11138150553"
+          ],
+          "entity.entity_type": [
+            "company"
+          ]
+        }
+      },
+      "record_b": {
+        "source": "vic_liquor",
+        "record_grain": "licence_or_permit",
+        "claims": {
+          "entity.legal_name": [
+            "SICHUAN HOUSE PTY LTD"
+          ],
+          "entity.trading_name": [
+            "SICHUAN HOUSE"
+          ],
+          "address.locality": [
+            "MELBOURNE"
+          ],
+          "address.postcode": [
+            "3000"
+          ],
+          "address.state": [
+            "VIC"
+          ]
+        }
+      }
+    },
+    "match_evidence": [
+      {
+        "type": "NAME_EXACT_NORMALISED",
+        "value": "SICHUAN HOUSE PTY LTD"
+      },
+      {
+        "type": "EVIDENCE_SCORE_COMPONENTS",
+        "value": {
+          "rule_base": 0.817,
+          "name_claim_quality": 0.024,
+          "distinctive_name_tokens": 0.0121,
+          "legal_names_agree": 0.009
+        }
+      }
+    ],
+    "sample_strata": [
+      "cohort",
+      "random"
+    ]
+  },
+  {
+    "seed": 20261112,
+    "pair": 29,
+    "link_id": "lk_fd2968c0ac6ecc60",
+    "score": 0.8623,
+    "rule": "registered_name_exact",
+    "record_a": "asic_companies::150256278|GD TRADING PTY LTD|Y",
+    "record_b": "vic_liquor::32005349",
+    "proxy_label": "CORRECT",
+    "proxy_reason": "Exact legal name GD TRADING PTY LTD; licence trading as The Basin Liquor Store.",
+    "human_label": "",
+    "human_note": "",
+    "source_records": {
+      "id": 29,
+      "record_a": {
+        "source": "asic_companies",
+        "record_grain": "legal_entity",
+        "claims": {
+          "entity.legal_name": [
+            "GD TRADING PTY LTD"
+          ],
+          "entity.acn": [
+            "150256278"
+          ],
+          "entity.abn": [
+            "64150256278"
+          ],
+          "entity.entity_type": [
+            "company"
+          ]
+        }
+      },
+      "record_b": {
+        "source": "vic_liquor",
+        "record_grain": "licence_or_permit",
+        "claims": {
+          "entity.legal_name": [
+            "GD TRADING PTY LTD"
+          ],
+          "entity.trading_name": [
+            "THE BASIN LIQUOR STORE"
+          ],
+          "address.locality": [
+            "THE BASIN"
+          ],
+          "address.postcode": [
+            "3154"
+          ],
+          "address.state": [
+            "VIC"
+          ]
+        }
+      }
+    },
+    "match_evidence": [
+      {
+        "type": "NAME_EXACT_NORMALISED",
+        "value": "GD TRADING PTY LTD"
+      },
+      {
+        "type": "EVIDENCE_SCORE_COMPONENTS",
+        "value": {
+          "rule_base": 0.817,
+          "name_claim_quality": 0.024,
+          "distinctive_name_tokens": 0.0123,
+          "legal_names_agree": 0.009
+        }
+      }
+    ],
+    "sample_strata": [
+      "cohort",
+      "random"
+    ]
+  },
+  {
+    "seed": 20261112,
+    "pair": 30,
+    "link_id": "lk_8a06a7149fda14ef",
+    "score": 0.9447,
+    "rule": "abn_equal",
+    "record_a": "asic_companies::129182485|MOODY'S GROUP AUSTRALIA PTY LTD|Y",
+    "record_b": "ato_tax_transparency::h:f13d81b05d8a5d73",
+    "proxy_label": "CORRECT",
+    "proxy_reason": "Same ABN 54129182485; names differ only apostrophe.",
+    "human_label": "",
+    "human_note": "",
+    "source_records": {
+      "id": 30,
+      "record_a": {
+        "source": "asic_companies",
+        "record_grain": "legal_entity",
+        "claims": {
+          "entity.legal_name": [
+            "MOODY'S GROUP AUSTRALIA PTY LTD"
+          ],
+          "entity.acn": [
+            "129182485"
+          ],
+          "entity.abn": [
+            "54129182485"
+          ],
+          "entity.entity_type": [
+            "company"
+          ]
+        }
+      },
+      "record_b": {
+        "source": "ato_tax_transparency",
+        "record_grain": "legal_entity",
+        "claims": {
+          "entity.legal_name": [
+            "MOODYS GROUP AUSTRALIA PTY LTD"
+          ],
+          "entity.abn": [
+            "54129182485"
+          ]
+        }
+      }
+    },
+    "match_evidence": [
+      {
+        "type": "ABN_EQUAL_VALID",
+        "value": "54129182485"
+      },
+      {
+        "type": "ABN_CONTAINS_ACN"
+      },
+      {
+        "type": "NAME_SIMILARITY",
+        "value": 0.923
+      },
+      {
+        "type": "EVIDENCE_SCORE_COMPONENTS",
+        "value": {
+          "rule_base": 0.925,
+          "identifier_claim_quality": 0.0216,
+          "names_disagree": -0.0019
+        }
+      }
+    ],
+    "sample_strata": [
+      "cohort",
+      "random"
+    ]
+  },
+  {
+    "seed": 20261112,
+    "pair": 31,
+    "link_id": "lk_46969d276a6534b8",
+    "score": 0.8633,
+    "rule": "registered_name_exact",
+    "record_a": "asic_companies::672022909|A & J PORT FAIRY PTY LTD|Y",
+    "record_b": "vic_liquor::32288400",
+    "proxy_label": "CORRECT",
+    "proxy_reason": "Same exact legal name 'A & J PORT FAIRY PTY LTD'; licence record in Port Fairy VIC matches the entity's registered identity, trading name SIDRO CHAMBERS is a permissible variation.",
+    "human_label": "",
+    "human_note": "",
+    "source_records": {
+      "id": 31,
+      "record_a": {
+        "source": "asic_companies",
+        "record_grain": "legal_entity",
+        "claims": {
+          "entity.legal_name": [
+            "A & J PORT FAIRY PTY LTD"
+          ],
+          "entity.acn": [
+            "672022909"
+          ],
+          "entity.abn": [
+            "34672022909"
+          ],
+          "entity.entity_type": [
+            "company"
+          ]
+        }
+      },
+      "record_b": {
+        "source": "vic_liquor",
+        "record_grain": "licence_or_permit",
+        "claims": {
+          "entity.legal_name": [
+            "A & J PORT FAIRY PTY LTD"
+          ],
+          "entity.trading_name": [
+            "SIDRO CHAMBERS"
+          ],
+          "address.locality": [
+            "PORT FAIRY"
+          ],
+          "address.postcode": [
+            "3284"
+          ],
+          "address.state": [
+            "VIC"
+          ]
+        }
+      }
+    },
+    "match_evidence": [
+      {
+        "type": "NAME_EXACT_NORMALISED",
+        "value": "A & J PORT FAIRY PTY LTD"
+      },
+      {
+        "type": "EVIDENCE_SCORE_COMPONENTS",
+        "value": {
+          "rule_base": 0.817,
+          "name_claim_quality": 0.024,
+          "distinctive_name_tokens": 0.0133,
+          "legal_names_agree": 0.009
+        }
+      }
+    ],
+    "sample_strata": [
+      "cohort",
+      "random"
+    ]
+  },
+  {
+    "seed": 20261112,
+    "pair": 32,
+    "link_id": "lk_ab32e262342a7081",
+    "score": 0.8714,
+    "rule": "registered_name_exact",
+    "record_a": "acnc_charities::h:7fd97be74500f5ae",
+    "record_b": "asic_companies::078444210|SERENITY HAVEN HOUSE OF RESTORATION LTD|",
+    "proxy_label": "CORRECT",
+    "proxy_reason": "Same exact distinctive name 'LOAVES & FISHES STREET MEET CARE SERVICE LTD'; ACNC locality Slacks Creek QLD consistent, no conflicting identifiers.",
+    "human_label": "",
+    "human_note": "",
+    "source_records": {
+      "id": 32,
+      "record_a": {
+        "source": "acnc_charities",
+        "record_grain": "legal_entity",
+        "claims": {
+          "entity.abn": [
+            "74098830957"
+          ],
+          "entity.legal_name": [
+            "Loaves & Fishes Street Meet Care Service Ltd"
+          ],
+          "address.locality": [
+            "Slacks Creek"
+          ],
+          "address.state": [
+            "QLD"
+          ],
+          "address.postcode": [
+            "4127"
+          ]
+        }
+      },
+      "record_b": {
+        "source": "asic_companies",
+        "record_grain": "legal_entity",
+        "claims": {
+          "entity.legal_name": [
+            "LOAVES & FISHES STREET MEET CARE SERVICE LTD"
+          ],
+          "entity.acn": [
+            "078444210"
+          ],
+          "entity.entity_type": [
+            "company"
+          ]
+        }
+      }
+    },
+    "match_evidence": [
+      {
+        "type": "NAME_EXACT_NORMALISED",
+        "value": "LOAVES & FISHES STREET MEET CARE SERVICE LTD"
+      },
+      {
+        "type": "EVIDENCE_SCORE_COMPONENTS",
+        "value": {
+          "rule_base": 0.817,
+          "name_claim_quality": 0.0295,
+          "distinctive_name_tokens": 0.0159,
+          "legal_names_agree": 0.009
+        }
+      }
+    ],
+    "sample_strata": [
+      "random",
+      "cohort"
+    ]
+  },
+  {
+    "seed": 20261112,
+    "pair": 33,
+    "link_id": "lk_9f28b8f67f4580ab",
+    "score": 0.8605,
+    "rule": "registered_name_exact",
+    "record_a": "asic_companies::600810571|CHAPMAN & CO PTY. LTD.|Y",
+    "record_b": "vic_liquor::32803983",
+    "proxy_label": "CORRECT",
+    "proxy_reason": "Same legal name (punctuation-only variance 'PTY. LTD.' vs 'PTY LTD'); liquor licence at Bittern VIC with trading name KINGS CREEK VINEYARD, no conflict.",
+    "human_label": "",
+    "human_note": "",
+    "source_records": {
+      "id": 33,
+      "record_a": {
+        "source": "asic_companies",
+        "record_grain": "legal_entity",
+        "claims": {
+          "entity.legal_name": [
+            "CHAPMAN & CO PTY. LTD."
+          ],
+          "entity.acn": [
+            "600810571"
+          ],
+          "entity.entity_type": [
+            "company"
+          ]
+        }
+      },
+      "record_b": {
+        "source": "vic_liquor",
+        "record_grain": "licence_or_permit",
+        "claims": {
+          "entity.legal_name": [
+            "CHAPMAN & CO PTY LTD"
+          ],
+          "entity.trading_name": [
+            "KINGS CREEK VINEYARD"
+          ],
+          "address.locality": [
+            "BITTERN"
+          ],
+          "address.postcode": [
+            "3918"
+          ],
+          "address.state": [
+            "VIC"
+          ]
+        }
+      }
+    },
+    "match_evidence": [
+      {
+        "type": "NAME_EXACT_NORMALISED",
+        "value": "CHAPMAN & CO PTY LTD"
+      },
+      {
+        "type": "EVIDENCE_SCORE_COMPONENTS",
+        "value": {
+          "rule_base": 0.817,
+          "name_claim_quality": 0.024,
+          "distinctive_name_tokens": 0.0105,
+          "legal_names_agree": 0.009
+        }
+      }
+    ],
+    "sample_strata": [
+      "cohort",
+      "random"
+    ]
+  },
+  {
+    "seed": 20261112,
+    "pair": 34,
+    "link_id": "lk_77b868a1569615bd",
+    "score": 0.8634,
+    "rule": "registered_name_exact",
+    "record_a": "asic_companies::688852995|VEENA FOODS PTY LTD|Y",
+    "record_b": "vic_liquor::32375508",
+    "proxy_label": "CORRECT",
+    "proxy_reason": "Identical legal name and trading name VEENA FOODS PTY LTD; St Kilda VIC address consistent, no conflicting evidence.",
+    "human_label": "",
+    "human_note": "",
+    "source_records": {
+      "id": 34,
+      "record_a": {
+        "source": "asic_companies",
+        "record_grain": "legal_entity",
+        "claims": {
+          "entity.legal_name": [
+            "VEENA FOODS PTY LTD"
+          ],
+          "entity.acn": [
+            "688852995"
+          ],
+          "entity.abn": [
+            "72688852995"
+          ],
+          "entity.entity_type": [
+            "company"
+          ]
+        }
+      },
+      "record_b": {
+        "source": "vic_liquor",
+        "record_grain": "licence_or_permit",
+        "claims": {
+          "entity.legal_name": [
+            "VEENA FOODS PTY LTD"
+          ],
+          "entity.trading_name": [
+            "VEENA FOODS PTY LTD"
+          ],
+          "address.locality": [
+            "ST KILDA"
+          ],
+          "address.postcode": [
+            "3182"
+          ],
+          "address.state": [
+            "VIC"
+          ]
+        }
+      }
+    },
+    "match_evidence": [
+      {
+        "type": "NAME_EXACT_NORMALISED",
+        "value": "VEENA FOODS PTY LTD"
+      },
+      {
+        "type": "EVIDENCE_SCORE_COMPONENTS",
+        "value": {
+          "rule_base": 0.817,
+          "name_claim_quality": 0.0263,
+          "distinctive_name_tokens": 0.011,
+          "legal_names_agree": 0.009
+        }
+      }
+    ],
+    "sample_strata": [
+      "cohort",
+      "random"
+    ]
+  },
+  {
+    "seed": 20261112,
+    "pair": 35,
+    "link_id": "lk_12c3c11dd3eccd18",
+    "score": 0.9772,
+    "rule": "abn_equal",
+    "record_a": "asic_companies::108952085|AMERICAN EXPRESS AUSTRALIA LIMITED|Y",
+    "record_b": "ato_tax_transparency::h:f747722c1744abe0",
+    "proxy_label": "CORRECT",
+    "proxy_reason": "Identical legal name and identical ABN 92108952085 across ASIC and ATO records.",
+    "human_label": "",
+    "human_note": "",
+    "source_records": {
+      "id": 35,
+      "record_a": {
+        "source": "asic_companies",
+        "record_grain": "legal_entity",
+        "claims": {
+          "entity.legal_name": [
+            "AMERICAN EXPRESS AUSTRALIA LIMITED"
+          ],
+          "entity.acn": [
+            "108952085"
+          ],
+          "entity.abn": [
+            "92108952085"
+          ],
+          "entity.entity_type": [
+            "company"
+          ]
+        }
+      },
+      "record_b": {
+        "source": "ato_tax_transparency",
+        "record_grain": "legal_entity",
+        "claims": {
+          "entity.legal_name": [
+            "AMERICAN EXPRESS AUSTRALIA LIMITED"
+          ],
+          "entity.abn": [
+            "92108952085"
+          ]
+        }
+      }
+    },
+    "match_evidence": [
+      {
+        "type": "ABN_EQUAL_VALID",
+        "value": "92108952085"
+      },
+      {
+        "type": "ABN_CONTAINS_ACN"
+      },
+      {
+        "type": "NAME_EXACT_NORMALISED",
+        "value": "AMERICAN EXPRESS AUSTRALIA LTD"
+      },
+      {
+        "type": "EVIDENCE_SCORE_COMPONENTS",
+        "value": {
+          "rule_base": 0.925,
+          "identifier_claim_quality": 0.0216,
+          "name_claim_quality": 0.0162,
+          "distinctive_name_tokens": 0.0053,
+          "legal_names_agree": 0.009
+        }
+      }
+    ],
+    "sample_strata": [
+      "cohort",
+      "random"
+    ]
+  },
+  {
+    "seed": 20261112,
+    "pair": 36,
+    "link_id": "lk_1413d9999405910c",
+    "score": 0.861,
+    "rule": "registered_name_exact",
+    "record_a": "ato_tax_transparency::h:65081c7294756100",
+    "record_b": "vic_liquor::31916717",
+    "proxy_label": "CORRECT",
+    "proxy_reason": "Identical legal name; liquor licence for SANDOWN PARK HOTEL at Noble Park VIC is a venue-level scope consistent with the entity, no conflict.",
+    "human_label": "",
+    "human_note": "",
+    "source_records": {
+      "id": 36,
+      "record_a": {
+        "source": "ato_tax_transparency",
+        "record_grain": "legal_entity",
+        "claims": {
+          "entity.legal_name": [
+            "AUSTRALIAN LEISURE AND HOSPITALITY GROUP PTY LIMITED"
+          ],
+          "entity.abn": [
+            "37067391511"
+          ]
+        }
+      },
+      "record_b": {
+        "source": "vic_liquor",
+        "record_grain": "licence_or_permit",
+        "claims": {
+          "entity.legal_name": [
+            "AUSTRALIAN LEISURE AND HOSPITALITY GROUP PTY LIMITED"
+          ],
+          "entity.trading_name": [
+            "SANDOWN PARK HOTEL"
+          ],
+          "address.locality": [
+            "NOBLE PARK"
+          ],
+          "address.postcode": [
+            "3174"
+          ],
+          "address.state": [
+            "VIC"
+          ]
+        }
+      }
+    },
+    "match_evidence": [
+      {
+        "type": "NAME_EXACT_NORMALISED",
+        "value": "AUSTRALIAN LEISURE & HOSPITALITY GROUP PTY LTD"
+      },
+      {
+        "type": "EVIDENCE_SCORE_COMPONENTS",
+        "value": {
+          "rule_base": 0.817,
+          "name_claim_quality": 0.024,
+          "distinctive_name_tokens": 0.0111,
+          "legal_names_agree": 0.009
+        }
+      }
+    ],
+    "sample_strata": [
+      "cohort",
+      "random"
+    ]
+  },
+  {
+    "seed": 20261112,
+    "pair": 37,
+    "link_id": "lk_71488b8c515d7074",
+    "score": 0.8642,
+    "rule": "registered_name_exact",
+    "record_a": "ato_tax_transparency::h:df61cc748cd9e271",
+    "record_b": "vic_liquor::36157059",
+    "proxy_label": "CORRECT",
+    "proxy_reason": "Identical legal name and identical trading name AUSTRALIAN AIRCONDITIONING DISTRIBUTORS PTY LTD; Tullamarine VIC address consistent.",
+    "human_label": "",
+    "human_note": "",
+    "source_records": {
+      "id": 37,
+      "record_a": {
+        "source": "ato_tax_transparency",
+        "record_grain": "legal_entity",
+        "claims": {
+          "entity.legal_name": [
+            "AUSTRALIAN AIRCONDITIONING DISTRIBUTORS PTY LTD"
+          ],
+          "entity.abn": [
+            "43139947363"
+          ]
+        }
+      },
+      "record_b": {
+        "source": "vic_liquor",
+        "record_grain": "licence_or_permit",
+        "claims": {
+          "entity.legal_name": [
+            "AUSTRALIAN AIRCONDITIONING DISTRIBUTORS PTY LTD"
+          ],
+          "entity.trading_name": [
+            "AUSTRALIAN AIRCONDITIONING DISTRIBUTORS PTY LTD"
+          ],
+          "address.locality": [
+            "TULLAMARINE"
+          ],
+          "address.postcode": [
+            "3043"
+          ],
+          "address.state": [
+            "VIC"
+          ]
+        }
+      }
+    },
+    "match_evidence": [
+      {
+        "type": "NAME_EXACT_NORMALISED",
+        "value": "AUSTRALIAN AIRCONDITIONING DISTRIBUTORS PTY LTD"
+      },
+      {
+        "type": "EVIDENCE_SCORE_COMPONENTS",
+        "value": {
+          "rule_base": 0.817,
+          "name_claim_quality": 0.0263,
+          "distinctive_name_tokens": 0.0119,
+          "legal_names_agree": 0.009
+        }
+      }
+    ],
+    "sample_strata": [
+      "random",
+      "cohort"
+    ]
+  },
+  {
+    "seed": 20261112,
+    "pair": 38,
+    "link_id": "lk_40c5378035835182",
+    "score": 0.9716,
+    "rule": "abn_equal",
+    "record_a": "asic_companies::640498773|STAR PRO TILING PTY LTD|Y",
+    "record_b": "qbcc_licensees::28453",
+    "proxy_label": "CORRECT",
+    "proxy_reason": "Exact match on legal name, ACN 640498773, ABN 75640498773 and entity type across ASIC and QBCC licensee records.",
+    "human_label": "",
+    "human_note": "",
+    "source_records": {
+      "id": 38,
+      "record_a": {
+        "source": "asic_companies",
+        "record_grain": "legal_entity",
+        "claims": {
+          "entity.legal_name": [
+            "STAR PRO TILING PTY LTD"
+          ],
+          "entity.acn": [
+            "640498773"
+          ],
+          "entity.abn": [
+            "75640498773"
+          ],
+          "entity.entity_type": [
+            "company"
+          ]
+        }
+      },
+      "record_b": {
+        "source": "qbcc_licensees",
+        "record_grain": "licence_or_permit",
+        "claims": {
+          "entity.legal_name": [
+            "STAR PRO TILING PTY LTD"
+          ],
+          "entity.abn": [
+            "75640498773"
+          ],
+          "entity.acn": [
+            "640498773"
+          ],
+          "entity.entity_type": [
+            "company"
+          ],
+          "address.state": [
+            "QLD"
+          ],
+          "address.postcode": [
+            "4132"
+          ]
+        }
+      }
+    },
+    "match_evidence": [
+      {
+        "type": "ABN_EQUAL_VALID",
+        "value": "75640498773"
+      },
+      {
+        "type": "ACN_EQUAL_VALID",
+        "value": "640498773"
+      },
+      {
+        "type": "ABN_CONTAINS_ACN"
+      },
+      {
+        "type": "NAME_EXACT_NORMALISED",
+        "value": "STAR PRO TILING PTY LTD"
+      },
+      {
+        "type": "EVIDENCE_SCORE_COMPONENTS",
+        "value": {
+          "rule_base": 0.925,
+          "identifier_claim_quality": 0.0188,
+          "name_claim_quality": 0.0131,
+          "distinctive_name_tokens": 0.0057,
+          "legal_names_agree": 0.009
+        }
+      }
+    ],
+    "sample_strata": [
+      "cohort",
+      "random"
+    ]
+  },
+  {
+    "seed": 20261112,
+    "pair": 39,
+    "link_id": "lk_19310c438c3e6846",
+    "score": 0.9768,
+    "rule": "abn_equal",
+    "record_a": "asic_companies::654627504|NAPA TOPCO PTY LTD|Y",
+    "record_b": "ato_tax_transparency::h:744bc3170496fc76",
+    "proxy_label": "CORRECT",
+    "proxy_reason": "Identical legal name and identical ABN 66654627504 across ASIC and ATO records.",
+    "human_label": "",
+    "human_note": "",
+    "source_records": {
+      "id": 39,
+      "record_a": {
+        "source": "asic_companies",
+        "record_grain": "legal_entity",
+        "claims": {
+          "entity.legal_name": [
+            "NAPA TOPCO PTY LTD"
+          ],
+          "entity.acn": [
+            "654627504"
+          ],
+          "entity.abn": [
+            "66654627504"
+          ],
+          "entity.entity_type": [
+            "company"
+          ]
+        }
+      },
+      "record_b": {
+        "source": "ato_tax_transparency",
+        "record_grain": "legal_entity",
+        "claims": {
+          "entity.legal_name": [
+            "NAPA TOPCO PTY LTD"
+          ],
+          "entity.abn": [
+            "66654627504"
+          ]
+        }
+      }
+    },
+    "match_evidence": [
+      {
+        "type": "ABN_EQUAL_VALID",
+        "value": "66654627504"
+      },
+      {
+        "type": "ABN_CONTAINS_ACN"
+      },
+      {
+        "type": "NAME_EXACT_NORMALISED",
+        "value": "NAPA TOPCO PTY LTD"
+      },
+      {
+        "type": "EVIDENCE_SCORE_COMPONENTS",
+        "value": {
+          "rule_base": 0.925,
+          "identifier_claim_quality": 0.0216,
+          "name_claim_quality": 0.0162,
+          "distinctive_name_tokens": 0.0049,
+          "legal_names_agree": 0.009
+        }
+      }
+    ],
+    "sample_strata": [
+      "cohort",
+      "random"
+    ]
+  },
+  {
+    "seed": 20261112,
+    "pair": 40,
+    "link_id": "lk_4c20a5c8e9084251",
+    "score": 0.9466,
+    "rule": "abn_equal",
+    "record_a": "asic_companies::166572845|NATIONAL STORAGE HOLDINGS LIMITED|",
+    "record_b": "ato_tax_transparency::h:8fba47aaa383d5b0",
+    "proxy_label": "UNCERTAIN",
+    "proxy_reason": "Same ABN 38166572845 but legal names differ ('PTY LTD' vs 'LIMITED'); entity-type discrepancy cannot be reconciled from these records.",
+    "human_label": "",
+    "human_note": "",
+    "source_records": {
+      "id": 40,
+      "record_a": {
+        "source": "asic_companies",
+        "record_grain": "legal_entity",
+        "claims": {
+          "entity.legal_name": [
+            "NATIONAL STORAGE HOLDINGS PTY LTD"
+          ],
+          "entity.acn": [
+            "166572845"
+          ],
+          "entity.abn": [
+            "38166572845"
+          ],
+          "entity.entity_type": [
+            "company"
+          ]
+        }
+      },
+      "record_b": {
+        "source": "ato_tax_transparency",
+        "record_grain": "legal_entity",
+        "claims": {
+          "entity.legal_name": [
+            "NATIONAL STORAGE HOLDINGS LIMITED"
+          ],
+          "entity.abn": [
+            "38166572845"
+          ]
+        }
+      }
+    },
+    "match_evidence": [
+      {
+        "type": "ABN_EQUAL_VALID",
+        "value": "38166572845"
+      },
+      {
+        "type": "ABN_CONTAINS_ACN"
+      },
+      {
+        "type": "NAME_SIMILARITY",
+        "value": 1.0
+      },
+      {
+        "type": "EVIDENCE_SCORE_COMPONENTS",
+        "value": {
+          "rule_base": 0.925,
+          "identifier_claim_quality": 0.0216
+        }
+      }
+    ],
+    "sample_strata": [
+      "cohort",
+      "random"
+    ]
+  },
+  {
+    "seed": 20261112,
+    "pair": 41,
+    "link_id": "lk_e5ad117fe6eb129e",
+    "score": 0.976,
+    "rule": "abn_equal",
+    "record_a": "asic_companies::111859119|YANCOAL AUSTRALIA PTY LIMITED|",
+    "record_b": "ato_tax_transparency::h:00ba370f1c37fc6d",
+    "proxy_label": "CORRECT",
+    "proxy_reason": "ABN 82111859119 identical; legal names differ only by LTD vs LIMITED suffix; both legal-entity grain.",
+    "human_label": "",
+    "human_note": "",
+    "source_records": {
+      "id": 41,
+      "record_a": {
+        "source": "asic_companies",
+        "record_grain": "legal_entity",
+        "claims": {
+          "entity.legal_name": [
+            "YANCOAL AUSTRALIA LTD"
+          ],
+          "entity.acn": [
+            "111859119"
+          ],
+          "entity.abn": [
+            "82111859119"
+          ],
+          "entity.entity_type": [
+            "company"
+          ]
+        }
+      },
+      "record_b": {
+        "source": "ato_tax_transparency",
+        "record_grain": "legal_entity",
+        "claims": {
+          "entity.legal_name": [
+            "YANCOAL AUSTRALIA LIMITED"
+          ],
+          "entity.abn": [
+            "82111859119"
+          ]
+        }
+      }
+    },
+    "match_evidence": [
+      {
+        "type": "ABN_EQUAL_VALID",
+        "value": "82111859119"
+      },
+      {
+        "type": "ABN_CONTAINS_ACN"
+      },
+      {
+        "type": "NAME_EXACT_NORMALISED",
+        "value": "YANCOAL AUSTRALIA LTD"
+      },
+      {
+        "type": "EVIDENCE_SCORE_COMPONENTS",
+        "value": {
+          "rule_base": 0.925,
+          "identifier_claim_quality": 0.0216,
+          "name_claim_quality": 0.0162,
+          "distinctive_name_tokens": 0.0041,
+          "legal_names_agree": 0.009
+        }
+      }
+    ],
+    "sample_strata": [
+      "cohort",
+      "random"
+    ]
+  },
+  {
+    "seed": 20261112,
+    "pair": 42,
+    "link_id": "lk_1d1d69ef8cbe5a30",
+    "score": 0.859,
+    "rule": "registered_name_exact",
+    "record_a": "ato_tax_transparency::h:0e857e77874fed58",
+    "record_b": "vic_liquor::31956539",
+    "proxy_label": "CORRECT",
+    "proxy_reason": "Exact distinctive legal name match and same entity type; liquor licence held by that company at Docklands premises is consistent, no conflict.",
+    "human_label": "",
+    "human_note": "",
+    "source_records": {
+      "id": 42,
+      "record_a": {
+        "source": "ato_tax_transparency",
+        "record_grain": "legal_entity",
+        "claims": {
+          "entity.legal_name": [
+            "MEDINA PROPERTY SERVICES PTY LIMITED"
+          ],
+          "entity.abn": [
+            "36062326176"
+          ]
+        }
+      },
+      "record_b": {
+        "source": "vic_liquor",
+        "record_grain": "licence_or_permit",
+        "claims": {
+          "entity.legal_name": [
+            "MEDINA PROPERTY SERVICES PTY LIMITED"
+          ],
+          "entity.trading_name": [
+            "VIBE HOTEL MELBOURNE DOCKLANDS"
+          ],
+          "address.locality": [
+            "DOCKLANDS"
+          ],
+          "address.postcode": [
+            "3008"
+          ],
+          "address.state": [
+            "VIC"
+          ]
+        }
+      }
+    },
+    "match_evidence": [
+      {
+        "type": "NAME_EXACT_NORMALISED",
+        "value": "MEDINA PROPERTY SERVICES PTY LTD"
+      },
+      {
+        "type": "EVIDENCE_SCORE_COMPONENTS",
+        "value": {
+          "rule_base": 0.817,
+          "name_claim_quality": 0.024,
+          "distinctive_name_tokens": 0.009,
+          "legal_names_agree": 0.009
+        }
+      }
+    ],
+    "sample_strata": [
+      "random",
+      "cohort"
+    ]
+  },
+  {
+    "seed": 20261112,
+    "pair": 43,
+    "link_id": "lk_8fec68fa9b8d0ebe",
+    "score": 0.9776,
+    "rule": "abn_equal",
+    "record_a": "asic_companies::091701825|ETSA UTILITIES FINANCE PTY LTD|Y",
+    "record_b": "ato_tax_transparency::h:8d6c5004538767a4",
+    "proxy_label": "CORRECT",
+    "proxy_reason": "Identical legal name and ABN 78091701825; ASIC ACN 091701825 maps to same ABN.",
+    "human_label": "",
+    "human_note": "",
+    "source_records": {
+      "id": 43,
+      "record_a": {
+        "source": "asic_companies",
+        "record_grain": "legal_entity",
+        "claims": {
+          "entity.legal_name": [
+            "ETSA UTILITIES FINANCE PTY LTD"
+          ],
+          "entity.acn": [
+            "091701825"
+          ],
+          "entity.abn": [
+            "78091701825"
+          ],
+          "entity.entity_type": [
+            "company"
+          ]
+        }
+      },
+      "record_b": {
+        "source": "ato_tax_transparency",
+        "record_grain": "legal_entity",
+        "claims": {
+          "entity.legal_name": [
+            "ETSA UTILITIES FINANCE PTY LTD"
+          ],
+          "entity.abn": [
+            "78091701825"
+          ]
+        }
+      }
+    },
+    "match_evidence": [
+      {
+        "type": "ABN_EQUAL_VALID",
+        "value": "78091701825"
+      },
+      {
+        "type": "ABN_CONTAINS_ACN"
+      },
+      {
+        "type": "NAME_EXACT_NORMALISED",
+        "value": "ETSA UTILITIES FINANCE PTY LTD"
+      },
+      {
+        "type": "EVIDENCE_SCORE_COMPONENTS",
+        "value": {
+          "rule_base": 0.925,
+          "identifier_claim_quality": 0.0216,
+          "name_claim_quality": 0.0162,
+          "distinctive_name_tokens": 0.0057,
+          "legal_names_agree": 0.009
+        }
+      }
+    ],
+    "sample_strata": [
+      "cohort",
+      "random"
+    ]
+  },
+  {
+    "seed": 20261112,
+    "pair": 44,
+    "link_id": "lk_f6440d0a719535ca",
+    "score": 0.9774,
+    "rule": "abn_equal",
+    "record_a": "asic_companies::004762341|COMVAC REPAIR SERVICE PTY. LTD.|",
+    "record_b": "ato_tax_transparency::h:6a504eddf0a00983",
+    "proxy_label": "CORRECT",
+    "proxy_reason": "ABN 51004762341 identical; names differ only by punctuation in 'PTY.'.",
+    "human_label": "",
+    "human_note": "",
+    "source_records": {
+      "id": 44,
+      "record_a": {
+        "source": "asic_companies",
+        "record_grain": "legal_entity",
+        "claims": {
+          "entity.legal_name": [
+            "ELECTROLUX HOME PRODUCTS PTY. LIMITED"
+          ],
+          "entity.acn": [
+            "004762341"
+          ],
+          "entity.abn": [
+            "51004762341"
+          ],
+          "entity.entity_type": [
+            "company"
+          ]
+        }
+      },
+      "record_b": {
+        "source": "ato_tax_transparency",
+        "record_grain": "legal_entity",
+        "claims": {
+          "entity.legal_name": [
+            "ELECTROLUX HOME PRODUCTS PTY LIMITED"
+          ],
+          "entity.abn": [
+            "51004762341"
+          ]
+        }
+      }
+    },
+    "match_evidence": [
+      {
+        "type": "ABN_EQUAL_VALID",
+        "value": "51004762341"
+      },
+      {
+        "type": "ABN_CONTAINS_ACN"
+      },
+      {
+        "type": "NAME_EXACT_NORMALISED",
+        "value": "ELECTROLUX HOME PRODUCTS PTY LTD"
+      },
+      {
+        "type": "EVIDENCE_SCORE_COMPONENTS",
+        "value": {
+          "rule_base": 0.925,
+          "identifier_claim_quality": 0.0216,
+          "name_claim_quality": 0.0162,
+          "distinctive_name_tokens": 0.0056,
+          "legal_names_agree": 0.009
+        }
+      }
+    ],
+    "sample_strata": [
+      "cohort",
+      "random"
+    ]
+  },
+  {
+    "seed": 20261112,
+    "pair": 45,
+    "link_id": "lk_ab740c2b17002d7e",
+    "score": 0.9766,
+    "rule": "abn_equal",
+    "record_a": "asic_companies::088854639|RINCON MINING PTY LIMITED|Y",
+    "record_b": "ato_tax_transparency::h:a676b5e7de104cfe",
+    "proxy_label": "CORRECT",
+    "proxy_reason": "Exact legal name and identical ABN 46088854639.",
+    "human_label": "",
+    "human_note": "",
+    "source_records": {
+      "id": 45,
+      "record_a": {
+        "source": "asic_companies",
+        "record_grain": "legal_entity",
+        "claims": {
+          "entity.legal_name": [
+            "RINCON MINING PTY LIMITED"
+          ],
+          "entity.acn": [
+            "088854639"
+          ],
+          "entity.abn": [
+            "46088854639"
+          ],
+          "entity.entity_type": [
+            "company"
+          ]
+        }
+      },
+      "record_b": {
+        "source": "ato_tax_transparency",
+        "record_grain": "legal_entity",
+        "claims": {
+          "entity.legal_name": [
+            "RINCON MINING PTY LIMITED"
+          ],
+          "entity.abn": [
+            "46088854639"
+          ]
+        }
+      }
+    },
+    "match_evidence": [
+      {
+        "type": "ABN_EQUAL_VALID",
+        "value": "46088854639"
+      },
+      {
+        "type": "ABN_CONTAINS_ACN"
+      },
+      {
+        "type": "NAME_EXACT_NORMALISED",
+        "value": "RINCON MINING PTY LTD"
+      },
+      {
+        "type": "EVIDENCE_SCORE_COMPONENTS",
+        "value": {
+          "rule_base": 0.925,
+          "identifier_claim_quality": 0.0216,
+          "name_claim_quality": 0.0162,
+          "distinctive_name_tokens": 0.0047,
+          "legal_names_agree": 0.009
+        }
+      }
+    ],
+    "sample_strata": [
+      "cohort",
+      "random"
+    ]
+  },
+  {
+    "seed": 20261112,
+    "pair": 46,
+    "link_id": "lk_674cdbf98793def9",
+    "score": 0.9775,
+    "rule": "abn_equal",
+    "record_a": "asic_companies::112287797|NORTON GOLD FIELDS LIMITED|",
+    "record_b": "ato_tax_transparency::h:5124ef9b9a1feb90",
+    "proxy_label": "CORRECT",
+    "proxy_reason": "Exact legal name and identical ABN 23112287797.",
+    "human_label": "",
+    "human_note": "",
+    "source_records": {
+      "id": 46,
+      "record_a": {
+        "source": "asic_companies",
+        "record_grain": "legal_entity",
+        "claims": {
+          "entity.legal_name": [
+            "NORTON GOLD FIELDS PTY LTD"
+          ],
+          "entity.acn": [
+            "112287797"
+          ],
+          "entity.abn": [
+            "23112287797"
+          ],
+          "entity.entity_type": [
+            "company"
+          ]
+        }
+      },
+      "record_b": {
+        "source": "ato_tax_transparency",
+        "record_grain": "legal_entity",
+        "claims": {
+          "entity.legal_name": [
+            "NORTON GOLD FIELDS PTY LTD"
+          ],
+          "entity.abn": [
+            "23112287797"
+          ]
+        }
+      }
+    },
+    "match_evidence": [
+      {
+        "type": "ABN_EQUAL_VALID",
+        "value": "23112287797"
+      },
+      {
+        "type": "ABN_CONTAINS_ACN"
+      },
+      {
+        "type": "NAME_EXACT_NORMALISED",
+        "value": "NORTON GOLD FIELDS PTY LTD"
+      },
+      {
+        "type": "EVIDENCE_SCORE_COMPONENTS",
+        "value": {
+          "rule_base": 0.925,
+          "identifier_claim_quality": 0.0216,
+          "name_claim_quality": 0.0162,
+          "distinctive_name_tokens": 0.0056,
+          "legal_names_agree": 0.009
+        }
+      }
+    ],
+    "sample_strata": [
+      "cohort",
+      "random"
+    ]
+  },
+  {
+    "seed": 20261112,
+    "pair": 47,
+    "link_id": "lk_551780b4a10d6f1b",
+    "score": 0.976,
+    "rule": "abn_equal",
+    "record_a": "asic_companies::001085561|CEMENT INDUSTRIES PTY LTD|",
+    "record_b": "ato_tax_transparency::h:7f81a4685dd58dab",
+    "proxy_label": "CORRECT",
+    "proxy_reason": "Exact legal name and identical ABN 99001085561.",
+    "human_label": "",
+    "human_note": "",
+    "source_records": {
+      "id": 47,
+      "record_a": {
+        "source": "asic_companies",
+        "record_grain": "legal_entity",
+        "claims": {
+          "entity.legal_name": [
+            "CEMENT AUSTRALIA HOLDINGS PTY LTD"
+          ],
+          "entity.acn": [
+            "001085561"
+          ],
+          "entity.abn": [
+            "99001085561"
+          ],
+          "entity.entity_type": [
+            "company"
+          ]
+        }
+      },
+      "record_b": {
+        "source": "ato_tax_transparency",
+        "record_grain": "legal_entity",
+        "claims": {
+          "entity.legal_name": [
+            "CEMENT AUSTRALIA HOLDINGS PTY LTD"
+          ],
+          "entity.abn": [
+            "99001085561"
+          ]
+        }
+      }
+    },
+    "match_evidence": [
+      {
+        "type": "ABN_EQUAL_VALID",
+        "value": "99001085561"
+      },
+      {
+        "type": "ABN_CONTAINS_ACN"
+      },
+      {
+        "type": "NAME_EXACT_NORMALISED",
+        "value": "CEMENT AUSTRALIA HOLDINGS PTY LTD"
+      },
+      {
+        "type": "EVIDENCE_SCORE_COMPONENTS",
+        "value": {
+          "rule_base": 0.925,
+          "identifier_claim_quality": 0.0216,
+          "name_claim_quality": 0.0162,
+          "distinctive_name_tokens": 0.0041,
+          "legal_names_agree": 0.009
+        }
+      }
+    ],
+    "sample_strata": [
+      "cohort",
+      "random"
+    ]
+  },
+  {
+    "seed": 20261112,
+    "pair": 48,
+    "link_id": "lk_72c4623c3f77b041",
+    "score": 0.9778,
+    "rule": "abn_equal",
+    "record_a": "acnc_charities::h:a544391daad89d7e",
+    "record_b": "asic_companies::602568696|OZ FISH UNLIMITED LIMITED|",
+    "proxy_label": "CORRECT",
+    "proxy_reason": "Identical ABN 29602568696; charity and company records of same legal entity, name differs only in case.",
+    "human_label": "",
+    "human_note": "",
+    "source_records": {
+      "id": 48,
+      "record_a": {
+        "source": "acnc_charities",
+        "record_grain": "legal_entity",
+        "claims": {
+          "entity.abn": [
+            "29602568696"
+          ],
+          "entity.legal_name": [
+            "OzFish Unlimited Limited"
+          ],
+          "address.locality": [
+            "Ballina"
+          ],
+          "address.state": [
+            "NSW"
+          ],
+          "address.postcode": [
+            "2478"
+          ]
+        }
+      },
+      "record_b": {
+        "source": "asic_companies",
+        "record_grain": "legal_entity",
+        "claims": {
+          "entity.legal_name": [
+            "OZFISH UNLIMITED LIMITED"
+          ],
+          "entity.acn": [
+            "602568696"
+          ],
+          "entity.abn": [
+            "29602568696"
+          ],
+          "entity.entity_type": [
+            "company"
+          ]
+        }
+      }
+    },
+    "match_evidence": [
+      {
+        "type": "ABN_EQUAL_VALID",
+        "value": "29602568696"
+      },
+      {
+        "type": "ABN_CONTAINS_ACN"
+      },
+      {
+        "type": "NAME_EXACT_NORMALISED",
+        "value": "OZFISH UNLIMITED LTD"
+      },
+      {
+        "type": "EVIDENCE_SCORE_COMPONENTS",
+        "value": {
+          "rule_base": 0.925,
+          "identifier_claim_quality": 0.0216,
+          "name_claim_quality": 0.0166,
+          "distinctive_name_tokens": 0.0055,
+          "legal_names_agree": 0.009
+        }
+      }
+    ],
+    "sample_strata": [
+      "random",
+      "cohort"
+    ]
+  },
+  {
+    "seed": 20261112,
+    "pair": 49,
+    "link_id": "lk_50f88454aa63baef",
+    "score": 0.8591,
+    "rule": "registered_name_exact",
+    "record_a": "ato_tax_transparency::h:5add0664e10f6069",
+    "record_b": "vic_liquor::32367270",
+    "proxy_label": "CORRECT",
+    "proxy_reason": "Exact distinctive legal name 'GRILL'D PTY LTD' on licence; trading name GRILL'D consistent, no conflicting entity.",
+    "human_label": "",
+    "human_note": "",
+    "source_records": {
+      "id": 49,
+      "record_a": {
+        "source": "ato_tax_transparency",
+        "record_grain": "legal_entity",
+        "claims": {
+          "entity.legal_name": [
+            "GRILL'D PTY LTD"
+          ],
+          "entity.abn": [
+            "17106297394"
+          ]
+        }
+      },
+      "record_b": {
+        "source": "vic_liquor",
+        "record_grain": "licence_or_permit",
+        "claims": {
+          "entity.legal_name": [
+            "GRILL'D PTY LTD"
+          ],
+          "entity.trading_name": [
+            "GRILL'D"
+          ],
+          "address.locality": [
+            "BUNDOORA"
+          ],
+          "address.postcode": [
+            "3083"
+          ],
+          "address.state": [
+            "VIC"
+          ]
+        }
+      }
+    },
+    "match_evidence": [
+      {
+        "type": "NAME_EXACT_NORMALISED",
+        "value": "GRILL D PTY LTD"
+      },
+      {
+        "type": "EVIDENCE_SCORE_COMPONENTS",
+        "value": {
+          "rule_base": 0.817,
+          "name_claim_quality": 0.024,
+          "distinctive_name_tokens": 0.0091,
+          "legal_names_agree": 0.009
+        }
+      }
+    ],
+    "sample_strata": [
+      "random",
+      "cohort"
+    ]
+  },
+  {
+    "seed": 20261112,
+    "pair": 50,
+    "link_id": "lk_2fa817c886f04cbf",
+    "score": 0.976,
+    "rule": "abn_equal",
+    "record_a": "asic_companies::001193193|GEODIS WILSON AUSTRALIA HOLDINGS PTY LTD|",
+    "record_b": "ato_tax_transparency::h:eceaaa6182f08d14",
+    "proxy_label": "CORRECT",
+    "proxy_reason": "Exact legal name and identical ABN 76001193193.",
+    "human_label": "",
+    "human_note": "",
+    "source_records": {
+      "id": 50,
+      "record_a": {
+        "source": "asic_companies",
+        "record_grain": "legal_entity",
+        "claims": {
+          "entity.legal_name": [
+            "GEODIS HOLDING AUSTRALIA PTY LTD"
+          ],
+          "entity.acn": [
+            "001193193"
+          ],
+          "entity.abn": [
+            "76001193193"
+          ],
+          "entity.entity_type": [
+            "company"
+          ]
+        }
+      },
+      "record_b": {
+        "source": "ato_tax_transparency",
+        "record_grain": "legal_entity",
+        "claims": {
+          "entity.legal_name": [
+            "GEODIS HOLDING AUSTRALIA PTY LTD"
+          ],
+          "entity.abn": [
+            "76001193193"
+          ]
+        }
+      }
+    },
+    "match_evidence": [
+      {
+        "type": "ABN_EQUAL_VALID",
+        "value": "76001193193"
+      },
+      {
+        "type": "ABN_CONTAINS_ACN"
+      },
+      {
+        "type": "NAME_EXACT_NORMALISED",
+        "value": "GEODIS HOLDING AUSTRALIA PTY LTD"
+      },
+      {
+        "type": "EVIDENCE_SCORE_COMPONENTS",
+        "value": {
+          "rule_base": 0.925,
+          "identifier_claim_quality": 0.0216,
+          "name_claim_quality": 0.0162,
+          "distinctive_name_tokens": 0.0041,
+          "legal_names_agree": 0.009
+        }
+      }
+    ],
+    "sample_strata": [
+      "cohort",
+      "random"
+    ]
+  }
+]
