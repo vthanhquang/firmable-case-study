@@ -110,6 +110,24 @@ Use the source's actual licence; the value above is an example. Extraction requi
 
 To reconstruct the original downloaded benchmark, `python -m firmable.cli fetch` verifies snapshot hashes. Live publisher files can change or fail; this is why the submission includes frozen sampled rows. Original full resources are not all bundled, so full-resource re-inference needs downloads or a newly registered file.
 
+## Follow-up: autonomous ontology experiment
+
+The CSO follow-up adds **three previously unused government sources**: AusTender contract notices, Brisbane grant recipients and National Pollutant Inventory facilities. Four model roles inspect source bytes, propose ontology additions, generate mappings and critique validation results. The existing shared extractor executes their configs. Candidate ontologies are versioned; new profile facets are projected generically; production promotion requires explicit human review. The original assignment results remain separate.
+
+The development run accepted all three after revisions/resumes: **37 new concepts, 18,516 observations and 12 proposed exact-ABN links**. Sealed tests had 0/3,616 type/constraint errors; four invalid NPI identifier values were rejected across the full sample. This is not human-measured semantic precision, and it was not three first-pass successes. Grant recipients remain unresolved as companies; production is not promoted.
+
+- [System design, agent roles, source selection and limitations](docs/autonomous-ontology.md)
+- [Standalone HTML experiment report](reports/autonomous-ontology.html) — download/open locally, or serve the repository with `python -m http.server 8000` and visit `/reports/autonomous-ontology.html`.
+- [Measured experiment results](outputs/experiments/autonomous-ontology/RESULTS.md)
+- [Recorded model responses, frozen samples, mappings and registry versions](outputs/experiments/autonomous-ontology/run/)
+
+```bash
+python -m firmable.evolution replay
+python scripts/build_evolution_report.py
+```
+
+Replay needs no model key and makes no API calls. Live onboarding is optional and paid; follow the design document for download/registration and `run --live` commands. This experiment's type/constraint validation is not a new human-measured semantic precision result. Agent review is labelled as agent review.
+
 ## Known limitations
 
 - **Four audited links are wrong and remain in the proposed output**, visibly labelled failed in the review material. They are not silently removed to inflate precision. Sampling is stratified and enriched for cross-source overlap; the 92% result does not estimate population precision or recall.

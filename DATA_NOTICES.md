@@ -24,3 +24,15 @@ The public data retains its publisher licence; it is not relicensed as project c
 ## Reproduction scope
 
 Full original downloads and private credentials are excluded. The fixture bundle restores only the inputs needed by `raw-replay`. Full-resource onboarding, alternate sampling or contemporary data require fetching the corresponding publisher resources and respecting their current terms.
+
+## Autonomous ontology follow-up
+
+The separate experiment in `outputs/experiments/autonomous-ontology/` includes sampled public rows and derived candidate observations from these additional publishers:
+
+| Source | Publisher and access | Recorded licence |
+| --- | --- | --- |
+| `austender_new` | Department of Finance — [AusTender OCDS API](https://github.com/austender/austender-ocds-api), notices published 1–2 October 2026 | [CC BY 3.0 Australia](https://creativecommons.org/licenses/by/3.0/au/) |
+| `brisbane_grants_new` | Brisbane City Council — [Grants — Recipients](https://data.brisbane.qld.gov.au/explore/dataset/grants-recipients/export/) | [CC BY 4.0](https://creativecommons.org/licenses/by/4.0/) |
+| `npi_facilities_new` | Department of Climate Change, Energy, the Environment and Water — [National Pollutant Inventory facilities](https://data.gov.au/data/dataset/npi) | [CC BY 4.0](https://creativecommons.org/licenses/by/4.0/) |
+
+Exact source URLs, retrieval timestamps, snapshot hashes and attributions are in `config/evolution_sources.json`. Frozen records are sampled adaptations, not the complete current registers. Grant recipients include individuals and community organisations. Facilities may be historical, and the facilities table does not establish emissions totals or compliance. Candidate profiles and links are agent-assisted experimental outputs, without publisher endorsement or new human precision labels.

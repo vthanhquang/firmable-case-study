@@ -1,0 +1,1736 @@
+{
+  "sources": [
+    {
+      "source_id": "austender_new",
+      "status": "AGENT_VALIDATED_CANDIDATE",
+      "ontology_version": "e2727cafa37699bb26ac2bbe390bcb064804757005881ad8b9dddb1eaa5ed6d0",
+      "parent_version": "b1a04399a36c9915da48a5e66784454ae00b080239445532ffd95622c75f1cfd",
+      "mapping_digest": "d544422fac3bdfc6f788057ed6eb8905566cf99291b784a02e23b19fa9778d32",
+      "snapshot_sha256": "67cd3dbaaba8b21a704180afa86bb6f3bd0f30f9644ecb032a318affd9dad09c",
+      "new_concepts": 12,
+      "reused_concepts": 12,
+      "rounds": 8,
+      "test": {
+        "records_in": 19,
+        "records_with_output": 19,
+        "record_errors": {},
+        "fields": [
+          {
+            "target": "entity.legal_name",
+            "source_paths": [
+              "supplier_party.name"
+            ],
+            "records": 19,
+            "source_present": 19,
+            "emitted": 19,
+            "coverage_of_records": 1.0,
+            "error_rate_of_present": 0.0,
+            "errors": {},
+            "error_examples": {},
+            "entity": "supplier"
+          },
+          {
+            "target": "entity.abn",
+            "source_paths": [
+              "supplier_party.additionalIdentifiers[0].id"
+            ],
+            "records": 19,
+            "source_present": 18,
+            "emitted": 18,
+            "coverage_of_records": 0.947,
+            "error_rate_of_present": 0.0,
+            "errors": {},
+            "error_examples": {},
+            "entity": "supplier"
+          },
+          {
+            "target": "address.locality",
+            "source_paths": [
+              "supplier_party.address.locality"
+            ],
+            "records": 19,
+            "source_present": 19,
+            "emitted": 19,
+            "coverage_of_records": 1.0,
+            "error_rate_of_present": 0.0,
+            "errors": {},
+            "error_examples": {},
+            "entity": "supplier"
+          },
+          {
+            "target": "address.state",
+            "source_paths": [
+              "supplier_party.address.region"
+            ],
+            "records": 19,
+            "source_present": 19,
+            "emitted": 19,
+            "coverage_of_records": 1.0,
+            "error_rate_of_present": 0.0,
+            "errors": {},
+            "error_examples": {},
+            "entity": "supplier"
+          },
+          {
+            "target": "address.postcode",
+            "source_paths": [
+              "supplier_party.address.postalCode"
+            ],
+            "records": 19,
+            "source_present": 18,
+            "emitted": 18,
+            "coverage_of_records": 0.947,
+            "error_rate_of_present": 0.0,
+            "errors": {},
+            "error_examples": {},
+            "entity": "supplier"
+          },
+          {
+            "target": "address.country",
+            "source_paths": [
+              "supplier_party.address.countryName"
+            ],
+            "records": 19,
+            "source_present": 19,
+            "emitted": 19,
+            "coverage_of_records": 1.0,
+            "error_rate_of_present": 0.0,
+            "errors": {},
+            "error_examples": {},
+            "entity": "supplier"
+          },
+          {
+            "target": "entity.legal_name",
+            "source_paths": [
+              "procuring_entity_party.name"
+            ],
+            "records": 19,
+            "source_present": 19,
+            "emitted": 19,
+            "coverage_of_records": 1.0,
+            "error_rate_of_present": 0.0,
+            "errors": {},
+            "error_examples": {},
+            "entity": "procuring_entity"
+          },
+          {
+            "target": "entity.abn",
+            "source_paths": [
+              "procuring_entity_party.additionalIdentifiers[0].id"
+            ],
+            "records": 19,
+            "source_present": 18,
+            "emitted": 18,
+            "coverage_of_records": 0.947,
+            "error_rate_of_present": 0.0,
+            "errors": {},
+            "error_examples": {},
+            "entity": "procuring_entity"
+          },
+          {
+            "target": "address.locality",
+            "source_paths": [
+              "procuring_entity_party.address.locality"
+            ],
+            "records": 19,
+            "source_present": 1,
+            "emitted": 1,
+            "coverage_of_records": 0.053,
+            "error_rate_of_present": 0.0,
+            "errors": {},
+            "error_examples": {},
+            "entity": "procuring_entity"
+          },
+          {
+            "target": "address.state",
+            "source_paths": [
+              "procuring_entity_party.address.region"
+            ],
+            "records": 19,
+            "source_present": 2,
+            "emitted": 2,
+            "coverage_of_records": 0.105,
+            "error_rate_of_present": 0.0,
+            "errors": {},
+            "error_examples": {},
+            "entity": "procuring_entity"
+          },
+          {
+            "target": "address.postcode",
+            "source_paths": [
+              "procuring_entity_party.address.postalCode"
+            ],
+            "records": 19,
+            "source_present": 2,
+            "emitted": 2,
+            "coverage_of_records": 0.105,
+            "error_rate_of_present": 0.0,
+            "errors": {},
+            "error_examples": {},
+            "entity": "procuring_entity"
+          },
+          {
+            "target": "dyn.contract.notice_number",
+            "source_paths": [
+              "contracts[0].id"
+            ],
+            "records": 19,
+            "source_present": 19,
+            "emitted": 19,
+            "coverage_of_records": 1.0,
+            "error_rate_of_present": 0.0,
+            "errors": {},
+            "error_examples": {},
+            "entity": "contract"
+          },
+          {
+            "target": "dyn.contract.signed_at",
+            "source_paths": [
+              "contracts[0].dateSigned"
+            ],
+            "records": 19,
+            "source_present": 19,
+            "emitted": 19,
+            "coverage_of_records": 1.0,
+            "error_rate_of_present": 0.0,
+            "errors": {},
+            "error_examples": {},
+            "entity": "contract"
+          },
+          {
+            "target": "dyn.contract.start_date",
+            "source_paths": [
+              "contracts[0].period.startDate"
+            ],
+            "records": 19,
+            "source_present": 19,
+            "emitted": 19,
+            "coverage_of_records": 1.0,
+            "error_rate_of_present": 0.0,
+            "errors": {},
+            "error_examples": {},
+            "entity": "contract"
+          },
+          {
+            "target": "dyn.contract.end_date",
+            "source_paths": [
+              "contracts[0].period.endDate"
+            ],
+            "records": 19,
+            "source_present": 19,
+            "emitted": 19,
+            "coverage_of_records": 1.0,
+            "error_rate_of_present": 0.0,
+            "errors": {},
+            "error_examples": {},
+            "entity": "contract"
+          },
+          {
+            "target": "dyn.contract.description",
+            "source_paths": [
+              "contracts[0].description"
+            ],
+            "records": 19,
+            "source_present": 19,
+            "emitted": 19,
+            "coverage_of_records": 1.0,
+            "error_rate_of_present": 0.0,
+            "errors": {},
+            "error_examples": {},
+            "entity": "contract"
+          },
+          {
+            "target": "dyn.contract.value",
+            "source_paths": [
+              "contracts[0].value.amount"
+            ],
+            "records": 19,
+            "source_present": 19,
+            "emitted": 19,
+            "coverage_of_records": 1.0,
+            "error_rate_of_present": 0.0,
+            "errors": {},
+            "error_examples": {},
+            "entity": "contract"
+          },
+          {
+            "target": "dyn.contract.status",
+            "source_paths": [
+              "contracts[0].status"
+            ],
+            "records": 19,
+            "source_present": 19,
+            "emitted": 19,
+            "coverage_of_records": 1.0,
+            "error_rate_of_present": 0.0,
+            "errors": {},
+            "error_examples": {},
+            "entity": "contract"
+          },
+          {
+            "target": "dyn.contract.item_classification_code",
+            "source_paths": [
+              "contracts[0].items[0].classification.id"
+            ],
+            "records": 19,
+            "source_present": 19,
+            "emitted": 19,
+            "coverage_of_records": 1.0,
+            "error_rate_of_present": 0.0,
+            "errors": {},
+            "error_examples": {},
+            "entity": "contract"
+          },
+          {
+            "target": "dyn.contract.procurement_method",
+            "source_paths": [
+              "tender.procurementMethod"
+            ],
+            "records": 19,
+            "source_present": 19,
+            "emitted": 19,
+            "coverage_of_records": 1.0,
+            "error_rate_of_present": 0.0,
+            "errors": {},
+            "error_examples": {},
+            "entity": "contract"
+          },
+          {
+            "target": "dyn.contract.limited_tender_exempt",
+            "source_paths": [
+              "tender.limitedTenderExempt"
+            ],
+            "records": 19,
+            "source_present": 6,
+            "emitted": 6,
+            "coverage_of_records": 0.316,
+            "error_rate_of_present": 0.0,
+            "errors": {},
+            "error_examples": {},
+            "entity": "contract"
+          },
+          {
+            "target": "dyn.contract.limited_tender_reason_code",
+            "source_paths": [
+              "tender.limitedTenderReasonCode"
+            ],
+            "records": 19,
+            "source_present": 1,
+            "emitted": 1,
+            "coverage_of_records": 0.053,
+            "error_rate_of_present": 0.0,
+            "errors": {},
+            "error_examples": {},
+            "entity": "contract"
+          },
+          {
+            "target": "dyn.contract.limited_tender_reason",
+            "source_paths": [
+              "tender.limitedTenderReason"
+            ],
+            "records": 19,
+            "source_present": 1,
+            "emitted": 1,
+            "coverage_of_records": 0.053,
+            "error_rate_of_present": 0.0,
+            "errors": {},
+            "error_examples": {},
+            "entity": "contract"
+          }
+        ],
+        "relationships": {
+          "CONTRACT_AWARDED_TO": 19,
+          "CONTRACT_PROCURED_BY": 19
+        },
+        "input_records": 19,
+        "refused_records": 0,
+        "observations": 333,
+        "value_errors": 0,
+        "present_values": 333,
+        "error_rate": 0.0
+      },
+      "extraction": {
+        "records_in": 93,
+        "records_with_output": 93,
+        "record_errors": {},
+        "fields": [
+          {
+            "target": "entity.legal_name",
+            "source_paths": [
+              "supplier_party.name"
+            ],
+            "records": 93,
+            "source_present": 93,
+            "emitted": 93,
+            "coverage_of_records": 1.0,
+            "error_rate_of_present": 0.0,
+            "errors": {},
+            "error_examples": {},
+            "entity": "supplier"
+          },
+          {
+            "target": "entity.abn",
+            "source_paths": [
+              "supplier_party.additionalIdentifiers[0].id"
+            ],
+            "records": 93,
+            "source_present": 84,
+            "emitted": 84,
+            "coverage_of_records": 0.903,
+            "error_rate_of_present": 0.0,
+            "errors": {},
+            "error_examples": {},
+            "entity": "supplier"
+          },
+          {
+            "target": "address.locality",
+            "source_paths": [
+              "supplier_party.address.locality"
+            ],
+            "records": 93,
+            "source_present": 93,
+            "emitted": 93,
+            "coverage_of_records": 1.0,
+            "error_rate_of_present": 0.0,
+            "errors": {},
+            "error_examples": {},
+            "entity": "supplier"
+          },
+          {
+            "target": "address.state",
+            "source_paths": [
+              "supplier_party.address.region"
+            ],
+            "records": 93,
+            "source_present": 93,
+            "emitted": 93,
+            "coverage_of_records": 1.0,
+            "error_rate_of_present": 0.0,
+            "errors": {},
+            "error_examples": {},
+            "entity": "supplier"
+          },
+          {
+            "target": "address.postcode",
+            "source_paths": [
+              "supplier_party.address.postalCode"
+            ],
+            "records": 93,
+            "source_present": 91,
+            "emitted": 91,
+            "coverage_of_records": 0.978,
+            "error_rate_of_present": 0.0,
+            "errors": {},
+            "error_examples": {},
+            "entity": "supplier"
+          },
+          {
+            "target": "address.country",
+            "source_paths": [
+              "supplier_party.address.countryName"
+            ],
+            "records": 93,
+            "source_present": 93,
+            "emitted": 93,
+            "coverage_of_records": 1.0,
+            "error_rate_of_present": 0.0,
+            "errors": {},
+            "error_examples": {},
+            "entity": "supplier"
+          },
+          {
+            "target": "entity.legal_name",
+            "source_paths": [
+              "procuring_entity_party.name"
+            ],
+            "records": 93,
+            "source_present": 93,
+            "emitted": 93,
+            "coverage_of_records": 1.0,
+            "error_rate_of_present": 0.0,
+            "errors": {},
+            "error_examples": {},
+            "entity": "procuring_entity"
+          },
+          {
+            "target": "entity.abn",
+            "source_paths": [
+              "procuring_entity_party.additionalIdentifiers[0].id"
+            ],
+            "records": 93,
+            "source_present": 91,
+            "emitted": 91,
+            "coverage_of_records": 0.978,
+            "error_rate_of_present": 0.0,
+            "errors": {},
+            "error_examples": {},
+            "entity": "procuring_entity"
+          },
+          {
+            "target": "address.locality",
+            "source_paths": [
+              "procuring_entity_party.address.locality"
+            ],
+            "records": 93,
+            "source_present": 3,
+            "emitted": 3,
+            "coverage_of_records": 0.032,
+            "error_rate_of_present": 0.0,
+            "errors": {},
+            "error_examples": {},
+            "entity": "procuring_entity"
+          },
+          {
+            "target": "address.state",
+            "source_paths": [
+              "procuring_entity_party.address.region"
+            ],
+            "records": 93,
+            "source_present": 8,
+            "emitted": 8,
+            "coverage_of_records": 0.086,
+            "error_rate_of_present": 0.0,
+            "errors": {},
+            "error_examples": {},
+            "entity": "procuring_entity"
+          },
+          {
+            "target": "address.postcode",
+            "source_paths": [
+              "procuring_entity_party.address.postalCode"
+            ],
+            "records": 93,
+            "source_present": 7,
+            "emitted": 7,
+            "coverage_of_records": 0.075,
+            "error_rate_of_present": 0.0,
+            "errors": {},
+            "error_examples": {},
+            "entity": "procuring_entity"
+          },
+          {
+            "target": "dyn.contract.notice_number",
+            "source_paths": [
+              "contracts[0].id"
+            ],
+            "records": 93,
+            "source_present": 93,
+            "emitted": 93,
+            "coverage_of_records": 1.0,
+            "error_rate_of_present": 0.0,
+            "errors": {},
+            "error_examples": {},
+            "entity": "contract"
+          },
+          {
+            "target": "dyn.contract.signed_at",
+            "source_paths": [
+              "contracts[0].dateSigned"
+            ],
+            "records": 93,
+            "source_present": 93,
+            "emitted": 93,
+            "coverage_of_records": 1.0,
+            "error_rate_of_present": 0.0,
+            "errors": {},
+            "error_examples": {},
+            "entity": "contract"
+          },
+          {
+            "target": "dyn.contract.start_date",
+            "source_paths": [
+              "contracts[0].period.startDate"
+            ],
+            "records": 93,
+            "source_present": 93,
+            "emitted": 93,
+            "coverage_of_records": 1.0,
+            "error_rate_of_present": 0.0,
+            "errors": {},
+            "error_examples": {},
+            "entity": "contract"
+          },
+          {
+            "target": "dyn.contract.end_date",
+            "source_paths": [
+              "contracts[0].period.endDate"
+            ],
+            "records": 93,
+            "source_present": 93,
+            "emitted": 93,
+            "coverage_of_records": 1.0,
+            "error_rate_of_present": 0.0,
+            "errors": {},
+            "error_examples": {},
+            "entity": "contract"
+          },
+          {
+            "target": "dyn.contract.description",
+            "source_paths": [
+              "contracts[0].description"
+            ],
+            "records": 93,
+            "source_present": 93,
+            "emitted": 93,
+            "coverage_of_records": 1.0,
+            "error_rate_of_present": 0.0,
+            "errors": {},
+            "error_examples": {},
+            "entity": "contract"
+          },
+          {
+            "target": "dyn.contract.value",
+            "source_paths": [
+              "contracts[0].value.amount"
+            ],
+            "records": 93,
+            "source_present": 93,
+            "emitted": 93,
+            "coverage_of_records": 1.0,
+            "error_rate_of_present": 0.0,
+            "errors": {},
+            "error_examples": {},
+            "entity": "contract"
+          },
+          {
+            "target": "dyn.contract.status",
+            "source_paths": [
+              "contracts[0].status"
+            ],
+            "records": 93,
+            "source_present": 93,
+            "emitted": 93,
+            "coverage_of_records": 1.0,
+            "error_rate_of_present": 0.0,
+            "errors": {},
+            "error_examples": {},
+            "entity": "contract"
+          },
+          {
+            "target": "dyn.contract.item_classification_code",
+            "source_paths": [
+              "contracts[0].items[0].classification.id"
+            ],
+            "records": 93,
+            "source_present": 93,
+            "emitted": 93,
+            "coverage_of_records": 1.0,
+            "error_rate_of_present": 0.0,
+            "errors": {},
+            "error_examples": {},
+            "entity": "contract"
+          },
+          {
+            "target": "dyn.contract.procurement_method",
+            "source_paths": [
+              "tender.procurementMethod"
+            ],
+            "records": 93,
+            "source_present": 93,
+            "emitted": 93,
+            "coverage_of_records": 1.0,
+            "error_rate_of_present": 0.0,
+            "errors": {},
+            "error_examples": {},
+            "entity": "contract"
+          },
+          {
+            "target": "dyn.contract.limited_tender_exempt",
+            "source_paths": [
+              "tender.limitedTenderExempt"
+            ],
+            "records": 93,
+            "source_present": 37,
+            "emitted": 37,
+            "coverage_of_records": 0.398,
+            "error_rate_of_present": 0.0,
+            "errors": {},
+            "error_examples": {},
+            "entity": "contract"
+          },
+          {
+            "target": "dyn.contract.limited_tender_reason_code",
+            "source_paths": [
+              "tender.limitedTenderReasonCode"
+            ],
+            "records": 93,
+            "source_present": 4,
+            "emitted": 4,
+            "coverage_of_records": 0.043,
+            "error_rate_of_present": 0.0,
+            "errors": {},
+            "error_examples": {},
+            "entity": "contract"
+          },
+          {
+            "target": "dyn.contract.limited_tender_reason",
+            "source_paths": [
+              "tender.limitedTenderReason"
+            ],
+            "records": 93,
+            "source_present": 4,
+            "emitted": 4,
+            "coverage_of_records": 0.043,
+            "error_rate_of_present": 0.0,
+            "errors": {},
+            "error_examples": {},
+            "entity": "contract"
+          }
+        ],
+        "relationships": {
+          "CONTRACT_AWARDED_TO": 93,
+          "CONTRACT_PROCURED_BY": 93
+        },
+        "input_records": 93,
+        "refused_records": 0,
+        "observations": 1631,
+        "value_errors": 0,
+        "present_values": 1631,
+        "error_rate": 0.0
+      },
+      "seconds": 229.113,
+      "precision": "Not measured by a human; validation checks types/constraints, not semantic ground truth.",
+      "human_review": "pending",
+      "drift_baseline": [
+        "awards[0].date",
+        "awards[0].id",
+        "awards[0].status",
+        "awards[0].suppliers[0].id",
+        "awards[0].suppliers[0].name",
+        "contracts[0].amendments[0].amendsReleaseID",
+        "contracts[0].amendments[0].id",
+        "contracts[0].amendments[0].releaseID",
+        "contracts[0].awardID",
+        "contracts[0].dateSigned",
+        "contracts[0].description",
+        "contracts[0].id",
+        "contracts[0].items[0].classification.id",
+        "contracts[0].items[0].classification.scheme",
+        "contracts[0].items[0].id",
+        "contracts[0].period.endDate",
+        "contracts[0].period.startDate",
+        "contracts[0].status",
+        "contracts[0].title",
+        "contracts[0].value.amount",
+        "contracts[0].value.currency",
+        "date",
+        "id",
+        "initiationType",
+        "language",
+        "ocid",
+        "parties[0].additionalIdentifiers[0].id",
+        "parties[0].additionalIdentifiers[0].scheme",
+        "parties[0].address.countryName",
+        "parties[0].address.locality",
+        "parties[0].address.postalCode",
+        "parties[0].address.region",
+        "parties[0].address.streetAddress",
+        "parties[0].contactPoint.branch",
+        "parties[0].contactPoint.division",
+        "parties[0].contactPoint.email",
+        "parties[0].contactPoint.name",
+        "parties[0].contactPoint.telephone",
+        "parties[0].id",
+        "parties[0].name",
+        "parties[0].roles",
+        "parties[1].additionalIdentifiers[0].id",
+        "parties[1].additionalIdentifiers[0].scheme",
+        "parties[1].address.locality",
+        "parties[1].address.postalCode",
+        "parties[1].address.region",
+        "parties[1].address.streetAddress",
+        "parties[1].contactPoint.email",
+        "parties[1].id",
+        "parties[1].name",
+        "parties[1].roles",
+        "procuring_entity_party.additionalIdentifiers[0].id",
+        "procuring_entity_party.additionalIdentifiers[0].scheme",
+        "procuring_entity_party.address.locality",
+        "procuring_entity_party.address.postalCode",
+        "procuring_entity_party.address.region",
+        "procuring_entity_party.address.streetAddress",
+        "procuring_entity_party.contactPoint.email",
+        "procuring_entity_party.id",
+        "procuring_entity_party.name",
+        "procuring_entity_party.roles",
+        "supplier_party.additionalIdentifiers[0].id",
+        "supplier_party.additionalIdentifiers[0].scheme",
+        "supplier_party.address.countryName",
+        "supplier_party.address.locality",
+        "supplier_party.address.postalCode",
+        "supplier_party.address.region",
+        "supplier_party.address.streetAddress",
+        "supplier_party.contactPoint.branch",
+        "supplier_party.contactPoint.division",
+        "supplier_party.contactPoint.email",
+        "supplier_party.contactPoint.name",
+        "supplier_party.contactPoint.telephone",
+        "supplier_party.id",
+        "supplier_party.name",
+        "supplier_party.roles",
+        "tag",
+        "tender.id",
+        "tender.limitedTenderExempt",
+        "tender.limitedTenderReason",
+        "tender.limitedTenderReasonCode",
+        "tender.procurementMethod",
+        "tender.procurementMethodDetails"
+      ]
+    },
+    {
+      "source_id": "brisbane_grants_new",
+      "status": "AGENT_VALIDATED_CANDIDATE",
+      "ontology_version": "9e8303f0741bd14dc9fba6f790625010ec037d43e57b8d093a27eeb0414be9bc",
+      "parent_version": "e2727cafa37699bb26ac2bbe390bcb064804757005881ad8b9dddb1eaa5ed6d0",
+      "mapping_digest": "1967a5e67504ec31bddde0bf5a519a6adbc78dfaf62ecd141ce82f3d14827298",
+      "snapshot_sha256": "e09508378cb0071d293488d0fcf12c45d0099dcaca7b351dde2b717fa496f643",
+      "new_concepts": 8,
+      "reused_concepts": 5,
+      "rounds": 6,
+      "test": {
+        "records_in": 125,
+        "records_with_output": 125,
+        "record_errors": {},
+        "fields": [
+          {
+            "target": "dyn.grant_award.amount_approved",
+            "source_paths": [
+              "amount_approved"
+            ],
+            "records": 125,
+            "source_present": 124,
+            "emitted": 124,
+            "coverage_of_records": 0.992,
+            "error_rate_of_present": 0.0,
+            "errors": {},
+            "error_examples": {},
+            "entity": "grant_award"
+          },
+          {
+            "target": "dyn.grant_award.round",
+            "source_paths": [
+              "grant_round"
+            ],
+            "records": 125,
+            "source_present": 125,
+            "emitted": 125,
+            "coverage_of_records": 1.0,
+            "error_rate_of_present": 0.0,
+            "errors": {},
+            "error_examples": {},
+            "entity": "grant_award"
+          },
+          {
+            "target": "dyn.grant_award.project_description",
+            "source_paths": [
+              "project"
+            ],
+            "records": 125,
+            "source_present": 125,
+            "emitted": 125,
+            "coverage_of_records": 1.0,
+            "error_rate_of_present": 0.0,
+            "errors": {},
+            "error_examples": {},
+            "entity": "grant_award"
+          },
+          {
+            "target": "dyn.grant_award.recipient_name_as_published",
+            "source_paths": [
+              "organisation_recipient"
+            ],
+            "records": 125,
+            "source_present": 125,
+            "emitted": 125,
+            "coverage_of_records": 1.0,
+            "error_rate_of_present": 0.0,
+            "errors": {},
+            "error_examples": {},
+            "entity": "grant_award"
+          },
+          {
+            "target": "dyn.grant_award.recipient_abn",
+            "source_paths": [
+              "abn"
+            ],
+            "records": 125,
+            "source_present": 107,
+            "emitted": 107,
+            "coverage_of_records": 0.856,
+            "error_rate_of_present": 0.0,
+            "errors": {},
+            "error_examples": {},
+            "entity": "grant_award"
+          },
+          {
+            "target": "dyn.grant_programme.name",
+            "source_paths": [
+              "grant"
+            ],
+            "records": 125,
+            "source_present": 125,
+            "emitted": 125,
+            "coverage_of_records": 1.0,
+            "error_rate_of_present": 0.0,
+            "errors": {},
+            "error_examples": {},
+            "entity": "grant_programme"
+          },
+          {
+            "target": "dyn.grant_programme.code",
+            "source_paths": [
+              "grant_list"
+            ],
+            "records": 125,
+            "source_present": 125,
+            "emitted": 125,
+            "coverage_of_records": 1.0,
+            "error_rate_of_present": 0.0,
+            "errors": {},
+            "error_examples": {},
+            "entity": "grant_programme"
+          },
+          {
+            "target": "dyn.grant_programme.group",
+            "source_paths": [
+              "group"
+            ],
+            "records": 125,
+            "source_present": 125,
+            "emitted": 125,
+            "coverage_of_records": 1.0,
+            "error_rate_of_present": 0.0,
+            "errors": {},
+            "error_examples": {},
+            "entity": "grant_programme"
+          }
+        ],
+        "relationships": {
+          "AWARDS_GRANT": 125
+        },
+        "input_records": 125,
+        "refused_records": 0,
+        "observations": 981,
+        "value_errors": 0,
+        "present_values": 981,
+        "error_rate": 0.0
+      },
+      "extraction": {
+        "records_in": 600,
+        "records_with_output": 600,
+        "record_errors": {},
+        "fields": [
+          {
+            "target": "dyn.grant_award.amount_approved",
+            "source_paths": [
+              "amount_approved"
+            ],
+            "records": 600,
+            "source_present": 599,
+            "emitted": 599,
+            "coverage_of_records": 0.998,
+            "error_rate_of_present": 0.0,
+            "errors": {},
+            "error_examples": {},
+            "entity": "grant_award"
+          },
+          {
+            "target": "dyn.grant_award.round",
+            "source_paths": [
+              "grant_round"
+            ],
+            "records": 600,
+            "source_present": 600,
+            "emitted": 600,
+            "coverage_of_records": 1.0,
+            "error_rate_of_present": 0.0,
+            "errors": {},
+            "error_examples": {},
+            "entity": "grant_award"
+          },
+          {
+            "target": "dyn.grant_award.project_description",
+            "source_paths": [
+              "project"
+            ],
+            "records": 600,
+            "source_present": 600,
+            "emitted": 600,
+            "coverage_of_records": 1.0,
+            "error_rate_of_present": 0.0,
+            "errors": {},
+            "error_examples": {},
+            "entity": "grant_award"
+          },
+          {
+            "target": "dyn.grant_award.recipient_name_as_published",
+            "source_paths": [
+              "organisation_recipient"
+            ],
+            "records": 600,
+            "source_present": 600,
+            "emitted": 600,
+            "coverage_of_records": 1.0,
+            "error_rate_of_present": 0.0,
+            "errors": {},
+            "error_examples": {},
+            "entity": "grant_award"
+          },
+          {
+            "target": "dyn.grant_award.recipient_abn",
+            "source_paths": [
+              "abn"
+            ],
+            "records": 600,
+            "source_present": 486,
+            "emitted": 486,
+            "coverage_of_records": 0.81,
+            "error_rate_of_present": 0.0,
+            "errors": {},
+            "error_examples": {},
+            "entity": "grant_award"
+          },
+          {
+            "target": "dyn.grant_programme.name",
+            "source_paths": [
+              "grant"
+            ],
+            "records": 600,
+            "source_present": 600,
+            "emitted": 600,
+            "coverage_of_records": 1.0,
+            "error_rate_of_present": 0.0,
+            "errors": {},
+            "error_examples": {},
+            "entity": "grant_programme"
+          },
+          {
+            "target": "dyn.grant_programme.code",
+            "source_paths": [
+              "grant_list"
+            ],
+            "records": 600,
+            "source_present": 600,
+            "emitted": 600,
+            "coverage_of_records": 1.0,
+            "error_rate_of_present": 0.0,
+            "errors": {},
+            "error_examples": {},
+            "entity": "grant_programme"
+          },
+          {
+            "target": "dyn.grant_programme.group",
+            "source_paths": [
+              "group"
+            ],
+            "records": 600,
+            "source_present": 600,
+            "emitted": 600,
+            "coverage_of_records": 1.0,
+            "error_rate_of_present": 0.0,
+            "errors": {},
+            "error_examples": {},
+            "entity": "grant_programme"
+          }
+        ],
+        "relationships": {
+          "AWARDS_GRANT": 600
+        },
+        "input_records": 600,
+        "refused_records": 0,
+        "observations": 4685,
+        "value_errors": 0,
+        "present_values": 4685,
+        "error_rate": 0.0
+      },
+      "seconds": 49.376,
+      "precision": "Not measured by a human; validation checks types/constraints, not semantic ground truth.",
+      "human_review": "pending",
+      "drift_baseline": [
+        "abn",
+        "amount_approved",
+        "grant",
+        "grant_list",
+        "grant_round",
+        "group",
+        "index",
+        "organisation_recipient",
+        "project"
+      ]
+    },
+    {
+      "source_id": "npi_facilities_new",
+      "status": "AGENT_VALIDATED_CANDIDATE",
+      "ontology_version": "b1a04399a36c9915da48a5e66784454ae00b080239445532ffd95622c75f1cfd",
+      "parent_version": "db7f01dab23e6f042a75c6df261be2b61dfa1ceba7daff6afe5eab3543256f1b",
+      "mapping_digest": "46137ff2ef9ffb162fe0ede5eb7cbc50abe3048758257a9c42a7b631c0bd9ba4",
+      "snapshot_sha256": "a0be4c37d588b391ea81baf240f675b2c9f3d9ee0210f9c451c7371eac11d6c7",
+      "new_concepts": 17,
+      "reused_concepts": 4,
+      "rounds": 7,
+      "test": {
+        "records_in": 113,
+        "records_with_output": 113,
+        "record_errors": {},
+        "fields": [
+          {
+            "target": "dyn.establishment.npi_facility_id",
+            "source_paths": [
+              "facility_id"
+            ],
+            "records": 113,
+            "source_present": 113,
+            "emitted": 113,
+            "coverage_of_records": 1.0,
+            "error_rate_of_present": 0.0,
+            "errors": {},
+            "error_examples": {},
+            "entity": "establishment"
+          },
+          {
+            "target": "dyn.establishment.jurisdiction_facility_id",
+            "source_paths": [
+              "jurisdiction_facility_id"
+            ],
+            "records": 113,
+            "source_present": 113,
+            "emitted": 113,
+            "coverage_of_records": 1.0,
+            "error_rate_of_present": 0.0,
+            "errors": {},
+            "error_examples": {},
+            "entity": "establishment"
+          },
+          {
+            "target": "dyn.establishment.jurisdiction_code",
+            "source_paths": [
+              "jurisdiction_code"
+            ],
+            "records": 113,
+            "source_present": 113,
+            "emitted": 113,
+            "coverage_of_records": 1.0,
+            "error_rate_of_present": 0.0,
+            "errors": {},
+            "error_examples": {},
+            "entity": "establishment"
+          },
+          {
+            "target": "ext.establishment.name",
+            "source_paths": [
+              "facility_name"
+            ],
+            "records": 113,
+            "source_present": 113,
+            "emitted": 113,
+            "coverage_of_records": 1.0,
+            "error_rate_of_present": 0.0,
+            "errors": {},
+            "error_examples": {},
+            "entity": "establishment"
+          },
+          {
+            "target": "ext.establishment.geo",
+            "source_paths": [
+              "latitude",
+              "longitude"
+            ],
+            "records": 113,
+            "source_present": 113,
+            "emitted": 113,
+            "coverage_of_records": 1.0,
+            "error_rate_of_present": 0.0,
+            "errors": {},
+            "error_examples": {},
+            "entity": "establishment"
+          },
+          {
+            "target": "dyn.establishment.street_address",
+            "source_paths": [
+              "street_address"
+            ],
+            "records": 113,
+            "source_present": 113,
+            "emitted": 113,
+            "coverage_of_records": 1.0,
+            "error_rate_of_present": 0.0,
+            "errors": {},
+            "error_examples": {},
+            "entity": "establishment"
+          },
+          {
+            "target": "dyn.establishment.suburb",
+            "source_paths": [
+              "suburb"
+            ],
+            "records": 113,
+            "source_present": 113,
+            "emitted": 113,
+            "coverage_of_records": 1.0,
+            "error_rate_of_present": 0.0,
+            "errors": {},
+            "error_examples": {},
+            "entity": "establishment"
+          },
+          {
+            "target": "dyn.establishment.state",
+            "source_paths": [
+              "state"
+            ],
+            "records": 113,
+            "source_present": 113,
+            "emitted": 113,
+            "coverage_of_records": 1.0,
+            "error_rate_of_present": 0.0,
+            "errors": {},
+            "error_examples": {},
+            "entity": "establishment"
+          },
+          {
+            "target": "dyn.establishment.postcode",
+            "source_paths": [
+              "postcode"
+            ],
+            "records": 113,
+            "source_present": 112,
+            "emitted": 112,
+            "coverage_of_records": 0.991,
+            "error_rate_of_present": 0.0,
+            "errors": {},
+            "error_examples": {},
+            "entity": "establishment"
+          },
+          {
+            "target": "dyn.establishment.primary_anzsic_class_code",
+            "source_paths": [
+              "primary_anzsic_class_code"
+            ],
+            "records": 113,
+            "source_present": 113,
+            "emitted": 113,
+            "coverage_of_records": 1.0,
+            "error_rate_of_present": 0.0,
+            "errors": {},
+            "error_examples": {},
+            "entity": "establishment"
+          },
+          {
+            "target": "dyn.establishment.primary_anzsic_class_name",
+            "source_paths": [
+              "primary_anzsic_class_name"
+            ],
+            "records": 113,
+            "source_present": 113,
+            "emitted": 113,
+            "coverage_of_records": 1.0,
+            "error_rate_of_present": 0.0,
+            "errors": {},
+            "error_examples": {},
+            "entity": "establishment"
+          },
+          {
+            "target": "dyn.establishment.main_activities",
+            "source_paths": [
+              "main_activities"
+            ],
+            "records": 113,
+            "source_present": 109,
+            "emitted": 109,
+            "coverage_of_records": 0.965,
+            "error_rate_of_present": 0.0,
+            "errors": {},
+            "error_examples": {},
+            "entity": "establishment"
+          },
+          {
+            "target": "dyn.establishment.first_report_year",
+            "source_paths": [
+              "first_report_year"
+            ],
+            "records": 113,
+            "source_present": 113,
+            "emitted": 113,
+            "coverage_of_records": 1.0,
+            "error_rate_of_present": 0.0,
+            "errors": {},
+            "error_examples": {},
+            "entity": "establishment"
+          },
+          {
+            "target": "dyn.establishment.latest_report_year",
+            "source_paths": [
+              "latest_report_year"
+            ],
+            "records": 113,
+            "source_present": 113,
+            "emitted": 113,
+            "coverage_of_records": 1.0,
+            "error_rate_of_present": 0.0,
+            "errors": {},
+            "error_examples": {},
+            "entity": "establishment"
+          },
+          {
+            "target": "dyn.establishment.report_count",
+            "source_paths": [
+              "reports"
+            ],
+            "records": 113,
+            "source_present": 113,
+            "emitted": 113,
+            "coverage_of_records": 1.0,
+            "error_rate_of_present": 0.0,
+            "errors": {},
+            "error_examples": {},
+            "entity": "establishment"
+          },
+          {
+            "target": "dyn.establishment.latest_report_id",
+            "source_paths": [
+              "latest_report_id"
+            ],
+            "records": 113,
+            "source_present": 113,
+            "emitted": 113,
+            "coverage_of_records": 1.0,
+            "error_rate_of_present": 0.0,
+            "errors": {},
+            "error_examples": {},
+            "entity": "establishment"
+          },
+          {
+            "target": "dyn.establishment.latest_report_url",
+            "source_paths": [
+              "latest_report_url"
+            ],
+            "records": 113,
+            "source_present": 113,
+            "emitted": 113,
+            "coverage_of_records": 1.0,
+            "error_rate_of_present": 0.0,
+            "errors": {},
+            "error_examples": {},
+            "entity": "establishment"
+          },
+          {
+            "target": "dyn.business.registered_business_name",
+            "source_paths": [
+              "registered_business_name"
+            ],
+            "records": 113,
+            "source_present": 113,
+            "emitted": 113,
+            "coverage_of_records": 1.0,
+            "error_rate_of_present": 0.0,
+            "errors": {},
+            "error_examples": {},
+            "entity": "operator"
+          },
+          {
+            "target": "entity.abn",
+            "source_paths": [
+              "abn"
+            ],
+            "records": 113,
+            "source_present": 106,
+            "emitted": 106,
+            "coverage_of_records": 0.938,
+            "error_rate_of_present": 0.0,
+            "errors": {},
+            "error_examples": {},
+            "entity": "operator"
+          },
+          {
+            "target": "entity.acn",
+            "source_paths": [
+              "acn"
+            ],
+            "records": 113,
+            "source_present": 89,
+            "emitted": 89,
+            "coverage_of_records": 0.788,
+            "error_rate_of_present": 0.0,
+            "errors": {},
+            "error_examples": {},
+            "entity": "operator"
+          },
+          {
+            "target": "dyn.establishment.published_website",
+            "source_paths": [
+              "facility_website"
+            ],
+            "records": 113,
+            "source_present": 78,
+            "emitted": 78,
+            "coverage_of_records": 0.69,
+            "error_rate_of_present": 0.0,
+            "errors": {},
+            "error_examples": {},
+            "entity": "establishment"
+          }
+        ],
+        "relationships": {
+          "OPERATES_ESTABLISHMENT": 113
+        },
+        "input_records": 113,
+        "refused_records": 0,
+        "observations": 2302,
+        "value_errors": 0,
+        "present_values": 2302,
+        "error_rate": 0.0
+      },
+      "extraction": {
+        "records_in": 600,
+        "records_with_output": 600,
+        "record_errors": {},
+        "fields": [
+          {
+            "target": "dyn.establishment.npi_facility_id",
+            "source_paths": [
+              "facility_id"
+            ],
+            "records": 600,
+            "source_present": 600,
+            "emitted": 600,
+            "coverage_of_records": 1.0,
+            "error_rate_of_present": 0.0,
+            "errors": {},
+            "error_examples": {},
+            "entity": "establishment"
+          },
+          {
+            "target": "dyn.establishment.jurisdiction_facility_id",
+            "source_paths": [
+              "jurisdiction_facility_id"
+            ],
+            "records": 600,
+            "source_present": 600,
+            "emitted": 600,
+            "coverage_of_records": 1.0,
+            "error_rate_of_present": 0.0,
+            "errors": {},
+            "error_examples": {},
+            "entity": "establishment"
+          },
+          {
+            "target": "dyn.establishment.jurisdiction_code",
+            "source_paths": [
+              "jurisdiction_code"
+            ],
+            "records": 600,
+            "source_present": 600,
+            "emitted": 600,
+            "coverage_of_records": 1.0,
+            "error_rate_of_present": 0.0,
+            "errors": {},
+            "error_examples": {},
+            "entity": "establishment"
+          },
+          {
+            "target": "ext.establishment.name",
+            "source_paths": [
+              "facility_name"
+            ],
+            "records": 600,
+            "source_present": 600,
+            "emitted": 600,
+            "coverage_of_records": 1.0,
+            "error_rate_of_present": 0.0,
+            "errors": {},
+            "error_examples": {},
+            "entity": "establishment"
+          },
+          {
+            "target": "ext.establishment.geo",
+            "source_paths": [
+              "latitude",
+              "longitude"
+            ],
+            "records": 600,
+            "source_present": 600,
+            "emitted": 600,
+            "coverage_of_records": 1.0,
+            "error_rate_of_present": 0.0,
+            "errors": {},
+            "error_examples": {},
+            "entity": "establishment"
+          },
+          {
+            "target": "dyn.establishment.street_address",
+            "source_paths": [
+              "street_address"
+            ],
+            "records": 600,
+            "source_present": 600,
+            "emitted": 600,
+            "coverage_of_records": 1.0,
+            "error_rate_of_present": 0.0,
+            "errors": {},
+            "error_examples": {},
+            "entity": "establishment"
+          },
+          {
+            "target": "dyn.establishment.suburb",
+            "source_paths": [
+              "suburb"
+            ],
+            "records": 600,
+            "source_present": 600,
+            "emitted": 600,
+            "coverage_of_records": 1.0,
+            "error_rate_of_present": 0.0,
+            "errors": {},
+            "error_examples": {},
+            "entity": "establishment"
+          },
+          {
+            "target": "dyn.establishment.state",
+            "source_paths": [
+              "state"
+            ],
+            "records": 600,
+            "source_present": 600,
+            "emitted": 600,
+            "coverage_of_records": 1.0,
+            "error_rate_of_present": 0.0,
+            "errors": {},
+            "error_examples": {},
+            "entity": "establishment"
+          },
+          {
+            "target": "dyn.establishment.postcode",
+            "source_paths": [
+              "postcode"
+            ],
+            "records": 600,
+            "source_present": 598,
+            "emitted": 598,
+            "coverage_of_records": 0.997,
+            "error_rate_of_present": 0.0,
+            "errors": {},
+            "error_examples": {},
+            "entity": "establishment"
+          },
+          {
+            "target": "dyn.establishment.primary_anzsic_class_code",
+            "source_paths": [
+              "primary_anzsic_class_code"
+            ],
+            "records": 600,
+            "source_present": 600,
+            "emitted": 600,
+            "coverage_of_records": 1.0,
+            "error_rate_of_present": 0.0,
+            "errors": {},
+            "error_examples": {},
+            "entity": "establishment"
+          },
+          {
+            "target": "dyn.establishment.primary_anzsic_class_name",
+            "source_paths": [
+              "primary_anzsic_class_name"
+            ],
+            "records": 600,
+            "source_present": 600,
+            "emitted": 600,
+            "coverage_of_records": 1.0,
+            "error_rate_of_present": 0.0,
+            "errors": {},
+            "error_examples": {},
+            "entity": "establishment"
+          },
+          {
+            "target": "dyn.establishment.main_activities",
+            "source_paths": [
+              "main_activities"
+            ],
+            "records": 600,
+            "source_present": 594,
+            "emitted": 594,
+            "coverage_of_records": 0.99,
+            "error_rate_of_present": 0.0,
+            "errors": {},
+            "error_examples": {},
+            "entity": "establishment"
+          },
+          {
+            "target": "dyn.establishment.first_report_year",
+            "source_paths": [
+              "first_report_year"
+            ],
+            "records": 600,
+            "source_present": 600,
+            "emitted": 600,
+            "coverage_of_records": 1.0,
+            "error_rate_of_present": 0.0,
+            "errors": {},
+            "error_examples": {},
+            "entity": "establishment"
+          },
+          {
+            "target": "dyn.establishment.latest_report_year",
+            "source_paths": [
+              "latest_report_year"
+            ],
+            "records": 600,
+            "source_present": 600,
+            "emitted": 600,
+            "coverage_of_records": 1.0,
+            "error_rate_of_present": 0.0,
+            "errors": {},
+            "error_examples": {},
+            "entity": "establishment"
+          },
+          {
+            "target": "dyn.establishment.report_count",
+            "source_paths": [
+              "reports"
+            ],
+            "records": 600,
+            "source_present": 600,
+            "emitted": 600,
+            "coverage_of_records": 1.0,
+            "error_rate_of_present": 0.0,
+            "errors": {},
+            "error_examples": {},
+            "entity": "establishment"
+          },
+          {
+            "target": "dyn.establishment.latest_report_id",
+            "source_paths": [
+              "latest_report_id"
+            ],
+            "records": 600,
+            "source_present": 600,
+            "emitted": 600,
+            "coverage_of_records": 1.0,
+            "error_rate_of_present": 0.0,
+            "errors": {},
+            "error_examples": {},
+            "entity": "establishment"
+          },
+          {
+            "target": "dyn.establishment.latest_report_url",
+            "source_paths": [
+              "latest_report_url"
+            ],
+            "records": 600,
+            "source_present": 600,
+            "emitted": 600,
+            "coverage_of_records": 1.0,
+            "error_rate_of_present": 0.0,
+            "errors": {},
+            "error_examples": {},
+            "entity": "establishment"
+          },
+          {
+            "target": "dyn.business.registered_business_name",
+            "source_paths": [
+              "registered_business_name"
+            ],
+            "records": 600,
+            "source_present": 596,
+            "emitted": 596,
+            "coverage_of_records": 0.993,
+            "error_rate_of_present": 0.0,
+            "errors": {},
+            "error_examples": {},
+            "entity": "operator"
+          },
+          {
+            "target": "entity.abn",
+            "source_paths": [
+              "abn"
+            ],
+            "records": 600,
+            "source_present": 562,
+            "emitted": 562,
+            "coverage_of_records": 0.937,
+            "error_rate_of_present": 0.0,
+            "errors": {},
+            "error_examples": {},
+            "entity": "operator"
+          },
+          {
+            "target": "entity.acn",
+            "source_paths": [
+              "acn"
+            ],
+            "records": 600,
+            "source_present": 455,
+            "emitted": 451,
+            "coverage_of_records": 0.752,
+            "error_rate_of_present": 0.009,
+            "errors": {
+              "ACN_CHECKSUM": 4
+            },
+            "error_examples": {
+              "ACN_CHECKSUM": [
+                "010163401",
+                "776225038",
+                "787790126",
+                "000435635"
+              ]
+            },
+            "entity": "operator"
+          },
+          {
+            "target": "dyn.establishment.published_website",
+            "source_paths": [
+              "facility_website"
+            ],
+            "records": 600,
+            "source_present": 399,
+            "emitted": 399,
+            "coverage_of_records": 0.665,
+            "error_rate_of_present": 0.0,
+            "errors": {},
+            "error_examples": {},
+            "entity": "establishment"
+          }
+        ],
+        "relationships": {
+          "OPERATES_ESTABLISHMENT": 598
+        },
+        "input_records": 600,
+        "refused_records": 0,
+        "observations": 12200,
+        "value_errors": 4,
+        "present_values": 12204,
+        "error_rate": 0.00032776138970829236
+      },
+      "seconds": 77.686,
+      "precision": "Not measured by a human; validation checks types/constraints, not semantic ground truth.",
+      "human_review": "pending",
+      "drift_baseline": [
+        "abn",
+        "acn",
+        "facility_id",
+        "facility_name",
+        "facility_website",
+        "first_report_year",
+        "jurisdiction_code",
+        "jurisdiction_facility_id",
+        "latest_report_id",
+        "latest_report_url",
+        "latest_report_year",
+        "latitude",
+        "longitude",
+        "main_activities",
+        "postcode",
+        "primary_anzsic_class_code",
+        "primary_anzsic_class_name",
+        "registered_business_name",
+        "reports",
+        "state",
+        "street_address",
+        "suburb"
+      ]
+    }
+  ],
+  "entity_count": 1950,
+  "proposed_identifier_links": 12,
+  "unlinked_businesses": 527,
+  "model_calls_during_replay": 0,
+  "promotion": "Candidate registry only; production and submitted benchmark unchanged."
+}

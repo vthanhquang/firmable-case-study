@@ -1,0 +1,260 @@
+{
+  "request_sha256": "f93f8e457299024e9b7647561a5207ff84ee8d92f464a2792f2f05cda0779051",
+  "role": "architect",
+  "model": "deepseek-v4-flash",
+  "seconds": 17.329,
+  "response": {
+    "entity_types": [],
+    "concepts": [
+      {
+        "path": "dyn.establishment.npi_facility_id",
+        "type": "string",
+        "owner": "establishment",
+        "definition": "The national NPI facility identifier assigned by the National Pollutant Inventory, unique across all jurisdictions. Identifies the facility across snapshots; it is not the operator's ABN/ACN.",
+        "values": [],
+        "multi": false,
+        "required_qualifiers": [],
+        "source_paths": [
+          "facility_id"
+        ],
+        "why_not_existing": "ext.establishment.source_key is a generic publisher site code; the NPI national facility identifier is a distinct, nationally unique key that must not be conflated with the state-scoped jurisdiction_facility_id, so a dedicated concept preserves the correct identity semantics.",
+        "personal_data": "never"
+      },
+      {
+        "path": "dyn.establishment.jurisdiction_facility_id",
+        "type": "string",
+        "owner": "establishment",
+        "definition": "The state/territory-scoped NPI facility identifier. Only unique within its jurisdiction_code, so it must always be qualified by the jurisdiction and never used alone as a key.",
+        "values": [],
+        "multi": false,
+        "required_qualifiers": [
+          "jurisdiction_code"
+        ],
+        "source_paths": [
+          "jurisdiction_facility_id"
+        ],
+        "why_not_existing": "No existing concept captures a jurisdiction-scoped facility identifier; ext.establishment.source_key is a single publisher code and would lose the required jurisdiction qualifier.",
+        "personal_data": "never"
+      },
+      {
+        "path": "dyn.establishment.jurisdiction_code",
+        "type": "enum",
+        "owner": "establishment",
+        "definition": "The Australian state or territory code under which the NPI registers the facility (e.g. QLD, SA, WA, NSW). Qualifies the jurisdiction-scoped facility identifier.",
+        "values": [
+          "NSW",
+          "VIC",
+          "QLD",
+          "WA",
+          "SA",
+          "TAS",
+          "ACT",
+          "NT"
+        ],
+        "multi": false,
+        "required_qualifiers": [],
+        "source_paths": [
+          "jurisdiction_code"
+        ],
+        "why_not_existing": "address.state is the business's address state; the NPI jurisdiction code is the facility's registration jurisdiction and is a required qualifier for the jurisdiction-scoped facility id, so it needs its own establishment-owned concept.",
+        "personal_data": "never"
+      },
+      {
+        "path": "dyn.establishment.primary_anzsic_class_code",
+        "type": "string",
+        "owner": "establishment",
+        "definition": "The ANZSIC class code the NPI states as the facility's primary activity classification. Describes the facility, not the company-wide industry.",
+        "values": [],
+        "multi": false,
+        "required_qualifiers": [
+          "scheme"
+        ],
+        "source_paths": [
+          "primary_anzsic_class_code"
+        ],
+        "why_not_existing": "entity.industry_code and ext.entity.industry_code are business-owned and company-wide; the NPI value is a facility-level primary classification and must not be promoted to the operator.",
+        "personal_data": "never"
+      },
+      {
+        "path": "dyn.establishment.primary_anzsic_class_name",
+        "type": "string",
+        "owner": "establishment",
+        "definition": "The ANZSIC class name the NPI states for the facility's primary activity classification, in the publisher's wording.",
+        "values": [],
+        "multi": false,
+        "required_qualifiers": [
+          "scheme"
+        ],
+        "source_paths": [
+          "primary_anzsic_class_name"
+        ],
+        "why_not_existing": "No existing concept holds a facility-level ANZSIC class label; ext.entity.sector_tag is business-owned and scheme-qualified for other purposes.",
+        "personal_data": "never"
+      },
+      {
+        "path": "dyn.establishment.main_activities",
+        "type": "string",
+        "owner": "establishment",
+        "definition": "The source-stated free-text description of the facility's main activities (e.g. 'Pig Farming', 'WINEMAKING'). Kept in the publisher's wording; not an invented industry code.",
+        "values": [],
+        "multi": false,
+        "required_qualifiers": [],
+        "source_paths": [
+          "main_activities"
+        ],
+        "why_not_existing": "ext.entity.sector_tag is a business-owned scheme tag; this is a facility-level free-text activity statement that must remain verbatim and establishment-owned.",
+        "personal_data": "never"
+      },
+      {
+        "path": "dyn.establishment.first_report_year",
+        "type": "string",
+        "owner": "establishment",
+        "definition": "The NPI reporting-year label (e.g. '2003/2004') of the facility's first NPI report. A reporting-year label, not an incorporation or licence date.",
+        "values": [],
+        "multi": false,
+        "required_qualifiers": [],
+        "source_paths": [
+          "first_report_year"
+        ],
+        "why_not_existing": "No existing concept holds an NPI reporting-year label; ext.entity.date_established and entity.date_registered are business dates and must not be conflated with reporting years.",
+        "personal_data": "never"
+      },
+      {
+        "path": "dyn.establishment.latest_report_year",
+        "type": "string",
+        "owner": "establishment",
+        "definition": "The NPI reporting-year label (e.g. '2024/2025') of the facility's most recent NPI report. A reporting-year label, not a compliance or licence date.",
+        "values": [],
+        "multi": false,
+        "required_qualifiers": [],
+        "source_paths": [
+          "latest_report_year"
+        ],
+        "why_not_existing": "No existing concept holds an NPI reporting-year label; it is distinct from first_report_year and from any business date concept.",
+        "personal_data": "never"
+      },
+      {
+        "path": "dyn.establishment.report_count",
+        "type": "integer",
+        "owner": "establishment",
+        "definition": "The number of NPI reports the facility has submitted, as stated by the source. A count of reports, not an emissions measure or compliance indicator.",
+        "values": [],
+        "multi": false,
+        "required_qualifiers": [],
+        "source_paths": [
+          "reports"
+        ],
+        "why_not_existing": "ext.establishment.capacity counts patrons; no existing concept holds a facility's NPI report count, and it must not be read as an emissions quantity.",
+        "personal_data": "never"
+      },
+      {
+        "path": "dyn.establishment.latest_report_id",
+        "type": "string",
+        "owner": "establishment",
+        "definition": "The NPI identifier of the facility's most recent report, as published. Identifies the report, not the facility.",
+        "values": [],
+        "multi": false,
+        "required_qualifiers": [],
+        "source_paths": [
+          "latest_report_id"
+        ],
+        "why_not_existing": "No existing concept holds an NPI report identifier; it is distinct from the facility identifier and from the report URL.",
+        "personal_data": "never"
+      },
+      {
+        "path": "dyn.establishment.latest_report_url",
+        "type": "string",
+        "owner": "establishment",
+        "definition": "The published URL of the facility's most recent NPI report. A link only; it embeds state/year/jurisdiction-facility path segments and is not a stable facility identifier.",
+        "values": [],
+        "multi": false,
+        "required_qualifiers": [],
+        "source_paths": [
+          "latest_report_url"
+        ],
+        "why_not_existing": "ext.contact.website_domain holds a registrable host, not a full report URL; no existing concept captures a report link, and it must not be treated as an identifier.",
+        "personal_data": "never"
+      },
+      {
+        "path": "dyn.establishment.street_address",
+        "type": "string",
+        "owner": "establishment",
+        "definition": "The street address line of the NPI facility site as published (e.g. 'Hermann Thumm Drive', 'CNR BUSSELL HWY & BOUNDARY ROAD'). A site address, not the operator's registered office.",
+        "values": [],
+        "multi": false,
+        "required_qualifiers": [],
+        "source_paths": [
+          "street_address"
+        ],
+        "why_not_existing": "address.full is business-owned and would assert the operator's address; the NPI street address describes the facility site, so it needs an establishment-owned concept.",
+        "personal_data": "never"
+      },
+      {
+        "path": "dyn.establishment.suburb",
+        "type": "string",
+        "owner": "establishment",
+        "definition": "The suburb/locality of the NPI facility site as published. A site locality, not the operator's registered locality.",
+        "values": [],
+        "multi": false,
+        "required_qualifiers": [],
+        "source_paths": [
+          "suburb"
+        ],
+        "why_not_existing": "address.locality is business-owned; the NPI suburb describes the facility site location and must not be promoted to the operator's address.",
+        "personal_data": "never"
+      },
+      {
+        "path": "dyn.establishment.state",
+        "type": "enum",
+        "owner": "establishment",
+        "definition": "The Australian state or territory of the NPI facility site address as published. A site address state, distinct from the NPI registration jurisdiction code.",
+        "values": [
+          "NSW",
+          "VIC",
+          "QLD",
+          "WA",
+          "SA",
+          "TAS",
+          "ACT",
+          "NT"
+        ],
+        "multi": false,
+        "required_qualifiers": [],
+        "source_paths": [
+          "state"
+        ],
+        "why_not_existing": "address.state is business-owned; the NPI state describes the facility site address and must not be conflated with the operator's address state or with dyn.establishment.jurisdiction_code.",
+        "personal_data": "never"
+      },
+      {
+        "path": "dyn.establishment.postcode",
+        "type": "string",
+        "owner": "establishment",
+        "definition": "The 4-digit Australian postcode of the NPI facility site address as published.",
+        "values": [],
+        "multi": false,
+        "required_qualifiers": [],
+        "source_paths": [
+          "postcode"
+        ],
+        "why_not_existing": "address.postcode is business-owned; the NPI postcode describes the facility site address, not the operator's registered postcode.",
+        "personal_data": "never"
+      }
+    ],
+    "relationships": [],
+    "reuse": {
+      "ext.establishment.name": "facility_name is the site/premises name, matching the establishment-owned site name concept.",
+      "ext.establishment.geo": "latitude/longitude are facility coordinates, matching the establishment geo point concept (lat,lon).",
+      "entity.abn": "abn is the operator's Australian Business Number, matching the business-owned ABN concept; validate checksum.",
+      "entity.acn": "acn is the operator's Australian Company Number, matching the business-owned ACN concept; frequently blank.",
+      "entity.legal_name": "registered_business_name is the operator/registered business entity name, matching the business legal name concept; it is not the facility name.",
+      "entity.website": "facility_website is a published website for the operator/facility, matching the business website concept."
+    },
+    "unmapped": [
+      {
+        "source_path": "state",
+        "reason": "Mapped to dyn.establishment.state as the facility site address state; it duplicates jurisdiction_code for these rows but is kept separate so the site address state is not conflated with the NPI registration jurisdiction."
+      }
+    ]
+  }
+}

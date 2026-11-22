@@ -1,0 +1,24 @@
+{
+  "reader": {
+    "format": "json",
+    "archive_member": null,
+    "encoding": "utf-8-sig",
+    "delimiter": null,
+    "skip_rows": 0,
+    "sheet": null,
+    "record_path": null
+  },
+  "bindings": [],
+  "grain": "One row per grant award record: a single (grant programme, grant_round, recipient, project, amount_approved) entry as exported by the Opendatasoft JSON export; the top-level JSON array is the record list itself, so no nested record_path or bindings are needed. The 'index' field is a row identifier from the export, not a stable business key.",
+  "identity_cautions": [
+    "Recipients include individuals (e.g. 'Ms Alexandra Philp', 'Mr Daniel James') as well as community/non-profit organisations; do not treat all recipients as companies or infer legal form from personal names.",
+    "The 'abn' field is an 11-digit Australian Business Number string; it is not a company registration number and its presence does not establish company status or legal form.",
+    "The 'organisation_recipient' column mixes personal names and organisation names, so it is not a reliable organisation-only identifier.",
+    "The 'index' field appears to be an export row ordinal and may change between snapshots; it should not be used as a durable key.",
+    "The same recipient may appear across multiple grants, rounds and projects; a recipient name alone does not identify a unique entity.",
+    "The dataset notes that not all grant programme recipients are included (privacy exclusions), so absence of a recipient is not evidence of no grant.",
+    "The 'grant_list' field concatenates a code and label (e.g. 'L, Lord Mayor's Creative Fellowships') and is a programme classification, not a company-wide attribute.",
+    "The 'amount_approved' values are grant award amounts, not business income or revenue."
+  ],
+  "rationale": "Byte inspection shows a plain UTF-8 JSON file whose first bytes are '[{\"index' — a top-level JSON array of flat objects, matching the Opendatasoft v2.1 JSON export. Each object has flat scalar fields (index, group, grant, grant_round, organisation_recipient, project, amount_approved, abn, grant_list), so the array itself is the record list and no nested collection requires a discriminator binding. No ZIP container, delimiter structure, or spreadsheet sheet applies, so format is 'json' with default encoding and no record_path override. Identity cautions reflect the documented mix of individual and organisational recipients and the non-company nature of ABNs and award amounts."
+}

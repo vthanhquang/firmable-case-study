@@ -1,0 +1,903 @@
+{
+  "mapping_gate": [
+    "Wrong owner: dyn.establishment.npi_facility_id must describe establishment, not establishment",
+    "Wrong owner: dyn.establishment.jurisdiction_facility_id must describe establishment, not establishment",
+    "Wrong owner: dyn.establishment.jurisdiction_code must describe establishment, not establishment",
+    "Wrong owner: ext.establishment.name must describe establishment, not establishment",
+    "Wrong owner: ext.establishment.geo must describe establishment, not establishment",
+    "Wrong owner: address.full must describe business, not establishment",
+    "Wrong owner: address.locality must describe business, not establishment",
+    "Wrong owner: address.state must describe business, not establishment",
+    "Wrong owner: address.postcode must describe business, not establishment",
+    "Wrong owner: dyn.establishment.primary_anzsic_class_code must describe establishment, not establishment",
+    "Wrong owner: dyn.establishment.primary_anzsic_class_name must describe establishment, not establishment",
+    "Wrong owner: dyn.establishment.main_activities must describe establishment, not establishment",
+    "Wrong owner: dyn.establishment.first_report_year must describe establishment, not establishment",
+    "Wrong owner: dyn.establishment.latest_report_year must describe establishment, not establishment",
+    "Wrong owner: dyn.establishment.report_count must describe establishment, not establishment",
+    "Wrong owner: dyn.establishment.latest_report_id must describe establishment, not establishment",
+    "Wrong owner: dyn.establishment.latest_report_url must describe establishment, not establishment",
+    "Invalid relationship types/roles: OPERATES_ESTABLISHMENT"
+  ],
+  "previous_mapping": {
+    "source_id": "npi_facilities_new",
+    "record_grain": "One row per NPI facility record, keyed by the national facility_id; jurisdiction_code + jurisdiction_facility_id is the state-scoped facility identifier pair.",
+    "grain_rationale": "Byte inspection shows a single header row of 22 flat scalar fields with no nested arrays, so one row is one facility. facility_id is the nationally unique NPI facility identifier; jurisdiction_facility_id is only unique within jurisdiction_code and must never be used alone. Operator identity (registered_business_name, abn, acn) repeats across facility rows and is a separate business role, not a facility key.",
+    "reader": {
+      "format": "delimited",
+      "archive_member": null,
+      "encoding": "utf-8-sig",
+      "delimiter": ",",
+      "skip_rows": 0,
+      "sheet": null,
+      "record_path": null
+    },
+    "record_id": {
+      "strategy": "columns",
+      "source_paths": [
+        "facility_id"
+      ],
+      "rationale": "facility_id is the national NPI facility identifier and is unique across jurisdictions; jurisdiction_code + jurisdiction_facility_id is retained as the state-scoped identifier pair but is not needed for the record key."
+    },
+    "observed_at": {
+      "source_path": null,
+      "steps": [],
+      "fallback": "resource_last_modified"
+    },
+    "fields": [
+      {
+        "source_paths": [
+          "facility_id"
+        ],
+        "join_with": " ",
+        "when": null,
+        "target": "dyn.establishment.npi_facility_id",
+        "valid_from_path": null,
+        "valid_to_path": null,
+        "validity_date_formats": null,
+        "claim_scope": null,
+        "steps": [
+          {
+            "op": "trim",
+            "args": {}
+          },
+          {
+            "op": "collapse_whitespace",
+            "args": {}
+          }
+        ],
+        "confidence": 0.95,
+        "rationale": "facility_id is the national NPI facility identifier, unique across jurisdictions; establishment-owned, not the operator's ABN/ACN.",
+        "entity": "establishment",
+        "qualifiers": null,
+        "one_hot": null
+      },
+      {
+        "source_paths": [
+          "jurisdiction_facility_id"
+        ],
+        "join_with": " ",
+        "when": null,
+        "target": "dyn.establishment.jurisdiction_facility_id",
+        "valid_from_path": null,
+        "valid_to_path": null,
+        "validity_date_formats": null,
+        "claim_scope": null,
+        "steps": [
+          {
+            "op": "trim",
+            "args": {}
+          },
+          {
+            "op": "collapse_whitespace",
+            "args": {}
+          }
+        ],
+        "confidence": 0.9,
+        "rationale": "State-scoped NPI facility identifier; only unique within its jurisdiction, so the jurisdiction_code qualifier is carried with every claim.",
+        "entity": "establishment",
+        "qualifiers": {
+          "jurisdiction_code": {
+            "source_path": "jurisdiction_code",
+            "value": null,
+            "steps": [
+              {
+                "op": "trim",
+                "args": {}
+              },
+              {
+                "op": "upper",
+                "args": {}
+              }
+            ]
+          }
+        },
+        "one_hot": null
+      },
+      {
+        "source_paths": [
+          "jurisdiction_code"
+        ],
+        "join_with": " ",
+        "when": null,
+        "target": "dyn.establishment.jurisdiction_code",
+        "valid_from_path": null,
+        "valid_to_path": null,
+        "validity_date_formats": null,
+        "claim_scope": null,
+        "steps": [
+          {
+            "op": "trim",
+            "args": {}
+          },
+          {
+            "op": "upper",
+            "args": {}
+          },
+          {
+            "op": "map_enum",
+            "args": {
+              "mapping": {
+                "NSW": "NSW",
+                "VIC": "VIC",
+                "QLD": "QLD",
+                "WA": "WA",
+                "SA": "SA",
+                "TAS": "TAS",
+                "ACT": "ACT",
+                "NT": "NT"
+              },
+              "default": null,
+              "passthrough": false
+            }
+          }
+        ],
+        "confidence": 0.9,
+        "rationale": "NPI registration jurisdiction of the facility; distinct from the business address state and required as the qualifier for the jurisdiction-scoped facility id.",
+        "entity": "establishment",
+        "qualifiers": null,
+        "one_hot": null
+      },
+      {
+        "source_paths": [
+          "facility_name"
+        ],
+        "join_with": " ",
+        "when": null,
+        "target": "ext.establishment.name",
+        "valid_from_path": null,
+        "valid_to_path": null,
+        "validity_date_formats": null,
+        "claim_scope": null,
+        "steps": [
+          {
+            "op": "trim",
+            "args": {}
+          },
+          {
+            "op": "collapse_whitespace",
+            "args": {}
+          }
+        ],
+        "confidence": 0.9,
+        "rationale": "facility_name is the site/premises name; it is not unique and must not be conflated with registered_business_name.",
+        "entity": "establishment",
+        "qualifiers": null,
+        "one_hot": null
+      },
+      {
+        "source_paths": [
+          "latitude",
+          "longitude"
+        ],
+        "join_with": ",",
+        "when": null,
+        "target": "ext.establishment.geo",
+        "valid_from_path": null,
+        "valid_to_path": null,
+        "validity_date_formats": null,
+        "claim_scope": null,
+        "steps": [
+          {
+            "op": "geo_point",
+            "args": {}
+          }
+        ],
+        "confidence": 0.8,
+        "rationale": "latitude/longitude are facility coordinates; geo_point validates the pair lies inside Australia. Values may be rounded and do not assert exact site boundaries.",
+        "entity": "establishment",
+        "qualifiers": null,
+        "one_hot": null
+      },
+      {
+        "source_paths": [
+          "street_address"
+        ],
+        "join_with": " ",
+        "when": null,
+        "target": "address.full",
+        "valid_from_path": null,
+        "valid_to_path": null,
+        "validity_date_formats": null,
+        "claim_scope": "establishment_address",
+        "steps": [
+          {
+            "op": "trim",
+            "args": {}
+          },
+          {
+            "op": "collapse_whitespace",
+            "args": {}
+          }
+        ],
+        "confidence": 0.8,
+        "rationale": "street_address is the facility street address; establishment-scoped address claim, not the operator's registered office.",
+        "entity": "establishment",
+        "qualifiers": null,
+        "one_hot": null
+      },
+      {
+        "source_paths": [
+          "suburb"
+        ],
+        "join_with": " ",
+        "when": null,
+        "target": "address.locality",
+        "valid_from_path": null,
+        "valid_to_path": null,
+        "validity_date_formats": null,
+        "claim_scope": "establishment_address",
+        "steps": [
+          {
+            "op": "trim",
+            "args": {}
+          },
+          {
+            "op": "collapse_whitespace",
+            "args": {}
+          }
+        ],
+        "confidence": 0.85,
+        "rationale": "suburb is the facility locality.",
+        "entity": "establishment",
+        "qualifiers": null,
+        "one_hot": null
+      },
+      {
+        "source_paths": [
+          "state"
+        ],
+        "join_with": " ",
+        "when": null,
+        "target": "address.state",
+        "valid_from_path": null,
+        "valid_to_path": null,
+        "validity_date_formats": null,
+        "claim_scope": "establishment_address",
+        "steps": [
+          {
+            "op": "trim",
+            "args": {}
+          },
+          {
+            "op": "upper",
+            "args": {}
+          },
+          {
+            "op": "state",
+            "args": {}
+          }
+        ],
+        "confidence": 0.85,
+        "rationale": "state is the facility address state; normalised to the state enum. The NPI registration jurisdiction is captured separately as dyn.establishment.jurisdiction_code.",
+        "entity": "establishment",
+        "qualifiers": null,
+        "one_hot": null
+      },
+      {
+        "source_paths": [
+          "postcode"
+        ],
+        "join_with": " ",
+        "when": null,
+        "target": "address.postcode",
+        "valid_from_path": null,
+        "valid_to_path": null,
+        "validity_date_formats": null,
+        "claim_scope": "establishment_address",
+        "steps": [
+          {
+            "op": "trim",
+            "args": {}
+          },
+          {
+            "op": "postcode",
+            "args": {}
+          }
+        ],
+        "confidence": 0.85,
+        "rationale": "postcode is the facility postcode; 4-digit AU postcode with NT re-padding.",
+        "entity": "establishment",
+        "qualifiers": null,
+        "one_hot": null
+      },
+      {
+        "source_paths": [
+          "primary_anzsic_class_code"
+        ],
+        "join_with": " ",
+        "when": null,
+        "target": "dyn.establishment.primary_anzsic_class_code",
+        "valid_from_path": null,
+        "valid_to_path": null,
+        "validity_date_formats": null,
+        "claim_scope": null,
+        "steps": [
+          {
+            "op": "trim",
+            "args": {}
+          },
+          {
+            "op": "collapse_whitespace",
+            "args": {}
+          }
+        ],
+        "confidence": 0.85,
+        "rationale": "Facility-level primary ANZSIC class code as stated by NPI; describes the facility, not the company-wide industry, so it stays establishment-owned.",
+        "entity": "establishment",
+        "qualifiers": {
+          "scheme": {
+            "source_path": null,
+            "value": "anzsic2006",
+            "steps": []
+          }
+        },
+        "one_hot": null
+      },
+      {
+        "source_paths": [
+          "primary_anzsic_class_name"
+        ],
+        "join_with": " ",
+        "when": null,
+        "target": "dyn.establishment.primary_anzsic_class_name",
+        "valid_from_path": null,
+        "valid_to_path": null,
+        "validity_date_formats": null,
+        "claim_scope": null,
+        "steps": [
+          {
+            "op": "trim",
+            "args": {}
+          },
+          {
+            "op": "collapse_whitespace",
+            "args": {}
+          }
+        ],
+        "confidence": 0.85,
+        "rationale": "Facility-level ANZSIC class label in the publisher's wording; not promoted to the operator.",
+        "entity": "establishment",
+        "qualifiers": {
+          "scheme": {
+            "source_path": null,
+            "value": "anzsic2006",
+            "steps": []
+          }
+        },
+        "one_hot": null
+      },
+      {
+        "source_paths": [
+          "main_activities"
+        ],
+        "join_with": " ",
+        "when": null,
+        "target": "dyn.establishment.main_activities",
+        "valid_from_path": null,
+        "valid_to_path": null,
+        "validity_date_formats": null,
+        "claim_scope": null,
+        "steps": [
+          {
+            "op": "trim",
+            "args": {}
+          },
+          {
+            "op": "collapse_whitespace",
+            "args": {}
+          }
+        ],
+        "confidence": 0.8,
+        "rationale": "Free-text facility activity statement kept verbatim; not converted into an invented industry code.",
+        "entity": "establishment",
+        "qualifiers": null,
+        "one_hot": null
+      },
+      {
+        "source_paths": [
+          "first_report_year"
+        ],
+        "join_with": " ",
+        "when": null,
+        "target": "dyn.establishment.first_report_year",
+        "valid_from_path": null,
+        "valid_to_path": null,
+        "validity_date_formats": null,
+        "claim_scope": null,
+        "steps": [
+          {
+            "op": "trim",
+            "args": {}
+          },
+          {
+            "op": "collapse_whitespace",
+            "args": {}
+          }
+        ],
+        "confidence": 0.85,
+        "rationale": "NPI reporting-year label of the first report; not an incorporation or licence date.",
+        "entity": "establishment",
+        "qualifiers": null,
+        "one_hot": null
+      },
+      {
+        "source_paths": [
+          "latest_report_year"
+        ],
+        "join_with": " ",
+        "when": null,
+        "target": "dyn.establishment.latest_report_year",
+        "valid_from_path": null,
+        "valid_to_path": null,
+        "validity_date_formats": null,
+        "claim_scope": null,
+        "steps": [
+          {
+            "op": "trim",
+            "args": {}
+          },
+          {
+            "op": "collapse_whitespace",
+            "args": {}
+          }
+        ],
+        "confidence": 0.85,
+        "rationale": "NPI reporting-year label of the most recent report; not a compliance or licence date.",
+        "entity": "establishment",
+        "qualifiers": null,
+        "one_hot": null
+      },
+      {
+        "source_paths": [
+          "reports"
+        ],
+        "join_with": " ",
+        "when": null,
+        "target": "dyn.establishment.report_count",
+        "valid_from_path": null,
+        "valid_to_path": null,
+        "validity_date_formats": null,
+        "claim_scope": null,
+        "steps": [
+          {
+            "op": "trim",
+            "args": {}
+          },
+          {
+            "op": "parse_integer",
+            "args": {}
+          }
+        ],
+        "confidence": 0.85,
+        "rationale": "Count of NPI reports for the facility; a report count, not an emissions measure or compliance indicator.",
+        "entity": "establishment",
+        "qualifiers": null,
+        "one_hot": null
+      },
+      {
+        "source_paths": [
+          "latest_report_id"
+        ],
+        "join_with": " ",
+        "when": null,
+        "target": "dyn.establishment.latest_report_id",
+        "valid_from_path": null,
+        "valid_to_path": null,
+        "validity_date_formats": null,
+        "claim_scope": null,
+        "steps": [
+          {
+            "op": "trim",
+            "args": {}
+          },
+          {
+            "op": "collapse_whitespace",
+            "args": {}
+          }
+        ],
+        "confidence": 0.85,
+        "rationale": "NPI identifier of the most recent report; identifies the report, not the facility.",
+        "entity": "establishment",
+        "qualifiers": null,
+        "one_hot": null
+      },
+      {
+        "source_paths": [
+          "latest_report_url"
+        ],
+        "join_with": " ",
+        "when": null,
+        "target": "dyn.establishment.latest_report_url",
+        "valid_from_path": null,
+        "valid_to_path": null,
+        "validity_date_formats": null,
+        "claim_scope": null,
+        "steps": [
+          {
+            "op": "trim",
+            "args": {}
+          },
+          {
+            "op": "website",
+            "args": {}
+          }
+        ],
+        "confidence": 0.8,
+        "rationale": "Published report link only; embeds state/year/jurisdiction-facility path segments and is not a stable facility identifier.",
+        "entity": "establishment",
+        "qualifiers": null,
+        "one_hot": null
+      },
+      {
+        "source_paths": [
+          "registered_business_name"
+        ],
+        "join_with": " ",
+        "when": null,
+        "target": "entity.legal_name",
+        "valid_from_path": null,
+        "valid_to_path": null,
+        "validity_date_formats": null,
+        "claim_scope": "current_legal_name",
+        "steps": [
+          {
+            "op": "trim",
+            "args": {}
+          },
+          {
+            "op": "collapse_whitespace",
+            "args": {}
+          }
+        ],
+        "confidence": 0.7,
+        "rationale": "registered_business_name is the operator/registered business entity name, not the facility name. It is the source's registered business name; legal form is not inferred from the name or ABN presence.",
+        "entity": "operator",
+        "qualifiers": null,
+        "one_hot": null
+      },
+      {
+        "source_paths": [
+          "abn"
+        ],
+        "join_with": " ",
+        "when": null,
+        "target": "entity.abn",
+        "valid_from_path": null,
+        "valid_to_path": null,
+        "validity_date_formats": null,
+        "claim_scope": null,
+        "steps": [
+          {
+            "op": "trim",
+            "args": {}
+          },
+          {
+            "op": "null_if",
+            "args": {
+              "values": [
+                ""
+              ]
+            }
+          },
+          {
+            "op": "abn",
+            "args": {}
+          }
+        ],
+        "confidence": 0.85,
+        "rationale": "Operator ABN; checksum-validated, blank treated as missing. Presence of an ABN does not imply a particular legal form.",
+        "entity": "operator",
+        "qualifiers": null,
+        "one_hot": null
+      },
+      {
+        "source_paths": [
+          "acn"
+        ],
+        "join_with": " ",
+        "when": null,
+        "target": "entity.acn",
+        "valid_from_path": null,
+        "valid_to_path": null,
+        "validity_date_formats": null,
+        "claim_scope": null,
+        "steps": [
+          {
+            "op": "trim",
+            "args": {}
+          },
+          {
+            "op": "null_if",
+            "args": {
+              "values": [
+                ""
+              ]
+            }
+          },
+          {
+            "op": "acn",
+            "args": {}
+          }
+        ],
+        "confidence": 0.8,
+        "rationale": "Operator ACN; checksum-validated, frequently blank. Not derived from the ABN.",
+        "entity": "operator",
+        "qualifiers": null,
+        "one_hot": null
+      },
+      {
+        "source_paths": [
+          "facility_website"
+        ],
+        "join_with": " ",
+        "when": null,
+        "target": "entity.website",
+        "valid_from_path": null,
+        "valid_to_path": null,
+        "validity_date_formats": null,
+        "claim_scope": null,
+        "steps": [
+          {
+            "op": "trim",
+            "args": {}
+          },
+          {
+            "op": "null_if",
+            "args": {
+              "values": [
+                ""
+              ]
+            }
+          },
+          {
+            "op": "website",
+            "args": {}
+          }
+        ],
+        "confidence": 0.7,
+        "rationale": "Published website for the operator/facility; sanity-checked as a URL.",
+        "entity": "operator",
+        "qualifiers": null,
+        "one_hot": null
+      }
+    ],
+    "entities": {
+      "operator": {
+        "kind": "business",
+        "key_paths": [
+          "abn",
+          "acn",
+          "registered_business_name"
+        ],
+        "rationale": "The registered business name plus ABN/ACN identify the operator entity, which repeats across facility rows; it is a separate business role from the facility establishment."
+      }
+    },
+    "relationships": [
+      {
+        "type": "OPERATES_ESTABLISHMENT",
+        "from_role": "operator",
+        "to_role": "establishment",
+        "rationale": "Each NPI facility row states the registered business that operates the facility; the operator is a business role and the facility an establishment role."
+      }
+    ],
+    "unmapped": [],
+    "notes": "All 22 columns are read. state is mapped to address.state for the facility address while jurisdiction_code is captured separately as the NPI registration jurisdiction, so the two are not conflated. facility_id is the record key; jurisdiction_facility_id is only unique within jurisdiction_code and is never used alone. registered_business_name/abn/acn belong to the operator business role, not the facility; no legal form or entity_type is inferred from names or ABN presence. first_report_year/latest_report_year are NPI reporting-year labels, not incorporation or licence dates. primary_anzsic_class_* describe the facility's primary activity, not a company-wide industry classification. reports is a report count, not an emissions measure, and the facilities table alone does not evidence emissions or environmental compliance. latest_report_url is a link, not a stable identifier. No constants are used.",
+    "constants": [],
+    "profile_context": null,
+    "extensions": "dynamic"
+  },
+  "previous_proposal": {
+    "entity_types": [],
+    "concepts": [
+      {
+        "path": "dyn.establishment.npi_facility_id",
+        "type": "string",
+        "owner": "establishment",
+        "definition": "The national NPI facility identifier assigned by the National Pollutant Inventory, unique across all jurisdictions. Identifies the facility across snapshots; it is not the operator's ABN/ACN.",
+        "values": [],
+        "multi": false,
+        "required_qualifiers": [],
+        "source_paths": [
+          "facility_id"
+        ],
+        "why_not_existing": "ext.establishment.source_key is a generic publisher site code; the NPI national facility identifier is a distinct, nationally unique key that must not be conflated with the state-scoped jurisdiction_facility_id, so a dedicated concept preserves the correct identity semantics.",
+        "personal_data": "never"
+      },
+      {
+        "path": "dyn.establishment.jurisdiction_facility_id",
+        "type": "string",
+        "owner": "establishment",
+        "definition": "The state/territory-scoped NPI facility identifier. Only unique within its jurisdiction_code, so it must always be qualified by the jurisdiction and never used alone as a key.",
+        "values": [],
+        "multi": false,
+        "required_qualifiers": [
+          "jurisdiction_code"
+        ],
+        "source_paths": [
+          "jurisdiction_facility_id"
+        ],
+        "why_not_existing": "No existing concept captures a jurisdiction-scoped facility identifier; ext.establishment.source_key is a single publisher code and would lose the required jurisdiction qualifier.",
+        "personal_data": "never"
+      },
+      {
+        "path": "dyn.establishment.jurisdiction_code",
+        "type": "enum",
+        "owner": "establishment",
+        "definition": "The Australian state or territory code under which the NPI registers the facility (e.g. QLD, SA, WA, NSW). Qualifies the jurisdiction-scoped facility identifier.",
+        "values": [
+          "NSW",
+          "VIC",
+          "QLD",
+          "WA",
+          "SA",
+          "TAS",
+          "ACT",
+          "NT"
+        ],
+        "multi": false,
+        "required_qualifiers": [],
+        "source_paths": [
+          "jurisdiction_code"
+        ],
+        "why_not_existing": "address.state is the business's address state; the NPI jurisdiction code is the facility's registration jurisdiction and is a required qualifier for the jurisdiction-scoped facility id, so it needs its own establishment-owned concept.",
+        "personal_data": "never"
+      },
+      {
+        "path": "dyn.establishment.primary_anzsic_class_code",
+        "type": "string",
+        "owner": "establishment",
+        "definition": "The ANZSIC class code the NPI states as the facility's primary activity classification. Describes the facility, not the company-wide industry.",
+        "values": [],
+        "multi": false,
+        "required_qualifiers": [
+          "scheme"
+        ],
+        "source_paths": [
+          "primary_anzsic_class_code"
+        ],
+        "why_not_existing": "entity.industry_code and ext.entity.industry_code are business-owned and company-wide; the NPI value is a facility-level primary classification and must not be promoted to the operator.",
+        "personal_data": "never"
+      },
+      {
+        "path": "dyn.establishment.primary_anzsic_class_name",
+        "type": "string",
+        "owner": "establishment",
+        "definition": "The ANZSIC class name the NPI states for the facility's primary activity classification, in the publisher's wording.",
+        "values": [],
+        "multi": false,
+        "required_qualifiers": [
+          "scheme"
+        ],
+        "source_paths": [
+          "primary_anzsic_class_name"
+        ],
+        "why_not_existing": "No existing concept holds a facility-level ANZSIC class label; ext.entity.sector_tag is business-owned and scheme-qualified for other purposes.",
+        "personal_data": "never"
+      },
+      {
+        "path": "dyn.establishment.main_activities",
+        "type": "string",
+        "owner": "establishment",
+        "definition": "The source-stated free-text description of the facility's main activities (e.g. 'Pig Farming', 'WINEMAKING'). Kept in the publisher's wording; not an invented industry code.",
+        "values": [],
+        "multi": false,
+        "required_qualifiers": [],
+        "source_paths": [
+          "main_activities"
+        ],
+        "why_not_existing": "ext.entity.sector_tag is a business-owned scheme tag; this is a facility-level free-text activity statement that must remain verbatim and establishment-owned.",
+        "personal_data": "never"
+      },
+      {
+        "path": "dyn.establishment.first_report_year",
+        "type": "string",
+        "owner": "establishment",
+        "definition": "The NPI reporting-year label (e.g. '2003/2004') of the facility's first NPI report. A reporting-year label, not an incorporation or licence date.",
+        "values": [],
+        "multi": false,
+        "required_qualifiers": [],
+        "source_paths": [
+          "first_report_year"
+        ],
+        "why_not_existing": "No existing concept holds an NPI reporting-year label; ext.entity.date_established and entity.date_registered are business dates and must not be conflated with reporting years.",
+        "personal_data": "never"
+      },
+      {
+        "path": "dyn.establishment.latest_report_year",
+        "type": "string",
+        "owner": "establishment",
+        "definition": "The NPI reporting-year label (e.g. '2024/2025') of the facility's most recent NPI report. A reporting-year label, not a compliance or licence date.",
+        "values": [],
+        "multi": false,
+        "required_qualifiers": [],
+        "source_paths": [
+          "latest_report_year"
+        ],
+        "why_not_existing": "No existing concept holds an NPI reporting-year label; it is distinct from first_report_year and from any business date concept.",
+        "personal_data": "never"
+      },
+      {
+        "path": "dyn.establishment.report_count",
+        "type": "integer",
+        "owner": "establishment",
+        "definition": "The number of NPI reports the facility has submitted, as stated by the source. A count of reports, not an emissions measure or compliance indicator.",
+        "values": [],
+        "multi": false,
+        "required_qualifiers": [],
+        "source_paths": [
+          "reports"
+        ],
+        "why_not_existing": "ext.establishment.capacity counts patrons; no existing concept holds a facility's NPI report count, and it must not be read as an emissions quantity.",
+        "personal_data": "never"
+      },
+      {
+        "path": "dyn.establishment.latest_report_id",
+        "type": "string",
+        "owner": "establishment",
+        "definition": "The NPI identifier of the facility's most recent report, as published. Identifies the report, not the facility.",
+        "values": [],
+        "multi": false,
+        "required_qualifiers": [],
+        "source_paths": [
+          "latest_report_id"
+        ],
+        "why_not_existing": "No existing concept holds an NPI report identifier; it is distinct from the facility identifier and from the report URL.",
+        "personal_data": "never"
+      },
+      {
+        "path": "dyn.establishment.latest_report_url",
+        "type": "string",
+        "owner": "establishment",
+        "definition": "The published URL of the facility's most recent NPI report. A link only; it embeds state/year/jurisdiction-facility path segments and is not a stable facility identifier.",
+        "values": [],
+        "multi": false,
+        "required_qualifiers": [],
+        "source_paths": [
+          "latest_report_url"
+        ],
+        "why_not_existing": "ext.contact.website_domain holds a registrable host, not a full report URL; no existing concept captures a report link, and it must not be treated as an identifier.",
+        "personal_data": "never"
+      }
+    ],
+    "relationships": [],
+    "reuse": {
+      "ext.establishment.name": "facility_name is the site/premises name, matching the establishment-owned site name concept.",
+      "ext.establishment.geo": "latitude/longitude are facility coordinates, matching the establishment geo point concept (lat,lon).",
+      "entity.abn": "abn is the operator's Australian Business Number, matching the business-owned ABN concept; validate checksum.",
+      "entity.acn": "acn is the operator's Australian Company Number, matching the business-owned ACN concept; frequently blank.",
+      "entity.legal_name": "registered_business_name is the operator/registered business entity name, matching the business legal name concept; it is not the facility name.",
+      "entity.website": "facility_website is a published website for the operator/facility, matching the business website concept.",
+      "address.full": "street_address is the facility street address, matching the full address concept.",
+      "address.locality": "suburb is the facility locality, matching the address locality concept.",
+      "address.state": "state is the facility state, matching the address state enum.",
+      "address.postcode": "postcode is the facility postcode, matching the address postcode concept."
+    },
+    "unmapped": [
+      {
+        "source_path": "state",
+        "reason": "Duplicates jurisdiction_code for these rows; mapped to address.state for the facility address, but the NPI registration jurisdiction is captured separately as dyn.establishment.jurisdiction_code to avoid conflating address state with registration jurisdiction."
+      }
+    ]
+  }
+}

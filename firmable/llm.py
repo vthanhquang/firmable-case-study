@@ -83,7 +83,9 @@ def chat(messages: list[dict], *, stage: str, source_id: str, run_id: str, tools
     # Ordinary tool transcripts do not carry the provider's reasoning_content.
     # Disable its default thinking mode explicitly for the direct endpoint.
     from urllib.parse import urlparse
-    if urlparse(BASE_URL).hostname == "api.deepseek.com":
+    thinking_disabled = (urlparse(BASE_URL).hostname == "api.deepseek.com"
+                         or os.environ.get("FIRMABLE_DISABLE_THINKING") == "1")
+    if thinking_disabled:
         kwargs["extra_body"] = {"thinking": {"type": "disabled"}}
     if tools:
         kwargs["tools"] = tools
@@ -112,7 +114,8 @@ def chat(messages: list[dict], *, stage: str, source_id: str, run_id: str, tools
     _log({"stage": stage, "source_id": source_id, "run_id": run_id, "model": model,
           "prompt_tokens": getattr(u, "prompt_tokens", 0) or 0,
           "completion_tokens": getattr(u, "completion_tokens", 0) or 0,
-          "latency_ms": round(latency), "finish_reason": r.choices[0].finish_reason})
+          "latency_ms": round(latency), "finish_reason": r.choices[0].finish_reason,
+          "thinking_disabled_requested": thinking_disabled})
     return r.choices[0].message
 
 

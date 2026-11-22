@@ -8,7 +8,8 @@ from openai import OpenAI
 from firmable import billing, llm
 
 
-def test_direct_completion_contract_and_ledger(tmp_path, monkeypatch):
+@pytest.mark.parametrize("endpoint", ["https://api.deepseek.com", "https://gateway.example.test/v1"])
+def test_direct_completion_contract_and_ledger(tmp_path, monkeypatch, endpoint):
     requests = []
     def respond(request):
         requests.append(request)
@@ -17,7 +18,9 @@ def test_direct_completion_contract_and_ledger(tmp_path, monkeypatch):
             "message": {"role": "assistant", "content": '{"ok":true}'}}],
             "usage": {"prompt_tokens": 20, "completion_tokens": 4, "total_tokens": 24}})
     monkeypatch.delenv("FIRMABLE_OFFLINE", raising=False)
-    monkeypatch.setattr(llm, "BASE_URL", "https://api.deepseek.com")
+    monkeypatch.setattr(llm, "BASE_URL", endpoint)
+    if "gateway" in endpoint:
+        monkeypatch.setenv("FIRMABLE_DISABLE_THINKING", "1")
     monkeypatch.setattr(llm, "LEDGER", tmp_path / "usage.jsonl")
     monkeypatch.setattr(llm, "TOTAL_TOKEN_BUDGET", None)
     with OpenAI(api_key="test-only", base_url=llm.BASE_URL,
@@ -26,7 +29,7 @@ def test_direct_completion_contract_and_ledger(tmp_path, monkeypatch):
         result = llm.chat([{"role": "user", "content": "Return JSON"}], stage="propose_r1",
                           source_id="test", run_id="test", model="deepseek-flash", json_mode=True)
     body = json.loads(requests[0].content)
-    assert str(requests[0].url) == "https://api.deepseek.com/chat/completions"
+    assert str(requests[0].url) == endpoint + "/chat/completions"
     assert body["thinking"] == {"type": "disabled"}
     assert body["response_format"] == {"type": "json_object"}
     assert result.content == '{"ok":true}'

@@ -1,0 +1,45 @@
+{
+  "request_sha256": "75adf5c954b395d8a8abe759083fad4daeae6ba309d39e5c8ab98a969308a8d6",
+  "role": "critic",
+  "model": "deepseek-v4-flash",
+  "seconds": 20.149,
+  "response": {
+    "verdict": "revise",
+    "findings": [
+      "Held-out row ordinal 373 (record_id fb4938574385d3f185caa15516d42ac030a3c281fe5b37e744356331ec8282ae) has street_address \"HENTY\\u00a0HWY\\t\" containing a non-breaking space and a trailing tab. The mapping steps for dyn.establishment.street_address are only trim+collapse_whitespace; whether collapse_whitespace normalises U+00A0 is unstated, so the emitted value may retain an NBSP. Either add an explicit whitespace-normalisation step or document that NBSP is preserved verbatim; do not claim normalisation the config cannot express.",
+      "Operator entity keys (mapping.entities.operator.key_paths = [abn, acn, registered_business_name]) join raw trimmed values with no normalisation, and ACN is blank in 25/115 rows and dropped for 2 checksum failures. The same operator will therefore fragment into multiple entity_refs (with/without ACN). The proposal documents this, but the OPERATES_ESTABLISHMENT edge count (114 of 115) shows one row produced no edge; the cause is not stated. Either explain the missing edge (e.g. blank registered_business_name in 3 rows) or bound it explicitly.",
+      "validation shows registered_business_name source_present=112/115 and abn 103/115, yet the proposal's unmapped list is empty and no field-level note explains the 3 missing business names. Confirm these are genuinely blank in source (not a reader/quoting artefact) and state it; otherwise a source-stated value may be silently lost.",
+      "dyn.establishment.state uses map_enum with passthrough=false and default=null. If any held-out row has a state value outside the 8-code map (e.g. a 'COM'-like or blank value), the claim is silently dropped rather than surfaced. Validation reports 115/115 emitted, so this is bounded for the observed snapshot, but the mapping should state that non-enum state values are dropped, not coerced.",
+      "dyn.establishment.jurisdiction_code is defined as a free string precisely because 'COM' exists, yet the proposal does not show a held-out or emitted example containing 'COM'. The claim that 'COM' is preserved is asserted from inspection, not evidenced in emitted_examples; either cite an emitted example or soften the wording to 'source reportedly contains'.",
+      "dyn.establishment.postcode rationale mentions a possible NT 3-digit re-pad branch but the concept definition says no re-padding is evidenced. The postcode transform's behaviour on 3-digit input is unverified; state explicitly that the transform is a 4-digit validator with no re-pad, or remove the re-pad mention to avoid implying behaviour the config may not implement.",
+      "dyn.establishment.latest_report_url is passed through a website transform. The definition says 'preserved verbatim including all path segments', but a website transform may normalise (e.g. strip trailing slash, lowercase host). The emitted example shows the full path retained, but the definition should be bounded to 'as emitted by the website transform', not 'verbatim'.",
+      "dyn.establishment.published_website is typed string but the transform is website; ext.contact.website_domain is a domain type. The proposal correctly avoids reusing website_domain, but should state whether the emitted value is a full URL or a host, since the concept definition says 'website ... kept as published' while the transform may reduce to a host.",
+      "primary_anzsic_class_code/name carry a literal qualifier scheme=anzsic2006. The source column is named primary_anzsic_class_code without a stated scheme version; asserting anzsic2006 is an inference. Either cite publisher documentation that the NPI uses ANZSIC 2006, or mark the qualifier as inferred rather than source-stated.",
+      "observed_at falls back to retrieved_at (2026-11-22T22:37:19+00:00) because no publisher modification column exists. This is correctly described as observation-at-retrieval, but the emitted observations all share this timestamp, so downstream consumers must not read it as a per-facility update date. The mapping notes say this; the concept-level definitions for first_report_year/latest_report_year should also warn that report years are not observation dates."
+    ],
+    "semantic_risks": [
+      "Operator fragmentation: ABN/ACN/name key with blank ACN and dropped invalid ACNs yields multiple entity_refs for one operator; OPERATES_ESTABLISHMENT edges may attach to different operator refs across rows.",
+      "Silent drop of non-enum state values via map_enum passthrough=false; bounded for this snapshot (115/115) but not for future snapshots.",
+      "NBSP/tab in street_address may survive collapse_whitespace, producing non-canonical address strings.",
+      "scheme=anzsic2006 qualifier is an inference not stated in the source column; if NPI uses a different ANZSIC edition the qualifier is wrong.",
+      "latest_report_url 'verbatim' claim may conflict with website transform normalisation.",
+      "published_website typed string vs website transform output (URL vs host) is ambiguous.",
+      "Missing registered_business_name in 3 rows is unexplained; could be genuine blank or reader artefact."
+    ],
+    "checked_reuse": [
+      "ext.establishment.name for facility_name: correct — site/premises name, establishment-owned, not operator name.",
+      "ext.establishment.geo for latitude/longitude: correct — facility coordinates, establishment-owned; ext.entity.address_point correctly avoided as business-owned.",
+      "entity.abn for abn: correct — business-owned, checksum-validated, blank treated as missing.",
+      "entity.acn for acn: correct — business-owned, checksum-validated, invalid values dropped (2 ACN_CHECKSUM errors).",
+      "entity.legal_name rejected for registered_business_name: correct — registered business name is not a registered company legal name for individuals/partnerships.",
+      "entity.website rejected for facility_website: correct — domain may be group/facility, not operator's own site.",
+      "address.state/address.locality/address.postcode/address.full rejected for facility site fields: correct — business-owned address would assert operator's registered address.",
+      "ext.entity.industry_code / entity.industry_code rejected for primary_anzsic_class_*: correct — facility-level classification must not be promoted to company-wide industry.",
+      "ext.entity.date_established / entity.date_registered rejected for first_report_year/latest_report_year: correct — reporting-year labels are not business dates.",
+      "ext.establishment.capacity rejected for reports: correct — capacity is patron count, not report count.",
+      "ext.contact.website_domain rejected for latest_report_url: correct — domain concept holds registrable host, not full report URL.",
+      "ext.establishment.source_key rejected for npi_facility_id: correct — generic publisher site code would conflate national and state-scoped identifiers."
+    ],
+    "rationale": "The proposal is largely sound: ownership is correctly split between establishment (facility site, identifiers, activity, report metadata) and business (operator name, ABN, ACN), and the reuse decisions correctly avoid promoting facility-level facts to the operator and avoid conflating reporting years with business dates. Validation shows full coverage for establishment fields and bounded gaps for operator fields. However, several claims are not fully bounded: the street_address NBSP/tab case (held-out ordinal 373) may survive collapse_whitespace; the operator key fragmentation and the single missing OPERATES_ESTABLISHMENT edge are documented but not explained; the 3 missing registered_business_name values are unexplained; the scheme=anzsic2006 qualifier is an inference not stated by the source column; and the 'verbatim' wording for latest_report_url and the URL-vs-host ambiguity for published_website conflict with the website transform. These are correctable by tightening definitions and adding explicit bounds, so the verdict is revise rather than reject. No invented facts or hidden index assumptions were found; the 'COM' jurisdiction claim is asserted from inspection but not evidenced in emitted examples, which should be either cited or softened."
+  }
+}

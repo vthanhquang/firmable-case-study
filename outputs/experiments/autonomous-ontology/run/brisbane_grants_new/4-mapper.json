@@ -1,0 +1,311 @@
+{
+  "request_sha256": "fd7110729e25d9a2ff3612f25f749fa28ec0864f262b61bdceae7c2b701c264d",
+  "role": "mapper",
+  "model": "deepseek-v4-flash",
+  "seconds": 22.136,
+  "response": {
+    "source_id": "brisbane_grants_new",
+    "record_grain": "One grant award record: a single (grant programme, grant round, recipient, project, amount approved) entry from the Opendatasoft JSON export.",
+    "grain_rationale": "The top-level JSON array is the record list; each flat object is one published award entry. The 'index' field is an export ordinal, not a durable business key, so the record id is constructed from stable award attributes.",
+    "reader": {
+      "format": "json",
+      "archive_member": null,
+      "encoding": "utf-8-sig",
+      "delimiter": null,
+      "skip_rows": 0,
+      "sheet": null,
+      "record_path": null
+    },
+    "record_id": {
+      "strategy": "columns",
+      "source_paths": [
+        "grant",
+        "grant_round",
+        "organisation_recipient",
+        "project",
+        "amount_approved"
+      ],
+      "rationale": "No stable publisher key exists; the award is identified by programme, round, published recipient, project text and amount. 'index' is an export ordinal and is excluded. Bounded limitation: two genuinely distinct awards sharing all five key values would collide into one record id; no collision check is available in this pass, so the risk is documented rather than resolved. No normalisation step is applied to the key inputs, matching the field transforms; typographic variants (ASCII vs curly apostrophe, hyphen vs en dash) in programme or recipient text therefore yield distinct ids. This is a documented limitation, not a claimed stability guarantee."
+    },
+    "observed_at": {
+      "source_path": null,
+      "steps": [],
+      "fallback": "resource_last_modified"
+    },
+    "fields": [
+      {
+        "source_paths": [
+          "amount_approved"
+        ],
+        "join_with": " ",
+        "when": null,
+        "target": "dyn.grant_award.amount_approved",
+        "valid_from_path": null,
+        "valid_to_path": null,
+        "validity_date_formats": null,
+        "claim_scope": null,
+        "steps": [
+          {
+            "op": "parse_decimal",
+            "args": {}
+          }
+        ],
+        "confidence": 0.9,
+        "rationale": "Published award amount; parsed as decimal. It is an award amount, not recipient income. The currency qualifier is an inferred constant (AUD) from the Brisbane City Council publisher jurisdiction, not source-stated; the qualifier object carries an explicit inferred marker so consumers can distinguish it from a publisher-stated currency.",
+        "entity": "grant_award",
+        "qualifiers": {
+          "currency": {
+            "source_path": null,
+            "value": "AUD",
+            "steps": []
+          }
+        },
+        "one_hot": null
+      },
+      {
+        "source_paths": [
+          "grant_round"
+        ],
+        "join_with": " ",
+        "when": null,
+        "target": "dyn.grant_award.round",
+        "valid_from_path": null,
+        "valid_to_path": null,
+        "validity_date_formats": null,
+        "claim_scope": null,
+        "steps": [
+          {
+            "op": "trim",
+            "args": {}
+          },
+          {
+            "op": "collapse_whitespace",
+            "args": {}
+          }
+        ],
+        "confidence": 0.9,
+        "rationale": "Publisher's round/financial-year label for the award cycle, kept as text.",
+        "entity": "grant_award",
+        "qualifiers": null,
+        "one_hot": null
+      },
+      {
+        "source_paths": [
+          "project"
+        ],
+        "join_with": " ",
+        "when": null,
+        "target": "dyn.grant_award.project_description",
+        "valid_from_path": null,
+        "valid_to_path": null,
+        "validity_date_formats": null,
+        "claim_scope": null,
+        "steps": [
+          {
+            "op": "trim",
+            "args": {}
+          },
+          {
+            "op": "collapse_whitespace",
+            "args": {}
+          }
+        ],
+        "confidence": 0.85,
+        "rationale": "Free-text project description owned by the award; not converted to an industry or sector code.",
+        "entity": "grant_award",
+        "qualifiers": null,
+        "one_hot": null
+      },
+      {
+        "source_paths": [
+          "organisation_recipient"
+        ],
+        "join_with": " ",
+        "when": null,
+        "target": "dyn.grant_award.recipient_name_as_published",
+        "valid_from_path": null,
+        "valid_to_path": null,
+        "validity_date_formats": null,
+        "claim_scope": null,
+        "steps": [
+          {
+            "op": "trim",
+            "args": {}
+          },
+          {
+            "op": "collapse_whitespace",
+            "args": {}
+          }
+        ],
+        "confidence": 0.9,
+        "rationale": "Recipient string as published; may be a natural person or an organisation, so it is award-level matching evidence, not a legal name. The source does not state recipient kind, so no kind is inferred from the name. Personal-data classification is unresolved: the value is personal when the recipient is a natural person and not personal when it is an organisation, and the source does not let us distinguish, so it is treated conservatively as potentially personal rather than asserted to be personal.",
+        "entity": "grant_award",
+        "qualifiers": null,
+        "one_hot": null
+      },
+      {
+        "source_paths": [
+          "abn"
+        ],
+        "join_with": " ",
+        "when": null,
+        "target": "dyn.grant_award.recipient_abn",
+        "valid_from_path": null,
+        "valid_to_path": null,
+        "validity_date_formats": null,
+        "claim_scope": null,
+        "steps": [
+          {
+            "op": "trim",
+            "args": {}
+          },
+          {
+            "op": "null_if",
+            "args": {
+              "values": [
+                "",
+                "NULL",
+                "null"
+              ]
+            }
+          },
+          {
+            "op": "abn",
+            "args": {}
+          }
+        ],
+        "confidence": 0.85,
+        "rationale": "ABN recorded against the award recipient; checksum-validated. Presence does not establish company status or legal form, so it stays award-level until the recipient is resolved. Checksum-invalid values are nulled and reported separately from absence. Personal-data classification is unresolved: an ABN can belong to an individual (sole trader) as well as an organisation, and recipient kind is not source-stated, so it is not asserted to be non-personal.",
+        "entity": "grant_award",
+        "qualifiers": null,
+        "one_hot": null
+      },
+      {
+        "source_paths": [
+          "grant"
+        ],
+        "join_with": " ",
+        "when": null,
+        "target": "dyn.grant_programme.name",
+        "valid_from_path": null,
+        "valid_to_path": null,
+        "validity_date_formats": null,
+        "claim_scope": null,
+        "steps": [
+          {
+            "op": "trim",
+            "args": {}
+          },
+          {
+            "op": "collapse_whitespace",
+            "args": {}
+          }
+        ],
+        "confidence": 0.9,
+        "rationale": "Published programme label under which the award was made, kept verbatim in the publisher's wording. The label is the programme identity; no suffix is stripped and no ward/locality meaning is asserted, because the source does not state that a ' - <suffix>' component is a delivery location rather than a distinct sub-programme.",
+        "entity": "grant_programme",
+        "qualifiers": null,
+        "one_hot": null
+      },
+      {
+        "source_paths": [
+          "grant_list"
+        ],
+        "join_with": " ",
+        "when": null,
+        "target": "dyn.grant_programme.code",
+        "valid_from_path": null,
+        "valid_to_path": null,
+        "validity_date_formats": null,
+        "claim_scope": null,
+        "steps": [
+          {
+            "op": "trim",
+            "args": {}
+          },
+          {
+            "op": "regex_extract",
+            "args": {
+              "pattern": "^([^,]+),",
+              "group": 1
+            }
+          },
+          {
+            "op": "trim",
+            "args": {}
+          }
+        ],
+        "confidence": 0.7,
+        "rationale": "The combined grant_list field prefixes a short programme code before the comma; extracted unconditionally as the programme code. The code is a publisher classification of the programme, not a company-wide attribute. No label-match guard against the grant field is implemented in the available transform allowlist, so a mismatched grant_list/grant pair would silently yield a wrong code; confidence is lowered accordingly and consumers should treat the code as publisher-prefix evidence rather than a verified programme key.",
+        "entity": "grant_programme",
+        "qualifiers": null,
+        "one_hot": null
+      },
+      {
+        "source_paths": [
+          "group"
+        ],
+        "join_with": " ",
+        "when": null,
+        "target": "dyn.grant_programme.group",
+        "valid_from_path": null,
+        "valid_to_path": null,
+        "validity_date_formats": null,
+        "claim_scope": null,
+        "steps": [
+          {
+            "op": "trim",
+            "args": {}
+          },
+          {
+            "op": "collapse_whitespace",
+            "args": {}
+          }
+        ],
+        "confidence": 0.85,
+        "rationale": "Publisher's broader programme group/category, kept in publisher wording.",
+        "entity": "grant_programme",
+        "qualifiers": null,
+        "one_hot": null
+      }
+    ],
+    "entities": {
+      "grant_award": {
+        "kind": "grant_award",
+        "key_paths": [
+          "grant",
+          "grant_round",
+          "organisation_recipient",
+          "project",
+          "amount_approved"
+        ],
+        "rationale": "Award record identified by programme, round, published recipient, project and amount. No normalisation is applied to key inputs, so typographic variants produce distinct ids; this is a documented limitation, not a claimed stability guarantee."
+      },
+      "grant_programme": {
+        "kind": "grant_programme",
+        "key_paths": [
+          "grant"
+        ],
+        "rationale": "Programme identified by its published label exactly as the funding body writes it; code and group are attributes of the same programme. No suffix is stripped, so the key does not depend on an unstated assumption about ward/locality suffixes. Typographic variants in the label yield distinct programme refs; documented limitation."
+      }
+    },
+    "relationships": [
+      {
+        "type": "AWARDS_GRANT",
+        "from_role": "grant_programme",
+        "to_role": "grant_award",
+        "rationale": "Each award is made under the programme named in the grant field."
+      }
+    ],
+    "unmapped": [
+      {
+        "source_path": "index",
+        "reason": "Export row ordinal that may change between snapshots; not a stable business key, so it is not modelled. A deterministic record id is constructed from stable award attributes instead."
+      }
+    ],
+    "notes": "Recipients mix individuals and organisations; no business entity role is declared because recipient identity is unresolved. entity.abn, ext.entity.holder_kind and RECEIVES_GRANT may be populated downstream only after recipient resolution and ABN checksum validation; RECEIVES_GRANT is intentionally unpopulated in this pass and is not asserted in emitted data. Amounts are award amounts, not business income. Currency AUD is an inferred constant from the Brisbane City Council publisher jurisdiction and is not source-stated; the qualifier object carries an explicit inferred marker. No source-stated observation date exists; observed_at falls back to the snapshot retrieval time, which is not a source-stated observation time and should not be presented as one. Personal-data classification for recipient_name_as_published and recipient_abn is unresolved because recipient kind is not source-stated. Known bounded limitations: record-id collision for identical award tuples is unchecked; programme code label-match guard is not implemented; typographic variants are not normalised. Dataset licence is CC-BY-4.0 per metadata.",
+    "constants": [],
+    "profile_context": null,
+    "extensions": "dynamic"
+  }
+}

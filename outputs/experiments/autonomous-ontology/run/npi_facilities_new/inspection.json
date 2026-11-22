@@ -1,0 +1,26 @@
+{
+  "reader": {
+    "format": "delimited",
+    "archive_member": null,
+    "encoding": "utf-8-sig",
+    "delimiter": ",",
+    "skip_rows": 0,
+    "sheet": null,
+    "record_path": null
+  },
+  "bindings": [],
+  "grain": "One row per NPI facility record, keyed by facility_id (national NPI facility identifier); jurisdiction_code + jurisdiction_facility_id is the state-level facility identifier pair. No nested arrays are present in the bytes, so no bindings are required.",
+  "identity_cautions": [
+    "facility_id is the national facility identifier; jurisdiction_facility_id is only unique within its jurisdiction_code, so it must not be used alone as a key.",
+    "registered_business_name is the operator/registered business entity, not the facility; multiple facility rows share the same ABN/ACN (e.g. A A COMPANY PTY LTD appears for two feedlots), so business name or ABN must not be treated as a facility key.",
+    "ABN and ACN are operator identifiers, not facility identifiers; ACN is frequently blank and ABN presence does not imply a particular legal form.",
+    "Names such as 'A C PENTECOST' or 'A L & A K BOSSE' are registered business names of individuals/partnerships; no company legal form should be inferred from the name or from ABN presence.",
+    "facility_name is not unique and may differ from registered_business_name; do not conflate the two.",
+    "first_report_year/latest_report_year are NPI reporting-year labels (e.g. '2024/2025'), not incorporation or licence dates.",
+    "primary_anzsic_class_code/name describe the facility's primary activity classification, not a company-wide industry classification.",
+    "latitude/longitude are facility coordinates; some rows may have imprecise or rounded values and should not be used to assert exact site boundaries.",
+    "reports is a count of NPI reports for the facility, not an emissions measure; the facilities table alone does not evidence emissions quantities or environmental compliance.",
+    "latest_report_url embeds state/year/jurisdiction-facility path segments; it is a link, not a stable identifier for the facility itself."
+  ],
+  "rationale": "Byte inspection shows a plain UTF-8 text file with a BOM (magic efbbbf) and comma-delimited lines with 21-22 commas per line, consistent with a single header row of 22 fields and no preamble rows; the occasional semicolon count of 1 is inside quoted free-text values, not a delimiter. Therefore format=delimited, delimiter=',', encoding='utf-8-sig', skip_rows=0. The file is not an archive, not xlsx, and not JSON/XML, so archive_member, sheet and record_path are null. The header line lists flat scalar fields only (no nested arrays or repeated objects), so no discriminator bindings are needed and bindings is empty. Record grain is one row per facility, identified by facility_id, with jurisdiction_code+jurisdiction_facility_id as the state-scoped identifier; operator identity (registered_business_name, abn, acn) is a separate entity that can repeat across facilities, hence the identity cautions."
+}

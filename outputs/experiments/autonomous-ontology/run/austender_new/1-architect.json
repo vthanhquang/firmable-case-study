@@ -1,0 +1,331 @@
+{
+  "request_sha256": "e478cacd4db6b0caf7c52885f2b9495de190ae55e97535abeac6289a9241ea14",
+  "role": "architect",
+  "model": "deepseek-v4-flash",
+  "seconds": 86.893,
+  "response": {
+    "entity_types": [
+      {
+        "name": "contract",
+        "definition": "A government contract notice as published in AusTender OCDS: a reported agreement between a procuring entity and one or more suppliers, carrying a stated maximum value, term, procurement method and item classification. It is not a business, licence or facility, and its value is not annual expenditure."
+      }
+    ],
+    "concepts": [
+      {
+        "path": "dyn.contract.notice_number",
+        "type": "string",
+        "owner": "contract",
+        "definition": "The publisher's contract notice identifier for this notice, taken from contracts[0].id in the inspected release (e.g. CN4280221). It identifies the notice across snapshots and links amendments; it is not a supplier key, ABN or ACN.",
+        "values": [],
+        "multi": false,
+        "required_qualifiers": [],
+        "source_paths": [
+          "contracts[0].id"
+        ],
+        "why_not_existing": "No existing concept identifies a contract at all. entity.abn and entity.acn identify the business, and observation.source_record_id identifies the release record, not a contract notice that may be re-published or amended.",
+        "personal_data": "never"
+      },
+      {
+        "path": "dyn.contract.signed_date",
+        "type": "date",
+        "owner": "contract",
+        "definition": "The date the contract was signed as stated in the notice (contracts[0].dateSigned); the published time component is a publication artefact and is dropped. It is not the contract start date, the notice publication date, or the business's registration date.",
+        "values": [],
+        "multi": false,
+        "required_qualifiers": [],
+        "source_paths": [
+          "contracts[0].dateSigned"
+        ],
+        "why_not_existing": "entity.date_registered is business registration, ext.entity.date_established is founding, and ext.licence.start_date is licence commencement. None records when a contract was signed.",
+        "personal_data": "never"
+      },
+      {
+        "path": "dyn.contract.start_date",
+        "type": "date",
+        "owner": "contract",
+        "definition": "The first day of the contract period stated in the notice (contracts[0].period.startDate). It is the start of this contract's term, not the release publication date and not the moment the notice was observed.",
+        "values": [],
+        "multi": false,
+        "required_qualifiers": [],
+        "source_paths": [
+          "contracts[0].period.startDate"
+        ],
+        "why_not_existing": "observation.valid_from/valid_to describe when a claim about an entity is true in the world, not the term of one specific contract; no existing concept carries a contract period.",
+        "personal_data": "never"
+      },
+      {
+        "path": "dyn.contract.end_date",
+        "type": "date",
+        "owner": "contract",
+        "definition": "The last day of the contract period stated in the notice (contracts[0].period.endDate), i.e. the planned end of this contract's term. It is not a licence expiry and not a business's cessation.",
+        "values": [],
+        "multi": false,
+        "required_qualifiers": [],
+        "source_paths": [
+          "contracts[0].period.endDate"
+        ],
+        "why_not_existing": "The only existing end-of-validity concepts are ext.licence.end_date for licences and observation.valid_to for claim currency; neither can carry the term of a contract without changing meaning.",
+        "personal_data": "never"
+      },
+      {
+        "path": "dyn.contract.description",
+        "type": "string",
+        "owner": "contract",
+        "definition": "The scope of work as the procuring entity described it in the notice (contracts[0].description), e.g. 'Stakeholder Engagement and Consultation Services'. It is source-stated activity text and describes this procurement, not the supplier's company-wide industry or sector.",
+        "values": [],
+        "multi": false,
+        "required_qualifiers": [],
+        "source_paths": [
+          "contracts[0].description"
+        ],
+        "why_not_existing": "ext.entity.sector_tag holds scheme-coded activity or beneficiary tags about the business and ext.entity.industry_code holds ANZSIC codes from a reviewed crosswalk; neither can carry a contract's own scope text without asserting the wrong entity and the wrong claim.",
+        "personal_data": "never"
+      },
+      {
+        "path": "dyn.contract.value",
+        "type": "decimal",
+        "owner": "contract",
+        "definition": "The total maximum value of the contract over its life as reported in the notice (contracts[0].value.amount), qualified by the ISO 4217 currency in contracts[0].value.currency. It is not annual expenditure, not revenue or business income, and the contract term is captured by dyn.contract.start_date and dyn.contract.end_date on this same entity.",
+        "values": [],
+        "multi": false,
+        "required_qualifiers": [
+          "currency"
+        ],
+        "source_paths": [
+          "contracts[0].value.amount",
+          "contracts[0].value.currency"
+        ],
+        "why_not_existing": "ext.financial.total_income, ext.financial.taxable_income and ext.financial.tax_payable are the business's reported financial results for a period, and ext.financial.revenue_band is a scheme band. A contract's reported maximum value is a different fact about a different entity and must not be folded into business income.",
+        "personal_data": "never"
+      },
+      {
+        "path": "dyn.contract.value_currency",
+        "type": "string",
+        "owner": "contract",
+        "definition": "The ISO 4217 alphabetic currency code published with the contract value (contracts[0].value.currency, e.g. AUD). It exists so the currency qualifier on dyn.contract.value is always explicit and the amount is never read unqualified.",
+        "values": [],
+        "multi": false,
+        "required_qualifiers": [],
+        "source_paths": [
+          "contracts[0].value.currency"
+        ],
+        "why_not_existing": "The ontology's money concepts require a currency qualifier but no existing concept stores a currency code, so the qualifier has nowhere to live unless it is represented as its own claim.",
+        "personal_data": "never"
+      },
+      {
+        "path": "dyn.contract.status",
+        "type": "enum",
+        "owner": "contract",
+        "definition": "The status of the contract as reported in the notice at extraction time (contracts[0].status), expressed with the OCDS contract status codelist and 'unknown' for anything not published. It reflects the notice data, is not a guarantee of the contract's current status, and is not the supplier's registration status.",
+        "values": [
+          "pending",
+          "active",
+          "cancelled",
+          "terminated",
+          "unknown"
+        ],
+        "multi": false,
+        "required_qualifiers": [],
+        "source_paths": [
+          "contracts[0].status"
+        ],
+        "why_not_existing": "entity.status is the business's own registration or liquidation status. Reusing it would wrongly assert that a supplier became cancelled or terminated when it was the contract that carried that status.",
+        "personal_data": "never"
+      },
+      {
+        "path": "dyn.contract.item_classification_code",
+        "type": "string",
+        "owner": "contract",
+        "definition": "The classification code of a contracted item as published (contracts[0].items[0].classification.id), always paired with the publisher's scheme (contracts[0].items[0].classification.scheme, here UNSPSC). The code describes the goods or services bought under this contract, not the supplier's company-wide industry.",
+        "values": [],
+        "multi": true,
+        "required_qualifiers": [
+          "scheme"
+        ],
+        "source_paths": [
+          "contracts[0].items[0].classification.id",
+          "contracts[0].items[0].classification.scheme"
+        ],
+        "why_not_existing": "ext.entity.industry_code and entity.industry_code hold ANZSIC 2006 codes produced through a reviewed crosswalk from a business's own activity. A publisher's UNSPSC item code is a different scheme, about a different entity (the item), and no crosswalk exists, so reuse would silently mislabel the supplier's industry.",
+        "personal_data": "never"
+      },
+      {
+        "path": "dyn.contract.procurement_method",
+        "type": "enum",
+        "owner": "contract",
+        "definition": "How the contract was let as reported in the notice (tender.procurementMethod), expressed with the OCDS procurement method codelist and 'unknown' if not published. It describes the procurement process only and says nothing about contract size, supplier capability or the notice population.",
+        "values": [
+          "open",
+          "selective",
+          "limited",
+          "direct",
+          "unknown"
+        ],
+        "multi": false,
+        "required_qualifiers": [],
+        "source_paths": [
+          "tender.procurementMethod"
+        ],
+        "why_not_existing": "No existing concept describes how a contract was awarded; entity.entity_type, ext.entity.legal_form and ext.entity.status_detail all describe the business, not the procurement process.",
+        "personal_data": "never"
+      },
+      {
+        "path": "dyn.contract.limited_tender_exempt",
+        "type": "enum",
+        "owner": "contract",
+        "definition": "Whether the notice marks the limited tender as exempt (tender.limitedTenderExempt), published as 1 or 0 and mapped to true/false; a blank value is 'unknown', never false. It records a stated procurement exemption, not a judgement about whether the exemption was justified.",
+        "values": [
+          "true",
+          "false",
+          "unknown"
+        ],
+        "multi": false,
+        "required_qualifiers": [],
+        "source_paths": [
+          "tender.limitedTenderExempt"
+        ],
+        "why_not_existing": "Nothing existing records a procurement exemption flag. Business-centred concepts such as entity.status or ext.entity.tax_concession describe the entity, and a coded procurement flag cannot be stored in a free-text concept without losing its meaning.",
+        "personal_data": "never"
+      },
+      {
+        "path": "dyn.contract.limited_tender_reason_code",
+        "type": "string",
+        "owner": "contract",
+        "definition": "The exemption clause code the publisher gives for a limited tender (tender.limitedTenderReasonCode, e.g. TR, AD), kept as stated. The code refers to a Commonwealth procurement exemption clause, which the verbatim reason text quotes.",
+        "values": [],
+        "multi": false,
+        "required_qualifiers": [],
+        "source_paths": [
+          "tender.limitedTenderReasonCode",
+          "tender.limitedTenderReason"
+        ],
+        "why_not_existing": "No existing concept carries a procurement rule or exemption code; ext.licence.* codes belong to licences and ext.entity.industry_code is an ANZSIC crosswalk, neither of which can hold a procurement exemption clause.",
+        "personal_data": "never"
+      },
+      {
+        "path": "dyn.contract.limited_tender_reason",
+        "type": "string",
+        "owner": "contract",
+        "definition": "The publisher's full wording of the reason a limited tender was used (tender.limitedTenderReason), kept verbatim as source evidence with its clause numbering and headings. It is a reported justification, not an assessment made by us.",
+        "values": [],
+        "multi": false,
+        "required_qualifiers": [],
+        "source_paths": [
+          "tender.limitedTenderReason"
+        ],
+        "why_not_existing": "No existing free-text concept covers why a procurement method was chosen. ext.licence.authorisation_text is unparsed licence evidence owned by a licence, which is a different authorisation for a different entity.",
+        "personal_data": "never"
+      }
+    ],
+    "relationships": [
+      {
+        "name": "CONTRACT_AWARDED_TO",
+        "from_type": "contract",
+        "to_type": "business",
+        "definition": "The contract notice names this business as an awarded supplier (awards[0].suppliers[0].id matching parties[].id where roles includes supplier). An award may name several suppliers and each must be linked separately, never collapsed into one."
+      },
+      {
+        "name": "CONTRACT_PROCURED_BY",
+        "from_type": "contract",
+        "to_type": "business",
+        "definition": "The contract notice names this business as the procuring entity (parties[].id where roles includes procuringEntity). The role is a procurement role in this process and does not by itself establish legal form, ownership or company-wide scope."
+      }
+    ],
+    "reuse": {
+      "entity.legal_name": "OCDS parties[].name is the single party name the publisher states for the supplier and for the procuring entity, so it is the entity's name attribute. The publisher does not distinguish registered from trading names, so the value is recorded as stated and no legal form is inferred from forms such as 'The Trustee for ... Trust' or 'Data#3 Limited'.",
+      "entity.abn": "parties[].additionalIdentifiers[] where scheme is AU-ABN carries an 11-digit ABN for both the supplier party and the procuring entity party; entity.abn already exists and requires checksum validation rather than length checks. An ABN is an identifier only and proves nothing about legal form.",
+      "address.locality": "parties[].address.locality is the suburb or locality of the party's own stated address, which is exactly what address.locality holds for a business.",
+      "address.state": "parties[].address.region values are Australian state and territory abbreviations (NT, QLD, VIC, ACT) matching the address.state enum. ext.entity.operating_region is not used because a stated address region is not a claimed service footprint.",
+      "address.postcode": "parties[].address.postalCode is the postal code of the party's stated address, matching address.postcode.",
+      "address.country": "parties[].address.countryName is the country of the party's stated address as written (AUSTRALIA, COLOMBIA, SWITZERLAND, UNITED ARAB EMIRATES), which is what address.country stores.",
+      "observation.source_record_id": "releases[].id identifies exactly one published release, which is the row grain, so it is the natural traceable record key for observation.source_record_id.",
+      "observation.observed_at": "releases[].date is the publication timestamp of the notice, i.e. when the source stated this record; it is not valid_from and not the contract start date.",
+      "observation.source_id": "The catalogue metadata gives a stable dataset identity (austender_new) for these notices, which is what observation.source_id is for.",
+      "observation.licence": "The dataset metadata declares the CC-BY 3.0 Australia licence, which observation.licence records directly from the publisher.",
+      "ext.contact.role_email": "parties[].contactPoint.email publishes role mailboxes (procurement@niaa.gov.au, tenders@finance.gov.au); the concept already stores role mailboxes and drops personal ones.",
+      "ext.contact.phone": "parties[].contactPoint.telephone values are Australian numbers to be normalised to E.164; the concept already encodes the area-code rule and the mobile-as-personal-data caution."
+    },
+    "unmapped": [
+      {
+        "source_path": "parties[0].roles",
+        "reason": "roles is the discriminator used to bind supplier_party and procuring_entity_party; its meaning is already carried by the CONTRACT_AWARDED_TO and CONTRACT_PROCURED_BY relationships, so a separate role claim would duplicate them."
+      },
+      {
+        "source_path": "parties[0].id",
+        "reason": "An opaque publisher party key with no business meaning. ABN is the published identifier where available, and a source-specific party key concept would duplicate identity without adding evidence; it must never be treated as a legal identifier."
+      },
+      {
+        "source_path": "ocid",
+        "reason": "ocid identifies an OCDS contracting process or package that can span multiple releases, awards and contracts, not a single contract or supplier. At this one-release-per-row grain the release id already keys the record and there is no contracting-process entity type."
+      },
+      {
+        "source_path": "tender.id",
+        "reason": "tender.id repeats the ocid in this snapshot, so it is a process-level key rather than a tender or contract identifier."
+      },
+      {
+        "source_path": "tender.procurementMethodDetails",
+        "reason": "A human-readable restatement of procurementMethod ('Limited tender', 'Open tender'); storing both would create a redundant alias of dyn.contract.procurement_method."
+      },
+      {
+        "source_path": "contracts[0].title",
+        "reason": "In this snapshot title holds short internal reference strings (e.g. NCD11811) that look like agency references rather than descriptive titles; mapping it would create a second identifier concept indistinguishable from dyn.contract.notice_number."
+      },
+      {
+        "source_path": "contracts[0].awardID",
+        "reason": "A local join key from contract to award inside the release, not a business fact; the supplier link it supports is already recorded by CONTRACT_AWARDED_TO."
+      },
+      {
+        "source_path": "awards[0].id",
+        "reason": "A local award identifier scoped to the release and publisher, not a business identifier and not stable across sources."
+      },
+      {
+        "source_path": "awards[0].status",
+        "reason": "Award status uses a separate OCDS codelist and in this snapshot merely repeats contracts[0].status; mapping both would create two competing status claims for one notice until they are reconciled."
+      },
+      {
+        "source_path": "awards[0].date",
+        "reason": "In this snapshot the award date equals the release date and the contract dateSigned, so it adds no separate business fact and a third competing date for one notice would be misleading."
+      },
+      {
+        "source_path": "awards[0].suppliers[0].name",
+        "reason": "A denormalised restatement of parties[].name for the same supplier; mapping both would double-count one name claim."
+      },
+      {
+        "source_path": "contracts[0].items[0].id",
+        "reason": "An internal item identifier local to the release; it is not a business identifier and adds nothing beyond the item classification code already captured."
+      },
+      {
+        "source_path": "parties[0].contactPoint.name",
+        "reason": "contactPoint.name mixes organisational unit labels ('FINANCE DIVISION', 'Procurement') with personal names ('Sandra Tuck'). The ontology has no concept for a contact's unit, and personal names must not be stored, so these are dropped rather than mapped."
+      },
+      {
+        "source_path": "supplier_party.contactPoint.branch",
+        "reason": "A contact organisational branch label for the party, not a business fact and not a concept in the current ontology; it is also mixed with agency names rather than branches."
+      },
+      {
+        "source_path": "supplier_party.contactPoint.division",
+        "reason": "A contact organisational division label for the party, not a business fact and not a concept in the current ontology; it is also mixed with agency names rather than divisions."
+      },
+      {
+        "source_path": "supplier_party.address.streetAddress",
+        "reason": "A single street-address line (e.g. 'PO Box 3'), often a post-office box. address.full expects a complete formatted address and concatenating lines would invent structure the source does not state."
+      },
+      {
+        "source_path": "procuring_entity_party.address.streetAddress",
+        "reason": "A single street-address line for a government agency; the same objection as for supplier street addresses applies, and address.full is not a street-line concept."
+      },
+      {
+        "source_path": "tag",
+        "reason": "Constant ('contract') schema metadata describing the OCDS release stage, not a business fact; the contract entity already carries that meaning."
+      },
+      {
+        "source_path": "initiationType",
+        "reason": "Constant ('tender') OCDS schema metadata describing how the process was initiated, with no business fact about the supplier or the contract."
+      },
+      {
+        "source_path": "language",
+        "reason": "A document language tag ('EN') for the release payload, not a claim about any business or contract."
+      }
+    ]
+  }
+}

@@ -21,6 +21,7 @@ jobs:
       - run: python scripts/submission.py prepare
       - run: python -m firmable.cli raw-replay --sync-demo
       - run: python scripts/submission.py verify
+      - run: python -m firmable.evolution replay
       - run: python -m pytest -q
       - run: npm --prefix frontend run check
       - run: node --test frontend/tests/source-pairs.test.mjs

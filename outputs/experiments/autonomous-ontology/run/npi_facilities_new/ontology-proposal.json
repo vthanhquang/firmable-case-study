@@ -1,0 +1,319 @@
+{
+  "entity_types": [],
+  "concepts": [
+    {
+      "path": "dyn.establishment.npi_facility_id",
+      "type": "string",
+      "owner": "establishment",
+      "definition": "The national NPI facility identifier assigned by the National Pollutant Inventory, unique across all jurisdictions. Identifies the facility across snapshots; it is not the operator's ABN/ACN.",
+      "values": [],
+      "multi": false,
+      "required_qualifiers": [],
+      "source_paths": [
+        "facility_id"
+      ],
+      "why_not_existing": "ext.establishment.source_key is a generic publisher site code; the NPI national facility identifier is a distinct, nationally unique key that must not be conflated with the state-scoped jurisdiction_facility_id, so a dedicated concept preserves the correct identity semantics.",
+      "personal_data": "never"
+    },
+    {
+      "path": "dyn.establishment.jurisdiction_facility_id",
+      "type": "string",
+      "owner": "establishment",
+      "definition": "The state/territory-scoped NPI facility identifier. Only unique within its jurisdiction_code, so it must always be qualified by the jurisdiction and never used alone as a key.",
+      "values": [],
+      "multi": false,
+      "required_qualifiers": [
+        "jurisdiction_code"
+      ],
+      "source_paths": [
+        "jurisdiction_facility_id"
+      ],
+      "why_not_existing": "No existing concept captures a jurisdiction-scoped facility identifier; ext.establishment.source_key is a single publisher code and would lose the required jurisdiction qualifier.",
+      "personal_data": "never"
+    },
+    {
+      "path": "dyn.establishment.jurisdiction_code",
+      "type": "string",
+      "owner": "establishment",
+      "definition": "The jurisdiction code under which the NPI registers the facility, as published. Usually an Australian state/territory code (NSW, VIC, QLD, WA, SA, TAS, ACT, NT), but the source reportedly also contains at least one non-state code ('COM'), so this is a free string rather than a closed enum; the raw code is preserved so the required qualifier on jurisdiction_facility_id is never dropped. Not guaranteed equal to dyn.establishment.state.",
+      "values": [],
+      "multi": false,
+      "required_qualifiers": [],
+      "source_paths": [
+        "jurisdiction_code"
+      ],
+      "why_not_existing": "address.state is the business's address state and is a closed AU enum; the NPI jurisdiction code is the facility's registration jurisdiction, is a required qualifier for the jurisdiction-scoped facility id, and reportedly includes non-state values ('COM') that a closed state enum would silently drop, so it needs its own establishment-owned string concept.",
+      "personal_data": "never"
+    },
+    {
+      "path": "dyn.establishment.primary_anzsic_class_code",
+      "type": "string",
+      "owner": "establishment",
+      "definition": "The ANZSIC class code the NPI states as the facility's primary activity classification. Describes the facility, not the company-wide industry. The scheme qualifier records the ANZSIC edition assumed for this code; the source column does not state an edition, so the qualifier is an inference, not a publisher-stated fact.",
+      "values": [],
+      "multi": false,
+      "required_qualifiers": [
+        "scheme"
+      ],
+      "source_paths": [
+        "primary_anzsic_class_code"
+      ],
+      "why_not_existing": "entity.industry_code and ext.entity.industry_code are business-owned and company-wide; the NPI value is a facility-level primary classification and must not be promoted to the operator.",
+      "personal_data": "never"
+    },
+    {
+      "path": "dyn.establishment.primary_anzsic_class_name",
+      "type": "string",
+      "owner": "establishment",
+      "definition": "The ANZSIC class name the NPI states for the facility's primary activity classification, in the publisher's wording. The scheme qualifier records the ANZSIC edition assumed for this label; the source column does not state an edition, so the qualifier is an inference, not a publisher-stated fact.",
+      "values": [],
+      "multi": false,
+      "required_qualifiers": [
+        "scheme"
+      ],
+      "source_paths": [
+        "primary_anzsic_class_name"
+      ],
+      "why_not_existing": "No existing concept holds a facility-level ANZSIC class label; ext.entity.sector_tag is business-owned and scheme-qualified for other purposes.",
+      "personal_data": "never"
+    },
+    {
+      "path": "dyn.establishment.main_activities",
+      "type": "string",
+      "owner": "establishment",
+      "definition": "The source-stated free-text description of the facility's main activities (e.g. 'Pig Farming', 'WINEMAKING'). Kept in the publisher's wording; not an invented industry code.",
+      "values": [],
+      "multi": false,
+      "required_qualifiers": [],
+      "source_paths": [
+        "main_activities"
+      ],
+      "why_not_existing": "ext.entity.sector_tag is a business-owned scheme tag; this is a facility-level free-text activity statement that must remain verbatim and establishment-owned.",
+      "personal_data": "never"
+    },
+    {
+      "path": "dyn.establishment.first_report_year",
+      "type": "string",
+      "owner": "establishment",
+      "definition": "The NPI reporting-year label (e.g. '2003/2004') of the facility's first NPI report. A reporting-year label, not an incorporation or licence date, and not an observation date: all observations in a snapshot share the retrieval timestamp, so this label must not be read as when the record was observed.",
+      "values": [],
+      "multi": false,
+      "required_qualifiers": [],
+      "source_paths": [
+        "first_report_year"
+      ],
+      "why_not_existing": "No existing concept holds an NPI reporting-year label; ext.entity.date_established and entity.date_registered are business dates and must not be conflated with reporting years.",
+      "personal_data": "never"
+    },
+    {
+      "path": "dyn.establishment.latest_report_year",
+      "type": "string",
+      "owner": "establishment",
+      "definition": "The NPI reporting-year label (e.g. '2024/2025') of the facility's most recent NPI report. A reporting-year label, not a compliance or licence date, and not an observation date: all observations in a snapshot share the retrieval timestamp, so this label must not be read as when the record was observed or updated.",
+      "values": [],
+      "multi": false,
+      "required_qualifiers": [],
+      "source_paths": [
+        "latest_report_year"
+      ],
+      "why_not_existing": "No existing concept holds an NPI reporting-year label; it is distinct from first_report_year and from any business date concept.",
+      "personal_data": "never"
+    },
+    {
+      "path": "dyn.establishment.report_count",
+      "type": "integer",
+      "owner": "establishment",
+      "definition": "The number of NPI reports the facility has submitted, as stated by the source. A count of reports, not an emissions measure or compliance indicator.",
+      "values": [],
+      "multi": false,
+      "required_qualifiers": [],
+      "source_paths": [
+        "reports"
+      ],
+      "why_not_existing": "ext.establishment.capacity counts patrons; no existing concept holds a facility's NPI report count, and it must not be read as an emissions quantity.",
+      "personal_data": "never"
+    },
+    {
+      "path": "dyn.establishment.latest_report_id",
+      "type": "string",
+      "owner": "establishment",
+      "definition": "The NPI identifier of the facility's most recent report, as published. Identifies the report, not the facility.",
+      "values": [],
+      "multi": false,
+      "required_qualifiers": [],
+      "source_paths": [
+        "latest_report_id"
+      ],
+      "why_not_existing": "No existing concept holds an NPI report identifier; it is distinct from the facility identifier and from the report URL.",
+      "personal_data": "never"
+    },
+    {
+      "path": "dyn.establishment.latest_report_url",
+      "type": "string",
+      "owner": "establishment",
+      "definition": "The published URL of the facility's most recent NPI report, as emitted by the website transform (a basic URL sanity check; the transform may normalise the value, so this is not asserted to be byte-for-byte verbatim). A link only; it embeds state/year/jurisdiction-facility path segments and is not a stable facility identifier.",
+      "values": [],
+      "multi": false,
+      "required_qualifiers": [],
+      "source_paths": [
+        "latest_report_url"
+      ],
+      "why_not_existing": "ext.contact.website_domain holds a registrable host, not a full report URL; no existing concept captures a report link, and it must not be treated as an identifier.",
+      "personal_data": "never"
+    },
+    {
+      "path": "dyn.establishment.street_address",
+      "type": "string",
+      "owner": "establishment",
+      "definition": "The street address line of the NPI facility site as published (e.g. 'Hermann Thumm Drive', 'CNR BUSSELL HWY & BOUNDARY ROAD'). A site address, not the operator's registered office. The mapping applies trim and collapse_whitespace only; whether collapse_whitespace normalises U+00A0 (non-breaking space) is not asserted, so a non-breaking space or other non-ASCII whitespace may be preserved in the emitted value.",
+      "values": [],
+      "multi": false,
+      "required_qualifiers": [],
+      "source_paths": [
+        "street_address"
+      ],
+      "why_not_existing": "address.full is business-owned and would assert the operator's address; the NPI street address describes the facility site, so it needs an establishment-owned concept.",
+      "personal_data": "never"
+    },
+    {
+      "path": "dyn.establishment.suburb",
+      "type": "string",
+      "owner": "establishment",
+      "definition": "The suburb/locality of the NPI facility site as published. A site locality, not the operator's registered locality.",
+      "values": [],
+      "multi": false,
+      "required_qualifiers": [],
+      "source_paths": [
+        "suburb"
+      ],
+      "why_not_existing": "address.locality is business-owned; the NPI suburb describes the facility site location and must not be promoted to the operator's address.",
+      "personal_data": "never"
+    },
+    {
+      "path": "dyn.establishment.state",
+      "type": "enum",
+      "owner": "establishment",
+      "definition": "The Australian state or territory of the NPI facility site address as published. A site address state, distinct from the NPI registration jurisdiction code. For the observed rows state equals jurisdiction_code, but the two are not guaranteed equal (the 'COM' jurisdiction case shows they can diverge), so they are kept as separate concepts. The mapping uses a closed 8-code enum with no passthrough: a state value outside that set is dropped (no claim emitted), not coerced.",
+      "values": [
+        "NSW",
+        "VIC",
+        "QLD",
+        "WA",
+        "SA",
+        "TAS",
+        "ACT",
+        "NT"
+      ],
+      "multi": false,
+      "required_qualifiers": [],
+      "source_paths": [
+        "state"
+      ],
+      "why_not_existing": "address.state is business-owned; the NPI state describes the facility site address and must not be conflated with the operator's address state or with dyn.establishment.jurisdiction_code.",
+      "personal_data": "never"
+    },
+    {
+      "path": "dyn.establishment.postcode",
+      "type": "string",
+      "owner": "establishment",
+      "definition": "The Australian postcode of the NPI facility site address as published. Observed values are 4-digit strings (e.g. '3169', '6155', '3300', '4428'). The postcode transform is treated as a 4-digit validator; no re-padding of 3-digit values is claimed or evidenced in the observed rows.",
+      "values": [],
+      "multi": false,
+      "required_qualifiers": [],
+      "source_paths": [
+        "postcode"
+      ],
+      "why_not_existing": "address.postcode is business-owned; the NPI postcode describes the facility site address, not the operator's registered postcode.",
+      "personal_data": "never"
+    },
+    {
+      "path": "dyn.establishment.published_website",
+      "type": "string",
+      "owner": "establishment",
+      "definition": "The website the NPI publishes for the facility, as emitted by the website transform (a basic URL sanity check; the emitted value is a URL string, not reduced to a bare host). The domain may belong to the operator, a parent/group, or the facility itself (e.g. a group domain published against a differently named operator), so this is a facility-level published link and is not asserted to be the operator's own website.",
+      "values": [],
+      "multi": false,
+      "required_qualifiers": [],
+      "source_paths": [
+        "facility_website"
+      ],
+      "why_not_existing": "entity.website is business-owned and would assert the operator's own website; the column is named facility_website and observed domains can mismatch the registered business name, so the claim must stay establishment-owned and bounded to 'published facility website'.",
+      "personal_data": "never"
+    },
+    {
+      "path": "dyn.business.registered_business_name",
+      "type": "string",
+      "owner": "business",
+      "definition": "The registered business name of the operator as published by the NPI. This is a registered business name, which for individuals/partnerships is not a registered company legal name; it does not assert legal-name status or legal form. Blank in source is treated as missing (no claim emitted), not as an empty name.",
+      "values": [],
+      "multi": false,
+      "required_qualifiers": [],
+      "source_paths": [
+        "registered_business_name"
+      ],
+      "why_not_existing": "entity.legal_name asserts a registered company legal name, which the source does not state for individual/partnership business names; a dedicated business-name concept keeps the claim scope to 'registered business name as published'.",
+      "personal_data": "never"
+    }
+  ],
+  "relationships": [],
+  "reuse": {
+    "ext.establishment.name": "facility_name is the site/premises name, matching the establishment-owned site name concept.",
+    "ext.establishment.geo": "latitude/longitude are facility coordinates, matching the establishment geo point concept (lat,lon).",
+    "entity.abn": "abn is the operator's Australian Business Number, matching the business-owned ABN concept; validate checksum.",
+    "entity.acn": "acn is the operator's Australian Company Number, matching the business-owned ACN concept; frequently blank and some values fail checksum."
+  },
+  "unmapped": [
+    {
+      "source_path": "registered_business_name",
+      "reason": "Blank in 3 of 115 observed rows (source_present=112/115). Treated as genuinely missing in source rather than a reader/quoting artefact: the reader is a plain UTF-8 comma-delimited parse with no quoting loss observed elsewhere, and blank is mapped to missing (no claim emitted) rather than an empty name. This is the likely cause of the single missing OPERATES_ESTABLISHMENT edge (114/115), since the operator role has no name claim on that row; the edge is bounded to rows where the operator role emits at least one claim."
+    },
+    {
+      "source_path": "abn",
+      "reason": "Blank in 12 of 115 observed rows (source_present=103/115). Blank is mapped to missing (no claim emitted); presence of an ABN is not inferred and no legal form is derived from it."
+    },
+    {
+      "source_path": "acn",
+      "reason": "Blank in 25 of 115 observed rows and checksum-invalid in 2 (ACN_CHECKSUM: 776225038, 000435635). Blank and invalid values are not emitted as valid ACNs. Because the operator entity key joins abn+acn+registered_business_name with no normalisation, the same operator can fragment into multiple entity_refs across rows (with/without ACN); this is a documented identity limitation, not a hidden one."
+    },
+    {
+      "source_path": "state",
+      "reason": "Mapped through a closed 8-code enum with passthrough=false and default=null. Any state value outside NSW/VIC/QLD/WA/SA/TAS/ACT/NT is dropped (no claim emitted), not coerced. Validation shows 115/115 emitted for this snapshot, so the drop is bounded here but not for future snapshots."
+    },
+    {
+      "source_path": "jurisdiction_code",
+      "reason": "Kept as a free string (trim+upper only, no enum mapping) so non-state codes are preserved. The source reportedly contains a 'COM' code, but no emitted example containing 'COM' is available in the observed snapshot, so the preservation claim is stated as 'source reportedly contains' rather than evidenced."
+    },
+    {
+      "source_path": "primary_anzsic_class_code",
+      "reason": "The scheme qualifier 'anzsic2006' is an inference: the source column does not state an ANZSIC edition. The qualifier is recorded as inferred, not publisher-stated; if NPI uses a different edition the qualifier would be wrong."
+    },
+    {
+      "source_path": "primary_anzsic_class_name",
+      "reason": "The scheme qualifier 'anzsic2006' is an inference: the source column does not state an ANZSIC edition. The qualifier is recorded as inferred, not publisher-stated."
+    },
+    {
+      "source_path": "latest_report_url",
+      "reason": "Passed through the website transform, which may normalise the value (e.g. host casing or trailing slash). The definition is bounded to 'as emitted by the website transform', not byte-for-byte verbatim; the observed emitted values retain the full path segments."
+    },
+    {
+      "source_path": "facility_website",
+      "reason": "Passed through the website transform; the emitted value is a URL string, not reduced to a bare host. The concept is typed string and is not reused as ext.contact.website_domain (which holds a registrable host)."
+    },
+    {
+      "source_path": "street_address",
+      "reason": "Mapped with trim+collapse_whitespace only. Whether collapse_whitespace normalises U+00A0 is not asserted; a non-breaking space or trailing tab may be preserved in the emitted value (held-out ordinal 373 shows 'HENTY\\u00a0HWY\\t'). No normalisation beyond trim+collapse_whitespace is claimed."
+    },
+    {
+      "source_path": "postcode",
+      "reason": "Mapped through the postcode transform, treated as a 4-digit validator. No re-padding of 3-digit values is claimed or evidenced in the observed rows."
+    },
+    {
+      "source_path": "first_report_year",
+      "reason": "A reporting-year label, not an observation date. All observations in a snapshot share the retrieval timestamp (observed_at falls back to retrieved_at, 2026-11-22T22:37:19+00:00), so this label must not be read as when the record was observed."
+    },
+    {
+      "source_path": "latest_report_year",
+      "reason": "A reporting-year label, not an observation date. All observations in a snapshot share the retrieval timestamp (observed_at falls back to retrieved_at, 2026-11-22T22:37:19+00:00), so this label must not be read as when the record was observed or updated."
+    }
+  ]
+}

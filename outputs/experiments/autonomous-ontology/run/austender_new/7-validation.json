@@ -1,0 +1,721 @@
+{
+  "development": {
+    "records_in": 56,
+    "records_with_output": 56,
+    "record_errors": {},
+    "fields": [
+      {
+        "target": "entity.legal_name",
+        "source_paths": [
+          "supplier_party.name"
+        ],
+        "records": 56,
+        "source_present": 56,
+        "emitted": 56,
+        "coverage_of_records": 1.0,
+        "error_rate_of_present": 0.0,
+        "errors": {},
+        "error_examples": {},
+        "entity": "supplier"
+      },
+      {
+        "target": "entity.abn",
+        "source_paths": [
+          "supplier_party.additionalIdentifiers[0].id"
+        ],
+        "records": 56,
+        "source_present": 50,
+        "emitted": 50,
+        "coverage_of_records": 0.893,
+        "error_rate_of_present": 0.0,
+        "errors": {},
+        "error_examples": {},
+        "entity": "supplier"
+      },
+      {
+        "target": "address.locality",
+        "source_paths": [
+          "supplier_party.address.locality"
+        ],
+        "records": 56,
+        "source_present": 56,
+        "emitted": 56,
+        "coverage_of_records": 1.0,
+        "error_rate_of_present": 0.0,
+        "errors": {},
+        "error_examples": {},
+        "entity": "supplier"
+      },
+      {
+        "target": "address.state",
+        "source_paths": [
+          "supplier_party.address.region"
+        ],
+        "records": 56,
+        "source_present": 56,
+        "emitted": 56,
+        "coverage_of_records": 1.0,
+        "error_rate_of_present": 0.0,
+        "errors": {},
+        "error_examples": {},
+        "entity": "supplier"
+      },
+      {
+        "target": "address.postcode",
+        "source_paths": [
+          "supplier_party.address.postalCode"
+        ],
+        "records": 56,
+        "source_present": 55,
+        "emitted": 55,
+        "coverage_of_records": 0.982,
+        "error_rate_of_present": 0.0,
+        "errors": {},
+        "error_examples": {},
+        "entity": "supplier"
+      },
+      {
+        "target": "address.country",
+        "source_paths": [
+          "supplier_party.address.countryName"
+        ],
+        "records": 56,
+        "source_present": 56,
+        "emitted": 56,
+        "coverage_of_records": 1.0,
+        "error_rate_of_present": 0.0,
+        "errors": {},
+        "error_examples": {},
+        "entity": "supplier"
+      },
+      {
+        "target": "entity.legal_name",
+        "source_paths": [
+          "procuring_entity_party.name"
+        ],
+        "records": 56,
+        "source_present": 56,
+        "emitted": 56,
+        "coverage_of_records": 1.0,
+        "error_rate_of_present": 0.0,
+        "errors": {},
+        "error_examples": {},
+        "entity": "procuring_entity"
+      },
+      {
+        "target": "entity.abn",
+        "source_paths": [
+          "procuring_entity_party.additionalIdentifiers[0].id"
+        ],
+        "records": 56,
+        "source_present": 55,
+        "emitted": 55,
+        "coverage_of_records": 0.982,
+        "error_rate_of_present": 0.0,
+        "errors": {},
+        "error_examples": {},
+        "entity": "procuring_entity"
+      },
+      {
+        "target": "address.locality",
+        "source_paths": [
+          "procuring_entity_party.address.locality"
+        ],
+        "records": 56,
+        "source_present": 2,
+        "emitted": 2,
+        "coverage_of_records": 0.036,
+        "error_rate_of_present": 0.0,
+        "errors": {},
+        "error_examples": {},
+        "entity": "procuring_entity"
+      },
+      {
+        "target": "address.state",
+        "source_paths": [
+          "procuring_entity_party.address.region"
+        ],
+        "records": 56,
+        "source_present": 4,
+        "emitted": 4,
+        "coverage_of_records": 0.071,
+        "error_rate_of_present": 0.0,
+        "errors": {},
+        "error_examples": {},
+        "entity": "procuring_entity"
+      },
+      {
+        "target": "address.postcode",
+        "source_paths": [
+          "procuring_entity_party.address.postalCode"
+        ],
+        "records": 56,
+        "source_present": 3,
+        "emitted": 3,
+        "coverage_of_records": 0.054,
+        "error_rate_of_present": 0.0,
+        "errors": {},
+        "error_examples": {},
+        "entity": "procuring_entity"
+      },
+      {
+        "target": "dyn.contract.notice_number",
+        "source_paths": [
+          "contracts[0].id"
+        ],
+        "records": 56,
+        "source_present": 56,
+        "emitted": 56,
+        "coverage_of_records": 1.0,
+        "error_rate_of_present": 0.0,
+        "errors": {},
+        "error_examples": {},
+        "entity": "contract"
+      },
+      {
+        "target": "dyn.contract.signed_at",
+        "source_paths": [
+          "contracts[0].dateSigned"
+        ],
+        "records": 56,
+        "source_present": 56,
+        "emitted": 56,
+        "coverage_of_records": 1.0,
+        "error_rate_of_present": 0.0,
+        "errors": {},
+        "error_examples": {},
+        "entity": "contract"
+      },
+      {
+        "target": "dyn.contract.start_date",
+        "source_paths": [
+          "contracts[0].period.startDate"
+        ],
+        "records": 56,
+        "source_present": 56,
+        "emitted": 56,
+        "coverage_of_records": 1.0,
+        "error_rate_of_present": 0.0,
+        "errors": {},
+        "error_examples": {},
+        "entity": "contract"
+      },
+      {
+        "target": "dyn.contract.end_date",
+        "source_paths": [
+          "contracts[0].period.endDate"
+        ],
+        "records": 56,
+        "source_present": 56,
+        "emitted": 56,
+        "coverage_of_records": 1.0,
+        "error_rate_of_present": 0.0,
+        "errors": {},
+        "error_examples": {},
+        "entity": "contract"
+      },
+      {
+        "target": "dyn.contract.description",
+        "source_paths": [
+          "contracts[0].description"
+        ],
+        "records": 56,
+        "source_present": 56,
+        "emitted": 56,
+        "coverage_of_records": 1.0,
+        "error_rate_of_present": 0.0,
+        "errors": {},
+        "error_examples": {},
+        "entity": "contract"
+      },
+      {
+        "target": "dyn.contract.value",
+        "source_paths": [
+          "contracts[0].value.amount"
+        ],
+        "records": 56,
+        "source_present": 56,
+        "emitted": 56,
+        "coverage_of_records": 1.0,
+        "error_rate_of_present": 0.0,
+        "errors": {},
+        "error_examples": {},
+        "entity": "contract"
+      },
+      {
+        "target": "dyn.contract.status",
+        "source_paths": [
+          "contracts[0].status"
+        ],
+        "records": 56,
+        "source_present": 56,
+        "emitted": 56,
+        "coverage_of_records": 1.0,
+        "error_rate_of_present": 0.0,
+        "errors": {},
+        "error_examples": {},
+        "entity": "contract"
+      },
+      {
+        "target": "dyn.contract.item_classification_code",
+        "source_paths": [
+          "contracts[0].items[0].classification.id"
+        ],
+        "records": 56,
+        "source_present": 56,
+        "emitted": 56,
+        "coverage_of_records": 1.0,
+        "error_rate_of_present": 0.0,
+        "errors": {},
+        "error_examples": {},
+        "entity": "contract"
+      },
+      {
+        "target": "dyn.contract.procurement_method",
+        "source_paths": [
+          "tender.procurementMethod"
+        ],
+        "records": 56,
+        "source_present": 56,
+        "emitted": 56,
+        "coverage_of_records": 1.0,
+        "error_rate_of_present": 0.0,
+        "errors": {},
+        "error_examples": {},
+        "entity": "contract"
+      },
+      {
+        "target": "dyn.contract.limited_tender_exempt",
+        "source_paths": [
+          "tender.limitedTenderExempt"
+        ],
+        "records": 56,
+        "source_present": 24,
+        "emitted": 24,
+        "coverage_of_records": 0.429,
+        "error_rate_of_present": 0.0,
+        "errors": {},
+        "error_examples": {},
+        "entity": "contract"
+      },
+      {
+        "target": "dyn.contract.limited_tender_reason_code",
+        "source_paths": [
+          "tender.limitedTenderReasonCode"
+        ],
+        "records": 56,
+        "source_present": 2,
+        "emitted": 2,
+        "coverage_of_records": 0.036,
+        "error_rate_of_present": 0.0,
+        "errors": {},
+        "error_examples": {},
+        "entity": "contract"
+      },
+      {
+        "target": "dyn.contract.limited_tender_reason",
+        "source_paths": [
+          "tender.limitedTenderReason"
+        ],
+        "records": 56,
+        "source_present": 2,
+        "emitted": 2,
+        "coverage_of_records": 0.036,
+        "error_rate_of_present": 0.0,
+        "errors": {},
+        "error_examples": {},
+        "entity": "contract"
+      }
+    ],
+    "relationships": {
+      "CONTRACT_AWARDED_TO": 56,
+      "CONTRACT_PROCURED_BY": 56
+    },
+    "input_records": 56,
+    "refused_records": 0,
+    "observations": 981,
+    "value_errors": 0,
+    "present_values": 981,
+    "error_rate": 0.0
+  },
+  "heldout": {
+    "records_in": 18,
+    "records_with_output": 18,
+    "record_errors": {},
+    "fields": [
+      {
+        "target": "entity.legal_name",
+        "source_paths": [
+          "supplier_party.name"
+        ],
+        "records": 18,
+        "source_present": 18,
+        "emitted": 18,
+        "coverage_of_records": 1.0,
+        "error_rate_of_present": 0.0,
+        "errors": {},
+        "error_examples": {},
+        "entity": "supplier"
+      },
+      {
+        "target": "entity.abn",
+        "source_paths": [
+          "supplier_party.additionalIdentifiers[0].id"
+        ],
+        "records": 18,
+        "source_present": 16,
+        "emitted": 16,
+        "coverage_of_records": 0.889,
+        "error_rate_of_present": 0.0,
+        "errors": {},
+        "error_examples": {},
+        "entity": "supplier"
+      },
+      {
+        "target": "address.locality",
+        "source_paths": [
+          "supplier_party.address.locality"
+        ],
+        "records": 18,
+        "source_present": 18,
+        "emitted": 18,
+        "coverage_of_records": 1.0,
+        "error_rate_of_present": 0.0,
+        "errors": {},
+        "error_examples": {},
+        "entity": "supplier"
+      },
+      {
+        "target": "address.state",
+        "source_paths": [
+          "supplier_party.address.region"
+        ],
+        "records": 18,
+        "source_present": 18,
+        "emitted": 18,
+        "coverage_of_records": 1.0,
+        "error_rate_of_present": 0.0,
+        "errors": {},
+        "error_examples": {},
+        "entity": "supplier"
+      },
+      {
+        "target": "address.postcode",
+        "source_paths": [
+          "supplier_party.address.postalCode"
+        ],
+        "records": 18,
+        "source_present": 18,
+        "emitted": 18,
+        "coverage_of_records": 1.0,
+        "error_rate_of_present": 0.0,
+        "errors": {},
+        "error_examples": {},
+        "entity": "supplier"
+      },
+      {
+        "target": "address.country",
+        "source_paths": [
+          "supplier_party.address.countryName"
+        ],
+        "records": 18,
+        "source_present": 18,
+        "emitted": 18,
+        "coverage_of_records": 1.0,
+        "error_rate_of_present": 0.0,
+        "errors": {},
+        "error_examples": {},
+        "entity": "supplier"
+      },
+      {
+        "target": "entity.legal_name",
+        "source_paths": [
+          "procuring_entity_party.name"
+        ],
+        "records": 18,
+        "source_present": 18,
+        "emitted": 18,
+        "coverage_of_records": 1.0,
+        "error_rate_of_present": 0.0,
+        "errors": {},
+        "error_examples": {},
+        "entity": "procuring_entity"
+      },
+      {
+        "target": "entity.abn",
+        "source_paths": [
+          "procuring_entity_party.additionalIdentifiers[0].id"
+        ],
+        "records": 18,
+        "source_present": 18,
+        "emitted": 18,
+        "coverage_of_records": 1.0,
+        "error_rate_of_present": 0.0,
+        "errors": {},
+        "error_examples": {},
+        "entity": "procuring_entity"
+      },
+      {
+        "target": "address.locality",
+        "source_paths": [
+          "procuring_entity_party.address.locality"
+        ],
+        "records": 18,
+        "source_present": 0,
+        "emitted": 0,
+        "coverage_of_records": 0.0,
+        "error_rate_of_present": 0.0,
+        "errors": {},
+        "error_examples": {},
+        "entity": "procuring_entity"
+      },
+      {
+        "target": "address.state",
+        "source_paths": [
+          "procuring_entity_party.address.region"
+        ],
+        "records": 18,
+        "source_present": 2,
+        "emitted": 2,
+        "coverage_of_records": 0.111,
+        "error_rate_of_present": 0.0,
+        "errors": {},
+        "error_examples": {},
+        "entity": "procuring_entity"
+      },
+      {
+        "target": "address.postcode",
+        "source_paths": [
+          "procuring_entity_party.address.postalCode"
+        ],
+        "records": 18,
+        "source_present": 2,
+        "emitted": 2,
+        "coverage_of_records": 0.111,
+        "error_rate_of_present": 0.0,
+        "errors": {},
+        "error_examples": {},
+        "entity": "procuring_entity"
+      },
+      {
+        "target": "dyn.contract.notice_number",
+        "source_paths": [
+          "contracts[0].id"
+        ],
+        "records": 18,
+        "source_present": 18,
+        "emitted": 18,
+        "coverage_of_records": 1.0,
+        "error_rate_of_present": 0.0,
+        "errors": {},
+        "error_examples": {},
+        "entity": "contract"
+      },
+      {
+        "target": "dyn.contract.signed_at",
+        "source_paths": [
+          "contracts[0].dateSigned"
+        ],
+        "records": 18,
+        "source_present": 18,
+        "emitted": 18,
+        "coverage_of_records": 1.0,
+        "error_rate_of_present": 0.0,
+        "errors": {},
+        "error_examples": {},
+        "entity": "contract"
+      },
+      {
+        "target": "dyn.contract.start_date",
+        "source_paths": [
+          "contracts[0].period.startDate"
+        ],
+        "records": 18,
+        "source_present": 18,
+        "emitted": 18,
+        "coverage_of_records": 1.0,
+        "error_rate_of_present": 0.0,
+        "errors": {},
+        "error_examples": {},
+        "entity": "contract"
+      },
+      {
+        "target": "dyn.contract.end_date",
+        "source_paths": [
+          "contracts[0].period.endDate"
+        ],
+        "records": 18,
+        "source_present": 18,
+        "emitted": 18,
+        "coverage_of_records": 1.0,
+        "error_rate_of_present": 0.0,
+        "errors": {},
+        "error_examples": {},
+        "entity": "contract"
+      },
+      {
+        "target": "dyn.contract.description",
+        "source_paths": [
+          "contracts[0].description"
+        ],
+        "records": 18,
+        "source_present": 18,
+        "emitted": 18,
+        "coverage_of_records": 1.0,
+        "error_rate_of_present": 0.0,
+        "errors": {},
+        "error_examples": {},
+        "entity": "contract"
+      },
+      {
+        "target": "dyn.contract.value",
+        "source_paths": [
+          "contracts[0].value.amount"
+        ],
+        "records": 18,
+        "source_present": 18,
+        "emitted": 18,
+        "coverage_of_records": 1.0,
+        "error_rate_of_present": 0.0,
+        "errors": {},
+        "error_examples": {},
+        "entity": "contract"
+      },
+      {
+        "target": "dyn.contract.status",
+        "source_paths": [
+          "contracts[0].status"
+        ],
+        "records": 18,
+        "source_present": 18,
+        "emitted": 18,
+        "coverage_of_records": 1.0,
+        "error_rate_of_present": 0.0,
+        "errors": {},
+        "error_examples": {},
+        "entity": "contract"
+      },
+      {
+        "target": "dyn.contract.item_classification_code",
+        "source_paths": [
+          "contracts[0].items[0].classification.id"
+        ],
+        "records": 18,
+        "source_present": 18,
+        "emitted": 18,
+        "coverage_of_records": 1.0,
+        "error_rate_of_present": 0.0,
+        "errors": {},
+        "error_examples": {},
+        "entity": "contract"
+      },
+      {
+        "target": "dyn.contract.procurement_method",
+        "source_paths": [
+          "tender.procurementMethod"
+        ],
+        "records": 18,
+        "source_present": 18,
+        "emitted": 18,
+        "coverage_of_records": 1.0,
+        "error_rate_of_present": 0.0,
+        "errors": {},
+        "error_examples": {},
+        "entity": "contract"
+      },
+      {
+        "target": "dyn.contract.limited_tender_exempt",
+        "source_paths": [
+          "tender.limitedTenderExempt"
+        ],
+        "records": 18,
+        "source_present": 7,
+        "emitted": 7,
+        "coverage_of_records": 0.389,
+        "error_rate_of_present": 0.0,
+        "errors": {},
+        "error_examples": {},
+        "entity": "contract"
+      },
+      {
+        "target": "dyn.contract.limited_tender_reason_code",
+        "source_paths": [
+          "tender.limitedTenderReasonCode"
+        ],
+        "records": 18,
+        "source_present": 1,
+        "emitted": 1,
+        "coverage_of_records": 0.056,
+        "error_rate_of_present": 0.0,
+        "errors": {},
+        "error_examples": {},
+        "entity": "contract"
+      },
+      {
+        "target": "dyn.contract.limited_tender_reason",
+        "source_paths": [
+          "tender.limitedTenderReason"
+        ],
+        "records": 18,
+        "source_present": 1,
+        "emitted": 1,
+        "coverage_of_records": 0.056,
+        "error_rate_of_present": 0.0,
+        "errors": {},
+        "error_examples": {},
+        "entity": "contract"
+      }
+    ],
+    "relationships": {
+      "CONTRACT_AWARDED_TO": 18,
+      "CONTRACT_PROCURED_BY": 18
+    },
+    "input_records": 18,
+    "refused_records": 0,
+    "observations": 317,
+    "value_errors": 0,
+    "present_values": 317,
+    "error_rate": 0.0
+  },
+  "critic": {
+    "verdict": "accept",
+    "findings": [
+      "Ownership: every proposed concept is owned by the correct entity. dyn.contract.* are owned by contract; supplier and procuring-entity address/name/ABN fields target business-owned concepts on the correct role. No contract fact is promoted to the supplier business.",
+      "Value semantics: dyn.contract.value is defined as the total maximum contract value over its life, qualified by currency from contracts[0].value.currency, and explicitly distinguished from ext.financial.total_income/taxable_income/revenue_band. Validation shows 18/18 emitted with currency qualifier AUD (field_evidence dyn.contract.value@contract). No business-income claim is emitted.",
+      "Classification: dyn.contract.item_classification_code is contract-owned, scheme-qualified (UNSPSC), and explicitly not the supplier's company-wide industry; ext.entity.industry_code/entity.industry_code (ANZSIC) are not reused. Correct.",
+      "Dates: dyn.contract.signed_at, start_date, end_date are contract-owned and distinguished from entity.date_registered, ext.entity.date_established, ext.licence.start_date/end_date, observation.valid_from/valid_to and observation.observed_at. The parse_date truncation and UTC-vs-local day risk are disclosed in the concept definitions and field rationales (e.g. dyn.contract.end_date@contract raw '2026-12-30T13:00:00Z' -> '2026-12-30').",
+      "Status: dyn.contract.status is contract-owned with OCDS codelist and 'unknown' default; entity.status (business registration/liquidation) is not reused. Only 'active' observed is disclosed; other enum values are labelled codelist-derived, not observed.",
+      "Procurement: dyn.contract.procurement_method and limited_tender_exempt/reason_code/reason are contract-owned, codelist-mapped with 'unknown' default, and explicitly not population/capability claims. limited_tender_exempt maps '1'->true, '0'->false, blank->unknown (field_evidence ordinals 15 and 31).",
+      "Reuse of entity.legal_name: the proposal honestly scopes this as a published party name, not a registrar-stated legal name, sets no current_legal_name claim_scope, and does not infer legal form from 'The Trustee for ...', 'Data#3 Limited', 'RMI Cleaning Services, LLC' or 'MILES AND STOCKBRIDGE P.C.'. This is a bounded approximation, not an unsupported legal-name claim.",
+      "Reuse of entity.abn: gated on scheme == AU-ABN and passed through the abn checksum transform; 16/18 supplier and 18/18 procuring-entity emitted with 0 value errors. Absence is treated as abstention, not evidence of no ABN.",
+      "Reuse of address.*: supplier and procuring-entity address fields are attached to the party's own stated address. address.state coercion of 'Outside Australia' to OTHER is disclosed as 'not an Australian state/territory', not a location; foreign postcodes are kept as written and not asserted Australian.",
+      "Relationships: CONTRACT_AWARDED_TO and CONTRACT_PROCURED_BY are declared with correct from/to types and role bindings. The proposal correctly states the config executes no extra equality guard between awards[0].suppliers[0].id and the role-bound supplier party id, and that multiple supplier-role parties cause refusal rather than silent selection. No unimplemented guard is claimed.",
+      "Unmapped reasons: the three amendment fields now correctly state they ARE observed on held-out ordinal 19 (contracts[0].amendments[0].id 'CN4280171-A1', releaseID and amendsReleaseID values cited) and explain the bounded reason for leaving them unmapped (single observation, no amendment entity type, contract key collision disclosed in dyn.contract.notice_number). This corrects the earlier inaccurate 'not present' reason.",
+      "Supplier contactPoint email/telephone are unmapped with held-out evidence of buyer boilerplate (ordinal 15 Marshall Islands supplier carrying '02 6261 1111'); procuring-entity contactPoint.email is unmapped because the role_email transform drops it (18/18), and the transform misclassification is recorded as a finding rather than a silently discarded claim. This is an honest abstention, not an incorrect emitted claim.",
+      "Validation: 18 records in, 18 with output, 0 record errors, 0 value errors, 317 observations, both relationships 18. No checksum-rejected or contradictory emitted values are evidenced.",
+      "Held-out ordinal 19 (tag 'contractAmendment') is handled: the contract key collision is disclosed in dyn.contract.notice_number and the contract entity rationale; the amendment release is not falsely claimed distinguishable by the contract key."
+    ],
+    "semantic_risks": [
+      "dyn.contract.start_date/end_date: parse_date truncates the stated timestamp to its UTC date component; the local contract day may differ by one. This is disclosed but remains a bounded precision risk for downstream date arithmetic.",
+      "dyn.contract.notice_number as contract role key collides across original and amendment releases (held-out ordinal 19). The engine's named-role identity may repeat across records; downstream consumers must not treat the contract key as unique per release. Disclosed, but a real identity limitation.",
+      "entity.legal_name reuse for supplier and procuring-entity party names is a published-name approximation, not registrar-stated legal name; no claim_scope is set. Downstream must not treat it as authoritative registered-name evidence.",
+      "address.state OTHER conflates all non-Australian regions and loses the raw text; it must not be read as an Australian state. Disclosed.",
+      "CONTRACT_AWARDED_TO has no executed equality guard between awards[0].suppliers[0].id and the role-bound supplier party id; a divergence would not be detected by the config. In the observed held-out rows the ids match (ordinals 15, 19, 24), but this is a bounded link-integrity risk, not a proven error.",
+      "Only the first item of contracts[0].items is read; additional items are not captured. This is a bounded coverage limitation, not an incorrect emitted claim.",
+      "dyn.contract.limited_tender_reason_code and limited_tender_reason are observed on a single row (ordinal 31); coverage is limited and the mapping is verified only on that observation.",
+      "procuring_entity_party.address.locality is 0/18 present and countryName/telephone are not published; these are expected abstentions, not missing coverage errors.",
+      "The role_email transform misclassifies the procuring entity's role mailbox (tenders@finance.gov.au) as personal and drops it; the field is unmapped rather than claimed, so no wrong claim is emitted, but the transform behaviour is a recorded finding for the engine owner."
+    ],
+    "checked_reuse": [
+      "entity.legal_name: checked for legal-form inference and registered-vs-trading-name conflation; proposal scopes it as published party name with no claim_scope and no legal-form inference.",
+      "entity.abn: checked for checksum validation and scheme gating; abn transform applied, scheme == AU-ABN gate present, absence treated as abstention.",
+      "address.locality/state/postcode/country: checked for wrong-entity attachment and foreign-value coercion; attached to the party's own stated address, OTHER and foreign postcodes disclosed.",
+      "observation.source_record_id/observed_at/source_id/licence: checked for grain and time-scope correctness; release id is the row grain, release date is publication not valid_from, licence id 'cc-by' from metadata.",
+      "ext.contact.role_email/phone: checked for wrong-entity reuse; not reused for supplier parties (buyer boilerplate), and procuring-entity email left unmapped due to transform drop.",
+      "entity.status, ext.entity.legal_form, ext.entity.status_detail, ext.entity.date_established, ext.licence.start_date/end_date, ext.financial.*, ext.entity.industry_code, entity.industry_code, ext.entity.sector_tag, ext.licence.authorisation_text: checked and correctly not reused for contract status, contract dates, contract value, item classification, contract description or procurement reason.",
+      "dyn.contract.* concepts: checked for duplicate concepts and wrong owner; each is contract-owned and distinct from business-owned concepts."
+    ],
+    "rationale": "The proposal and mapping are internally consistent with the publisher metadata, validation results and held-out rows. Contract facts are contract-owned; business facts are business-owned; no contract value is folded into business income; no UNSPSC item code is promoted to supplier industry; no legal form is inferred from party names or ABNs; ABNs are checksum-validated and scheme-gated. The amendment unmapped reasons now correctly acknowledge the held-out amendment observation and explain the bounded reason for leaving those fields unmapped. The contract key collision, date truncation, OTHER state coercion, missing equality guard on CONTRACT_AWARDED_TO, first-item-only classification and single-row limited-tender coverage are all explicitly disclosed as bounded risks rather than hidden assumptions. Validation shows 0 value errors and 0 record errors across 18 records, with expected abstentions for unpublished procuring-entity address/contact fields. No evidenced semantic error, wrong owner, invented scheme/currency, contradictory definition or unimplemented guard remains. Remaining risks are bounded and belong in semantic_risks, not blocking findings. This is an agent review, not human sign-off.",
+    "blocking_findings": []
+  }
+}

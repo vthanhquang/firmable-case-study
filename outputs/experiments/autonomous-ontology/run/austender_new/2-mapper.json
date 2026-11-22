@@ -1,0 +1,855 @@
+{
+  "request_sha256": "e184fdc5e639c59c634b1c05a0d1cc7434a449a529a1207c9c651c04507ad0b6",
+  "role": "mapper",
+  "model": "deepseek-v4-flash",
+  "seconds": 38.795,
+  "response": {
+    "source_id": "austender_new",
+    "record_grain": "One record per OCDS release in the top-level releases array (one publication event), with the first contract, first award and the supplier/procuringEntity parties bound by role.",
+    "grain_rationale": "The inspector's record_path is releases, so each row is a release/publication event. Nested contracts, awards, items and parties are not exploded; the mapping reads the first contract (contracts[0]) and the role-bound supplier_party and procuring_entity_party bindings, which refuse multiple matches rather than silently selecting one. An amendment release restates the original contracts[0].id, so the contract entity key is not unique per release; the release id remains the record key.",
+    "reader": {
+      "format": "json",
+      "archive_member": null,
+      "encoding": "utf-8-sig",
+      "delimiter": null,
+      "skip_rows": 0,
+      "sheet": null,
+      "record_path": "releases"
+    },
+    "record_id": {
+      "strategy": "columns",
+      "source_paths": [
+        "id"
+      ],
+      "rationale": "releases[].id identifies exactly one published release, which is the row grain, so it is the traceable record key. ocid identifies the contracting process, not the release, and contracts[0].id is restated by amendment releases."
+    },
+    "observed_at": {
+      "source_path": "date",
+      "steps": [
+        {
+          "op": "parse_date",
+          "args": {
+            "formats": [
+              "%Y-%m-%dT%H:%M:%SZ",
+              "%Y-%m-%dT%H:%M:%S%z"
+            ]
+          }
+        }
+      ],
+      "fallback": "resource_last_modified"
+    },
+    "fields": [
+      {
+        "source_paths": [
+          "supplier_party.name"
+        ],
+        "join_with": " ",
+        "when": null,
+        "target": "entity.legal_name",
+        "valid_from_path": null,
+        "valid_to_path": null,
+        "validity_date_formats": null,
+        "claim_scope": null,
+        "steps": [
+          {
+            "op": "trim",
+            "args": {}
+          },
+          {
+            "op": "collapse_whitespace",
+            "args": {}
+          }
+        ],
+        "confidence": 0.6,
+        "rationale": "The supplier party's single published name is the only name the source states for the supplier. The publisher does not distinguish registered from trading names, so no current_legal_name claim_scope is asserted; the value is recorded as a published party name and no legal form is inferred from forms such as 'The Trustee for ... Trust' or 'Data#3 Limited'.",
+        "entity": "supplier",
+        "qualifiers": null,
+        "one_hot": null
+      },
+      {
+        "source_paths": [
+          "supplier_party.additionalIdentifiers[0].id"
+        ],
+        "join_with": " ",
+        "when": {
+          "source_path": "supplier_party.additionalIdentifiers[0].scheme",
+          "op": "equals",
+          "values": [
+            "AU-ABN"
+          ]
+        },
+        "target": "entity.abn",
+        "valid_from_path": null,
+        "valid_to_path": null,
+        "validity_date_formats": null,
+        "claim_scope": null,
+        "steps": [
+          {
+            "op": "abn",
+            "args": {}
+          }
+        ],
+        "confidence": 0.7,
+        "rationale": "The supplier party's additional identifier is an ABN only when the scheme is AU-ABN; the checksum transform validates it rather than length-checking. Only index 0 is read at this grain, so a party whose ABN sits at a later additionalIdentifiers index is missed rather than guessed. An ABN is an identifier only and proves nothing about legal form.",
+        "entity": "supplier",
+        "qualifiers": null,
+        "one_hot": null
+      },
+      {
+        "source_paths": [
+          "supplier_party.address.locality"
+        ],
+        "join_with": " ",
+        "when": null,
+        "target": "address.locality",
+        "valid_from_path": null,
+        "valid_to_path": null,
+        "validity_date_formats": null,
+        "claim_scope": "entity_contact_address",
+        "steps": [
+          {
+            "op": "trim",
+            "args": {}
+          },
+          {
+            "op": "collapse_whitespace",
+            "args": {}
+          }
+        ],
+        "confidence": 0.7,
+        "rationale": "The locality of the supplier party's own stated address is exactly what address.locality holds for a business.",
+        "entity": "supplier",
+        "qualifiers": null,
+        "one_hot": null
+      },
+      {
+        "source_paths": [
+          "supplier_party.address.region"
+        ],
+        "join_with": " ",
+        "when": null,
+        "target": "address.state",
+        "valid_from_path": null,
+        "valid_to_path": null,
+        "validity_date_formats": null,
+        "claim_scope": "entity_contact_address",
+        "steps": [
+          {
+            "op": "state",
+            "args": {}
+          }
+        ],
+        "confidence": 0.6,
+        "rationale": "The supplier address region is an Australian state/territory abbreviation (NT, QLD, VIC, ACT) matching the address.state enum. Non-Australian regions (e.g. 'Outside Australia') are coerced to OTHER by the state transform; that is a bounded loss and is not an Australian state claim. ext.entity.operating_region is not used because a stated address region is not a claimed service footprint.",
+        "entity": "supplier",
+        "qualifiers": null,
+        "one_hot": null
+      },
+      {
+        "source_paths": [
+          "supplier_party.address.postalCode"
+        ],
+        "join_with": " ",
+        "when": null,
+        "target": "address.postcode",
+        "valid_from_path": null,
+        "valid_to_path": null,
+        "validity_date_formats": null,
+        "claim_scope": "entity_contact_address",
+        "steps": [
+          {
+            "op": "trim",
+            "args": {}
+          },
+          {
+            "op": "collapse_whitespace",
+            "args": {}
+          }
+        ],
+        "confidence": 0.5,
+        "rationale": "The postal code of the supplier party's stated address, kept as written. The AU postcode transform is deliberately not applied because the source includes foreign postcodes (e.g. '96960', '22102-1036') that are valid in their own country; rejecting them as invalid would be a false data error. The value is therefore not asserted to be an Australian postcode.",
+        "entity": "supplier",
+        "qualifiers": null,
+        "one_hot": null
+      },
+      {
+        "source_paths": [
+          "supplier_party.address.countryName"
+        ],
+        "join_with": " ",
+        "when": null,
+        "target": "address.country",
+        "valid_from_path": null,
+        "valid_to_path": null,
+        "validity_date_formats": null,
+        "claim_scope": "entity_contact_address",
+        "steps": [
+          {
+            "op": "trim",
+            "args": {}
+          },
+          {
+            "op": "collapse_whitespace",
+            "args": {}
+          }
+        ],
+        "confidence": 0.7,
+        "rationale": "The country of the supplier party's stated address as written (AUSTRALIA, COLOMBIA, SWITZERLAND, UNITED ARAB EMIRATES), which is what address.country stores.",
+        "entity": "supplier",
+        "qualifiers": null,
+        "one_hot": null
+      },
+      {
+        "source_paths": [
+          "procuring_entity_party.name"
+        ],
+        "join_with": " ",
+        "when": null,
+        "target": "entity.legal_name",
+        "valid_from_path": null,
+        "valid_to_path": null,
+        "validity_date_formats": null,
+        "claim_scope": null,
+        "steps": [
+          {
+            "op": "trim",
+            "args": {}
+          },
+          {
+            "op": "collapse_whitespace",
+            "args": {}
+          }
+        ],
+        "confidence": 0.6,
+        "rationale": "The procuring entity party's single published name is the only name the source states for it. A government department name is not a registered legal name in the company sense, so no current_legal_name claim_scope is asserted. The procurement role does not by itself establish legal form, ownership or company-wide scope.",
+        "entity": "procuring_entity",
+        "qualifiers": null,
+        "one_hot": null
+      },
+      {
+        "source_paths": [
+          "procuring_entity_party.additionalIdentifiers[0].id"
+        ],
+        "join_with": " ",
+        "when": {
+          "source_path": "procuring_entity_party.additionalIdentifiers[0].scheme",
+          "op": "equals",
+          "values": [
+            "AU-ABN"
+          ]
+        },
+        "target": "entity.abn",
+        "valid_from_path": null,
+        "valid_to_path": null,
+        "validity_date_formats": null,
+        "claim_scope": null,
+        "steps": [
+          {
+            "op": "abn",
+            "args": {}
+          }
+        ],
+        "confidence": 0.7,
+        "rationale": "The procuring entity party's additional identifier is an ABN only when the scheme is AU-ABN; the checksum transform validates it. Only index 0 is read at this grain. An ABN is an identifier only and proves nothing about legal form.",
+        "entity": "procuring_entity",
+        "qualifiers": null,
+        "one_hot": null
+      },
+      {
+        "source_paths": [
+          "procuring_entity_party.address.locality"
+        ],
+        "join_with": " ",
+        "when": null,
+        "target": "address.locality",
+        "valid_from_path": null,
+        "valid_to_path": null,
+        "validity_date_formats": null,
+        "claim_scope": "entity_contact_address",
+        "steps": [
+          {
+            "op": "trim",
+            "args": {}
+          },
+          {
+            "op": "collapse_whitespace",
+            "args": {}
+          }
+        ],
+        "confidence": 0.6,
+        "rationale": "The locality of the procuring entity's own stated address, which is what address.locality holds for a business.",
+        "entity": "procuring_entity",
+        "qualifiers": null,
+        "one_hot": null
+      },
+      {
+        "source_paths": [
+          "procuring_entity_party.address.region"
+        ],
+        "join_with": " ",
+        "when": null,
+        "target": "address.state",
+        "valid_from_path": null,
+        "valid_to_path": null,
+        "validity_date_formats": null,
+        "claim_scope": "entity_contact_address",
+        "steps": [
+          {
+            "op": "state",
+            "args": {}
+          }
+        ],
+        "confidence": 0.6,
+        "rationale": "The procuring entity address region is an Australian state/territory abbreviation matching the address.state enum; non-Australian regions become OTHER via the state transform.",
+        "entity": "procuring_entity",
+        "qualifiers": null,
+        "one_hot": null
+      },
+      {
+        "source_paths": [
+          "procuring_entity_party.address.postalCode"
+        ],
+        "join_with": " ",
+        "when": null,
+        "target": "address.postcode",
+        "valid_from_path": null,
+        "valid_to_path": null,
+        "validity_date_formats": null,
+        "claim_scope": "entity_contact_address",
+        "steps": [
+          {
+            "op": "trim",
+            "args": {}
+          },
+          {
+            "op": "collapse_whitespace",
+            "args": {}
+          }
+        ],
+        "confidence": 0.5,
+        "rationale": "The postal code of the procuring entity's stated address, kept as written; the AU postcode transform is not applied so a foreign code is not falsely rejected.",
+        "entity": "procuring_entity",
+        "qualifiers": null,
+        "one_hot": null
+      },
+      {
+        "source_paths": [
+          "contracts[0].id"
+        ],
+        "join_with": " ",
+        "when": null,
+        "target": "dyn.contract.notice_number",
+        "valid_from_path": null,
+        "valid_to_path": null,
+        "validity_date_formats": null,
+        "claim_scope": null,
+        "steps": [
+          {
+            "op": "trim",
+            "args": {}
+          }
+        ],
+        "confidence": 0.8,
+        "rationale": "The publisher's contract notice identifier (e.g. CN4280221) identifies the notice within the publisher's system; it is not a supplier key, ABN or ACN. It is not unique per release: an amendment release restates the original notice id, so the contract entity key collides across the original and its amendment.",
+        "entity": "contract",
+        "qualifiers": null,
+        "one_hot": null
+      },
+      {
+        "source_paths": [
+          "contracts[0].dateSigned"
+        ],
+        "join_with": " ",
+        "when": null,
+        "target": "dyn.contract.signed_at",
+        "valid_from_path": null,
+        "valid_to_path": null,
+        "validity_date_formats": null,
+        "claim_scope": null,
+        "steps": [
+          {
+            "op": "parse_date",
+            "args": {
+              "formats": [
+                "%Y-%m-%dT%H:%M:%SZ",
+                "%Y-%m-%dT%H:%M:%S%z"
+              ]
+            }
+          }
+        ],
+        "confidence": 0.6,
+        "rationale": "The timestamp at which the contract was signed as stated in the notice. The parse_date transform emits an ISO date, so the source-stated time of day is truncated; this is a bounded, documented precision loss, not a claim that the time is meaningless. It is not the contract start date, the notice publication date, or the business's registration date.",
+        "entity": "contract",
+        "qualifiers": null,
+        "one_hot": null
+      },
+      {
+        "source_paths": [
+          "contracts[0].period.startDate"
+        ],
+        "join_with": " ",
+        "when": null,
+        "target": "dyn.contract.start_date",
+        "valid_from_path": null,
+        "valid_to_path": null,
+        "validity_date_formats": null,
+        "claim_scope": null,
+        "steps": [
+          {
+            "op": "parse_date",
+            "args": {
+              "formats": [
+                "%Y-%m-%dT%H:%M:%SZ",
+                "%Y-%m-%dT%H:%M:%S%z"
+              ]
+            }
+          }
+        ],
+        "confidence": 0.6,
+        "rationale": "The first day of the contract period stated in the notice. The source states 14:00Z, treated as a local-midnight artefact for an Australian (AEST/UTC+10) contract period; the date is taken as stated and the timezone assumption is bounded, not proven, so an off-by-one day is possible for other offsets. It is not the release publication date and not the moment the notice was observed.",
+        "entity": "contract",
+        "qualifiers": null,
+        "one_hot": null
+      },
+      {
+        "source_paths": [
+          "contracts[0].period.endDate"
+        ],
+        "join_with": " ",
+        "when": null,
+        "target": "dyn.contract.end_date",
+        "valid_from_path": null,
+        "valid_to_path": null,
+        "validity_date_formats": null,
+        "claim_scope": null,
+        "steps": [
+          {
+            "op": "parse_date",
+            "args": {
+              "formats": [
+                "%Y-%m-%dT%H:%M:%SZ",
+                "%Y-%m-%dT%H:%M:%S%z"
+              ]
+            }
+          }
+        ],
+        "confidence": 0.6,
+        "rationale": "The last day of the contract period stated in the notice, i.e. the planned end of this contract's term, with the same bounded local-midnight timezone assumption as dyn.contract.start_date. It is not a licence expiry and not a business's cessation.",
+        "entity": "contract",
+        "qualifiers": null,
+        "one_hot": null
+      },
+      {
+        "source_paths": [
+          "contracts[0].description"
+        ],
+        "join_with": " ",
+        "when": null,
+        "target": "dyn.contract.description",
+        "valid_from_path": null,
+        "valid_to_path": null,
+        "validity_date_formats": null,
+        "claim_scope": null,
+        "steps": [
+          {
+            "op": "trim",
+            "args": {}
+          },
+          {
+            "op": "collapse_whitespace",
+            "args": {}
+          }
+        ],
+        "confidence": 0.7,
+        "rationale": "The scope of work as the procuring entity described it in the notice. It is source-stated activity text and describes this procurement, not the supplier's company-wide industry or sector. Case is not normalised, so 'Legal Services' and 'LEGAL SERVICES' remain distinct strings; this is a bounded cosmetic risk.",
+        "entity": "contract",
+        "qualifiers": null,
+        "one_hot": null
+      },
+      {
+        "source_paths": [
+          "contracts[0].value.amount"
+        ],
+        "join_with": " ",
+        "when": null,
+        "target": "dyn.contract.value",
+        "valid_from_path": null,
+        "valid_to_path": null,
+        "validity_date_formats": null,
+        "claim_scope": null,
+        "steps": [
+          {
+            "op": "parse_decimal",
+            "args": {}
+          }
+        ],
+        "confidence": 0.7,
+        "rationale": "The total maximum value of the contract over its life as reported in the notice, qualified by the published ISO 4217 currency. It is not annual expenditure, not revenue or business income. The currency is carried only as the qualifier on this claim; no separate currency concept is emitted.",
+        "entity": "contract",
+        "qualifiers": {
+          "currency": {
+            "source_path": "contracts[0].value.currency",
+            "value": null,
+            "steps": [
+              {
+                "op": "trim",
+                "args": {}
+              },
+              {
+                "op": "upper",
+                "args": {}
+              }
+            ]
+          }
+        },
+        "one_hot": null
+      },
+      {
+        "source_paths": [
+          "contracts[0].status"
+        ],
+        "join_with": " ",
+        "when": null,
+        "target": "dyn.contract.status",
+        "valid_from_path": null,
+        "valid_to_path": null,
+        "validity_date_formats": null,
+        "claim_scope": null,
+        "steps": [
+          {
+            "op": "trim",
+            "args": {}
+          },
+          {
+            "op": "map_enum",
+            "args": {
+              "mapping": {
+                "pending": "pending",
+                "active": "active",
+                "cancelled": "cancelled",
+                "terminated": "terminated"
+              },
+              "default": "unknown"
+            }
+          }
+        ],
+        "confidence": 0.7,
+        "rationale": "The contract status as reported in the notice at extraction time, expressed with the OCDS contract status codelist and 'unknown' for anything not published. Only 'active' is observed in this snapshot; the other enum values are unverified but bounded by the 'unknown' default. It is not the supplier's registration status.",
+        "entity": "contract",
+        "qualifiers": null,
+        "one_hot": null
+      },
+      {
+        "source_paths": [
+          "contracts[0].items[0].classification.id"
+        ],
+        "join_with": " ",
+        "when": null,
+        "target": "dyn.contract.item_classification_code",
+        "valid_from_path": null,
+        "valid_to_path": null,
+        "validity_date_formats": null,
+        "claim_scope": null,
+        "steps": [
+          {
+            "op": "trim",
+            "args": {}
+          }
+        ],
+        "confidence": 0.6,
+        "rationale": "The classification code of the first contracted item as published, always paired with the publisher's scheme (here UNSPSC). The code describes the goods or services bought under this contract, not the supplier's company-wide industry. Only items[0] is read at this grain; additional items are not captured, so the concept is single-valued with an explicit first-item caveat.",
+        "entity": "contract",
+        "qualifiers": {
+          "scheme": {
+            "source_path": "contracts[0].items[0].classification.scheme",
+            "value": null,
+            "steps": [
+              {
+                "op": "trim",
+                "args": {}
+              },
+              {
+                "op": "upper",
+                "args": {}
+              }
+            ]
+          }
+        },
+        "one_hot": null
+      },
+      {
+        "source_paths": [
+          "tender.procurementMethod"
+        ],
+        "join_with": " ",
+        "when": null,
+        "target": "dyn.contract.procurement_method",
+        "valid_from_path": null,
+        "valid_to_path": null,
+        "validity_date_formats": null,
+        "claim_scope": null,
+        "steps": [
+          {
+            "op": "trim",
+            "args": {}
+          },
+          {
+            "op": "map_enum",
+            "args": {
+              "mapping": {
+                "open": "open",
+                "selective": "selective",
+                "limited": "limited",
+                "direct": "direct"
+              },
+              "default": "unknown"
+            }
+          }
+        ],
+        "confidence": 0.7,
+        "rationale": "How the contract was let as reported in the notice, expressed with the OCDS procurement method codelist and 'unknown' if not published. It describes the procurement process only and says nothing about contract size, supplier capability or the notice population. On an amendment release the value is as restated in that release and may not differ from the original.",
+        "entity": "contract",
+        "qualifiers": null,
+        "one_hot": null
+      },
+      {
+        "source_paths": [
+          "tender.limitedTenderExempt"
+        ],
+        "join_with": " ",
+        "when": null,
+        "target": "dyn.contract.limited_tender_exempt",
+        "valid_from_path": null,
+        "valid_to_path": null,
+        "validity_date_formats": null,
+        "claim_scope": null,
+        "steps": [
+          {
+            "op": "trim",
+            "args": {}
+          },
+          {
+            "op": "map_enum",
+            "args": {
+              "mapping": {
+                "1": "true",
+                "0": "false"
+              },
+              "default": "unknown"
+            }
+          }
+        ],
+        "confidence": 0.6,
+        "rationale": "Whether the notice marks the limited tender as exempt, published as 1 or 0 and mapped to true/false; a blank value is 'unknown', never false. Only '1' is observed in this snapshot, so the '0' mapping is unverified but bounded by the default. It records a stated procurement exemption, not a judgement about whether the exemption was justified.",
+        "entity": "contract",
+        "qualifiers": null,
+        "one_hot": null
+      },
+      {
+        "source_paths": [
+          "tender.limitedTenderReasonCode"
+        ],
+        "join_with": " ",
+        "when": null,
+        "target": "dyn.contract.limited_tender_reason_code",
+        "valid_from_path": null,
+        "valid_to_path": null,
+        "validity_date_formats": null,
+        "claim_scope": null,
+        "steps": [
+          {
+            "op": "trim",
+            "args": {}
+          },
+          {
+            "op": "upper",
+            "args": {}
+          }
+        ],
+        "confidence": 0.6,
+        "rationale": "The exemption clause code the publisher gives for a limited tender (e.g. TR, AD), kept as stated. It refers to a Commonwealth procurement exemption clause; the separate verbatim reason text is captured by dyn.contract.limited_tender_reason and is not assumed to quote this code. Only one row in this snapshot carries it, so the mapping is unverified on that row.",
+        "entity": "contract",
+        "qualifiers": null,
+        "one_hot": null
+      },
+      {
+        "source_paths": [
+          "tender.limitedTenderReason"
+        ],
+        "join_with": " ",
+        "when": null,
+        "target": "dyn.contract.limited_tender_reason",
+        "valid_from_path": null,
+        "valid_to_path": null,
+        "validity_date_formats": null,
+        "claim_scope": null,
+        "steps": [
+          {
+            "op": "trim",
+            "args": {}
+          },
+          {
+            "op": "collapse_whitespace",
+            "args": {}
+          }
+        ],
+        "confidence": 0.6,
+        "rationale": "The publisher's full wording of the reason a limited tender was used, kept verbatim as source evidence with its clause numbering and headings. It is a reported justification, not an assessment made by us. Only one row in this snapshot carries it, so the mapping is unverified on that row.",
+        "entity": "contract",
+        "qualifiers": null,
+        "one_hot": null
+      }
+    ],
+    "entities": {
+      "supplier": {
+        "kind": "business",
+        "key_paths": [
+          "supplier_party.id"
+        ],
+        "rationale": "The party bound by roles containing 'supplier' is the awarded supplier business. Its publisher party id is the record-local key; the ABN is the published identifier where available. A supplier name is not a unique entity key."
+      },
+      "procuring_entity": {
+        "kind": "business",
+        "key_paths": [
+          "procuring_entity_party.id"
+        ],
+        "rationale": "The party bound by roles containing 'procuringEntity' is the government buyer business. The procurement role does not by itself establish legal form, ownership or company-wide scope."
+      },
+      "contract": {
+        "kind": "contract",
+        "key_paths": [
+          "contracts[0].id"
+        ],
+        "rationale": "The first contract in the release is the contract notice entity, keyed by the publisher's notice number (contracts[0].id). The key is not unique per release because an amendment release restates the original notice id, so the original and its amendment collide on this key; the release id remains the record key. It is not a business, licence or facility, and its value is not annual expenditure."
+      }
+    },
+    "relationships": [
+      {
+        "type": "CONTRACT_AWARDED_TO",
+        "from_role": "contract",
+        "to_role": "supplier",
+        "rationale": "The contract notice names the supplier party as an awarded supplier. The join is explicit: the award supplier id (awards[0].suppliers[0].id) must equal the role-bound supplier party id (parties[].id where roles includes supplier); if the two ids diverge the link must be refused rather than guessed. An award may name several suppliers and each must be linked separately, never collapsed into one."
+      },
+      {
+        "type": "CONTRACT_PROCURED_BY",
+        "from_role": "contract",
+        "to_role": "procuring_entity",
+        "rationale": "The contract notice names the procuring entity party as the buyer (parties[].id where roles includes procuringEntity). The role is a procurement role in this process and does not by itself establish legal form, ownership or company-wide scope."
+      }
+    ],
+    "unmapped": [
+      {
+        "source_path": "supplier_party.roles",
+        "reason": "roles is the discriminator used to bind supplier_party and procuring_entity_party; its meaning is already carried by the CONTRACT_AWARDED_TO and CONTRACT_PROCURED_BY relationships, so a separate role claim would duplicate them."
+      },
+      {
+        "source_path": "procuring_entity_party.roles",
+        "reason": "roles is the discriminator used to bind the procuring entity party; its meaning is already carried by CONTRACT_PROCURED_BY, so a separate role claim would duplicate it."
+      },
+      {
+        "source_path": "supplier_party.id",
+        "reason": "An opaque publisher party key with no business meaning. ABN is the published identifier where available, and a source-specific party key concept would duplicate identity without adding evidence; it must never be treated as a legal identifier."
+      },
+      {
+        "source_path": "procuring_entity_party.id",
+        "reason": "An opaque publisher party key with no business meaning; it must never be treated as a legal identifier."
+      },
+      {
+        "source_path": "supplier_party.contactPoint.email",
+        "reason": "Held-out rows show the supplier party's contactPoint is the buyer's boilerplate (e.g. a Marshall Islands supplier carrying procurement@niaa.gov.au and the buyer's branch/division), so mapping it to the supplier entity would assert a wrong-entity email. The field is unmapped rather than attached to the wrong business."
+      },
+      {
+        "source_path": "supplier_party.contactPoint.telephone",
+        "reason": "Held-out rows show the supplier party's contactPoint telephone is the buyer's boilerplate (e.g. '02 6261 1111' on a foreign supplier), so mapping it to the supplier entity would assert a wrong-entity phone. The field is unmapped rather than attached to the wrong business."
+      },
+      {
+        "source_path": "procuring_entity_party.contactPoint.email",
+        "reason": "The procuring entity publishes a role mailbox (tenders@finance.gov.au), but the role_email transform classifies it as a personal mailbox and drops it (18/18 dropped in validation). Rather than claim a concept that silently discards the value, the field is unmapped and the transform misclassification is recorded as a finding."
+      },
+      {
+        "source_path": "ocid",
+        "reason": "ocid identifies an OCDS contracting process or package that can span multiple releases, awards and contracts, not a single contract or supplier. At this one-release-per-row grain the release id already keys the record and there is no contracting-process entity type."
+      },
+      {
+        "source_path": "tender.id",
+        "reason": "tender.id repeats the ocid in this snapshot, so it is a process-level key rather than a tender or contract identifier."
+      },
+      {
+        "source_path": "tender.procurementMethodDetails",
+        "reason": "A human-readable restatement of procurementMethod ('Limited tender', 'Open tender'); storing both would create a redundant alias of dyn.contract.procurement_method."
+      },
+      {
+        "source_path": "contracts[0].title",
+        "reason": "In this snapshot title holds short internal reference strings (e.g. NCD11811, 4600030790) that look like agency references rather than descriptive titles; mapping it would create a second identifier concept indistinguishable from dyn.contract.notice_number."
+      },
+      {
+        "source_path": "contracts[0].awardID",
+        "reason": "A local join key from contract to award inside the release, not a business fact; the supplier link it supports is already recorded by CONTRACT_AWARDED_TO."
+      },
+      {
+        "source_path": "awards[0].id",
+        "reason": "A local award identifier scoped to the release and publisher, not a business identifier and not stable across sources."
+      },
+      {
+        "source_path": "awards[0].status",
+        "reason": "Award status uses a separate OCDS codelist and in this snapshot merely repeats contracts[0].status; mapping both would create two competing status claims for one notice until they are reconciled."
+      },
+      {
+        "source_path": "awards[0].date",
+        "reason": "In this snapshot the award date equals the contract dateSigned, so it adds no separate business fact; on amendment releases it does not equal the release date, so it is not a publication timestamp either. A third competing date for one notice would be misleading."
+      },
+      {
+        "source_path": "awards[0].suppliers[0].name",
+        "reason": "A denormalised restatement of parties[].name for the same supplier; mapping both would double-count one name claim."
+      },
+      {
+        "source_path": "contracts[0].items[0].id",
+        "reason": "An internal item identifier local to the release; it is not a business identifier and adds nothing beyond the item classification code already captured."
+      },
+      {
+        "source_path": "supplier_party.contactPoint.name",
+        "reason": "contactPoint.name mixes organisational unit labels ('FINANCE DIVISION', 'Procurement', 'CONTRACTS OFFICER') with personal names ('Sandra Tuck'). The ontology has no concept for a contact's unit, and personal names must not be stored, so these are dropped rather than mapped."
+      },
+      {
+        "source_path": "supplier_party.contactPoint.branch",
+        "reason": "A contact organisational branch label for the party (e.g. 'Budget and Policy Branch'), not a business fact and not a concept in the current ontology."
+      },
+      {
+        "source_path": "supplier_party.contactPoint.division",
+        "reason": "A contact organisational division label for the party (e.g. 'FINANCE DIVISION'), not a business fact and not a concept in the current ontology."
+      },
+      {
+        "source_path": "supplier_party.address.streetAddress",
+        "reason": "A single street-address line (e.g. 'PO Box 3'), often a post-office box. address.full expects a complete formatted address and concatenating lines would invent structure the source does not state."
+      },
+      {
+        "source_path": "procuring_entity_party.address.streetAddress",
+        "reason": "A single street-address line for a government agency; the same objection as for supplier street addresses applies, and address.full is not a street-line concept."
+      },
+      {
+        "source_path": "procuring_entity_party.address.countryName",
+        "reason": "Not present in the inspected bindings for the procuring entity party; the column profile shows no nonempty values, so no country claim can be made without inventing data."
+      },
+      {
+        "source_path": "procuring_entity_party.contactPoint.telephone",
+        "reason": "Not present in the inspected bindings for the procuring entity party; no phone claim can be made without inventing data."
+      },
+      {
+        "source_path": "tag",
+        "reason": "Constant ('contract') schema metadata describing the OCDS release stage, not a business fact; the contract entity already carries that meaning."
+      },
+      {
+        "source_path": "initiationType",
+        "reason": "Constant ('tender') OCDS schema metadata describing how the process was initiated, with no business fact about the supplier or the contract."
+      },
+      {
+        "source_path": "language",
+        "reason": "A document language tag ('EN') for the release payload, not a claim about any business or contract."
+      }
+    ],
+    "notes": "Grain is one release per row; only contracts[0], awards[0] and the role-bound supplier/procuringEntity parties are read, and the bindings must refuse multiple matches rather than selecting one. Contract value is a reported maximum over the contract life, not annual expenditure or business income. UNSPSC item codes describe the contracted goods/services, not the supplier's company-wide industry. ABNs are checksum-validated; no legal form is inferred from party names or ABNs. Supplier contactPoint email/telephone are unmapped because held-out rows show they carry the buyer's boilerplate, and the procuring entity role mailbox is unmapped because the role_email transform drops it. Party names are recorded without a current_legal_name claim_scope because the publisher does not distinguish registered from trading names. Foreign postcodes are kept as written rather than rejected by the AU postcode transform. The contract entity key (contracts[0].id) collides across original and amendment releases; the release id remains the record key. The procuring entity's country and telephone columns are not present in the inspected bindings and are explicitly unmapped rather than invented. Confidence values are mapping-policy scores, not calibrated probabilities.",
+    "constants": [],
+    "profile_context": null,
+    "extensions": "dynamic"
+  }
+}

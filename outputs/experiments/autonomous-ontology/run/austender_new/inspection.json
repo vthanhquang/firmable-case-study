@@ -1,0 +1,38 @@
+{
+  "reader": {
+    "format": "json",
+    "archive_member": null,
+    "encoding": "utf-8-sig",
+    "delimiter": null,
+    "skip_rows": 0,
+    "sheet": null,
+    "record_path": "releases"
+  },
+  "bindings": [
+    {
+      "name": "supplier_party",
+      "collection": "parties",
+      "filter_path": "roles",
+      "filter_value": "supplier"
+    },
+    {
+      "name": "procuring_entity_party",
+      "collection": "parties",
+      "filter_path": "roles",
+      "filter_value": "procuringEntity"
+    }
+  ],
+  "grain": "One record per OCDS release in the top-level releases array. A release is a publication event and may nest multiple parties, awards, contracts, items, and suppliers; it is not one row per contract, supplier, award, or item.",
+  "identity_cautions": [
+    "The record_path is releases; the top-level version field is an OCDS schema version, not the record list.",
+    "The supplier_party and procuring_entity_party bindings use the parties roles discriminator. If a release contains multiple parties with the same role, the binding must refuse multiple matches rather than silently selecting one; if none match, do not invent a party.",
+    "A supplier party name is not a unique entity key; names can be duplicated, can be trust or trustee names, and may not identify a single legal entity. ABN is an identifier but does not by itself prove legal form, ownership, or company-wide scope.",
+    "ocid identifies an OCDS contracting process/package, not a single contract or supplier. Release id identifies a release/publication event; contract and award IDs are local identifiers within the release/process and may not be globally unique across sources.",
+    "Contract value.amount is a reported maximum contract value over the contract life, not annual expenditure, revenue, or business income. The metadata also states AusTender data does not reflect annual expenditure.",
+    "UNSPSC classification on an item describes the contracted goods or services, not the supplier's company-wide industry classification.",
+    "release.date, award.date, contract.dateSigned, contract.period.startDate/endDate, and the top-level publishedDate are distinct date concepts; do not treat publication or licence-related dates as contract start, incorporation, or business commencement.",
+    "Award/contract status such as active reflects the notice data at extraction and is not a guarantee of current contractual status.",
+    "procurementMethod and limitedTenderExempt describe the procurement method, not contract size, supplier capability, or a population-level claim about the dataset."
+  ],
+  "rationale": "Byte inspection shows a plain JSON file whose magic bytes decode to an object beginning with a URI key. The preview confirms a top-level object containing a releases array; therefore reader.format is json and record_path is releases, selecting the record list rather than the OCDS version field. Encoding is utf-8-sig from the inspection guess, with no delimiter, archive member, sheet, or skipped rows applicable. Nested party objects are selected by the explicit roles discriminator using bindings for supplier and procuringEntity, so multiple matches are refused rather than truncated to index zero. The inferred grain follows record_path: one row per release, while contracts and suppliers remain nested and may be multiple."
+}

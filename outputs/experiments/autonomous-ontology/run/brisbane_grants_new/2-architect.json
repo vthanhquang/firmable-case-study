@@ -1,0 +1,183 @@
+{
+  "request_sha256": "1823db114e3036eeabc9d0b2fc7b1f979c6a1dcf77299a1fabeec77511cb8a33",
+  "role": "architect",
+  "model": "deepseek-v4-flash",
+  "seconds": 12.628,
+  "response": {
+    "entity_types": [
+      {
+        "name": "grant_award",
+        "definition": "A single funding award made by a grant programme to a recipient for a stated project and round, as published by the funding body. Distinct from the recipient entity and from the programme."
+      },
+      {
+        "name": "grant_programme",
+        "definition": "A named funding programme or scheme run by a funding body, identified by its published label and optional code, under which awards are made."
+      }
+    ],
+    "concepts": [
+      {
+        "path": "dyn.grant_award.amount_approved",
+        "type": "decimal",
+        "owner": "grant_award",
+        "definition": "The funding amount approved for a single grant award, as published by the funding body. This is an award amount, not business income, revenue or turnover. Currency is inferred as AUD from the Brisbane City Council publisher jurisdiction and is not source-stated; the qualifier is therefore marked inferred.",
+        "values": [],
+        "multi": false,
+        "required_qualifiers": [
+          "currency"
+        ],
+        "source_paths": [
+          "amount_approved"
+        ],
+        "why_not_existing": "Existing financial concepts (ext.financial.total_income, taxable_income, tax_payable, revenue_band) describe the recipient's own reported finances for a reporting period; a grant award is a third-party funding decision owned by the award, not the recipient's income.",
+        "personal_data": "never"
+      },
+      {
+        "path": "dyn.grant_award.round",
+        "type": "string",
+        "owner": "grant_award",
+        "definition": "The funding round or financial-year label under which the award was made, in the publisher's wording (e.g. 2025-26). Identifies the award cycle, not a reporting period of the recipient.",
+        "values": [],
+        "multi": false,
+        "required_qualifiers": [],
+        "source_paths": [
+          "grant_round"
+        ],
+        "why_not_existing": "No existing concept captures a grant round; observation.valid_from/valid_to are dates, not publisher round labels, and ext.financial period qualifiers apply to recipient financials.",
+        "personal_data": "never"
+      },
+      {
+        "path": "dyn.grant_award.project_description",
+        "type": "string",
+        "owner": "grant_award",
+        "definition": "The publisher's free-text description of the project or activity the award funds. Source-stated activity text; do not convert into an industry code.",
+        "values": [],
+        "multi": false,
+        "required_qualifiers": [],
+        "source_paths": [
+          "project"
+        ],
+        "why_not_existing": "ext.entity.sector_tag is a business-owned activity/beneficiary tag with a scheme qualifier; this is award-specific project text and belongs to the award, not the recipient entity.",
+        "personal_data": "never"
+      },
+      {
+        "path": "dyn.grant_award.recipient_name_as_published",
+        "type": "string",
+        "owner": "grant_award",
+        "definition": "The recipient name exactly as the funding body published it, which may be a natural person or an organisation. Matching evidence only; never implies legal form or company status. May contain personal data when the recipient is a natural person, but is not always personal.",
+        "values": [],
+        "multi": false,
+        "required_qualifiers": [],
+        "source_paths": [
+          "organisation_recipient"
+        ],
+        "why_not_existing": "entity.legal_name and entity.trading_name are registered business names; this field mixes personal and organisation names and is the award's published recipient string, not a registered name.",
+        "personal_data": "always"
+      },
+      {
+        "path": "dyn.grant_award.recipient_abn",
+        "type": "string",
+        "owner": "grant_award",
+        "definition": "The Australian Business Number the publisher recorded against the award recipient, checksum-validated. An ABN is not a company number and its presence does not establish company status or legal form. Checksum-invalid values are nulled and reported separately from absence.",
+        "values": [],
+        "multi": false,
+        "required_qualifiers": [],
+        "source_paths": [
+          "abn"
+        ],
+        "why_not_existing": "entity.abn is the business's own validated ABN; here the ABN is attached to the award record and may belong to an individual or organisation whose entity identity is unresolved, so it must be kept as award-level evidence until linked.",
+        "personal_data": "never"
+      },
+      {
+        "path": "dyn.grant_programme.name",
+        "type": "string",
+        "owner": "grant_programme",
+        "definition": "The published name of the grant programme or scheme under which awards are made, in the funding body's wording. Where the publisher appends a ward/locality suffix (e.g. 'Lord Mayor's Community Fund - Coorparoo'), the suffix is a delivery location variant of the same scheme and is recorded separately in dyn.grant_programme.locality_variant.",
+        "values": [],
+        "multi": false,
+        "required_qualifiers": [],
+        "source_paths": [
+          "grant"
+        ],
+        "why_not_existing": "No existing concept represents a funding programme; ext.establishment.program is a site-delivered government programme code, not a grant scheme owned by a funding body.",
+        "personal_data": "never"
+      },
+      {
+        "path": "dyn.grant_programme.code",
+        "type": "string",
+        "owner": "grant_programme",
+        "definition": "The short code the publisher prefixes to the programme label in the combined grant_list field (e.g. L, C). Programme classification code, not a company-wide attribute. Only emitted when the grant_list label matches the grant field after Unicode NFKC, dash/apostrophe folding and case-folding; mismatches are flagged and the code is withheld.",
+        "values": [],
+        "multi": false,
+        "required_qualifiers": [],
+        "source_paths": [
+          "grant_list"
+        ],
+        "why_not_existing": "No existing concept holds a publisher programme code; ext.entity.industry_code and sector_tag are business-owned classifications with different schemes.",
+        "personal_data": "never"
+      },
+      {
+        "path": "dyn.grant_programme.group",
+        "type": "string",
+        "owner": "grant_programme",
+        "definition": "The broader programme group or category the publisher assigns to the grant programme (e.g. Creative and history grants, Community grants), in the publisher's wording.",
+        "values": [],
+        "multi": false,
+        "required_qualifiers": [],
+        "source_paths": [
+          "group"
+        ],
+        "why_not_existing": "This is a programme taxonomy owned by the funding body, not a business sector tag or industry code, so ext.entity.sector_tag and ext.entity.industry_code do not fit.",
+        "personal_data": "never"
+      },
+      {
+        "path": "dyn.grant_programme.locality_variant",
+        "type": "string",
+        "owner": "grant_programme",
+        "definition": "The ward or locality suffix the publisher appends to a programme label (e.g. Coorparoo, Bracken Ridge, Northgate), recorded separately so the programme can be keyed on the scheme name rather than the ward-scoped label. A delivery location, not a distinct scheme.",
+        "values": [],
+        "multi": false,
+        "required_qualifiers": [],
+        "source_paths": [
+          "grant"
+        ],
+        "why_not_existing": "No existing concept captures a ward/locality variant of a funding programme; ext.establishment.lga and region describe a physical site, not a programme label suffix.",
+        "personal_data": "never"
+      }
+    ],
+    "relationships": [
+      {
+        "name": "AWARDS_GRANT",
+        "from_type": "grant_programme",
+        "to_type": "grant_award",
+        "definition": "The grant programme under which this award was made."
+      },
+      {
+        "name": "RECEIVES_GRANT",
+        "from_type": "business",
+        "to_type": "grant_award",
+        "definition": "A resolved business or organisation entity is the recipient of this grant award. Only asserted when recipient identity is resolved; otherwise the award keeps its published recipient name. Intentionally unpopulated in this pass."
+      }
+    ],
+    "reuse": {
+      "entity.abn": "The award's abn value can populate entity.abn once the recipient is resolved to a business entity and the ABN checksum validates; the raw award-level value is retained in dyn.grant_award.recipient_abn.",
+      "ext.entity.holder_kind": "The published recipient string can be classified as individual/organisation/unknown as matching evidence, without implying sole_trader or legal form. Not emitted in this pass.",
+      "observation.source_record_id": "The export 'index' field is not a durable key; a deterministic record id is constructed from stable field values (programme, round, recipient, project, amount) after Unicode NFKC, dash/apostrophe folding and case-folding, and documented in record_id.rationale.",
+      "observation.licence": "Dataset metadata states CC-BY-4.0; record it on observations.",
+      "observation.observed_at": "No source-stated observation date exists; observed_at is set to the snapshot retrieval time and documented as such, distinct from ingested_at only by provenance note."
+    },
+    "unmapped": [
+      {
+        "source_path": "index",
+        "reason": "Export row ordinal that may change between snapshots; not a stable business key, so it is not modelled as a concept. Use a constructed deterministic source_record_id instead."
+      },
+      {
+        "source_path": "grant_list",
+        "reason": "Concatenates a programme code and label; split into dyn.grant_programme.code and dyn.grant_programme.name rather than stored as a single redundant alias. Code is withheld when the label does not match the grant field after normalisation."
+      },
+      {
+        "source_path": "abn",
+        "reason": "Checksum-invalid ABNs are nulled and reported separately from absence; they are not emitted as dyn.grant_award.recipient_abn."
+      }
+    ]
+  }
+}

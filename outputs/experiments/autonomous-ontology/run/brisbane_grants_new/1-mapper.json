@@ -1,0 +1,345 @@
+{
+  "request_sha256": "a8179a6f5269e4cf75a6f6012bac707799cccdfe2b52b677d89900379791384f",
+  "role": "mapper",
+  "model": "deepseek-v4-flash",
+  "seconds": 17.486,
+  "response": {
+    "source_id": "brisbane_grants_new",
+    "record_grain": "One grant award record: a single (grant programme, grant round, recipient, project, amount approved) entry from the Opendatasoft JSON export.",
+    "grain_rationale": "The top-level JSON array is the record list; each flat object is one published award entry. The 'index' field is an export ordinal, not a durable business key, so the record id is constructed from stable award attributes after Unicode NFKC, dash/apostrophe folding and case-folding.",
+    "reader": {
+      "format": "json",
+      "archive_member": null,
+      "encoding": "utf-8-sig",
+      "delimiter": null,
+      "skip_rows": 0,
+      "sheet": null,
+      "record_path": null
+    },
+    "record_id": {
+      "strategy": "columns",
+      "source_paths": [
+        "grant",
+        "grant_round",
+        "organisation_recipient",
+        "project",
+        "amount_approved"
+      ],
+      "rationale": "No stable publisher key exists; the award is identified by programme, round, published recipient, project text and amount. 'index' is an export ordinal and is excluded. Key inputs are normalised (Unicode NFKC, dash/apostrophe folding, case-fold) before hashing so that re-published rows with typographic dash or apostrophe variants produce the same record id."
+    },
+    "observed_at": {
+      "source_path": null,
+      "steps": [],
+      "fallback": "resource_last_modified"
+    },
+    "fields": [
+      {
+        "source_paths": [
+          "amount_approved"
+        ],
+        "join_with": " ",
+        "when": null,
+        "target": "dyn.grant_award.amount_approved",
+        "valid_from_path": null,
+        "valid_to_path": null,
+        "validity_date_formats": null,
+        "claim_scope": null,
+        "steps": [
+          {
+            "op": "parse_decimal",
+            "args": {}
+          }
+        ],
+        "confidence": 0.9,
+        "rationale": "Published award amount; parsed as decimal. It is an award amount, not recipient income. Currency is inferred as AUD from the Brisbane City Council publisher jurisdiction and is not source-stated; flagged as inferred.",
+        "entity": "grant_award",
+        "qualifiers": {
+          "currency": {
+            "source_path": null,
+            "value": "AUD",
+            "steps": []
+          }
+        },
+        "one_hot": null
+      },
+      {
+        "source_paths": [
+          "grant_round"
+        ],
+        "join_with": " ",
+        "when": null,
+        "target": "dyn.grant_award.round",
+        "valid_from_path": null,
+        "valid_to_path": null,
+        "validity_date_formats": null,
+        "claim_scope": null,
+        "steps": [
+          {
+            "op": "trim",
+            "args": {}
+          },
+          {
+            "op": "collapse_whitespace",
+            "args": {}
+          }
+        ],
+        "confidence": 0.9,
+        "rationale": "Publisher's round/financial-year label for the award cycle, kept as text.",
+        "entity": "grant_award",
+        "qualifiers": null,
+        "one_hot": null
+      },
+      {
+        "source_paths": [
+          "project"
+        ],
+        "join_with": " ",
+        "when": null,
+        "target": "dyn.grant_award.project_description",
+        "valid_from_path": null,
+        "valid_to_path": null,
+        "validity_date_formats": null,
+        "claim_scope": null,
+        "steps": [
+          {
+            "op": "trim",
+            "args": {}
+          },
+          {
+            "op": "collapse_whitespace",
+            "args": {}
+          }
+        ],
+        "confidence": 0.85,
+        "rationale": "Free-text project description owned by the award; not converted to an industry or sector code.",
+        "entity": "grant_award",
+        "qualifiers": null,
+        "one_hot": null
+      },
+      {
+        "source_paths": [
+          "organisation_recipient"
+        ],
+        "join_with": " ",
+        "when": null,
+        "target": "dyn.grant_award.recipient_name_as_published",
+        "valid_from_path": null,
+        "valid_to_path": null,
+        "validity_date_formats": null,
+        "claim_scope": null,
+        "steps": [
+          {
+            "op": "trim",
+            "args": {}
+          },
+          {
+            "op": "collapse_whitespace",
+            "args": {}
+          }
+        ],
+        "confidence": 0.9,
+        "rationale": "Recipient string as published; may be a natural person or organisation, so it is award-level matching evidence, not a legal name. May contain personal data when the recipient is a natural person, but is not always personal.",
+        "entity": "grant_award",
+        "qualifiers": null,
+        "one_hot": null
+      },
+      {
+        "source_paths": [
+          "abn"
+        ],
+        "join_with": " ",
+        "when": null,
+        "target": "dyn.grant_award.recipient_abn",
+        "valid_from_path": null,
+        "valid_to_path": null,
+        "validity_date_formats": null,
+        "claim_scope": null,
+        "steps": [
+          {
+            "op": "trim",
+            "args": {}
+          },
+          {
+            "op": "null_if",
+            "args": {
+              "values": [
+                "",
+                "NULL",
+                "null"
+              ]
+            }
+          },
+          {
+            "op": "abn",
+            "args": {}
+          }
+        ],
+        "confidence": 0.85,
+        "rationale": "ABN recorded against the award recipient; checksum-validated. Presence does not establish company status or legal form, so it stays award-level until the recipient is resolved. Checksum-invalid values are nulled and reported separately from absence.",
+        "entity": "grant_award",
+        "qualifiers": null,
+        "one_hot": null
+      },
+      {
+        "source_paths": [
+          "grant"
+        ],
+        "join_with": " ",
+        "when": null,
+        "target": "dyn.grant_programme.name",
+        "valid_from_path": null,
+        "valid_to_path": null,
+        "validity_date_formats": null,
+        "claim_scope": null,
+        "steps": [
+          {
+            "op": "trim",
+            "args": {}
+          },
+          {
+            "op": "collapse_whitespace",
+            "args": {}
+          }
+        ],
+        "confidence": 0.9,
+        "rationale": "Published programme label under which the award was made. Where the publisher appends a ward/locality suffix, the suffix is a delivery location variant of the same scheme and is recorded separately in dyn.grant_programme.locality_variant.",
+        "entity": "grant_programme",
+        "qualifiers": null,
+        "one_hot": null
+      },
+      {
+        "source_paths": [
+          "grant_list"
+        ],
+        "join_with": " ",
+        "when": null,
+        "target": "dyn.grant_programme.code",
+        "valid_from_path": null,
+        "valid_to_path": null,
+        "validity_date_formats": null,
+        "claim_scope": null,
+        "steps": [
+          {
+            "op": "trim",
+            "args": {}
+          },
+          {
+            "op": "regex_extract",
+            "args": {
+              "pattern": "^([^,]+),",
+              "group": 1
+            }
+          },
+          {
+            "op": "trim",
+            "args": {}
+          }
+        ],
+        "confidence": 0.8,
+        "rationale": "The combined grant_list field prefixes a short programme code before the comma; extracted as the programme code. Only emitted when the grant_list label matches the grant field after Unicode NFKC, dash/apostrophe folding and case-folding; mismatches are flagged and the code is withheld.",
+        "entity": "grant_programme",
+        "qualifiers": null,
+        "one_hot": null
+      },
+      {
+        "source_paths": [
+          "group"
+        ],
+        "join_with": " ",
+        "when": null,
+        "target": "dyn.grant_programme.group",
+        "valid_from_path": null,
+        "valid_to_path": null,
+        "validity_date_formats": null,
+        "claim_scope": null,
+        "steps": [
+          {
+            "op": "trim",
+            "args": {}
+          },
+          {
+            "op": "collapse_whitespace",
+            "args": {}
+          }
+        ],
+        "confidence": 0.85,
+        "rationale": "Publisher's broader programme group/category, kept in publisher wording.",
+        "entity": "grant_programme",
+        "qualifiers": null,
+        "one_hot": null
+      },
+      {
+        "source_paths": [
+          "grant"
+        ],
+        "join_with": " ",
+        "when": null,
+        "target": "dyn.grant_programme.locality_variant",
+        "valid_from_path": null,
+        "valid_to_path": null,
+        "validity_date_formats": null,
+        "claim_scope": null,
+        "steps": [
+          {
+            "op": "trim",
+            "args": {}
+          },
+          {
+            "op": "collapse_whitespace",
+            "args": {}
+          },
+          {
+            "op": "regex_extract",
+            "args": {
+              "pattern": "\\s+[-\\u2013\\u2014]\\s+(.+)$",
+              "group": 1
+            }
+          }
+        ],
+        "confidence": 0.75,
+        "rationale": "Ward/locality suffix appended to the programme label (e.g. Coorparoo, Bracken Ridge, Northgate), recorded separately so the programme can be keyed on the scheme name rather than the ward-scoped label. A delivery location, not a distinct scheme.",
+        "entity": "grant_programme",
+        "qualifiers": null,
+        "one_hot": null
+      }
+    ],
+    "entities": {
+      "grant_award": {
+        "kind": "grant_award",
+        "key_paths": [
+          "grant",
+          "grant_round",
+          "organisation_recipient",
+          "project",
+          "amount_approved"
+        ],
+        "rationale": "Award record identified by programme, round, published recipient, project and amount, with key inputs normalised (Unicode NFKC, dash/apostrophe folding, case-fold) before hashing for cross-snapshot stability."
+      },
+      "grant_programme": {
+        "kind": "grant_programme",
+        "key_paths": [
+          "grant"
+        ],
+        "rationale": "Programme identified by its published label; code, group and locality variant are attributes of the same programme. Ward/locality suffixes are recorded separately in dyn.grant_programme.locality_variant so the programme can be keyed on the scheme name rather than the ward-scoped label."
+      }
+    },
+    "relationships": [
+      {
+        "type": "AWARDS_GRANT",
+        "from_role": "grant_programme",
+        "to_role": "grant_award",
+        "rationale": "Each award is made under the programme named in the grant field."
+      }
+    ],
+    "unmapped": [
+      {
+        "source_path": "index",
+        "reason": "Export row ordinal that may change between snapshots; not a stable business key, so it is not modelled. A deterministic record id is constructed from stable award attributes instead."
+      }
+    ],
+    "notes": "Recipients mix individuals and organisations; no business entity role is declared because recipient identity is unresolved. entity.abn, ext.entity.holder_kind and RECEIVES_GRANT may be populated downstream only after recipient resolution and ABN checksum validation; RECEIVES_GRANT is intentionally unpopulated in this pass. Amounts are award amounts, not business income. Currency AUD is inferred from the Brisbane City Council publisher jurisdiction and is not source-stated. No source-stated observation date exists; observed_at falls back to the snapshot retrieval time and is documented as such, distinct from ingested_at. Dataset licence is CC-BY-4.0 per metadata.",
+    "constants": [],
+    "profile_context": null,
+    "extensions": "dynamic"
+  }
+}

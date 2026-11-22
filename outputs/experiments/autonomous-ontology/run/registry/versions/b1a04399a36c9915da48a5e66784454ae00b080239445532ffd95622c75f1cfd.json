@@ -1,0 +1,1127 @@
+{
+  "parent": "db7f01dab23e6f042a75c6df261be2b61dfa1ceba7daff6afe5eab3543256f1b",
+  "legacy_ontology_sha256": "3c341084a48a93659b3dd47ff6b91cf8a76a6a4936e0439279fed9370e782be4",
+  "entity_types": {
+    "business": "The source's business/legal-person subject; legal form remains unknown unless stated.",
+    "licence": "An authorisation held by a business.",
+    "establishment": "A physical operating facility, separate from its operator."
+  },
+  "concepts": {
+    "ext.entity.former_name": {
+      "path": "ext.entity.former_name",
+      "type": "string",
+      "owner": "business",
+      "definition": "A legal name the business held before its current one. Use valid_from/valid_to paths when the source dates the name. Never a trading name.",
+      "values": [],
+      "multi": true,
+      "required_qualifiers": [],
+      "personal_data": "never",
+      "pattern": null
+    },
+    "ext.entity.legal_form": {
+      "path": "ext.entity.legal_form",
+      "type": "enum",
+      "owner": "business",
+      "definition": "Registrar's company type, decoded through a crosswalk table. Unknown codes -> unknown.",
+      "values": [
+        "proprietary_company",
+        "public_company",
+        "listed_public_company",
+        "foreign_company",
+        "registered_body",
+        "incorporated_association",
+        "cooperative",
+        "other",
+        "unknown"
+      ],
+      "multi": false,
+      "required_qualifiers": [],
+      "personal_data": "never",
+      "pattern": null
+    },
+    "ext.entity.legal_form_detail": {
+      "path": "ext.entity.legal_form_detail",
+      "type": "string",
+      "owner": "business",
+      "definition": "Finer legal structure stated by the registrar (limited by shares/guarantee, listed, superannuation trustee, non-profit). Value is \"CODE: label\" from a crosswalk table.",
+      "values": [],
+      "multi": true,
+      "required_qualifiers": [],
+      "personal_data": "never",
+      "pattern": null
+    },
+    "ext.entity.status_detail": {
+      "path": "ext.entity.status_detail",
+      "type": "string",
+      "owner": "business",
+      "definition": "The registrar's full status code and label (\"EXAD: External administration\"). The core entity.status enum stays coarse; distress codes live here.",
+      "values": [],
+      "multi": false,
+      "required_qualifiers": [],
+      "personal_data": "never",
+      "pattern": null
+    },
+    "ext.entity.date_established": {
+      "path": "ext.entity.date_established",
+      "type": "date",
+      "owner": "business",
+      "definition": "Founding / establishment date. Not a registration date.",
+      "values": [],
+      "multi": false,
+      "required_qualifiers": [],
+      "personal_data": "never",
+      "pattern": null
+    },
+    "ext.entity.sector_tag": {
+      "path": "ext.entity.sector_tag",
+      "type": "string",
+      "owner": "business",
+      "definition": "A source-stated activity or beneficiary tag, e.g. scheme acnc_purpose or acnc_beneficiary. Keep the publisher's wording.",
+      "values": [],
+      "multi": true,
+      "required_qualifiers": [
+        "scheme"
+      ],
+      "personal_data": "never",
+      "pattern": null
+    },
+    "ext.entity.industry_code": {
+      "path": "ext.entity.industry_code",
+      "type": "string",
+      "owner": "business",
+      "definition": "ANZSIC 2006 division letter, subdivision, group or class, produced only through a reviewed crosswalk table from a source-stated activity (trade class, licence category, purpose). The raw source value is kept in raw_value. scheme = anzsic2006.",
+      "values": [],
+      "multi": true,
+      "required_qualifiers": [
+        "scheme"
+      ],
+      "personal_data": "never",
+      "pattern": "^(?:[A-S]|[0-9]{2,4})$"
+    },
+    "ext.entity.operating_region": {
+      "path": "ext.entity.operating_region",
+      "type": "enum",
+      "owner": "business",
+      "definition": "Where the business says it operates (service footprint), not where it is registered.",
+      "values": [
+        "ACT",
+        "NSW",
+        "NT",
+        "QLD",
+        "SA",
+        "TAS",
+        "VIC",
+        "WA",
+        "NATIONAL",
+        "OVERSEAS"
+      ],
+      "multi": true,
+      "required_qualifiers": [],
+      "personal_data": "never",
+      "pattern": null
+    },
+    "ext.entity.operating_country": {
+      "path": "ext.entity.operating_country",
+      "type": "string",
+      "owner": "business",
+      "definition": "Country the business says it operates in, as the source writes it (one per observation).",
+      "values": [],
+      "multi": true,
+      "required_qualifiers": [],
+      "personal_data": "never",
+      "pattern": null
+    },
+    "ext.entity.tax_concession": {
+      "path": "ext.entity.tax_concession",
+      "type": "enum",
+      "owner": "business",
+      "definition": "Tax-concession status stated by the regulator (Public Benevolent Institution, Health Promotion Charity).",
+      "values": [
+        "PBI",
+        "HPC",
+        "DGR"
+      ],
+      "multi": true,
+      "required_qualifiers": [],
+      "personal_data": "never",
+      "pattern": null
+    },
+    "ext.entity.responsible_persons": {
+      "path": "ext.entity.responsible_persons",
+      "type": "integer",
+      "owner": "business",
+      "definition": "Number of responsible persons (board size) the regulator reports.",
+      "values": [],
+      "multi": false,
+      "required_qualifiers": [],
+      "personal_data": "never",
+      "pattern": null
+    },
+    "ext.entity.financial_year_end": {
+      "path": "ext.entity.financial_year_end",
+      "type": "string",
+      "owner": "business",
+      "definition": "Reporting-cycle end as dd-Mon (e.g. 30-Jun). Used to schedule refreshes.",
+      "values": [],
+      "multi": false,
+      "required_qualifiers": [],
+      "personal_data": "never",
+      "pattern": "^[0-9]{2}-[A-Z][a-z]{2}$"
+    },
+    "ext.entity.prior_registration_state": {
+      "path": "ext.entity.prior_registration_state",
+      "type": "string",
+      "owner": "business",
+      "definition": "State of original incorporation before national registration. Not an address.",
+      "values": [],
+      "multi": false,
+      "required_qualifiers": [],
+      "personal_data": "never",
+      "pattern": null
+    },
+    "ext.entity.prior_registration_number": {
+      "path": "ext.entity.prior_registration_number",
+      "type": "string",
+      "owner": "business",
+      "definition": "Legacy state registration number.",
+      "values": [],
+      "multi": false,
+      "required_qualifiers": [],
+      "personal_data": "never",
+      "pattern": null
+    },
+    "ext.entity.address_point": {
+      "path": "ext.entity.address_point",
+      "type": "point",
+      "owner": "business",
+      "definition": "lat,lon of the business's OWN stated address (e.g. a licensee's business address). A premises or site location is ext.establishment.geo on an establishment role instead.",
+      "values": [],
+      "multi": false,
+      "required_qualifiers": [],
+      "personal_data": "never",
+      "pattern": null
+    },
+    "ext.entity.holder_kind": {
+      "path": "ext.entity.holder_kind",
+      "type": "enum",
+      "owner": "business",
+      "definition": "Whether the source says the record's holder is a natural person or an organisation. This is matching evidence. It never implies sole_trader.",
+      "values": [
+        "individual",
+        "organisation",
+        "unknown"
+      ],
+      "multi": false,
+      "required_qualifiers": [],
+      "personal_data": "never",
+      "pattern": null
+    },
+    "ext.financial.total_income": {
+      "path": "ext.financial.total_income",
+      "type": "decimal",
+      "owner": "business",
+      "definition": "Total income as published for a stated reporting period. A fact for a period, not a current attribute.",
+      "values": [],
+      "multi": false,
+      "required_qualifiers": [
+        "currency",
+        "period"
+      ],
+      "personal_data": "never",
+      "pattern": null
+    },
+    "ext.financial.taxable_income": {
+      "path": "ext.financial.taxable_income",
+      "type": "decimal",
+      "owner": "business",
+      "definition": "Taxable income for the period. Missing is not zero.",
+      "values": [],
+      "multi": false,
+      "required_qualifiers": [
+        "currency",
+        "period"
+      ],
+      "personal_data": "never",
+      "pattern": null
+    },
+    "ext.financial.tax_payable": {
+      "path": "ext.financial.tax_payable",
+      "type": "decimal",
+      "owner": "business",
+      "definition": "Tax payable for the period.",
+      "values": [],
+      "multi": false,
+      "required_qualifiers": [
+        "currency",
+        "period"
+      ],
+      "personal_data": "never",
+      "pattern": null
+    },
+    "ext.financial.revenue_band": {
+      "path": "ext.financial.revenue_band",
+      "type": "string",
+      "owner": "business",
+      "definition": "A revenue/turnover band from a named scheme (acnc_size_2022, qbcc_mfr). The value must be a label of that scheme's crosswalk table; band thresholds live in the table, not in the claim.",
+      "values": [],
+      "multi": false,
+      "required_qualifiers": [
+        "scheme"
+      ],
+      "personal_data": "never",
+      "pattern": null
+    },
+    "ext.licence.number": {
+      "path": "ext.licence.number",
+      "type": "string",
+      "owner": "licence",
+      "definition": "Publisher-assigned licence number. Identifies the licence across snapshots.",
+      "values": [],
+      "multi": false,
+      "required_qualifiers": [],
+      "personal_data": "never",
+      "pattern": null
+    },
+    "ext.licence.issuer": {
+      "path": "ext.licence.issuer",
+      "type": "string",
+      "owner": "licence",
+      "definition": "Licensing body.",
+      "values": [],
+      "multi": false,
+      "required_qualifiers": [],
+      "personal_data": "never",
+      "pattern": null
+    },
+    "ext.licence.class": {
+      "path": "ext.licence.class",
+      "type": "string",
+      "owner": "licence",
+      "definition": "Licence class / licensed trade in the publisher's wording.",
+      "values": [],
+      "multi": true,
+      "required_qualifiers": [],
+      "personal_data": "never",
+      "pattern": null
+    },
+    "ext.licence.grade": {
+      "path": "ext.licence.grade",
+      "type": "string",
+      "owner": "licence",
+      "definition": "Kind of licence (contractor, supervisor, nominee ...).",
+      "values": [],
+      "multi": false,
+      "required_qualifiers": [],
+      "personal_data": "never",
+      "pattern": null
+    },
+    "ext.licence.category": {
+      "path": "ext.licence.category",
+      "type": "string",
+      "owner": "licence",
+      "definition": "Licence category in the publisher's wording.",
+      "values": [],
+      "multi": false,
+      "required_qualifiers": [],
+      "personal_data": "never",
+      "pattern": null
+    },
+    "ext.licence.authorisation": {
+      "path": "ext.licence.authorisation",
+      "type": "string",
+      "owner": "licence",
+      "definition": "One authorised activity per observation (split the publisher's list).",
+      "values": [],
+      "multi": true,
+      "required_qualifiers": [],
+      "personal_data": "never",
+      "pattern": null
+    },
+    "ext.licence.authorisation_text": {
+      "path": "ext.licence.authorisation_text",
+      "type": "string",
+      "owner": "licence",
+      "definition": "Complete publisher authorisation text, including headings and conditions. Unparsed source evidence, not independent permission claims.",
+      "values": [],
+      "multi": false,
+      "required_qualifiers": [],
+      "personal_data": "never",
+      "pattern": null
+    },
+    "ext.licence.start_date": {
+      "path": "ext.licence.start_date",
+      "type": "date",
+      "owner": "licence",
+      "definition": "Publisher-stated commencement of the licence, not the business establishment or registration date.",
+      "values": [],
+      "multi": false,
+      "required_qualifiers": [],
+      "personal_data": "never",
+      "pattern": null
+    },
+    "ext.licence.end_date": {
+      "path": "ext.licence.end_date",
+      "type": "date",
+      "owner": "licence",
+      "definition": "Publisher-stated end of the licence, not the end of the business or all its claims.",
+      "values": [],
+      "multi": false,
+      "required_qualifiers": [],
+      "personal_data": "never",
+      "pattern": null
+    },
+    "ext.licence.status": {
+      "path": "ext.licence.status",
+      "type": "string",
+      "owner": "licence",
+      "definition": "Licence status as published (licence status, not company status).",
+      "values": [],
+      "multi": false,
+      "required_qualifiers": [],
+      "personal_data": "never",
+      "pattern": null
+    },
+    "ext.licence.condition": {
+      "path": "ext.licence.condition",
+      "type": "string",
+      "owner": "licence",
+      "definition": "Licence condition such as trading hours.",
+      "values": [],
+      "multi": true,
+      "required_qualifiers": [],
+      "personal_data": "never",
+      "pattern": null
+    },
+    "ext.licence.status_event": {
+      "path": "ext.licence.status_event",
+      "type": "string",
+      "owner": "licence",
+      "definition": "A dated status-history entry (e.g. a contravention of a licence condition).",
+      "values": [],
+      "multi": true,
+      "required_qualifiers": [],
+      "personal_data": "never",
+      "pattern": null
+    },
+    "ext.licence.edr_scheme": {
+      "path": "ext.licence.edr_scheme",
+      "type": "string",
+      "owner": "licence",
+      "definition": "External dispute-resolution scheme membership.",
+      "values": [],
+      "multi": true,
+      "required_qualifiers": [],
+      "personal_data": "never",
+      "pattern": null
+    },
+    "ext.licence.related_licence_number": {
+      "path": "ext.licence.related_licence_number",
+      "type": "string",
+      "owner": "licence",
+      "definition": "Number of another licence the same holder holds (e.g. an AFS licence number). 0 / blank = none.",
+      "values": [],
+      "multi": false,
+      "required_qualifiers": [],
+      "personal_data": "never",
+      "pattern": null
+    },
+    "ext.establishment.name": {
+      "path": "ext.establishment.name",
+      "type": "string",
+      "owner": "establishment",
+      "definition": "Site or premises name.",
+      "values": [],
+      "multi": false,
+      "required_qualifiers": [],
+      "personal_data": "never",
+      "pattern": null
+    },
+    "ext.establishment.source_key": {
+      "path": "ext.establishment.source_key",
+      "type": "string",
+      "owner": "establishment",
+      "definition": "Publisher's site code. Identifies the site across snapshots.",
+      "values": [],
+      "multi": false,
+      "required_qualifiers": [],
+      "personal_data": "never",
+      "pattern": null
+    },
+    "ext.establishment.geo": {
+      "path": "ext.establishment.geo",
+      "type": "point",
+      "owner": "establishment",
+      "definition": "\"lat,lon\" in decimal degrees inside Australia. The literal NULL is missing.",
+      "values": [],
+      "multi": false,
+      "required_qualifiers": [],
+      "personal_data": "never",
+      "pattern": null
+    },
+    "ext.establishment.lga": {
+      "path": "ext.establishment.lga",
+      "type": "string",
+      "owner": "establishment",
+      "definition": "Local government area.",
+      "values": [],
+      "multi": false,
+      "required_qualifiers": [],
+      "personal_data": "never",
+      "pattern": null
+    },
+    "ext.establishment.region": {
+      "path": "ext.establishment.region",
+      "type": "string",
+      "owner": "establishment",
+      "definition": "Publisher's region (licensing region, metro/regional, employment services area).",
+      "values": [],
+      "multi": true,
+      "required_qualifiers": [],
+      "personal_data": "never",
+      "pattern": null
+    },
+    "ext.establishment.capacity": {
+      "path": "ext.establishment.capacity",
+      "type": "integer",
+      "owner": "establishment",
+      "definition": "Published maximum patron count or similar capacity.",
+      "values": [],
+      "multi": false,
+      "required_qualifiers": [],
+      "personal_data": "never",
+      "pattern": null
+    },
+    "ext.establishment.program": {
+      "path": "ext.establishment.program",
+      "type": "string",
+      "owner": "establishment",
+      "definition": "Government programme or contract code delivered at this site.",
+      "values": [],
+      "multi": true,
+      "required_qualifiers": [],
+      "personal_data": "never",
+      "pattern": null
+    },
+    "ext.contact.phone": {
+      "path": "ext.contact.phone",
+      "type": "phone",
+      "owner": "any",
+      "definition": "Phone number normalised to E.164 (+61...). Numbers shorter than 8 digits or without an area code are rejected. Mobiles are personal data unless published as a business line.",
+      "values": [],
+      "multi": true,
+      "required_qualifiers": [],
+      "personal_data": "mobile_numbers",
+      "pattern": null
+    },
+    "ext.contact.email_domain": {
+      "path": "ext.contact.email_domain",
+      "type": "domain",
+      "owner": "any",
+      "definition": "The domain of a published email address. Personal local parts are never stored.",
+      "values": [],
+      "multi": true,
+      "required_qualifiers": [],
+      "personal_data": "never",
+      "pattern": null
+    },
+    "ext.contact.role_email": {
+      "path": "ext.contact.role_email",
+      "type": "email",
+      "owner": "any",
+      "definition": "A role mailbox (info@, enquiries@, admin@ ...). Personal mailboxes are dropped by the transform.",
+      "values": [],
+      "multi": true,
+      "required_qualifiers": [],
+      "personal_data": "never",
+      "pattern": null
+    },
+    "ext.contact.website_domain": {
+      "path": "ext.contact.website_domain",
+      "type": "domain",
+      "owner": "any",
+      "definition": "Registrable host of a published website (www. removed).",
+      "values": [],
+      "multi": true,
+      "required_qualifiers": [],
+      "personal_data": "never",
+      "pattern": null
+    },
+    "entity.legal_name": {
+      "path": "entity.legal_name",
+      "type": "string",
+      "owner": "business",
+      "definition": "As registered. Not the trading name.",
+      "values": [],
+      "multi": false,
+      "required_qualifiers": [],
+      "personal_data": "never",
+      "pattern": null
+    },
+    "entity.trading_name": {
+      "path": "entity.trading_name",
+      "type": "string",
+      "owner": "business",
+      "definition": "May be multiple. Emit one observation each.",
+      "values": [],
+      "multi": false,
+      "required_qualifiers": [],
+      "personal_data": "never",
+      "pattern": null
+    },
+    "entity.abn": {
+      "path": "entity.abn",
+      "type": "string",
+      "owner": "business",
+      "definition": "Australian Business Number. Has a checksum — validate it, do not just length-check.",
+      "values": [],
+      "multi": false,
+      "required_qualifiers": [],
+      "personal_data": "never",
+      "pattern": "^\\d{11}$"
+    },
+    "entity.acn": {
+      "path": "entity.acn",
+      "type": "string",
+      "owner": "business",
+      "definition": "Australian Company Number. Also checksummed. The last 9 digits of an ABN are often the ACN, but not always.",
+      "values": [],
+      "multi": false,
+      "required_qualifiers": [],
+      "personal_data": "never",
+      "pattern": "^\\d{9}$"
+    },
+    "entity.nzbn": {
+      "path": "entity.nzbn",
+      "type": "string",
+      "owner": "business",
+      "definition": "New Zealand Business Number, if you happen to hit an NZ source.",
+      "values": [],
+      "multi": false,
+      "required_qualifiers": [],
+      "personal_data": "never",
+      "pattern": "^\\d{13}$"
+    },
+    "entity.entity_type": {
+      "path": "entity.entity_type",
+      "type": "enum",
+      "owner": "business",
+      "definition": "Default to unknown. Guessing here causes downstream harm.",
+      "values": [
+        "company",
+        "sole_trader",
+        "partnership",
+        "trust",
+        "incorporated_association",
+        "government",
+        "other",
+        "unknown"
+      ],
+      "multi": false,
+      "required_qualifiers": [],
+      "personal_data": "never",
+      "pattern": null
+    },
+    "entity.status": {
+      "path": "entity.status",
+      "type": "enum",
+      "owner": "business",
+      "definition": "",
+      "values": [
+        "active",
+        "deregistered",
+        "in_liquidation",
+        "suspended",
+        "unknown"
+      ],
+      "multi": false,
+      "required_qualifiers": [],
+      "personal_data": "never",
+      "pattern": null
+    },
+    "entity.website": {
+      "path": "entity.website",
+      "type": "string",
+      "owner": "business",
+      "definition": "",
+      "values": [],
+      "multi": false,
+      "required_qualifiers": [],
+      "personal_data": "never",
+      "pattern": null
+    },
+    "entity.industry_code": {
+      "path": "entity.industry_code",
+      "type": "string",
+      "owner": "business",
+      "definition": "ANZSIC where available. Record the raw source value too.",
+      "values": [],
+      "multi": false,
+      "required_qualifiers": [],
+      "personal_data": "never",
+      "pattern": null
+    },
+    "entity.date_registered": {
+      "path": "entity.date_registered",
+      "type": "date",
+      "owner": "business",
+      "definition": "",
+      "values": [],
+      "multi": false,
+      "required_qualifiers": [],
+      "personal_data": "never",
+      "pattern": null
+    },
+    "address.full": {
+      "path": "address.full",
+      "type": "string",
+      "owner": "business",
+      "definition": "",
+      "values": [],
+      "multi": false,
+      "required_qualifiers": [],
+      "personal_data": "never",
+      "pattern": null
+    },
+    "address.locality": {
+      "path": "address.locality",
+      "type": "string",
+      "owner": "business",
+      "definition": "",
+      "values": [],
+      "multi": false,
+      "required_qualifiers": [],
+      "personal_data": "never",
+      "pattern": null
+    },
+    "address.state": {
+      "path": "address.state",
+      "type": "enum",
+      "owner": "business",
+      "definition": "",
+      "values": [
+        "NSW",
+        "VIC",
+        "QLD",
+        "WA",
+        "SA",
+        "TAS",
+        "ACT",
+        "NT",
+        "NZ",
+        "OTHER"
+      ],
+      "multi": false,
+      "required_qualifiers": [],
+      "personal_data": "never",
+      "pattern": null
+    },
+    "address.postcode": {
+      "path": "address.postcode",
+      "type": "string",
+      "owner": "business",
+      "definition": "",
+      "values": [],
+      "multi": false,
+      "required_qualifiers": [],
+      "personal_data": "never",
+      "pattern": null
+    },
+    "address.country": {
+      "path": "address.country",
+      "type": "string",
+      "owner": "business",
+      "definition": "",
+      "values": [],
+      "multi": false,
+      "required_qualifiers": [],
+      "personal_data": "never",
+      "pattern": null
+    },
+    "observation.source_id": {
+      "path": "observation.source_id",
+      "type": "string",
+      "owner": "business",
+      "definition": "Stable identifier for the dataset the claim came from.",
+      "values": [],
+      "multi": false,
+      "required_qualifiers": [],
+      "personal_data": "never",
+      "pattern": null
+    },
+    "observation.source_record_id": {
+      "path": "observation.source_record_id",
+      "type": "string",
+      "owner": "business",
+      "definition": "Must be traceable back to the exact raw record. If the source has no key, construct a deterministic one and document how.",
+      "values": [],
+      "multi": false,
+      "required_qualifiers": [],
+      "personal_data": "never",
+      "pattern": null
+    },
+    "observation.observed_at": {
+      "path": "observation.observed_at",
+      "type": "datetime",
+      "owner": "business",
+      "definition": "When the source stated it.",
+      "values": [],
+      "multi": false,
+      "required_qualifiers": [],
+      "personal_data": "never",
+      "pattern": null
+    },
+    "observation.ingested_at": {
+      "path": "observation.ingested_at",
+      "type": "datetime",
+      "owner": "business",
+      "definition": "When you read it. These are different and both matter.",
+      "values": [],
+      "multi": false,
+      "required_qualifiers": [],
+      "personal_data": "never",
+      "pattern": null
+    },
+    "observation.valid_from": {
+      "path": "observation.valid_from",
+      "type": "date",
+      "owner": "business",
+      "definition": "When the claim became true in the world, if the source says.",
+      "values": [],
+      "multi": false,
+      "required_qualifiers": [],
+      "personal_data": "never",
+      "pattern": null
+    },
+    "observation.valid_to": {
+      "path": "observation.valid_to",
+      "type": "date",
+      "owner": "business",
+      "definition": "Null means still current as far as this source knows.",
+      "values": [],
+      "multi": false,
+      "required_qualifiers": [],
+      "personal_data": "never",
+      "pattern": null
+    },
+    "observation.licence": {
+      "path": "observation.licence",
+      "type": "string",
+      "owner": "business",
+      "definition": "From the dataset metadata. CKAN exposes it. If a source has no clear licence, that is a finding, not a blocker — record 'unknown' and flag it.",
+      "values": [],
+      "multi": false,
+      "required_qualifiers": [],
+      "personal_data": "never",
+      "pattern": null
+    },
+    "observation.extractor_version": {
+      "path": "observation.extractor_version",
+      "type": "string",
+      "owner": "business",
+      "definition": "Which version of your mapping config and engine produced this. You will be glad of it later.",
+      "values": [],
+      "multi": false,
+      "required_qualifiers": [],
+      "personal_data": "never",
+      "pattern": null
+    },
+    "confidence.source_reliability": {
+      "path": "confidence.source_reliability",
+      "type": "float",
+      "owner": "business",
+      "definition": "How much do we trust this publisher on this kind of claim.",
+      "values": [],
+      "multi": false,
+      "required_qualifiers": [],
+      "personal_data": "never",
+      "pattern": null
+    },
+    "confidence.field_confidence": {
+      "path": "confidence.field_confidence",
+      "type": "float",
+      "owner": "business",
+      "definition": "How sure are we that we mapped and parsed this field correctly.",
+      "values": [],
+      "multi": false,
+      "required_qualifiers": [],
+      "personal_data": "never",
+      "pattern": null
+    },
+    "confidence.link_confidence": {
+      "path": "confidence.link_confidence",
+      "type": "float",
+      "owner": "business",
+      "definition": "How sure are we that this record refers to that entity. Only on links.",
+      "values": [],
+      "multi": false,
+      "required_qualifiers": [],
+      "personal_data": "never",
+      "pattern": null
+    },
+    "dyn.establishment.npi_facility_id": {
+      "path": "dyn.establishment.npi_facility_id",
+      "type": "string",
+      "owner": "establishment",
+      "definition": "The national NPI facility identifier assigned by the National Pollutant Inventory, unique across all jurisdictions. Identifies the facility across snapshots; it is not the operator's ABN/ACN.",
+      "values": [],
+      "multi": false,
+      "required_qualifiers": [],
+      "source_paths": [
+        "facility_id"
+      ],
+      "why_not_existing": "ext.establishment.source_key is a generic publisher site code; the NPI national facility identifier is a distinct, nationally unique key that must not be conflated with the state-scoped jurisdiction_facility_id, so a dedicated concept preserves the correct identity semantics.",
+      "personal_data": "never"
+    },
+    "dyn.establishment.jurisdiction_facility_id": {
+      "path": "dyn.establishment.jurisdiction_facility_id",
+      "type": "string",
+      "owner": "establishment",
+      "definition": "The state/territory-scoped NPI facility identifier. Only unique within its jurisdiction_code, so it must always be qualified by the jurisdiction and never used alone as a key.",
+      "values": [],
+      "multi": false,
+      "required_qualifiers": [
+        "jurisdiction_code"
+      ],
+      "source_paths": [
+        "jurisdiction_facility_id"
+      ],
+      "why_not_existing": "No existing concept captures a jurisdiction-scoped facility identifier; ext.establishment.source_key is a single publisher code and would lose the required jurisdiction qualifier.",
+      "personal_data": "never"
+    },
+    "dyn.establishment.jurisdiction_code": {
+      "path": "dyn.establishment.jurisdiction_code",
+      "type": "string",
+      "owner": "establishment",
+      "definition": "The jurisdiction code under which the NPI registers the facility, as published. Usually an Australian state/territory code (NSW, VIC, QLD, WA, SA, TAS, ACT, NT), but the source reportedly also contains at least one non-state code ('COM'), so this is a free string rather than a closed enum; the raw code is preserved so the required qualifier on jurisdiction_facility_id is never dropped. Not guaranteed equal to dyn.establishment.state.",
+      "values": [],
+      "multi": false,
+      "required_qualifiers": [],
+      "source_paths": [
+        "jurisdiction_code"
+      ],
+      "why_not_existing": "address.state is the business's address state and is a closed AU enum; the NPI jurisdiction code is the facility's registration jurisdiction, is a required qualifier for the jurisdiction-scoped facility id, and reportedly includes non-state values ('COM') that a closed state enum would silently drop, so it needs its own establishment-owned string concept.",
+      "personal_data": "never"
+    },
+    "dyn.establishment.primary_anzsic_class_code": {
+      "path": "dyn.establishment.primary_anzsic_class_code",
+      "type": "string",
+      "owner": "establishment",
+      "definition": "The ANZSIC class code the NPI states as the facility's primary activity classification. Describes the facility, not the company-wide industry. The scheme qualifier records the ANZSIC edition assumed for this code; the source column does not state an edition, so the qualifier is an inference, not a publisher-stated fact.",
+      "values": [],
+      "multi": false,
+      "required_qualifiers": [
+        "scheme"
+      ],
+      "source_paths": [
+        "primary_anzsic_class_code"
+      ],
+      "why_not_existing": "entity.industry_code and ext.entity.industry_code are business-owned and company-wide; the NPI value is a facility-level primary classification and must not be promoted to the operator.",
+      "personal_data": "never"
+    },
+    "dyn.establishment.primary_anzsic_class_name": {
+      "path": "dyn.establishment.primary_anzsic_class_name",
+      "type": "string",
+      "owner": "establishment",
+      "definition": "The ANZSIC class name the NPI states for the facility's primary activity classification, in the publisher's wording. The scheme qualifier records the ANZSIC edition assumed for this label; the source column does not state an edition, so the qualifier is an inference, not a publisher-stated fact.",
+      "values": [],
+      "multi": false,
+      "required_qualifiers": [
+        "scheme"
+      ],
+      "source_paths": [
+        "primary_anzsic_class_name"
+      ],
+      "why_not_existing": "No existing concept holds a facility-level ANZSIC class label; ext.entity.sector_tag is business-owned and scheme-qualified for other purposes.",
+      "personal_data": "never"
+    },
+    "dyn.establishment.main_activities": {
+      "path": "dyn.establishment.main_activities",
+      "type": "string",
+      "owner": "establishment",
+      "definition": "The source-stated free-text description of the facility's main activities (e.g. 'Pig Farming', 'WINEMAKING'). Kept in the publisher's wording; not an invented industry code.",
+      "values": [],
+      "multi": false,
+      "required_qualifiers": [],
+      "source_paths": [
+        "main_activities"
+      ],
+      "why_not_existing": "ext.entity.sector_tag is a business-owned scheme tag; this is a facility-level free-text activity statement that must remain verbatim and establishment-owned.",
+      "personal_data": "never"
+    },
+    "dyn.establishment.first_report_year": {
+      "path": "dyn.establishment.first_report_year",
+      "type": "string",
+      "owner": "establishment",
+      "definition": "The NPI reporting-year label (e.g. '2003/2004') of the facility's first NPI report. A reporting-year label, not an incorporation or licence date, and not an observation date: all observations in a snapshot share the retrieval timestamp, so this label must not be read as when the record was observed.",
+      "values": [],
+      "multi": false,
+      "required_qualifiers": [],
+      "source_paths": [
+        "first_report_year"
+      ],
+      "why_not_existing": "No existing concept holds an NPI reporting-year label; ext.entity.date_established and entity.date_registered are business dates and must not be conflated with reporting years.",
+      "personal_data": "never"
+    },
+    "dyn.establishment.latest_report_year": {
+      "path": "dyn.establishment.latest_report_year",
+      "type": "string",
+      "owner": "establishment",
+      "definition": "The NPI reporting-year label (e.g. '2024/2025') of the facility's most recent NPI report. A reporting-year label, not a compliance or licence date, and not an observation date: all observations in a snapshot share the retrieval timestamp, so this label must not be read as when the record was observed or updated.",
+      "values": [],
+      "multi": false,
+      "required_qualifiers": [],
+      "source_paths": [
+        "latest_report_year"
+      ],
+      "why_not_existing": "No existing concept holds an NPI reporting-year label; it is distinct from first_report_year and from any business date concept.",
+      "personal_data": "never"
+    },
+    "dyn.establishment.report_count": {
+      "path": "dyn.establishment.report_count",
+      "type": "integer",
+      "owner": "establishment",
+      "definition": "The number of NPI reports the facility has submitted, as stated by the source. A count of reports, not an emissions measure or compliance indicator.",
+      "values": [],
+      "multi": false,
+      "required_qualifiers": [],
+      "source_paths": [
+        "reports"
+      ],
+      "why_not_existing": "ext.establishment.capacity counts patrons; no existing concept holds a facility's NPI report count, and it must not be read as an emissions quantity.",
+      "personal_data": "never"
+    },
+    "dyn.establishment.latest_report_id": {
+      "path": "dyn.establishment.latest_report_id",
+      "type": "string",
+      "owner": "establishment",
+      "definition": "The NPI identifier of the facility's most recent report, as published. Identifies the report, not the facility.",
+      "values": [],
+      "multi": false,
+      "required_qualifiers": [],
+      "source_paths": [
+        "latest_report_id"
+      ],
+      "why_not_existing": "No existing concept holds an NPI report identifier; it is distinct from the facility identifier and from the report URL.",
+      "personal_data": "never"
+    },
+    "dyn.establishment.latest_report_url": {
+      "path": "dyn.establishment.latest_report_url",
+      "type": "string",
+      "owner": "establishment",
+      "definition": "The published URL of the facility's most recent NPI report, as emitted by the website transform (a basic URL sanity check; the transform may normalise the value, so this is not asserted to be byte-for-byte verbatim). A link only; it embeds state/year/jurisdiction-facility path segments and is not a stable facility identifier.",
+      "values": [],
+      "multi": false,
+      "required_qualifiers": [],
+      "source_paths": [
+        "latest_report_url"
+      ],
+      "why_not_existing": "ext.contact.website_domain holds a registrable host, not a full report URL; no existing concept captures a report link, and it must not be treated as an identifier.",
+      "personal_data": "never"
+    },
+    "dyn.establishment.street_address": {
+      "path": "dyn.establishment.street_address",
+      "type": "string",
+      "owner": "establishment",
+      "definition": "The street address line of the NPI facility site as published (e.g. 'Hermann Thumm Drive', 'CNR BUSSELL HWY & BOUNDARY ROAD'). A site address, not the operator's registered office. The mapping applies trim and collapse_whitespace only; whether collapse_whitespace normalises U+00A0 (non-breaking space) is not asserted, so a non-breaking space or other non-ASCII whitespace may be preserved in the emitted value.",
+      "values": [],
+      "multi": false,
+      "required_qualifiers": [],
+      "source_paths": [
+        "street_address"
+      ],
+      "why_not_existing": "address.full is business-owned and would assert the operator's address; the NPI street address describes the facility site, so it needs an establishment-owned concept.",
+      "personal_data": "never"
+    },
+    "dyn.establishment.suburb": {
+      "path": "dyn.establishment.suburb",
+      "type": "string",
+      "owner": "establishment",
+      "definition": "The suburb/locality of the NPI facility site as published. A site locality, not the operator's registered locality.",
+      "values": [],
+      "multi": false,
+      "required_qualifiers": [],
+      "source_paths": [
+        "suburb"
+      ],
+      "why_not_existing": "address.locality is business-owned; the NPI suburb describes the facility site location and must not be promoted to the operator's address.",
+      "personal_data": "never"
+    },
+    "dyn.establishment.state": {
+      "path": "dyn.establishment.state",
+      "type": "enum",
+      "owner": "establishment",
+      "definition": "The Australian state or territory of the NPI facility site address as published. A site address state, distinct from the NPI registration jurisdiction code. For the observed rows state equals jurisdiction_code, but the two are not guaranteed equal (the 'COM' jurisdiction case shows they can diverge), so they are kept as separate concepts. The mapping uses a closed 8-code enum with no passthrough: a state value outside that set is dropped (no claim emitted), not coerced.",
+      "values": [
+        "NSW",
+        "VIC",
+        "QLD",
+        "WA",
+        "SA",
+        "TAS",
+        "ACT",
+        "NT"
+      ],
+      "multi": false,
+      "required_qualifiers": [],
+      "source_paths": [
+        "state"
+      ],
+      "why_not_existing": "address.state is business-owned; the NPI state describes the facility site address and must not be conflated with the operator's address state or with dyn.establishment.jurisdiction_code.",
+      "personal_data": "never"
+    },
+    "dyn.establishment.postcode": {
+      "path": "dyn.establishment.postcode",
+      "type": "string",
+      "owner": "establishment",
+      "definition": "The Australian postcode of the NPI facility site address as published. Observed values are 4-digit strings (e.g. '3169', '6155', '3300', '4428'). The postcode transform is treated as a 4-digit validator; no re-padding of 3-digit values is claimed or evidenced in the observed rows.",
+      "values": [],
+      "multi": false,
+      "required_qualifiers": [],
+      "source_paths": [
+        "postcode"
+      ],
+      "why_not_existing": "address.postcode is business-owned; the NPI postcode describes the facility site address, not the operator's registered postcode.",
+      "personal_data": "never"
+    },
+    "dyn.establishment.published_website": {
+      "path": "dyn.establishment.published_website",
+      "type": "string",
+      "owner": "establishment",
+      "definition": "The website the NPI publishes for the facility, as emitted by the website transform (a basic URL sanity check; the emitted value is a URL string, not reduced to a bare host). The domain may belong to the operator, a parent/group, or the facility itself (e.g. a group domain published against a differently named operator), so this is a facility-level published link and is not asserted to be the operator's own website.",
+      "values": [],
+      "multi": false,
+      "required_qualifiers": [],
+      "source_paths": [
+        "facility_website"
+      ],
+      "why_not_existing": "entity.website is business-owned and would assert the operator's own website; the column is named facility_website and observed domains can mismatch the registered business name, so the claim must stay establishment-owned and bounded to 'published facility website'.",
+      "personal_data": "never"
+    },
+    "dyn.business.registered_business_name": {
+      "path": "dyn.business.registered_business_name",
+      "type": "string",
+      "owner": "business",
+      "definition": "The registered business name of the operator as published by the NPI. This is a registered business name, which for individuals/partnerships is not a registered company legal name; it does not assert legal-name status or legal form. Blank in source is treated as missing (no claim emitted), not as an empty name.",
+      "values": [],
+      "multi": false,
+      "required_qualifiers": [],
+      "source_paths": [
+        "registered_business_name"
+      ],
+      "why_not_existing": "entity.legal_name asserts a registered company legal name, which the source does not state for individual/partnership business names; a dedicated business-name concept keeps the claim scope to 'registered business name as published'.",
+      "personal_data": "never"
+    }
+  },
+  "relationships": {
+    "HOLDS_LICENCE": {
+      "from_type": "business",
+      "to_type": "licence",
+      "definition": "Business holds this licence."
+    },
+    "OPERATES_ESTABLISHMENT": {
+      "from_type": "business",
+      "to_type": "establishment",
+      "definition": "Business operates this facility."
+    }
+  }
+}
