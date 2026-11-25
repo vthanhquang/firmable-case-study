@@ -1,0 +1,7 @@
+{
+  "reason": "Repeated XLSX headings silently overwrote prior columns. Shared reader now deterministically disambiguates without colliding with existing suffixes.",
+  "baseline_execution": "The original process started before the edit and retains the original imported readers module for all three sources. Baseline commit and hashes are in baseline.json.",
+  "retest": "Separate new process and output directory, same source bytes; new model calls; no mapping edits.",
+  "reader_sha256": "bb42f1b49aca0fcf72843f09a748d5ba4d19abc9111ea19fed966b0ff1af0693",
+  "tests": "56 targeted tests passed before equivalent helper simplification; full regression check to follow."
+}

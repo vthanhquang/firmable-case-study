@@ -1,0 +1,172 @@
+{
+  "quality": {
+    "present_values": 711,
+    "emitted_observations": 711,
+    "withheld_missing_context": 0,
+    "abstention_reasons": {},
+    "malformed_values": 0,
+    "malformed_reasons": {},
+    "eligible_present_values": 711,
+    "malformed_rate": 0.0,
+    "abstention_rate": 0.0,
+    "record_errors": {},
+    "passes_technical_gate": true,
+    "semantic_precision": null,
+    "note": "Missing required context remains withheld. This gate does not establish semantic truth or useful coverage."
+  },
+  "raw_validation": {
+    "records_in": 140,
+    "records_with_output": 140,
+    "record_errors": {},
+    "fields": [
+      {
+        "target": "dyn.charity.conducted_activities",
+        "source_paths": [
+          "conducted activities"
+        ],
+        "records": 140,
+        "source_present": 140,
+        "emitted": 140,
+        "coverage_of_records": 1.0,
+        "error_rate_of_present": 0.0,
+        "errors": {},
+        "error_examples": {},
+        "entity": "charity"
+      },
+      {
+        "target": "dyn.charity.no_activity_reason",
+        "source_paths": [
+          "why charity did not conduct activities"
+        ],
+        "records": 140,
+        "source_present": 4,
+        "emitted": 4,
+        "coverage_of_records": 0.029,
+        "error_rate_of_present": 0.0,
+        "errors": {},
+        "error_examples": {},
+        "entity": "charity"
+      },
+      {
+        "target": "dyn.charity.purposes_pursued_description",
+        "source_paths": [
+          "how purposes were pursued"
+        ],
+        "records": 140,
+        "source_present": 136,
+        "emitted": 136,
+        "coverage_of_records": 0.971,
+        "error_rate_of_present": 0.0,
+        "errors": {},
+        "error_examples": {},
+        "entity": "charity"
+      },
+      {
+        "target": "dyn.charity.international_activity_operating_overseas",
+        "source_paths": [
+          "international activities undertaken - operating overseas including programs"
+        ],
+        "records": 140,
+        "source_present": 140,
+        "emitted": 140,
+        "coverage_of_records": 1.0,
+        "error_rate_of_present": 0.0,
+        "errors": {},
+        "error_examples": {},
+        "entity": "charity"
+      },
+      {
+        "target": "dyn.charity.international_activity_transferring_goods_services",
+        "source_paths": [
+          "international activities undertaken - transferring goods or services overseas"
+        ],
+        "records": 140,
+        "source_present": 140,
+        "emitted": 140,
+        "coverage_of_records": 1.0,
+        "error_rate_of_present": 0.0,
+        "errors": {},
+        "error_examples": {},
+        "entity": "charity"
+      },
+      {
+        "target": "dyn.charity.international_activity_other",
+        "source_paths": [
+          "other international activities"
+        ],
+        "records": 140,
+        "source_present": 140,
+        "emitted": 140,
+        "coverage_of_records": 1.0,
+        "error_rate_of_present": 0.0,
+        "errors": {},
+        "error_examples": {},
+        "entity": "charity"
+      },
+      {
+        "target": "dyn.charity.international_activity_details",
+        "source_paths": [
+          "international activities details"
+        ],
+        "records": 140,
+        "source_present": 9,
+        "emitted": 9,
+        "coverage_of_records": 0.064,
+        "error_rate_of_present": 0.0,
+        "errors": {},
+        "error_examples": {},
+        "entity": "charity"
+      },
+      {
+        "target": "dyn.charity.other_international_activity_description",
+        "source_paths": [
+          "other international activities description"
+        ],
+        "records": 140,
+        "source_present": 2,
+        "emitted": 2,
+        "coverage_of_records": 0.014,
+        "error_rate_of_present": 0.0,
+        "errors": {},
+        "error_examples": {},
+        "entity": "charity"
+      }
+    ],
+    "relationships": {},
+    "input_records": 140,
+    "refused_records": 0,
+    "observations": 711,
+    "value_errors": 0,
+    "present_values": 711,
+    "error_rate": 0.0
+  },
+  "critic": {
+    "verdict": "accept",
+    "findings": [
+      "All eight group columns are mapped to charity-owned concepts with matching meaning: the three y/n international flags and the conducted-activities flag are enums restricted to y/n, and the four narrative columns are verbatim free text.",
+      "Held-out validation shows 0 errors of present values across all eight fields (711 emitted observations, malformed_rate 0.0), and coverage tracks source presence exactly: 140/140 for the four flags, 136/140 for purposes narrative, 9/140 for international details, 4/140 for no-activity reason, 2/140 for other-international description.",
+      "The no_activity_reason guard (when conducted activities = 'n') is consistent with the evidence: the emitted example at ordinal 33205 has conducted activities 'n', and the 4 emitted values equal the 4 source-present values, so the guard is not silently dropping populated narrative.",
+      "Enum mapping uses default null for anything outside y/n, so unexpected publisher codes are withheld rather than coerced; this is honest abstention, not a wrong value.",
+      "Narrative fields are not converted into structured country, sector or industry claims; the rationale explicitly declines to extract operating_country from free text without a reviewed extraction, which is the correct conservative choice.",
+      "No legal-form, incorporation-date or licence-date claims are made from ABN, name or registration status; the conducted_activities definition explicitly states 'n' is not evidence of inactivity or deregistration.",
+      "The fundraising_authorisation role and HOLDS_FUNDRAISING_AUTHORISATION edge are outside this group's eight columns and are reconciled in the final source mapping; they do not affect the group's emitted claims.",
+      "The unmapped list is entirely 'outside this group' columns, which is consistent with a group-scoped proposal and does not represent dropped in-group coverage."
+    ],
+    "semantic_risks": [
+      "The four narrative concepts are self-reported and may contain personal names (e.g. 'Loan to the charity ... from N Bolto' appears in a different column, but narrative fields can carry similar content); personal_data is set to 'never', which is defensible for organisational narrative but should be revisited if profile views surface individual names.",
+      "international_activity_details and other_international_activity_description are near-duplicates in meaning; the distinction rests on the publisher's residual 'other' category, which is defensible but could confuse consumers if the two are merged downstream.",
+      "conducted_activities 'n' with a populated purposes_pursued_description is possible in the source; the mapping does not guard purposes narrative on the flag, which is acceptable because the publisher treats them as independent fields, but consumers should not read purposes text as proof of activity.",
+      "The 'other international activities' flag semantics depend on the publisher's category boundaries; the definition correctly scopes it as residual but cannot be verified from the visible bytes alone."
+    ],
+    "checked_reuse": [
+      "dyn.charity.registration_status — correctly not reused for conducted_activities (regulator status vs. period activity flag).",
+      "ext.entity.sector_tag — correctly not reused for purposes_pursued_description (short tag vs. full narrative).",
+      "ext.entity.industry_code — correctly not reused (reviewed crosswalk code vs. verbatim narrative).",
+      "ext.entity.operating_region and ext.entity.operating_country — correctly not reused for the international flags or details (business-owned location values vs. charity-owned y/n flags and narrative).",
+      "ext.licence.authorisation_text — correctly not reused for no_activity_reason (licence-owned text vs. charity-owned narrative)."
+    ],
+    "rationale": "The group emits only charity-owned, period-scoped activity and narrative claims that match the source columns in meaning, owner and units. Held-out validation shows zero errors of present values and coverage that equals source presence for every field, with the no-activity guard behaving as intended. No legal-form, incorporation, licence-date or structured-country claims are inferred. The only residual concerns are soft semantic risks (personal names in narrative, near-duplicate international narrative fields) that do not rise to blocking findings, so the group is accepted with repair_scope none.",
+    "blocking_findings": [],
+    "repair_scope": "none"
+  }
+}

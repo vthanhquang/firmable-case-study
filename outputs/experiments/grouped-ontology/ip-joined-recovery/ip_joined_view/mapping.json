@@ -1,0 +1,904 @@
+{
+  "source_id": "ip_joined_view",
+  "record_grain": "One row per party-activity record: a single party (party_activity.party_id, with party_activity.abn where supplied) in a single role (party_activity.party_role_category / party_activity.party_role) on a single IP right application (party_activity.ip_right_type + party_activity.application_number). Application-level columns repeat for every party row on the same application, so a row is neither one application nor one party.",
+  "grain_rationale": "Model-authored grain and groups; executable envelope compiled deterministically.",
+  "reader": {
+    "format": "delimited",
+    "archive_member": null,
+    "encoding": "utf-8-sig",
+    "delimiter": ",",
+    "skip_rows": 0,
+    "sheet": null,
+    "record_path": null
+  },
+  "record_id": {
+    "strategy": "content_hash",
+    "source_paths": [],
+    "rationale": ""
+  },
+  "observed_at": {
+    "source_path": null,
+    "steps": [],
+    "fallback": "resource_last_modified"
+  },
+  "fields": [
+    {
+      "source_paths": [
+        "party_activity.party_id"
+      ],
+      "join_with": " ",
+      "when": null,
+      "target": "dyn.party.party_key",
+      "valid_from_path": null,
+      "valid_to_path": null,
+      "validity_date_formats": null,
+      "claim_scope": null,
+      "steps": [
+        {
+          "op": "trim",
+          "args": {}
+        },
+        {
+          "op": "null_if",
+          "args": {
+            "values": [
+              ""
+            ]
+          }
+        }
+      ],
+      "confidence": 0.95,
+      "rationale": "Publisher's party identifier on the party-activity record; identifies the party across applications and roles, not a business registration number.",
+      "entity": "party",
+      "qualifiers": null,
+      "one_hot": null
+    },
+    {
+      "source_paths": [
+        "party_activity.party_name"
+      ],
+      "join_with": " ",
+      "when": null,
+      "target": "dyn.party.party_name",
+      "valid_from_path": null,
+      "valid_to_path": null,
+      "validity_date_formats": null,
+      "claim_scope": null,
+      "steps": [
+        {
+          "op": "trim",
+          "args": {}
+        },
+        {
+          "op": "collapse_whitespace",
+          "args": {}
+        },
+        {
+          "op": "null_if",
+          "args": {
+            "values": [
+              ""
+            ]
+          }
+        }
+      ],
+      "confidence": 0.9,
+      "rationale": "Free-text, lower-cased party label as published. Not asserted to be a registered legal name or trading name; personal_data=always so it is suppressed from profile views for the mixed person/organisation population.",
+      "entity": "party",
+      "qualifiers": null,
+      "one_hot": null
+    },
+    {
+      "source_paths": [
+        "party_activity.party_type"
+      ],
+      "join_with": " ",
+      "when": null,
+      "target": "dyn.party.party_kind",
+      "valid_from_path": null,
+      "valid_to_path": null,
+      "validity_date_formats": null,
+      "claim_scope": null,
+      "steps": [
+        {
+          "op": "trim",
+          "args": {}
+        },
+        {
+          "op": "map_enum",
+          "args": {
+            "mapping": {
+              "organisation": "organisation",
+              "individual": "individual"
+            },
+            "default": null
+          }
+        }
+      ],
+      "confidence": 0.9,
+      "rationale": "Publisher's organisation/individual party classification only; no legal-form, sole-trader or beneficial-ownership inference. Unlisted values become missing rather than guessed.",
+      "entity": "party",
+      "qualifiers": null,
+      "one_hot": null
+    },
+    {
+      "source_paths": [
+        "party_activity.abn"
+      ],
+      "join_with": " ",
+      "when": null,
+      "target": "dyn.party.abn_supplied",
+      "valid_from_path": null,
+      "valid_to_path": null,
+      "validity_date_formats": null,
+      "claim_scope": null,
+      "steps": [
+        {
+          "op": "trim",
+          "args": {}
+        },
+        {
+          "op": "null_if",
+          "args": {
+            "values": [
+              ""
+            ]
+          }
+        }
+      ],
+      "confidence": 0.85,
+      "rationale": "ABN as supplied on the party record, kept as a string without checksum validation because the concept is explicitly unvalidated; blanks are frequent and must not be read as absence of a business or Australian presence. Not mapped to entity.abn, which is a validated business-owned identifier.",
+      "entity": "party",
+      "qualifiers": null,
+      "one_hot": null
+    },
+    {
+      "source_paths": [
+        "party_activity.party_role_category"
+      ],
+      "join_with": " ",
+      "when": null,
+      "target": "dyn.party_activity.role_category",
+      "valid_from_path": null,
+      "valid_to_path": null,
+      "validity_date_formats": null,
+      "claim_scope": null,
+      "steps": [
+        {
+          "op": "trim",
+          "args": {}
+        },
+        {
+          "op": "map_enum",
+          "args": {
+            "mapping": {
+              "applicant": "applicant",
+              "applicant_agent": "applicant_agent",
+              "opposition": "opposition",
+              "mortgagee": "mortgagee"
+            },
+            "default": null,
+            "passthrough": false
+          }
+        }
+      ],
+      "confidence": 0.9,
+      "rationale": "party_activity.party_role_category is the publisher's broad role category on the party-role record; maps to the party_activity-owned role_category concept. Unlisted categories are withheld rather than passed through.",
+      "entity": "party_activity",
+      "qualifiers": null,
+      "one_hot": null
+    },
+    {
+      "source_paths": [
+        "party_activity.party_role"
+      ],
+      "join_with": " ",
+      "when": null,
+      "target": "dyn.party_activity.role",
+      "valid_from_path": null,
+      "valid_to_path": null,
+      "validity_date_formats": null,
+      "claim_scope": null,
+      "steps": [
+        {
+          "op": "trim",
+          "args": {}
+        },
+        {
+          "op": "map_enum",
+          "args": {
+            "mapping": {
+              "applicant": "applicant",
+              "patentee": "patentee",
+              "agent": "agent",
+              "opponent": "opponent"
+            },
+            "default": null,
+            "passthrough": false
+          }
+        }
+      ],
+      "confidence": 0.9,
+      "rationale": "party_activity.party_role is the specific role the party holds on the application; maps to the party_activity-owned role concept. Unlisted roles are withheld.",
+      "entity": "party_activity",
+      "qualifiers": null,
+      "one_hot": null
+    },
+    {
+      "source_paths": [
+        "party_activity.is_founding"
+      ],
+      "join_with": " ",
+      "when": null,
+      "target": "dyn.party_activity.is_founding",
+      "valid_from_path": null,
+      "valid_to_path": null,
+      "validity_date_formats": null,
+      "claim_scope": null,
+      "steps": [
+        {
+          "op": "trim",
+          "args": {}
+        },
+        {
+          "op": "map_enum",
+          "args": {
+            "mapping": {
+              "true": "true",
+              "false": "false"
+            },
+            "default": null,
+            "passthrough": false
+          }
+        }
+      ],
+      "confidence": 0.9,
+      "rationale": "Boolean founding flag on the party-role record; kept as a party_activity attribute, not a business establishment date.",
+      "entity": "party_activity",
+      "qualifiers": null,
+      "one_hot": null
+    },
+    {
+      "source_paths": [
+        "party_activity.is_current"
+      ],
+      "join_with": " ",
+      "when": null,
+      "target": "dyn.party_activity.is_current",
+      "valid_from_path": null,
+      "valid_to_path": null,
+      "validity_date_formats": null,
+      "claim_scope": null,
+      "steps": [
+        {
+          "op": "trim",
+          "args": {}
+        },
+        {
+          "op": "map_enum",
+          "args": {
+            "mapping": {
+              "true": "true",
+              "false": "false"
+            },
+            "default": null,
+            "passthrough": false
+          }
+        }
+      ],
+      "confidence": 0.9,
+      "rationale": "Boolean currency flag on the party-role record; describes the role association's validity, not the application or business lifecycle.",
+      "entity": "party_activity",
+      "qualifiers": null,
+      "one_hot": null
+    },
+    {
+      "source_paths": [
+        "party_activity.effective_from_date"
+      ],
+      "join_with": " ",
+      "when": null,
+      "target": "dyn.party_activity.effective_from_date",
+      "valid_from_path": null,
+      "valid_to_path": null,
+      "validity_date_formats": null,
+      "claim_scope": null,
+      "steps": [
+        {
+          "op": "trim",
+          "args": {}
+        },
+        {
+          "op": "parse_date",
+          "args": {
+            "formats": [
+              "%Y-%m-%dT%H:%M:%S.%fZ",
+              "%Y-%m-%dT%H:%M:%SZ",
+              "%Y-%m-%d"
+            ]
+          }
+        }
+      ],
+      "confidence": 0.9,
+      "rationale": "Publisher-stated start of the party-role validity window; an independently reported date owned by the party-activity record, not the application filing date or business establishment.",
+      "entity": "party_activity",
+      "qualifiers": null,
+      "one_hot": null
+    },
+    {
+      "source_paths": [
+        "party_activity.effective_to_date"
+      ],
+      "join_with": " ",
+      "when": null,
+      "target": "dyn.party_activity.effective_to_date",
+      "valid_from_path": null,
+      "valid_to_path": null,
+      "validity_date_formats": null,
+      "claim_scope": null,
+      "steps": [
+        {
+          "op": "trim",
+          "args": {}
+        },
+        {
+          "op": "null_if",
+          "args": {
+            "values": [
+              "",
+              "null",
+              "NULL"
+            ]
+          }
+        },
+        {
+          "op": "parse_date",
+          "args": {
+            "formats": [
+              "%Y-%m-%dT%H:%M:%S.%fZ",
+              "%Y-%m-%dT%H:%M:%SZ",
+              "%Y-%m-%d"
+            ]
+          }
+        }
+      ],
+      "confidence": 0.9,
+      "rationale": "Publisher-stated end of the party-role validity window, frequently blank for open-ended roles; blank is treated as missing, not as a date.",
+      "entity": "party_activity",
+      "qualifiers": null,
+      "one_hot": null
+    },
+    {
+      "source_paths": [
+        "party_activity.country_code"
+      ],
+      "join_with": " ",
+      "when": null,
+      "target": "dyn.party.address_country",
+      "valid_from_path": null,
+      "valid_to_path": null,
+      "validity_date_formats": null,
+      "claim_scope": null,
+      "steps": [
+        {
+          "op": "trim",
+          "args": {}
+        },
+        {
+          "op": "null_if",
+          "args": {
+            "values": [
+              "",
+              "null",
+              "n/a",
+              "na",
+              "-"
+            ]
+          }
+        }
+      ],
+      "confidence": 0.9,
+      "rationale": "Country component of the party's recorded address on the IP right application record; owned by the party role, not the business's own address. Kept as published (lower-cased) with blanks treated as missing rather than as an Australian address.",
+      "entity": "party",
+      "qualifiers": null,
+      "one_hot": null
+    },
+    {
+      "source_paths": [
+        "party_activity.state_code"
+      ],
+      "join_with": " ",
+      "when": null,
+      "target": "dyn.party.address_state",
+      "valid_from_path": null,
+      "valid_to_path": null,
+      "validity_date_formats": null,
+      "claim_scope": null,
+      "steps": [
+        {
+          "op": "trim",
+          "args": {}
+        },
+        {
+          "op": "null_if",
+          "args": {
+            "values": [
+              "",
+              "null",
+              "n/a",
+              "na",
+              "-"
+            ]
+          }
+        }
+      ],
+      "confidence": 0.88,
+      "rationale": "State/province component of the party's recorded address. Not restricted to Australian states and frequently blank, so it is mapped to the party-owned raw state concept rather than the business-owned address.state enum; no state normalisation is applied to avoid asserting an Australian scope.",
+      "entity": "party",
+      "qualifiers": null,
+      "one_hot": null
+    },
+    {
+      "source_paths": [
+        "party_activity.post_code"
+      ],
+      "join_with": " ",
+      "when": null,
+      "target": "dyn.party.address_postcode",
+      "valid_from_path": null,
+      "valid_to_path": null,
+      "validity_date_formats": null,
+      "claim_scope": null,
+      "steps": [
+        {
+          "op": "trim",
+          "args": {}
+        },
+        {
+          "op": "null_if",
+          "args": {
+            "values": [
+              "",
+              "null",
+              "n/a",
+              "na",
+              "-"
+            ]
+          }
+        }
+      ],
+      "confidence": 0.88,
+      "rationale": "Post code component of the party's recorded address, kept as the raw published string because formats are not uniform ('2106' vs 'gu14 0lx'). The postcode transform is deliberately not applied since it would force a 4-digit Australian assumption the source does not support.",
+      "entity": "party",
+      "qualifiers": null,
+      "one_hot": null
+    },
+    {
+      "source_paths": [
+        "application.application_number"
+      ],
+      "join_with": " ",
+      "when": null,
+      "target": "dyn.ip_application.application_number",
+      "valid_from_path": null,
+      "valid_to_path": null,
+      "validity_date_formats": null,
+      "claim_scope": null,
+      "steps": [
+        {
+          "op": "trim",
+          "args": {}
+        },
+        {
+          "op": "collapse_whitespace",
+          "args": {}
+        },
+        {
+          "op": "null_if",
+          "args": {
+            "values": [
+              ""
+            ]
+          }
+        }
+      ],
+      "confidence": 0.9,
+      "rationale": "The publisher's application number for the application. party_activity.application_number is the same value repeated on every party row of the same application, so it is not joined (joining produced duplicated identifiers); it is declined as a redundant repetition of this column. The number identifies the application only together with the IP right type.",
+      "entity": "ip_application",
+      "qualifiers": null,
+      "one_hot": null
+    },
+    {
+      "source_paths": [
+        "application.ip_right_type"
+      ],
+      "join_with": " ",
+      "when": null,
+      "target": "dyn.ip_application.ip_right_type",
+      "valid_from_path": null,
+      "valid_to_path": null,
+      "validity_date_formats": null,
+      "claim_scope": null,
+      "steps": [
+        {
+          "op": "trim",
+          "args": {}
+        },
+        {
+          "op": "map_enum",
+          "args": {
+            "mapping": {
+              "patent": "patent"
+            },
+            "default": null
+          }
+        }
+      ],
+      "confidence": 0.9,
+      "rationale": "Classifies the kind of IP right applied for; the observed value is 'patent'. party_activity.ip_right_type repeats the same application-level value and is declined as redundant (joining it produced 'patent patent', which failed the enum map). This classifies the application, not the party or the business, and does not assert grant or enforceability.",
+      "entity": "ip_application",
+      "qualifiers": null,
+      "one_hot": null
+    },
+    {
+      "source_paths": [
+        "application.ip_right_sub_type"
+      ],
+      "join_with": " ",
+      "when": null,
+      "target": "dyn.ip_application.ip_right_sub_type",
+      "valid_from_path": null,
+      "valid_to_path": null,
+      "validity_date_formats": null,
+      "claim_scope": null,
+      "steps": [
+        {
+          "op": "trim",
+          "args": {}
+        },
+        {
+          "op": "map_enum",
+          "args": {
+            "mapping": {
+              "standard_complete": "standard_complete",
+              "innovation": "innovation",
+              "provisional": "provisional",
+              "petty": "petty"
+            },
+            "default": null
+          }
+        }
+      ],
+      "confidence": 0.85,
+      "rationale": "The sub-type column classifies the application within its IP right type. The observed vocabulary includes 'petty' in addition to standard_complete, innovation and provisional, so it is mapped explicitly rather than silently dropped; any other unlisted value yields no claim. It is an application attribute, not a business attribute.",
+      "entity": "ip_application",
+      "qualifiers": null,
+      "one_hot": null
+    },
+    {
+      "source_paths": [
+        "application.status"
+      ],
+      "join_with": " ",
+      "when": null,
+      "target": "dyn.ip_application.status",
+      "valid_from_path": null,
+      "valid_to_path": null,
+      "validity_date_formats": null,
+      "claim_scope": null,
+      "steps": [
+        {
+          "op": "trim",
+          "args": {}
+        },
+        {
+          "op": "map_enum",
+          "args": {
+            "mapping": {
+              "filed": "filed",
+              "lapsed": "lapsed",
+              "granted": "granted",
+              "accepted": "accepted",
+              "unknown": "unknown",
+              "withdrawn": "withdrawn",
+              "expired": "expired",
+              "ceased": "ceased"
+            },
+            "passthrough": false
+          }
+        }
+      ],
+      "confidence": 0.9,
+      "rationale": "application.status is the publisher's lifecycle status of the IP right application; dyn.ip_application.status is owned by ip_application and enumerates the observed publisher vocabulary including 'ceased', which is a publisher-stated application lifecycle state and must not be read as business cessation or as a party's status. passthrough is disabled so any unlisted value is withheld rather than emitted against an incomplete enum. It is not a business status, so it is attached to the ip_application role, not the subject.",
+      "entity": "ip_application",
+      "qualifiers": null,
+      "one_hot": null
+    },
+    {
+      "source_paths": [
+        "application.application_date"
+      ],
+      "join_with": " ",
+      "when": null,
+      "target": "dyn.ip_application.application_date",
+      "valid_from_path": null,
+      "valid_to_path": null,
+      "validity_date_formats": null,
+      "claim_scope": null,
+      "steps": [
+        {
+          "op": "trim",
+          "args": {}
+        },
+        {
+          "op": "parse_date",
+          "args": {
+            "formats": [
+              "%Y-%m-%dT%H:%M:%S.%fZ",
+              "%Y-%m-%dT%H:%M:%SZ",
+              "%Y-%m-%d"
+            ]
+          }
+        }
+      ],
+      "confidence": 0.9,
+      "rationale": "application.application_date is the application's own filing/lodging date, matching dyn.ip_application.application_date (owner ip_application). It is not a business establishment date or a party-role validity start.",
+      "entity": "ip_application",
+      "qualifiers": null,
+      "one_hot": null
+    },
+    {
+      "source_paths": [
+        "application.earliest_filed_date"
+      ],
+      "join_with": " ",
+      "when": null,
+      "target": "dyn.ip_application.earliest_filed_date",
+      "valid_from_path": null,
+      "valid_to_path": null,
+      "validity_date_formats": null,
+      "claim_scope": null,
+      "steps": [
+        {
+          "op": "trim",
+          "args": {}
+        },
+        {
+          "op": "parse_date",
+          "args": {
+            "formats": [
+              "%Y-%m-%dT%H:%M:%S.%fZ",
+              "%Y-%m-%dT%H:%M:%SZ",
+              "%Y-%m-%d"
+            ]
+          }
+        }
+      ],
+      "confidence": 0.9,
+      "rationale": "application.earliest_filed_date is the earliest filing date recorded for the application, matching dyn.ip_application.earliest_filed_date. It is an application-level date, distinct from the current filing date and from any business date.",
+      "entity": "ip_application",
+      "qualifiers": null,
+      "one_hot": null
+    },
+    {
+      "source_paths": [
+        "application.priority_date"
+      ],
+      "join_with": " ",
+      "when": null,
+      "target": "dyn.ip_application.priority_date",
+      "valid_from_path": null,
+      "valid_to_path": null,
+      "validity_date_formats": null,
+      "claim_scope": null,
+      "steps": [
+        {
+          "op": "trim",
+          "args": {}
+        },
+        {
+          "op": "parse_date",
+          "args": {
+            "formats": [
+              "%Y-%m-%dT%H:%M:%S.%fZ",
+              "%Y-%m-%dT%H:%M:%SZ",
+              "%Y-%m-%d"
+            ]
+          }
+        }
+      ],
+      "confidence": 0.9,
+      "rationale": "application.priority_date is the priority date claimed for the application, matching dyn.ip_application.priority_date. It is a legal date of the application, not a grant or business date.",
+      "entity": "ip_application",
+      "qualifiers": null,
+      "one_hot": null
+    },
+    {
+      "source_paths": [
+        "application.gained_registration_status_date"
+      ],
+      "join_with": " ",
+      "when": null,
+      "target": "dyn.ip_application.registration_status_date",
+      "valid_from_path": null,
+      "valid_to_path": null,
+      "validity_date_formats": null,
+      "claim_scope": null,
+      "steps": [
+        {
+          "op": "trim",
+          "args": {}
+        },
+        {
+          "op": "parse_date",
+          "args": {
+            "formats": [
+              "%Y-%m-%dT%H:%M:%S.%fZ",
+              "%Y-%m-%dT%H:%M:%SZ",
+              "%Y-%m-%d"
+            ]
+          }
+        }
+      ],
+      "confidence": 0.88,
+      "rationale": "application.gained_registration_status_date is the date the application gained registered status, matching dyn.ip_application.registration_status_date. Blank values are left missing and must not be read as 'never registered'; it is not a business registration date.",
+      "entity": "ip_application",
+      "qualifiers": null,
+      "one_hot": null
+    },
+    {
+      "source_paths": [
+        "application.gained_enforceable_status_date"
+      ],
+      "join_with": " ",
+      "when": null,
+      "target": "dyn.ip_application.enforceable_status_date",
+      "valid_from_path": null,
+      "valid_to_path": null,
+      "validity_date_formats": null,
+      "claim_scope": null,
+      "steps": [
+        {
+          "op": "trim",
+          "args": {}
+        },
+        {
+          "op": "parse_date",
+          "args": {
+            "formats": [
+              "%Y-%m-%dT%H:%M:%S.%fZ",
+              "%Y-%m-%dT%H:%M:%SZ",
+              "%Y-%m-%d"
+            ]
+          }
+        }
+      ],
+      "confidence": 0.88,
+      "rationale": "application.gained_enforceable_status_date is the date the application gained enforceable status, matching dyn.ip_application.enforceable_status_date. It is an application milestone and does not assert actual enforceability; blanks stay missing.",
+      "entity": "ip_application",
+      "qualifiers": null,
+      "one_hot": null
+    },
+    {
+      "source_paths": [
+        "application.deemed_retired_date"
+      ],
+      "join_with": " ",
+      "when": null,
+      "target": "dyn.ip_application.deemed_retired_date",
+      "valid_from_path": null,
+      "valid_to_path": null,
+      "validity_date_formats": null,
+      "claim_scope": null,
+      "steps": [
+        {
+          "op": "trim",
+          "args": {}
+        },
+        {
+          "op": "parse_date",
+          "args": {
+            "formats": [
+              "%Y-%m-%dT%H:%M:%S.%fZ",
+              "%Y-%m-%dT%H:%M:%SZ",
+              "%Y-%m-%d"
+            ]
+          }
+        }
+      ],
+      "confidence": 0.88,
+      "rationale": "application.deemed_retired_date is the date the application is deemed retired, matching dyn.ip_application.deemed_retired_date. It is an application-level date, not the end of a party-role association or of the business; blanks stay missing.",
+      "entity": "ip_application",
+      "qualifiers": null,
+      "one_hot": null
+    }
+  ],
+  "entities": {
+    "party": {
+      "kind": "party",
+      "key_paths": [
+        "party_activity.party_id"
+      ],
+      "rationale": "party_id is the party key; party_name and abn are attributes of the party where supplied. party_type is a party classification, not a legal form, and a personal name must not be used to infer a company legal form or ABN."
+    },
+    "ip_application": {
+      "kind": "ip_application",
+      "key_paths": [
+        "application.application_number",
+        "application.ip_right_type"
+      ],
+      "rationale": "The application is identified by its number together with the IP right type; application-level status, dates and description belong to the application, not to the party or business."
+    },
+    "party_activity": {
+      "kind": "party_activity",
+      "key_paths": [
+        "party_activity.party_id",
+        "party_activity.party_role_category",
+        "party_activity.party_role",
+        "party_activity.application_number",
+        "party_activity.ip_right_type"
+      ],
+      "rationale": "The record grain is a party in a role on an application; the same party_id can hold different roles across rows, so the role and application keys are needed alongside the party key."
+    }
+  },
+  "relationships": [
+    {
+      "type": "PARTY_ACTIVITY_RECORDS_PARTY",
+      "from_role": "party_activity",
+      "to_role": "party",
+      "rationale": "party_activity.party_id is the party key carried on each party-activity row."
+    },
+    {
+      "type": "PARTY_ACTIVITY_CONCERNS_APPLICATION",
+      "from_role": "party_activity",
+      "to_role": "ip_application",
+      "rationale": "party_activity.application_number and party_activity.ip_right_type identify the application the party-role record concerns."
+    },
+    {
+      "type": "PARTY_ACTS_ON_APPLICATION",
+      "from_role": "party",
+      "to_role": "ip_application",
+      "rationale": "Derived from the party-activity record linking party_id to application_number and ip_right_type; the role (applicant, patentee, agent, opponent, mortgagee) is recorded on the party-activity record and does not imply ownership or enforceability."
+    },
+    {
+      "type": "APPLICATION_HAS_DESCRIPTION",
+      "from_role": "ip_application",
+      "to_role": "ip_application",
+      "rationale": "application_description.application_number and application_description.ip_right_type link the description to the application; the description table contributes at most one description per application."
+    }
+  ],
+  "unmapped": [
+    {
+      "source_path": "party_activity.application_number",
+      "reason": "Redundant repetition of application.application_number on the same application row; joining the two produced duplicated identifiers, so only the application-level column is used as the value."
+    },
+    {
+      "source_path": "party_activity.ip_right_type",
+      "reason": "Redundant repetition of application.ip_right_type on the same application row; joining the two produced 'patent patent' and failed the enum map, so only the application-level column is used as the value."
+    },
+    {
+      "source_path": "application.enforceable_from_date",
+      "reason": "Column is entirely empty in this snapshot (0 nonempty of 381). The ontology concept dyn.ip_application.enforceable_from_date exists for schema completeness only, but no value can be asserted; mapping it would emit no claims and could be misread as evidence of enforceability. Declined rather than mapped to avoid implying a value exists."
+    },
+    {
+      "source_path": "application_description.application_number",
+      "reason": "Outside this group; reconciled in the final source mapping"
+    },
+    {
+      "source_path": "application_description.description_type",
+      "reason": "Outside this group; reconciled in the final source mapping"
+    },
+    {
+      "source_path": "application_description.description_value",
+      "reason": "Outside this group; reconciled in the final source mapping"
+    },
+    {
+      "source_path": "application_description.ip_right_type",
+      "reason": "Outside this group; reconciled in the final source mapping"
+    }
+  ],
+  "notes": "Grouped semantic intents; no manually authored mapping rules.",
+  "constants": [],
+  "profile_context": null,
+  "extensions": "dynamic"
+}

@@ -1,0 +1,2024 @@
+{
+  "source_id": "acnc_ais2024_new",
+  "status": "PARTIAL_REVIEW_REQUIRED",
+  "ontology_version": "2b2ccf10d3798caa6f20c754f82836f269c0b9bd26d56e88990006140e015b4d",
+  "parent_version": "db7f01dab23e6f042a75c6df261be2b61dfa1ceba7daff6afe5eab3543256f1b",
+  "snapshot_sha256": "01638d73a8be09ff0a1d14402707e009a72b92dff41f879cb799ef06f168f962",
+  "mapping_digest": "66aa82d2654c6177615cd3ef33059d5a677c787c4d2860e7bd1732f98cc7170c",
+  "groups": [
+    {
+      "group": "charity_identity_and_registration",
+      "columns": [
+        "abn",
+        "charity name",
+        "charity website",
+        "registration status",
+        "basic religious charity",
+        "incorporated association",
+        "association number - act",
+        "association number - nsw",
+        "association number - nt",
+        "association number - qld",
+        "association number - sa",
+        "association number - tas",
+        "association number - vic",
+        "association number - wa"
+      ],
+      "status": "AGENT_VALIDATED",
+      "attempts": 0,
+      "reused_from": "outputs\\experiments\\grouped-ontology\\run\\acnc_ais2024_new",
+      "feedback": null
+    },
+    {
+      "group": "ais_lodgement_and_reporting_classification",
+      "columns": [
+        "ais due date",
+        "date ais received",
+        "charity size",
+        "fin report from",
+        "fin report to",
+        "financial report date received",
+        "type of financial statement",
+        "charity report has a modification",
+        "type of report modification",
+        "report consolidated with more than one entity",
+        "coop financial report submitted to regulator",
+        "cash or accrual"
+      ],
+      "status": "AGENT_VALIDATED",
+      "attempts": 2,
+      "feedback": null
+    },
+    {
+      "group": "activities_and_programs",
+      "columns": [
+        "conducted activities",
+        "why charity did not conduct activities",
+        "how purposes were pursued",
+        "international activities undertaken - operating overseas including programs",
+        "international activities undertaken - transferring goods or services overseas",
+        "other international activities",
+        "international activities details",
+        "other international activities description"
+      ],
+      "status": "AGENT_VALIDATED",
+      "attempts": 0,
+      "reused_from": "outputs\\experiments\\grouped-ontology\\run\\acnc_ais2024_new",
+      "feedback": null
+    },
+    {
+      "group": "fundraising_registrations",
+      "columns": [
+        "fundraising - act",
+        "fundraising - nsw",
+        "fundraising - nt",
+        "fundraising - online",
+        "fundraising - qld",
+        "fundraising - sa",
+        "fundraising - tas",
+        "fundraising - vic",
+        "fundraising - wa",
+        "fundraising number - act",
+        "fundraising number - nsw",
+        "fundraising number - qld",
+        "fundraising number - sa",
+        "fundraising number - tas",
+        "fundraising number - vic",
+        "fundraising number - wa"
+      ],
+      "status": "AGENT_VALIDATED",
+      "attempts": 0,
+      "reused_from": "outputs\\experiments\\grouped-ontology\\run\\acnc_ais2024_new",
+      "feedback": null
+    },
+    {
+      "group": "workforce_and_volunteers",
+      "columns": [
+        "staff - full time",
+        "staff - part time",
+        "staff - casual",
+        "staff - volunteers",
+        "total full time equivalent staff"
+      ],
+      "status": "AGENT_VALIDATED",
+      "attempts": 0,
+      "reused_from": "outputs\\experiments\\grouped-ontology\\run\\acnc_ais2024_new",
+      "feedback": null
+    },
+    {
+      "group": "income_and_revenue",
+      "columns": [
+        "total gross income",
+        "total revenue",
+        "revenue from government",
+        "revenue from goods and services",
+        "revenue from investments",
+        "donations and bequests",
+        "all other revenue",
+        "other income",
+        "other comprehensive income",
+        "total comprehensive income"
+      ],
+      "status": "NEEDS_REVIEW",
+      "attempts": 3,
+      "feedback": {
+        "stop_reason": "SOURCE_BUDGET",
+        "error": "Per-source request reservation exhausted; other sources retain their allowances"
+      }
+    },
+    {
+      "group": "expenses_and_grants_made",
+      "columns": [
+        "total expenses",
+        "employee expenses",
+        "interest expenses",
+        "all other expenses",
+        "grants and donations made for use in Australia",
+        "grants and donations made for use outside Australia",
+        "net surplus/deficit"
+      ],
+      "status": "NEEDS_REVIEW",
+      "attempts": 1,
+      "feedback": {
+        "stop_reason": "SOURCE_BUDGET",
+        "error": "Per-source request reservation exhausted; other sources retain their allowances"
+      }
+    },
+    {
+      "group": "assets_and_liabilities",
+      "columns": [
+        "total assets",
+        "total current assets",
+        "total non-current assets",
+        "other non-current assets",
+        "total liabilities",
+        "total current liabilities",
+        "total non-current liabilities",
+        "other non-current liabilities",
+        "non-current loans payable",
+        "non-current loans receivable",
+        "net assets/liabilities",
+        "assets and liabilities description"
+      ],
+      "status": "NEEDS_REVIEW",
+      "attempts": 1,
+      "feedback": {
+        "stop_reason": "SOURCE_BUDGET",
+        "error": "Per-source request reservation exhausted; other sources retain their allowances"
+      }
+    },
+    {
+      "group": "key_management_and_related_parties",
+      "columns": [
+        "charity has reportable related party transactions",
+        "Relevant transactions",
+        "Key Management Personnel",
+        "Number of Key Management Personnel",
+        "Total paid to Key Management Personnel",
+        "Other Relevant details",
+        "Other details"
+      ],
+      "status": "NEEDS_REVIEW",
+      "attempts": 1,
+      "feedback": {
+        "stop_reason": "SOURCE_BUDGET",
+        "error": "Per-source request reservation exhausted; other sources retain their allowances"
+      }
+    }
+  ],
+  "new_concepts": 29,
+  "mapping_rules": 56,
+  "unmapped_columns": [
+    {
+      "source_path": "Key Management Personnel",
+      "reason": "Outside this group; reconciled in the final source mapping"
+    },
+    {
+      "source_path": "Number of Key Management Personnel",
+      "reason": "Outside this group; reconciled in the final source mapping"
+    },
+    {
+      "source_path": "Other Relevant details",
+      "reason": "Outside this group; reconciled in the final source mapping"
+    },
+    {
+      "source_path": "Other details",
+      "reason": "Outside this group; reconciled in the final source mapping"
+    },
+    {
+      "source_path": "Relevant transactions",
+      "reason": "Outside this group; reconciled in the final source mapping"
+    },
+    {
+      "source_path": "Total paid to Key Management Personnel",
+      "reason": "Outside this group; reconciled in the final source mapping"
+    },
+    {
+      "source_path": "all other expenses",
+      "reason": "Outside this group; reconciled in the final source mapping"
+    },
+    {
+      "source_path": "all other revenue",
+      "reason": "Outside this group; reconciled in the final source mapping"
+    },
+    {
+      "source_path": "assets and liabilities description",
+      "reason": "Outside this group; reconciled in the final source mapping"
+    },
+    {
+      "source_path": "charity has reportable related party transactions",
+      "reason": "Outside this group; reconciled in the final source mapping"
+    },
+    {
+      "source_path": "donations and bequests",
+      "reason": "Outside this group; reconciled in the final source mapping"
+    },
+    {
+      "source_path": "employee expenses",
+      "reason": "Outside this group; reconciled in the final source mapping"
+    },
+    {
+      "source_path": "grants and donations made for use in Australia",
+      "reason": "Outside this group; reconciled in the final source mapping"
+    },
+    {
+      "source_path": "grants and donations made for use outside Australia",
+      "reason": "Outside this group; reconciled in the final source mapping"
+    },
+    {
+      "source_path": "interest expenses",
+      "reason": "Outside this group; reconciled in the final source mapping"
+    },
+    {
+      "source_path": "net assets/liabilities",
+      "reason": "Outside this group; reconciled in the final source mapping"
+    },
+    {
+      "source_path": "net surplus/deficit",
+      "reason": "Outside this group; reconciled in the final source mapping"
+    },
+    {
+      "source_path": "non-current loans payable",
+      "reason": "Outside this group; reconciled in the final source mapping"
+    },
+    {
+      "source_path": "non-current loans receivable",
+      "reason": "Outside this group; reconciled in the final source mapping"
+    },
+    {
+      "source_path": "other comprehensive income",
+      "reason": "Outside this group; reconciled in the final source mapping"
+    },
+    {
+      "source_path": "other income",
+      "reason": "Outside this group; reconciled in the final source mapping"
+    },
+    {
+      "source_path": "other non-current assets",
+      "reason": "Outside this group; reconciled in the final source mapping"
+    },
+    {
+      "source_path": "other non-current liabilities",
+      "reason": "Outside this group; reconciled in the final source mapping"
+    },
+    {
+      "source_path": "revenue from goods and services",
+      "reason": "Outside this group; reconciled in the final source mapping"
+    },
+    {
+      "source_path": "revenue from government",
+      "reason": "Outside this group; reconciled in the final source mapping"
+    },
+    {
+      "source_path": "revenue from investments",
+      "reason": "Outside this group; reconciled in the final source mapping"
+    },
+    {
+      "source_path": "total assets",
+      "reason": "Outside this group; reconciled in the final source mapping"
+    },
+    {
+      "source_path": "total comprehensive income",
+      "reason": "Outside this group; reconciled in the final source mapping"
+    },
+    {
+      "source_path": "total current assets",
+      "reason": "Outside this group; reconciled in the final source mapping"
+    },
+    {
+      "source_path": "total current liabilities",
+      "reason": "Outside this group; reconciled in the final source mapping"
+    },
+    {
+      "source_path": "total expenses",
+      "reason": "Outside this group; reconciled in the final source mapping"
+    },
+    {
+      "source_path": "total gross income",
+      "reason": "Outside this group; reconciled in the final source mapping"
+    },
+    {
+      "source_path": "total liabilities",
+      "reason": "Outside this group; reconciled in the final source mapping"
+    },
+    {
+      "source_path": "total non-current assets",
+      "reason": "Outside this group; reconciled in the final source mapping"
+    },
+    {
+      "source_path": "total non-current liabilities",
+      "reason": "Outside this group; reconciled in the final source mapping"
+    },
+    {
+      "source_path": "total revenue",
+      "reason": "Outside this group; reconciled in the final source mapping"
+    }
+  ],
+  "quality": {
+    "present_values": 20689,
+    "emitted_observations": 20193,
+    "withheld_missing_context": 490,
+    "abstention_reasons": {
+      "QUALIFIER_MISSING_PERIOD": 490
+    },
+    "malformed_values": 6,
+    "malformed_reasons": {
+      "ABN_CHECKSUM": 1,
+      "WEBSITE_INVALID": 2,
+      "DOMAIN_INVALID": 2,
+      "INVALID_ENUM_VALUE_INVALID": 1
+    },
+    "eligible_present_values": 20199,
+    "malformed_rate": 0.0002970444081390168,
+    "abstention_rate": 0.02368408332930543,
+    "record_errors": {},
+    "passes_technical_gate": true,
+    "semantic_precision": null,
+    "note": "Missing required context remains withheld. This gate does not establish semantic truth or useful coverage."
+  },
+  "raw_extraction": {
+    "records_in": 600,
+    "records_with_output": 600,
+    "record_errors": {},
+    "fields": [
+      {
+        "target": "entity.abn",
+        "source_paths": [
+          "abn"
+        ],
+        "records": 600,
+        "source_present": 600,
+        "emitted": 599,
+        "coverage_of_records": 0.998,
+        "error_rate_of_present": 0.002,
+        "errors": {
+          "ABN_CHECKSUM": 1
+        },
+        "error_examples": {
+          "ABN_CHECKSUM": [
+            "91111111520"
+          ]
+        }
+      },
+      {
+        "target": "entity.legal_name",
+        "source_paths": [
+          "charity name"
+        ],
+        "records": 600,
+        "source_present": 600,
+        "emitted": 600,
+        "coverage_of_records": 1.0,
+        "error_rate_of_present": 0.0,
+        "errors": {},
+        "error_examples": {}
+      },
+      {
+        "target": "entity.website",
+        "source_paths": [
+          "charity website"
+        ],
+        "records": 600,
+        "source_present": 413,
+        "emitted": 411,
+        "coverage_of_records": 0.685,
+        "error_rate_of_present": 0.005,
+        "errors": {
+          "WEBSITE_INVALID": 2
+        },
+        "error_examples": {
+          "WEBSITE_INVALID": [
+            "https://www.facebook.com/collie senior citizens",
+            "https://www.facebook.com/Minh Giac"
+          ]
+        }
+      },
+      {
+        "target": "ext.contact.website_domain",
+        "source_paths": [
+          "charity website"
+        ],
+        "records": 600,
+        "source_present": 413,
+        "emitted": 411,
+        "coverage_of_records": 0.685,
+        "error_rate_of_present": 0.005,
+        "errors": {
+          "DOMAIN_INVALID": 2
+        },
+        "error_examples": {
+          "DOMAIN_INVALID": [
+            "www.malvernearlylearning",
+            "https://elrahman.org,au"
+          ]
+        }
+      },
+      {
+        "target": "dyn.charity.registration_status",
+        "source_paths": [
+          "registration status"
+        ],
+        "records": 600,
+        "source_present": 600,
+        "emitted": 599,
+        "coverage_of_records": 0.998,
+        "error_rate_of_present": 0.002,
+        "errors": {
+          "INVALID_ENUM_VALUE_INVALID": 1
+        },
+        "error_examples": {
+          "INVALID_ENUM_VALUE_INVALID": [
+            "Voluntarily Revoked Merged"
+          ]
+        },
+        "entity": "charity"
+      },
+      {
+        "target": "dyn.charity.basic_religious_charity",
+        "source_paths": [
+          "basic religious charity"
+        ],
+        "records": 600,
+        "source_present": 600,
+        "emitted": 600,
+        "coverage_of_records": 1.0,
+        "error_rate_of_present": 0.0,
+        "errors": {},
+        "error_examples": {},
+        "entity": "charity"
+      },
+      {
+        "target": "dyn.charity.incorporated_association",
+        "source_paths": [
+          "incorporated association"
+        ],
+        "records": 600,
+        "source_present": 600,
+        "emitted": 600,
+        "coverage_of_records": 1.0,
+        "error_rate_of_present": 0.0,
+        "errors": {},
+        "error_examples": {},
+        "entity": "charity"
+      },
+      {
+        "target": "dyn.charity.state_association_number",
+        "source_paths": [
+          "association number - act"
+        ],
+        "records": 600,
+        "source_present": 11,
+        "emitted": 11,
+        "coverage_of_records": 0.018,
+        "error_rate_of_present": 0.0,
+        "errors": {},
+        "error_examples": {},
+        "entity": "charity"
+      },
+      {
+        "target": "dyn.charity.state_association_number",
+        "source_paths": [
+          "association number - nsw"
+        ],
+        "records": 600,
+        "source_present": 57,
+        "emitted": 57,
+        "coverage_of_records": 0.095,
+        "error_rate_of_present": 0.0,
+        "errors": {},
+        "error_examples": {},
+        "entity": "charity"
+      },
+      {
+        "target": "dyn.charity.state_association_number",
+        "source_paths": [
+          "association number - nt"
+        ],
+        "records": 600,
+        "source_present": 2,
+        "emitted": 2,
+        "coverage_of_records": 0.003,
+        "error_rate_of_present": 0.0,
+        "errors": {},
+        "error_examples": {},
+        "entity": "charity"
+      },
+      {
+        "target": "dyn.charity.state_association_number",
+        "source_paths": [
+          "association number - qld"
+        ],
+        "records": 600,
+        "source_present": 28,
+        "emitted": 28,
+        "coverage_of_records": 0.047,
+        "error_rate_of_present": 0.0,
+        "errors": {},
+        "error_examples": {},
+        "entity": "charity"
+      },
+      {
+        "target": "dyn.charity.state_association_number",
+        "source_paths": [
+          "association number - sa"
+        ],
+        "records": 600,
+        "source_present": 19,
+        "emitted": 19,
+        "coverage_of_records": 0.032,
+        "error_rate_of_present": 0.0,
+        "errors": {},
+        "error_examples": {},
+        "entity": "charity"
+      },
+      {
+        "target": "dyn.charity.state_association_number",
+        "source_paths": [
+          "association number - tas"
+        ],
+        "records": 600,
+        "source_present": 7,
+        "emitted": 7,
+        "coverage_of_records": 0.012,
+        "error_rate_of_present": 0.0,
+        "errors": {},
+        "error_examples": {},
+        "entity": "charity"
+      },
+      {
+        "target": "dyn.charity.state_association_number",
+        "source_paths": [
+          "association number - vic"
+        ],
+        "records": 600,
+        "source_present": 66,
+        "emitted": 66,
+        "coverage_of_records": 0.11,
+        "error_rate_of_present": 0.0,
+        "errors": {},
+        "error_examples": {},
+        "entity": "charity"
+      },
+      {
+        "target": "dyn.charity.state_association_number",
+        "source_paths": [
+          "association number - wa"
+        ],
+        "records": 600,
+        "source_present": 33,
+        "emitted": 33,
+        "coverage_of_records": 0.055,
+        "error_rate_of_present": 0.0,
+        "errors": {},
+        "error_examples": {},
+        "entity": "charity"
+      },
+      {
+        "target": "dyn.charity.ais_due_date",
+        "source_paths": [
+          "ais due date"
+        ],
+        "records": 600,
+        "source_present": 600,
+        "emitted": 600,
+        "coverage_of_records": 1.0,
+        "error_rate_of_present": 0.0,
+        "errors": {},
+        "error_examples": {},
+        "entity": "charity"
+      },
+      {
+        "target": "dyn.charity.ais_received_date",
+        "source_paths": [
+          "date ais received"
+        ],
+        "records": 600,
+        "source_present": 600,
+        "emitted": 600,
+        "coverage_of_records": 1.0,
+        "error_rate_of_present": 0.0,
+        "errors": {},
+        "error_examples": {},
+        "entity": "charity"
+      },
+      {
+        "target": "dyn.charity.size_band",
+        "source_paths": [
+          "charity size"
+        ],
+        "records": 600,
+        "source_present": 600,
+        "emitted": 600,
+        "coverage_of_records": 1.0,
+        "error_rate_of_present": 0.0,
+        "errors": {},
+        "error_examples": {},
+        "entity": "charity"
+      },
+      {
+        "target": "dyn.charity.financial_report_period_start",
+        "source_paths": [
+          "fin report from"
+        ],
+        "records": 600,
+        "source_present": 502,
+        "emitted": 502,
+        "coverage_of_records": 0.837,
+        "error_rate_of_present": 0.0,
+        "errors": {},
+        "error_examples": {},
+        "entity": "charity"
+      },
+      {
+        "target": "dyn.charity.financial_report_period_end",
+        "source_paths": [
+          "fin report to"
+        ],
+        "records": 600,
+        "source_present": 502,
+        "emitted": 502,
+        "coverage_of_records": 0.837,
+        "error_rate_of_present": 0.0,
+        "errors": {},
+        "error_examples": {},
+        "entity": "charity"
+      },
+      {
+        "target": "dyn.charity.financial_report_received_date",
+        "source_paths": [
+          "financial report date received"
+        ],
+        "records": 600,
+        "source_present": 395,
+        "emitted": 395,
+        "coverage_of_records": 0.658,
+        "error_rate_of_present": 0.0,
+        "errors": {},
+        "error_examples": {},
+        "entity": "charity"
+      },
+      {
+        "target": "dyn.charity.financial_statement_type",
+        "source_paths": [
+          "type of financial statement"
+        ],
+        "records": 600,
+        "source_present": 150,
+        "emitted": 150,
+        "coverage_of_records": 0.25,
+        "error_rate_of_present": 0.0,
+        "errors": {},
+        "error_examples": {},
+        "entity": "charity"
+      },
+      {
+        "target": "dyn.charity.report_modification_flag",
+        "source_paths": [
+          "charity report has a modification"
+        ],
+        "records": 600,
+        "source_present": 600,
+        "emitted": 600,
+        "coverage_of_records": 1.0,
+        "error_rate_of_present": 0.0,
+        "errors": {},
+        "error_examples": {},
+        "entity": "charity"
+      },
+      {
+        "target": "dyn.charity.report_modification_type",
+        "source_paths": [
+          "type of report modification"
+        ],
+        "records": 600,
+        "source_present": 14,
+        "emitted": 14,
+        "coverage_of_records": 0.023,
+        "error_rate_of_present": 0.0,
+        "errors": {},
+        "error_examples": {},
+        "entity": "charity"
+      },
+      {
+        "target": "dyn.charity.report_consolidated_flag",
+        "source_paths": [
+          "report consolidated with more than one entity"
+        ],
+        "records": 600,
+        "source_present": 150,
+        "emitted": 150,
+        "coverage_of_records": 0.25,
+        "error_rate_of_present": 0.0,
+        "errors": {},
+        "error_examples": {},
+        "entity": "charity"
+      },
+      {
+        "target": "dyn.charity.coop_financial_report_submitted_flag",
+        "source_paths": [
+          "coop financial report submitted to regulator"
+        ],
+        "records": 600,
+        "source_present": 600,
+        "emitted": 600,
+        "coverage_of_records": 1.0,
+        "error_rate_of_present": 0.0,
+        "errors": {},
+        "error_examples": {},
+        "entity": "charity"
+      },
+      {
+        "target": "dyn.charity.accounting_basis",
+        "source_paths": [
+          "cash or accrual"
+        ],
+        "records": 600,
+        "source_present": 355,
+        "emitted": 355,
+        "coverage_of_records": 0.592,
+        "error_rate_of_present": 0.0,
+        "errors": {},
+        "error_examples": {},
+        "entity": "charity"
+      },
+      {
+        "target": "dyn.charity.conducted_activities",
+        "source_paths": [
+          "conducted activities"
+        ],
+        "records": 600,
+        "source_present": 600,
+        "emitted": 600,
+        "coverage_of_records": 1.0,
+        "error_rate_of_present": 0.0,
+        "errors": {},
+        "error_examples": {},
+        "entity": "charity"
+      },
+      {
+        "target": "dyn.charity.no_activity_reason",
+        "source_paths": [
+          "why charity did not conduct activities"
+        ],
+        "records": 600,
+        "source_present": 15,
+        "emitted": 15,
+        "coverage_of_records": 0.025,
+        "error_rate_of_present": 0.0,
+        "errors": {},
+        "error_examples": {},
+        "entity": "charity"
+      },
+      {
+        "target": "dyn.charity.purposes_pursued_description",
+        "source_paths": [
+          "how purposes were pursued"
+        ],
+        "records": 600,
+        "source_present": 585,
+        "emitted": 585,
+        "coverage_of_records": 0.975,
+        "error_rate_of_present": 0.0,
+        "errors": {},
+        "error_examples": {},
+        "entity": "charity"
+      },
+      {
+        "target": "dyn.charity.international_activity_operating_overseas",
+        "source_paths": [
+          "international activities undertaken - operating overseas including programs"
+        ],
+        "records": 600,
+        "source_present": 600,
+        "emitted": 600,
+        "coverage_of_records": 1.0,
+        "error_rate_of_present": 0.0,
+        "errors": {},
+        "error_examples": {},
+        "entity": "charity"
+      },
+      {
+        "target": "dyn.charity.international_activity_transferring_goods_services",
+        "source_paths": [
+          "international activities undertaken - transferring goods or services overseas"
+        ],
+        "records": 600,
+        "source_present": 600,
+        "emitted": 600,
+        "coverage_of_records": 1.0,
+        "error_rate_of_present": 0.0,
+        "errors": {},
+        "error_examples": {},
+        "entity": "charity"
+      },
+      {
+        "target": "dyn.charity.international_activity_other",
+        "source_paths": [
+          "other international activities"
+        ],
+        "records": 600,
+        "source_present": 600,
+        "emitted": 600,
+        "coverage_of_records": 1.0,
+        "error_rate_of_present": 0.0,
+        "errors": {},
+        "error_examples": {},
+        "entity": "charity"
+      },
+      {
+        "target": "dyn.charity.international_activity_details",
+        "source_paths": [
+          "international activities details"
+        ],
+        "records": 600,
+        "source_present": 30,
+        "emitted": 30,
+        "coverage_of_records": 0.05,
+        "error_rate_of_present": 0.0,
+        "errors": {},
+        "error_examples": {},
+        "entity": "charity"
+      },
+      {
+        "target": "dyn.charity.other_international_activity_description",
+        "source_paths": [
+          "other international activities description"
+        ],
+        "records": 600,
+        "source_present": 5,
+        "emitted": 5,
+        "coverage_of_records": 0.008,
+        "error_rate_of_present": 0.0,
+        "errors": {},
+        "error_examples": {},
+        "entity": "charity"
+      },
+      {
+        "target": "dyn.fundraising_authorisation.activity_flag",
+        "source_paths": [
+          "fundraising - act"
+        ],
+        "records": 600,
+        "source_present": 600,
+        "emitted": 600,
+        "coverage_of_records": 1.0,
+        "error_rate_of_present": 0.0,
+        "errors": {},
+        "error_examples": {},
+        "entity": "fundraising_authorisation"
+      },
+      {
+        "target": "dyn.fundraising_authorisation.activity_flag",
+        "source_paths": [
+          "fundraising - nsw"
+        ],
+        "records": 600,
+        "source_present": 600,
+        "emitted": 600,
+        "coverage_of_records": 1.0,
+        "error_rate_of_present": 0.0,
+        "errors": {},
+        "error_examples": {},
+        "entity": "fundraising_authorisation"
+      },
+      {
+        "target": "dyn.fundraising_authorisation.activity_flag",
+        "source_paths": [
+          "fundraising - nt"
+        ],
+        "records": 600,
+        "source_present": 600,
+        "emitted": 600,
+        "coverage_of_records": 1.0,
+        "error_rate_of_present": 0.0,
+        "errors": {},
+        "error_examples": {},
+        "entity": "fundraising_authorisation"
+      },
+      {
+        "target": "dyn.fundraising_authorisation.activity_flag",
+        "source_paths": [
+          "fundraising - online"
+        ],
+        "records": 600,
+        "source_present": 600,
+        "emitted": 600,
+        "coverage_of_records": 1.0,
+        "error_rate_of_present": 0.0,
+        "errors": {},
+        "error_examples": {},
+        "entity": "fundraising_authorisation"
+      },
+      {
+        "target": "dyn.fundraising_authorisation.activity_flag",
+        "source_paths": [
+          "fundraising - qld"
+        ],
+        "records": 600,
+        "source_present": 600,
+        "emitted": 600,
+        "coverage_of_records": 1.0,
+        "error_rate_of_present": 0.0,
+        "errors": {},
+        "error_examples": {},
+        "entity": "fundraising_authorisation"
+      },
+      {
+        "target": "dyn.fundraising_authorisation.activity_flag",
+        "source_paths": [
+          "fundraising - sa"
+        ],
+        "records": 600,
+        "source_present": 600,
+        "emitted": 600,
+        "coverage_of_records": 1.0,
+        "error_rate_of_present": 0.0,
+        "errors": {},
+        "error_examples": {},
+        "entity": "fundraising_authorisation"
+      },
+      {
+        "target": "dyn.fundraising_authorisation.activity_flag",
+        "source_paths": [
+          "fundraising - tas"
+        ],
+        "records": 600,
+        "source_present": 600,
+        "emitted": 600,
+        "coverage_of_records": 1.0,
+        "error_rate_of_present": 0.0,
+        "errors": {},
+        "error_examples": {},
+        "entity": "fundraising_authorisation"
+      },
+      {
+        "target": "dyn.fundraising_authorisation.activity_flag",
+        "source_paths": [
+          "fundraising - vic"
+        ],
+        "records": 600,
+        "source_present": 600,
+        "emitted": 600,
+        "coverage_of_records": 1.0,
+        "error_rate_of_present": 0.0,
+        "errors": {},
+        "error_examples": {},
+        "entity": "fundraising_authorisation"
+      },
+      {
+        "target": "dyn.fundraising_authorisation.activity_flag",
+        "source_paths": [
+          "fundraising - wa"
+        ],
+        "records": 600,
+        "source_present": 600,
+        "emitted": 600,
+        "coverage_of_records": 1.0,
+        "error_rate_of_present": 0.0,
+        "errors": {},
+        "error_examples": {},
+        "entity": "fundraising_authorisation"
+      },
+      {
+        "target": "dyn.fundraising_authorisation.number",
+        "source_paths": [
+          "fundraising number - act"
+        ],
+        "records": 600,
+        "source_present": 4,
+        "emitted": 4,
+        "coverage_of_records": 0.007,
+        "error_rate_of_present": 0.0,
+        "errors": {},
+        "error_examples": {},
+        "entity": "fundraising_authorisation"
+      },
+      {
+        "target": "dyn.fundraising_authorisation.number",
+        "source_paths": [
+          "fundraising number - nsw"
+        ],
+        "records": 600,
+        "source_present": 49,
+        "emitted": 49,
+        "coverage_of_records": 0.082,
+        "error_rate_of_present": 0.0,
+        "errors": {},
+        "error_examples": {},
+        "entity": "fundraising_authorisation"
+      },
+      {
+        "target": "dyn.fundraising_authorisation.number",
+        "source_paths": [
+          "fundraising number - qld"
+        ],
+        "records": 600,
+        "source_present": 28,
+        "emitted": 28,
+        "coverage_of_records": 0.047,
+        "error_rate_of_present": 0.0,
+        "errors": {},
+        "error_examples": {},
+        "entity": "fundraising_authorisation"
+      },
+      {
+        "target": "dyn.fundraising_authorisation.number",
+        "source_paths": [
+          "fundraising number - sa"
+        ],
+        "records": 600,
+        "source_present": 11,
+        "emitted": 11,
+        "coverage_of_records": 0.018,
+        "error_rate_of_present": 0.0,
+        "errors": {},
+        "error_examples": {},
+        "entity": "fundraising_authorisation"
+      },
+      {
+        "target": "dyn.fundraising_authorisation.number",
+        "source_paths": [
+          "fundraising number - tas"
+        ],
+        "records": 600,
+        "source_present": 10,
+        "emitted": 10,
+        "coverage_of_records": 0.017,
+        "error_rate_of_present": 0.0,
+        "errors": {},
+        "error_examples": {},
+        "entity": "fundraising_authorisation"
+      },
+      {
+        "target": "dyn.fundraising_authorisation.number",
+        "source_paths": [
+          "fundraising number - vic"
+        ],
+        "records": 600,
+        "source_present": 26,
+        "emitted": 26,
+        "coverage_of_records": 0.043,
+        "error_rate_of_present": 0.0,
+        "errors": {},
+        "error_examples": {},
+        "entity": "fundraising_authorisation"
+      },
+      {
+        "target": "dyn.fundraising_authorisation.number",
+        "source_paths": [
+          "fundraising number - wa"
+        ],
+        "records": 600,
+        "source_present": 9,
+        "emitted": 9,
+        "coverage_of_records": 0.015,
+        "error_rate_of_present": 0.0,
+        "errors": {},
+        "error_examples": {},
+        "entity": "fundraising_authorisation"
+      },
+      {
+        "target": "dyn.charity.staff_headcount",
+        "source_paths": [
+          "staff - full time"
+        ],
+        "records": 600,
+        "source_present": 600,
+        "emitted": 502,
+        "coverage_of_records": 0.837,
+        "error_rate_of_present": 0.163,
+        "errors": {
+          "QUALIFIER_MISSING_PERIOD": 98
+        },
+        "error_examples": {},
+        "entity": "charity"
+      },
+      {
+        "target": "dyn.charity.staff_headcount",
+        "source_paths": [
+          "staff - part time"
+        ],
+        "records": 600,
+        "source_present": 600,
+        "emitted": 502,
+        "coverage_of_records": 0.837,
+        "error_rate_of_present": 0.163,
+        "errors": {
+          "QUALIFIER_MISSING_PERIOD": 98
+        },
+        "error_examples": {},
+        "entity": "charity"
+      },
+      {
+        "target": "dyn.charity.staff_headcount",
+        "source_paths": [
+          "staff - casual"
+        ],
+        "records": 600,
+        "source_present": 600,
+        "emitted": 502,
+        "coverage_of_records": 0.837,
+        "error_rate_of_present": 0.163,
+        "errors": {
+          "QUALIFIER_MISSING_PERIOD": 98
+        },
+        "error_examples": {},
+        "entity": "charity"
+      },
+      {
+        "target": "dyn.charity.volunteer_count",
+        "source_paths": [
+          "staff - volunteers"
+        ],
+        "records": 600,
+        "source_present": 600,
+        "emitted": 502,
+        "coverage_of_records": 0.837,
+        "error_rate_of_present": 0.163,
+        "errors": {
+          "QUALIFIER_MISSING_PERIOD": 98
+        },
+        "error_examples": {},
+        "entity": "charity"
+      },
+      {
+        "target": "dyn.charity.full_time_equivalent_staff",
+        "source_paths": [
+          "total full time equivalent staff"
+        ],
+        "records": 600,
+        "source_present": 600,
+        "emitted": 502,
+        "coverage_of_records": 0.837,
+        "error_rate_of_present": 0.163,
+        "errors": {
+          "QUALIFIER_MISSING_PERIOD": 98
+        },
+        "error_examples": {},
+        "entity": "charity"
+      }
+    ],
+    "relationships": {
+      "HOLDS_FUNDRAISING_AUTHORISATION": 600
+    },
+    "input_records": 600,
+    "refused_records": 0,
+    "observations": 20193,
+    "value_errors": 496,
+    "present_values": 20689,
+    "error_rate": 0.023974092512929576
+  },
+  "test_quality": {
+    "present_values": 4030,
+    "emitted_observations": 3899,
+    "withheld_missing_context": 130,
+    "abstention_reasons": {
+      "QUALIFIER_MISSING_PERIOD": 130
+    },
+    "malformed_values": 1,
+    "malformed_reasons": {
+      "INVALID_ENUM_VALUE_INVALID": 1
+    },
+    "eligible_present_values": 3900,
+    "malformed_rate": 0.0002564102564102564,
+    "abstention_rate": 0.03225806451612903,
+    "record_errors": {},
+    "passes_technical_gate": true,
+    "semantic_precision": null,
+    "note": "Missing required context remains withheld. This gate does not establish semantic truth or useful coverage."
+  },
+  "test": {
+    "records_in": 118,
+    "records_with_output": 118,
+    "record_errors": {},
+    "fields": [
+      {
+        "target": "entity.abn",
+        "source_paths": [
+          "abn"
+        ],
+        "records": 118,
+        "source_present": 118,
+        "emitted": 118,
+        "coverage_of_records": 1.0,
+        "error_rate_of_present": 0.0,
+        "errors": {},
+        "error_examples": {}
+      },
+      {
+        "target": "entity.legal_name",
+        "source_paths": [
+          "charity name"
+        ],
+        "records": 118,
+        "source_present": 118,
+        "emitted": 118,
+        "coverage_of_records": 1.0,
+        "error_rate_of_present": 0.0,
+        "errors": {},
+        "error_examples": {}
+      },
+      {
+        "target": "entity.website",
+        "source_paths": [
+          "charity website"
+        ],
+        "records": 118,
+        "source_present": 77,
+        "emitted": 77,
+        "coverage_of_records": 0.653,
+        "error_rate_of_present": 0.0,
+        "errors": {},
+        "error_examples": {}
+      },
+      {
+        "target": "ext.contact.website_domain",
+        "source_paths": [
+          "charity website"
+        ],
+        "records": 118,
+        "source_present": 77,
+        "emitted": 77,
+        "coverage_of_records": 0.653,
+        "error_rate_of_present": 0.0,
+        "errors": {},
+        "error_examples": {}
+      },
+      {
+        "target": "dyn.charity.registration_status",
+        "source_paths": [
+          "registration status"
+        ],
+        "records": 118,
+        "source_present": 118,
+        "emitted": 117,
+        "coverage_of_records": 0.992,
+        "error_rate_of_present": 0.008,
+        "errors": {
+          "INVALID_ENUM_VALUE_INVALID": 1
+        },
+        "error_examples": {
+          "INVALID_ENUM_VALUE_INVALID": [
+            "Voluntarily Revoked Merged"
+          ]
+        },
+        "entity": "charity"
+      },
+      {
+        "target": "dyn.charity.basic_religious_charity",
+        "source_paths": [
+          "basic religious charity"
+        ],
+        "records": 118,
+        "source_present": 118,
+        "emitted": 118,
+        "coverage_of_records": 1.0,
+        "error_rate_of_present": 0.0,
+        "errors": {},
+        "error_examples": {},
+        "entity": "charity"
+      },
+      {
+        "target": "dyn.charity.incorporated_association",
+        "source_paths": [
+          "incorporated association"
+        ],
+        "records": 118,
+        "source_present": 118,
+        "emitted": 118,
+        "coverage_of_records": 1.0,
+        "error_rate_of_present": 0.0,
+        "errors": {},
+        "error_examples": {},
+        "entity": "charity"
+      },
+      {
+        "target": "dyn.charity.state_association_number",
+        "source_paths": [
+          "association number - act"
+        ],
+        "records": 118,
+        "source_present": 2,
+        "emitted": 2,
+        "coverage_of_records": 0.017,
+        "error_rate_of_present": 0.0,
+        "errors": {},
+        "error_examples": {},
+        "entity": "charity"
+      },
+      {
+        "target": "dyn.charity.state_association_number",
+        "source_paths": [
+          "association number - nsw"
+        ],
+        "records": 118,
+        "source_present": 13,
+        "emitted": 13,
+        "coverage_of_records": 0.11,
+        "error_rate_of_present": 0.0,
+        "errors": {},
+        "error_examples": {},
+        "entity": "charity"
+      },
+      {
+        "target": "dyn.charity.state_association_number",
+        "source_paths": [
+          "association number - nt"
+        ],
+        "records": 118,
+        "source_present": 0,
+        "emitted": 0,
+        "coverage_of_records": 0.0,
+        "error_rate_of_present": 0.0,
+        "errors": {},
+        "error_examples": {},
+        "entity": "charity"
+      },
+      {
+        "target": "dyn.charity.state_association_number",
+        "source_paths": [
+          "association number - qld"
+        ],
+        "records": 118,
+        "source_present": 7,
+        "emitted": 7,
+        "coverage_of_records": 0.059,
+        "error_rate_of_present": 0.0,
+        "errors": {},
+        "error_examples": {},
+        "entity": "charity"
+      },
+      {
+        "target": "dyn.charity.state_association_number",
+        "source_paths": [
+          "association number - sa"
+        ],
+        "records": 118,
+        "source_present": 3,
+        "emitted": 3,
+        "coverage_of_records": 0.025,
+        "error_rate_of_present": 0.0,
+        "errors": {},
+        "error_examples": {},
+        "entity": "charity"
+      },
+      {
+        "target": "dyn.charity.state_association_number",
+        "source_paths": [
+          "association number - tas"
+        ],
+        "records": 118,
+        "source_present": 3,
+        "emitted": 3,
+        "coverage_of_records": 0.025,
+        "error_rate_of_present": 0.0,
+        "errors": {},
+        "error_examples": {},
+        "entity": "charity"
+      },
+      {
+        "target": "dyn.charity.state_association_number",
+        "source_paths": [
+          "association number - vic"
+        ],
+        "records": 118,
+        "source_present": 14,
+        "emitted": 14,
+        "coverage_of_records": 0.119,
+        "error_rate_of_present": 0.0,
+        "errors": {},
+        "error_examples": {},
+        "entity": "charity"
+      },
+      {
+        "target": "dyn.charity.state_association_number",
+        "source_paths": [
+          "association number - wa"
+        ],
+        "records": 118,
+        "source_present": 4,
+        "emitted": 4,
+        "coverage_of_records": 0.034,
+        "error_rate_of_present": 0.0,
+        "errors": {},
+        "error_examples": {},
+        "entity": "charity"
+      },
+      {
+        "target": "dyn.charity.ais_due_date",
+        "source_paths": [
+          "ais due date"
+        ],
+        "records": 118,
+        "source_present": 118,
+        "emitted": 118,
+        "coverage_of_records": 1.0,
+        "error_rate_of_present": 0.0,
+        "errors": {},
+        "error_examples": {},
+        "entity": "charity"
+      },
+      {
+        "target": "dyn.charity.ais_received_date",
+        "source_paths": [
+          "date ais received"
+        ],
+        "records": 118,
+        "source_present": 118,
+        "emitted": 118,
+        "coverage_of_records": 1.0,
+        "error_rate_of_present": 0.0,
+        "errors": {},
+        "error_examples": {},
+        "entity": "charity"
+      },
+      {
+        "target": "dyn.charity.size_band",
+        "source_paths": [
+          "charity size"
+        ],
+        "records": 118,
+        "source_present": 118,
+        "emitted": 118,
+        "coverage_of_records": 1.0,
+        "error_rate_of_present": 0.0,
+        "errors": {},
+        "error_examples": {},
+        "entity": "charity"
+      },
+      {
+        "target": "dyn.charity.financial_report_period_start",
+        "source_paths": [
+          "fin report from"
+        ],
+        "records": 118,
+        "source_present": 92,
+        "emitted": 92,
+        "coverage_of_records": 0.78,
+        "error_rate_of_present": 0.0,
+        "errors": {},
+        "error_examples": {},
+        "entity": "charity"
+      },
+      {
+        "target": "dyn.charity.financial_report_period_end",
+        "source_paths": [
+          "fin report to"
+        ],
+        "records": 118,
+        "source_present": 92,
+        "emitted": 92,
+        "coverage_of_records": 0.78,
+        "error_rate_of_present": 0.0,
+        "errors": {},
+        "error_examples": {},
+        "entity": "charity"
+      },
+      {
+        "target": "dyn.charity.financial_report_received_date",
+        "source_paths": [
+          "financial report date received"
+        ],
+        "records": 118,
+        "source_present": 76,
+        "emitted": 76,
+        "coverage_of_records": 0.644,
+        "error_rate_of_present": 0.0,
+        "errors": {},
+        "error_examples": {},
+        "entity": "charity"
+      },
+      {
+        "target": "dyn.charity.financial_statement_type",
+        "source_paths": [
+          "type of financial statement"
+        ],
+        "records": 118,
+        "source_present": 23,
+        "emitted": 23,
+        "coverage_of_records": 0.195,
+        "error_rate_of_present": 0.0,
+        "errors": {},
+        "error_examples": {},
+        "entity": "charity"
+      },
+      {
+        "target": "dyn.charity.report_modification_flag",
+        "source_paths": [
+          "charity report has a modification"
+        ],
+        "records": 118,
+        "source_present": 118,
+        "emitted": 118,
+        "coverage_of_records": 1.0,
+        "error_rate_of_present": 0.0,
+        "errors": {},
+        "error_examples": {},
+        "entity": "charity"
+      },
+      {
+        "target": "dyn.charity.report_modification_type",
+        "source_paths": [
+          "type of report modification"
+        ],
+        "records": 118,
+        "source_present": 1,
+        "emitted": 1,
+        "coverage_of_records": 0.008,
+        "error_rate_of_present": 0.0,
+        "errors": {},
+        "error_examples": {},
+        "entity": "charity"
+      },
+      {
+        "target": "dyn.charity.report_consolidated_flag",
+        "source_paths": [
+          "report consolidated with more than one entity"
+        ],
+        "records": 118,
+        "source_present": 23,
+        "emitted": 23,
+        "coverage_of_records": 0.195,
+        "error_rate_of_present": 0.0,
+        "errors": {},
+        "error_examples": {},
+        "entity": "charity"
+      },
+      {
+        "target": "dyn.charity.coop_financial_report_submitted_flag",
+        "source_paths": [
+          "coop financial report submitted to regulator"
+        ],
+        "records": 118,
+        "source_present": 118,
+        "emitted": 118,
+        "coverage_of_records": 1.0,
+        "error_rate_of_present": 0.0,
+        "errors": {},
+        "error_examples": {},
+        "entity": "charity"
+      },
+      {
+        "target": "dyn.charity.accounting_basis",
+        "source_paths": [
+          "cash or accrual"
+        ],
+        "records": 118,
+        "source_present": 70,
+        "emitted": 70,
+        "coverage_of_records": 0.593,
+        "error_rate_of_present": 0.0,
+        "errors": {},
+        "error_examples": {},
+        "entity": "charity"
+      },
+      {
+        "target": "dyn.charity.conducted_activities",
+        "source_paths": [
+          "conducted activities"
+        ],
+        "records": 118,
+        "source_present": 118,
+        "emitted": 118,
+        "coverage_of_records": 1.0,
+        "error_rate_of_present": 0.0,
+        "errors": {},
+        "error_examples": {},
+        "entity": "charity"
+      },
+      {
+        "target": "dyn.charity.no_activity_reason",
+        "source_paths": [
+          "why charity did not conduct activities"
+        ],
+        "records": 118,
+        "source_present": 2,
+        "emitted": 2,
+        "coverage_of_records": 0.017,
+        "error_rate_of_present": 0.0,
+        "errors": {},
+        "error_examples": {},
+        "entity": "charity"
+      },
+      {
+        "target": "dyn.charity.purposes_pursued_description",
+        "source_paths": [
+          "how purposes were pursued"
+        ],
+        "records": 118,
+        "source_present": 116,
+        "emitted": 116,
+        "coverage_of_records": 0.983,
+        "error_rate_of_present": 0.0,
+        "errors": {},
+        "error_examples": {},
+        "entity": "charity"
+      },
+      {
+        "target": "dyn.charity.international_activity_operating_overseas",
+        "source_paths": [
+          "international activities undertaken - operating overseas including programs"
+        ],
+        "records": 118,
+        "source_present": 118,
+        "emitted": 118,
+        "coverage_of_records": 1.0,
+        "error_rate_of_present": 0.0,
+        "errors": {},
+        "error_examples": {},
+        "entity": "charity"
+      },
+      {
+        "target": "dyn.charity.international_activity_transferring_goods_services",
+        "source_paths": [
+          "international activities undertaken - transferring goods or services overseas"
+        ],
+        "records": 118,
+        "source_present": 118,
+        "emitted": 118,
+        "coverage_of_records": 1.0,
+        "error_rate_of_present": 0.0,
+        "errors": {},
+        "error_examples": {},
+        "entity": "charity"
+      },
+      {
+        "target": "dyn.charity.international_activity_other",
+        "source_paths": [
+          "other international activities"
+        ],
+        "records": 118,
+        "source_present": 118,
+        "emitted": 118,
+        "coverage_of_records": 1.0,
+        "error_rate_of_present": 0.0,
+        "errors": {},
+        "error_examples": {},
+        "entity": "charity"
+      },
+      {
+        "target": "dyn.charity.international_activity_details",
+        "source_paths": [
+          "international activities details"
+        ],
+        "records": 118,
+        "source_present": 5,
+        "emitted": 5,
+        "coverage_of_records": 0.042,
+        "error_rate_of_present": 0.0,
+        "errors": {},
+        "error_examples": {},
+        "entity": "charity"
+      },
+      {
+        "target": "dyn.charity.other_international_activity_description",
+        "source_paths": [
+          "other international activities description"
+        ],
+        "records": 118,
+        "source_present": 0,
+        "emitted": 0,
+        "coverage_of_records": 0.0,
+        "error_rate_of_present": 0.0,
+        "errors": {},
+        "error_examples": {},
+        "entity": "charity"
+      },
+      {
+        "target": "dyn.fundraising_authorisation.activity_flag",
+        "source_paths": [
+          "fundraising - act"
+        ],
+        "records": 118,
+        "source_present": 118,
+        "emitted": 118,
+        "coverage_of_records": 1.0,
+        "error_rate_of_present": 0.0,
+        "errors": {},
+        "error_examples": {},
+        "entity": "fundraising_authorisation"
+      },
+      {
+        "target": "dyn.fundraising_authorisation.activity_flag",
+        "source_paths": [
+          "fundraising - nsw"
+        ],
+        "records": 118,
+        "source_present": 118,
+        "emitted": 118,
+        "coverage_of_records": 1.0,
+        "error_rate_of_present": 0.0,
+        "errors": {},
+        "error_examples": {},
+        "entity": "fundraising_authorisation"
+      },
+      {
+        "target": "dyn.fundraising_authorisation.activity_flag",
+        "source_paths": [
+          "fundraising - nt"
+        ],
+        "records": 118,
+        "source_present": 118,
+        "emitted": 118,
+        "coverage_of_records": 1.0,
+        "error_rate_of_present": 0.0,
+        "errors": {},
+        "error_examples": {},
+        "entity": "fundraising_authorisation"
+      },
+      {
+        "target": "dyn.fundraising_authorisation.activity_flag",
+        "source_paths": [
+          "fundraising - online"
+        ],
+        "records": 118,
+        "source_present": 118,
+        "emitted": 118,
+        "coverage_of_records": 1.0,
+        "error_rate_of_present": 0.0,
+        "errors": {},
+        "error_examples": {},
+        "entity": "fundraising_authorisation"
+      },
+      {
+        "target": "dyn.fundraising_authorisation.activity_flag",
+        "source_paths": [
+          "fundraising - qld"
+        ],
+        "records": 118,
+        "source_present": 118,
+        "emitted": 118,
+        "coverage_of_records": 1.0,
+        "error_rate_of_present": 0.0,
+        "errors": {},
+        "error_examples": {},
+        "entity": "fundraising_authorisation"
+      },
+      {
+        "target": "dyn.fundraising_authorisation.activity_flag",
+        "source_paths": [
+          "fundraising - sa"
+        ],
+        "records": 118,
+        "source_present": 118,
+        "emitted": 118,
+        "coverage_of_records": 1.0,
+        "error_rate_of_present": 0.0,
+        "errors": {},
+        "error_examples": {},
+        "entity": "fundraising_authorisation"
+      },
+      {
+        "target": "dyn.fundraising_authorisation.activity_flag",
+        "source_paths": [
+          "fundraising - tas"
+        ],
+        "records": 118,
+        "source_present": 118,
+        "emitted": 118,
+        "coverage_of_records": 1.0,
+        "error_rate_of_present": 0.0,
+        "errors": {},
+        "error_examples": {},
+        "entity": "fundraising_authorisation"
+      },
+      {
+        "target": "dyn.fundraising_authorisation.activity_flag",
+        "source_paths": [
+          "fundraising - vic"
+        ],
+        "records": 118,
+        "source_present": 118,
+        "emitted": 118,
+        "coverage_of_records": 1.0,
+        "error_rate_of_present": 0.0,
+        "errors": {},
+        "error_examples": {},
+        "entity": "fundraising_authorisation"
+      },
+      {
+        "target": "dyn.fundraising_authorisation.activity_flag",
+        "source_paths": [
+          "fundraising - wa"
+        ],
+        "records": 118,
+        "source_present": 118,
+        "emitted": 118,
+        "coverage_of_records": 1.0,
+        "error_rate_of_present": 0.0,
+        "errors": {},
+        "error_examples": {},
+        "entity": "fundraising_authorisation"
+      },
+      {
+        "target": "dyn.fundraising_authorisation.number",
+        "source_paths": [
+          "fundraising number - act"
+        ],
+        "records": 118,
+        "source_present": 0,
+        "emitted": 0,
+        "coverage_of_records": 0.0,
+        "error_rate_of_present": 0.0,
+        "errors": {},
+        "error_examples": {},
+        "entity": "fundraising_authorisation"
+      },
+      {
+        "target": "dyn.fundraising_authorisation.number",
+        "source_paths": [
+          "fundraising number - nsw"
+        ],
+        "records": 118,
+        "source_present": 12,
+        "emitted": 12,
+        "coverage_of_records": 0.102,
+        "error_rate_of_present": 0.0,
+        "errors": {},
+        "error_examples": {},
+        "entity": "fundraising_authorisation"
+      },
+      {
+        "target": "dyn.fundraising_authorisation.number",
+        "source_paths": [
+          "fundraising number - qld"
+        ],
+        "records": 118,
+        "source_present": 8,
+        "emitted": 8,
+        "coverage_of_records": 0.068,
+        "error_rate_of_present": 0.0,
+        "errors": {},
+        "error_examples": {},
+        "entity": "fundraising_authorisation"
+      },
+      {
+        "target": "dyn.fundraising_authorisation.number",
+        "source_paths": [
+          "fundraising number - sa"
+        ],
+        "records": 118,
+        "source_present": 0,
+        "emitted": 0,
+        "coverage_of_records": 0.0,
+        "error_rate_of_present": 0.0,
+        "errors": {},
+        "error_examples": {},
+        "entity": "fundraising_authorisation"
+      },
+      {
+        "target": "dyn.fundraising_authorisation.number",
+        "source_paths": [
+          "fundraising number - tas"
+        ],
+        "records": 118,
+        "source_present": 2,
+        "emitted": 2,
+        "coverage_of_records": 0.017,
+        "error_rate_of_present": 0.0,
+        "errors": {},
+        "error_examples": {},
+        "entity": "fundraising_authorisation"
+      },
+      {
+        "target": "dyn.fundraising_authorisation.number",
+        "source_paths": [
+          "fundraising number - vic"
+        ],
+        "records": 118,
+        "source_present": 4,
+        "emitted": 4,
+        "coverage_of_records": 0.034,
+        "error_rate_of_present": 0.0,
+        "errors": {},
+        "error_examples": {},
+        "entity": "fundraising_authorisation"
+      },
+      {
+        "target": "dyn.fundraising_authorisation.number",
+        "source_paths": [
+          "fundraising number - wa"
+        ],
+        "records": 118,
+        "source_present": 0,
+        "emitted": 0,
+        "coverage_of_records": 0.0,
+        "error_rate_of_present": 0.0,
+        "errors": {},
+        "error_examples": {},
+        "entity": "fundraising_authorisation"
+      },
+      {
+        "target": "dyn.charity.staff_headcount",
+        "source_paths": [
+          "staff - full time"
+        ],
+        "records": 118,
+        "source_present": 118,
+        "emitted": 92,
+        "coverage_of_records": 0.78,
+        "error_rate_of_present": 0.22,
+        "errors": {
+          "QUALIFIER_MISSING_PERIOD": 26
+        },
+        "error_examples": {},
+        "entity": "charity"
+      },
+      {
+        "target": "dyn.charity.staff_headcount",
+        "source_paths": [
+          "staff - part time"
+        ],
+        "records": 118,
+        "source_present": 118,
+        "emitted": 92,
+        "coverage_of_records": 0.78,
+        "error_rate_of_present": 0.22,
+        "errors": {
+          "QUALIFIER_MISSING_PERIOD": 26
+        },
+        "error_examples": {},
+        "entity": "charity"
+      },
+      {
+        "target": "dyn.charity.staff_headcount",
+        "source_paths": [
+          "staff - casual"
+        ],
+        "records": 118,
+        "source_present": 118,
+        "emitted": 92,
+        "coverage_of_records": 0.78,
+        "error_rate_of_present": 0.22,
+        "errors": {
+          "QUALIFIER_MISSING_PERIOD": 26
+        },
+        "error_examples": {},
+        "entity": "charity"
+      },
+      {
+        "target": "dyn.charity.volunteer_count",
+        "source_paths": [
+          "staff - volunteers"
+        ],
+        "records": 118,
+        "source_present": 118,
+        "emitted": 92,
+        "coverage_of_records": 0.78,
+        "error_rate_of_present": 0.22,
+        "errors": {
+          "QUALIFIER_MISSING_PERIOD": 26
+        },
+        "error_examples": {},
+        "entity": "charity"
+      },
+      {
+        "target": "dyn.charity.full_time_equivalent_staff",
+        "source_paths": [
+          "total full time equivalent staff"
+        ],
+        "records": 118,
+        "source_present": 118,
+        "emitted": 92,
+        "coverage_of_records": 0.78,
+        "error_rate_of_present": 0.22,
+        "errors": {
+          "QUALIFIER_MISSING_PERIOD": 26
+        },
+        "error_examples": {},
+        "entity": "charity"
+      }
+    ],
+    "relationships": {
+      "HOLDS_FUNDRAISING_AUTHORISATION": 118
+    },
+    "input_records": 118,
+    "refused_records": 0,
+    "observations": 3899,
+    "value_errors": 131,
+    "present_values": 4030,
+    "error_rate": 0.03250620347394541
+  },
+  "human_review": "pending",
+  "production_promoted": false
+}

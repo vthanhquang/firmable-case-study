@@ -1,0 +1,2410 @@
+[
+  {
+    "key": "concept:dyn.ip_application.number",
+    "kind": "concept",
+    "contract": {
+      "path": "dyn.ip_application.number",
+      "type": "string",
+      "owner": "ip_application",
+      "definition": "Publisher-assigned application number for an IP application, unique only within a given right type; it must be read together with the right type and is not a company registration number.",
+      "values": [],
+      "multi": false,
+      "required_qualifiers": [
+        "right_type"
+      ],
+      "personal_data": "never"
+    },
+    "fingerprint": "0b72837143a06c95174986d11160f17789ca54f2fac05a076b18aaacf31fb6fd",
+    "review_state": "new_requires_review",
+    "changed_contract_parts": [
+      "definition",
+      "multi",
+      "owner",
+      "path",
+      "personal_data",
+      "required_qualifiers",
+      "type",
+      "values"
+    ],
+    "previous_fingerprint": null,
+    "test_only": false
+  },
+  {
+    "key": "concept:dyn.ip_application.right_type",
+    "kind": "concept",
+    "contract": {
+      "path": "dyn.ip_application.right_type",
+      "type": "enum",
+      "owner": "ip_application",
+      "definition": "The kind of intellectual property right the application is for (e.g. patent), as published by IP Australia. It scopes the application number, so the pair (right type, application number) identifies the application; it is not a statement about the party or the company.",
+      "values": [
+        "patent",
+        "trade_mark",
+        "design",
+        "plant_breeder_right",
+        "other",
+        "unknown"
+      ],
+      "multi": false,
+      "required_qualifiers": [],
+      "personal_data": "never"
+    },
+    "fingerprint": "08d9c68c9d33659145fcd561a3661ad68fecb5b2b4f780c50515f4556fc8a866",
+    "review_state": "new_requires_review",
+    "changed_contract_parts": [
+      "definition",
+      "multi",
+      "owner",
+      "path",
+      "personal_data",
+      "required_qualifiers",
+      "type",
+      "values"
+    ],
+    "previous_fingerprint": null,
+    "test_only": false
+  },
+  {
+    "key": "concept:dyn.party.abn",
+    "kind": "concept",
+    "contract": {
+      "path": "dyn.party.abn",
+      "type": "string",
+      "owner": "party",
+      "definition": "Australian Business Number supplied for an IP application party, sparsely populated and unvalidated in this source. It is an identifier only and must not be used to infer legal form, company status or a link to a business entity.",
+      "values": [],
+      "multi": false,
+      "required_qualifiers": [],
+      "personal_data": "never"
+    },
+    "fingerprint": "126acd18ea87328bd5bfc91df395d21cdb026100a8d4e90ed4e2015b10852cbe",
+    "review_state": "new_requires_review",
+    "changed_contract_parts": [
+      "definition",
+      "multi",
+      "owner",
+      "path",
+      "personal_data",
+      "required_qualifiers",
+      "type",
+      "values"
+    ],
+    "previous_fingerprint": null,
+    "test_only": false
+  },
+  {
+    "key": "concept:dyn.party.activity_effective_from",
+    "kind": "concept",
+    "contract": {
+      "path": "dyn.party.activity_effective_from",
+      "type": "datetime",
+      "owner": "party",
+      "definition": "Start of the validity period of a party's recorded role episode on a specific IP application, as published (ISO-8601 timestamp with Z suffix). It is a party-activity validity date only: it is not a company incorporation or founding date, not an IP right grant or expiry date, and not evidence that the right is enforceable. It must be read with the party, application and role it qualifies.",
+      "values": [],
+      "multi": false,
+      "required_qualifiers": [
+        "party_id",
+        "ip_right_type",
+        "application_number",
+        "party_role"
+      ],
+      "personal_data": "never"
+    },
+    "fingerprint": "18dc488d82bafbbaa4112b5213e7b623904e66ca9eed3039df324fe07749ffd3",
+    "review_state": "new_requires_review",
+    "changed_contract_parts": [
+      "definition",
+      "multi",
+      "owner",
+      "path",
+      "personal_data",
+      "required_qualifiers",
+      "type",
+      "values"
+    ],
+    "previous_fingerprint": null,
+    "test_only": false
+  },
+  {
+    "key": "concept:dyn.party.activity_effective_to",
+    "kind": "concept",
+    "contract": {
+      "path": "dyn.party.activity_effective_to",
+      "type": "datetime",
+      "owner": "party",
+      "definition": "End of the validity period of a party's recorded role episode on a specific IP application, as published (ISO-8601 timestamp with Z suffix); blank where the episode is open-ended. It is a party-activity validity date only: it is not a company dissolution date, not an IP right expiry date, and not evidence that the right is no longer enforceable.",
+      "values": [],
+      "multi": false,
+      "required_qualifiers": [
+        "party_id",
+        "ip_right_type",
+        "application_number",
+        "party_role"
+      ],
+      "personal_data": "never"
+    },
+    "fingerprint": "70a2391c164f505ac0c9d65671e11c788b4294beda01cf3fbb09826809e78ce7",
+    "review_state": "new_requires_review",
+    "changed_contract_parts": [
+      "definition",
+      "multi",
+      "owner",
+      "path",
+      "personal_data",
+      "required_qualifiers",
+      "type",
+      "values"
+    ],
+    "previous_fingerprint": null,
+    "test_only": false
+  },
+  {
+    "key": "concept:dyn.party.activity_is_current",
+    "kind": "concept",
+    "contract": {
+      "path": "dyn.party.activity_is_current",
+      "type": "enum",
+      "owner": "party",
+      "definition": "Publisher flag stating whether the party's recorded role episode on the IP application is current in the source extract. It refers to the party record only; it is not a statement that the IP right is in force, enforceable or granted, and it is not a company status. It is not derivable from the validity dates.",
+      "values": [
+        "true",
+        "false",
+        "unknown"
+      ],
+      "multi": false,
+      "required_qualifiers": [
+        "party_id",
+        "ip_right_type",
+        "application_number",
+        "party_role"
+      ],
+      "personal_data": "never"
+    },
+    "fingerprint": "55667dc4141f9da15d4b6d9a57ccc99ff4805ab825ae2362a762c9209362ce5e",
+    "review_state": "new_requires_review",
+    "changed_contract_parts": [
+      "definition",
+      "multi",
+      "owner",
+      "path",
+      "personal_data",
+      "required_qualifiers",
+      "type",
+      "values"
+    ],
+    "previous_fingerprint": null,
+    "test_only": false
+  },
+  {
+    "key": "concept:dyn.party.address_country_code",
+    "kind": "concept",
+    "contract": {
+      "path": "dyn.party.address_country_code",
+      "type": "string",
+      "owner": "party",
+      "definition": "Country code as supplied in the party's address on an IP application record, lower-cased and unnormalised (e.g. 'us', 'hk', 'in', 'il'). It is a party address field only; it is not a statement of the party's legal jurisdiction, nationality or legal form.",
+      "values": [],
+      "multi": false,
+      "required_qualifiers": [],
+      "personal_data": "never"
+    },
+    "fingerprint": "25aae58d3e32bd21024d052d00715dd69deb2da56d8b2755d061ac0855d44c2b",
+    "review_state": "new_requires_review",
+    "changed_contract_parts": [
+      "definition",
+      "multi",
+      "owner",
+      "path",
+      "personal_data",
+      "required_qualifiers",
+      "type",
+      "values"
+    ],
+    "previous_fingerprint": null,
+    "test_only": false
+  },
+  {
+    "key": "concept:dyn.party.address_post_code",
+    "kind": "concept",
+    "contract": {
+      "path": "dyn.party.address_post_code",
+      "type": "string",
+      "owner": "party",
+      "definition": "Postal code as supplied in the party's address on an IP application record, kept as raw text because formats are mixed and not normalised (e.g. '15666', '110044', '30024', 't6b 3n9'). It is a party address field only and is not a statement of the party's legal jurisdiction or of a business establishment location.",
+      "values": [],
+      "multi": false,
+      "required_qualifiers": [],
+      "personal_data": "never"
+    },
+    "fingerprint": "e260f7873486f934229f0e064615f38bc58d69da994f5def5aba0f60e0cdae19",
+    "review_state": "new_requires_review",
+    "changed_contract_parts": [
+      "definition",
+      "multi",
+      "owner",
+      "path",
+      "personal_data",
+      "required_qualifiers",
+      "type",
+      "values"
+    ],
+    "previous_fingerprint": null,
+    "test_only": false
+  },
+  {
+    "key": "concept:dyn.party.address_state_code",
+    "kind": "concept",
+    "contract": {
+      "path": "dyn.party.address_state_code",
+      "type": "string",
+      "owner": "party",
+      "definition": "State or territory code as supplied in the party's address on an IP application record, lower-cased and unnormalised (e.g. 'vic', 'qld', 'nsw', 'wa'). It is a party address field only; it is not a statement of the party's legal jurisdiction, incorporation place or business operating location, and it must not be mapped onto the business subject's address.state enum without normalisation.",
+      "values": [],
+      "multi": false,
+      "required_qualifiers": [],
+      "personal_data": "never"
+    },
+    "fingerprint": "93199be026514f8eccaa2820b99a253726f8a6cb0e2940f233a046fd6e3afecf",
+    "review_state": "new_requires_review",
+    "changed_contract_parts": [
+      "definition",
+      "multi",
+      "owner",
+      "path",
+      "personal_data",
+      "required_qualifiers",
+      "type",
+      "values"
+    ],
+    "previous_fingerprint": null,
+    "test_only": false
+  },
+  {
+    "key": "concept:dyn.party.identifier",
+    "kind": "concept",
+    "contract": {
+      "path": "dyn.party.identifier",
+      "type": "string",
+      "owner": "party",
+      "definition": "Publisher-assigned identifier for a party (organisation or individual) recorded on an IP application. It identifies the party across applications but is not a company registration number, ACN or ABN, and does not imply legal form or company status.",
+      "values": [],
+      "multi": false,
+      "required_qualifiers": [],
+      "personal_data": "never"
+    },
+    "fingerprint": "8f8375b830cd7bacb8115b08888ecd6821432bc8abcfb46bf2cc3770f157f607",
+    "review_state": "new_requires_review",
+    "changed_contract_parts": [
+      "definition",
+      "multi",
+      "owner",
+      "path",
+      "personal_data",
+      "required_qualifiers",
+      "type",
+      "values"
+    ],
+    "previous_fingerprint": null,
+    "test_only": false
+  },
+  {
+    "key": "concept:dyn.party.is_founding_party_flag",
+    "kind": "concept",
+    "contract": {
+      "path": "dyn.party.is_founding_party_flag",
+      "type": "enum",
+      "owner": "party",
+      "definition": "Publisher-supplied flag indicating whether the party is recorded as a founding party on the IP application record. It is a supplied party attribute flag only: it is not evidence of company incorporation, not a founding date, and not a statement of legal form or company status. Because the flag is published against a specific role episode (an agent row can carry it), it must be read with the party role and role category as well as the party and application.",
+      "values": [
+        "true",
+        "false",
+        "unknown"
+      ],
+      "multi": false,
+      "required_qualifiers": [
+        "party_id",
+        "ip_right_type",
+        "application_number",
+        "party_role",
+        "party_role_category"
+      ],
+      "personal_data": "never"
+    },
+    "fingerprint": "e298c1c9d1892b00c0b3f381471a9eed22c2291cb272269fb47a68be031dcd1b",
+    "review_state": "new_requires_review",
+    "changed_contract_parts": [
+      "definition",
+      "multi",
+      "owner",
+      "path",
+      "personal_data",
+      "required_qualifiers",
+      "type",
+      "values"
+    ],
+    "previous_fingerprint": null,
+    "test_only": false
+  },
+  {
+    "key": "concept:dyn.party.kind",
+    "kind": "concept",
+    "contract": {
+      "path": "dyn.party.kind",
+      "type": "enum",
+      "owner": "party",
+      "definition": "Whether the IP application party is recorded by the publisher as an organisation or an individual. This is a party classification only; it is not a legal form, not a company status, and never implies sole trader.",
+      "values": [
+        "organisation",
+        "individual",
+        "unknown"
+      ],
+      "multi": false,
+      "required_qualifiers": [],
+      "personal_data": "never"
+    },
+    "fingerprint": "5849fa1999383723a66eb6ddd4c9e0303b63e893b1c95d05e3ee4710cf187c44",
+    "review_state": "new_requires_review",
+    "changed_contract_parts": [
+      "definition",
+      "multi",
+      "owner",
+      "path",
+      "personal_data",
+      "required_qualifiers",
+      "type",
+      "values"
+    ],
+    "previous_fingerprint": null,
+    "test_only": false
+  },
+  {
+    "key": "concept:dyn.party.name",
+    "kind": "concept",
+    "contract": {
+      "path": "dyn.party.name",
+      "type": "string",
+      "owner": "party",
+      "definition": "Party name as published for an IP application party, lower-cased and unnormalised free text. It is a label only, not a unique identifier, and must not be used to join or deduplicate parties or to infer legal form.",
+      "values": [],
+      "multi": false,
+      "required_qualifiers": [],
+      "personal_data": "always"
+    },
+    "fingerprint": "ca20990f7f3ffebeac0b658b568c83ccb0f7ea978fa04ba0fe19218b0af91b87",
+    "review_state": "new_requires_review",
+    "changed_contract_parts": [
+      "definition",
+      "multi",
+      "owner",
+      "path",
+      "personal_data",
+      "required_qualifiers",
+      "type",
+      "values"
+    ],
+    "previous_fingerprint": null,
+    "test_only": false
+  },
+  {
+    "key": "concept:dyn.party.role",
+    "kind": "concept",
+    "contract": {
+      "path": "dyn.party.role",
+      "type": "enum",
+      "owner": "party",
+      "definition": "The publisher's specific role label for the party on the IP application (e.g. patentee, applicant, agent, opponent_agent). 'other' denotes a publisher role label outside the enumerated subset and is not a missing-value signal; 'unknown' is reserved for a blank source value. It is a distinct dimension from the role category and must not be collapsed with it; an agent role is not evidence of ownership of the right.",
+      "values": [
+        "patentee",
+        "applicant",
+        "agent",
+        "opponent_agent",
+        "other",
+        "unknown"
+      ],
+      "multi": false,
+      "required_qualifiers": [],
+      "personal_data": "never"
+    },
+    "fingerprint": "c8332849dc8f89788454ddf8eb8846884b48505f71ee2baa31a2c00b0ea87eb4",
+    "review_state": "new_requires_review",
+    "changed_contract_parts": [
+      "definition",
+      "multi",
+      "owner",
+      "path",
+      "personal_data",
+      "required_qualifiers",
+      "type",
+      "values"
+    ],
+    "previous_fingerprint": null,
+    "test_only": false
+  },
+  {
+    "key": "concept:dyn.party.role_category",
+    "kind": "concept",
+    "contract": {
+      "path": "dyn.party.role_category",
+      "type": "enum",
+      "owner": "party",
+      "definition": "The publisher's broad category of the capacity in which a party is recorded on an IP application (e.g. applicant, applicant_agent, opposition_agent, mortgagee). 'other' denotes a publisher category outside the enumerated subset (e.g. licensee) and is not a missing-value signal; 'unknown' is reserved for a blank source value. It is a role classification on the party-application involvement, not evidence of ownership of the right, not a legal form, and not a statement that the IP right is enforceable.",
+      "values": [
+        "applicant",
+        "applicant_agent",
+        "opposition_agent",
+        "mortgagee",
+        "other",
+        "unknown"
+      ],
+      "multi": false,
+      "required_qualifiers": [],
+      "personal_data": "never"
+    },
+    "fingerprint": "43ebbcd91095486ff1ab3a6c3d22eda4b692eccebd8c266e81aa28e37831cbc3",
+    "review_state": "new_requires_review",
+    "changed_contract_parts": [
+      "definition",
+      "multi",
+      "owner",
+      "path",
+      "personal_data",
+      "required_qualifiers",
+      "type",
+      "values"
+    ],
+    "previous_fingerprint": null,
+    "test_only": false
+  },
+  {
+    "key": "binding:5afeb9154a23521027d22a834c7b12d29c5e579cb52668a18a9106bb2a3fef36",
+    "kind": "binding",
+    "contract": {
+      "rule": {
+        "source_paths": [
+          "ip_right_type"
+        ],
+        "join_with": " ",
+        "when": null,
+        "target": "dyn.ip_application.right_type",
+        "valid_from_path": null,
+        "valid_to_path": null,
+        "validity_date_formats": null,
+        "claim_scope": null,
+        "steps": [
+          {
+            "op": "trim",
+            "args": {}
+          },
+          {
+            "op": "map_enum",
+            "args": {
+              "mapping": {
+                "patent": "patent",
+                "trade mark": "trade_mark",
+                "trade_mark": "trade_mark",
+                "trademark": "trade_mark",
+                "design": "design",
+                "designs": "design",
+                "plant breeder right": "plant_breeder_right",
+                "plant_breeder_right": "plant_breeder_right",
+                "pbr": "plant_breeder_right"
+              },
+              "default": "unknown"
+            }
+          }
+        ],
+        "confidence": 0.9,
+        "rationale": "ip_right_type is the publisher's kind of IP right for the application; mapped to the enumerated right_type concept with unlisted values falling back to unknown rather than being guessed.",
+        "entity": "ip_application",
+        "qualifiers": null,
+        "one_hot": null
+      },
+      "source_schema": {
+        "columns": [
+          "abn",
+          "application_number",
+          "country_code",
+          "effective_from_date",
+          "effective_to_date",
+          "ip_right_type",
+          "is_current",
+          "is_founding",
+          "party_id",
+          "party_name",
+          "party_role",
+          "party_role_category",
+          "party_type",
+          "post_code",
+          "state_code"
+        ],
+        "reader": {
+          "format": "delimited",
+          "archive_member": null,
+          "encoding": "utf-8-sig",
+          "delimiter": ",",
+          "skip_rows": 0,
+          "sheet": null,
+          "record_path": null
+        },
+        "header_context": []
+      },
+      "concept": {
+        "path": "dyn.ip_application.right_type",
+        "type": "enum",
+        "owner": "ip_application",
+        "definition": "The kind of intellectual property right the application is for (e.g. patent), as published by IP Australia. It scopes the application number, so the pair (right type, application number) identifies the application; it is not a statement about the party or the company.",
+        "values": [
+          "patent",
+          "trade_mark",
+          "design",
+          "plant_breeder_right",
+          "other",
+          "unknown"
+        ],
+        "multi": false,
+        "required_qualifiers": [],
+        "personal_data": "never"
+      },
+      "roles": {
+        "ip_application": {
+          "kind": "ip_application",
+          "key_paths": [
+            "ip_right_type",
+            "application_number"
+          ],
+          "rationale": "application_number is scoped by ip_right_type, so the pair is the application identifier; the same numeric string could occur under different right types."
+        },
+        "party": {
+          "kind": "party",
+          "key_paths": [
+            "party_id"
+          ],
+          "rationale": "party_id is the party identifier; abn is sparse and party_name is free text, so neither is a key and neither supports legal-form inference."
+        }
+      }
+    },
+    "fingerprint": "f57b45a133f926c6aae5658b613623bfc7baabf633fafdc0ce4ac5b295c8c7d4",
+    "review_state": "new_requires_review",
+    "changed_contract_parts": [
+      "concept",
+      "roles",
+      "rule",
+      "source_schema"
+    ],
+    "previous_fingerprint": null,
+    "test_only": false
+  },
+  {
+    "key": "binding:c23199418c4f02991e20035cf134b094067a4c0e8b5c066815f679873b43b97b",
+    "kind": "binding",
+    "contract": {
+      "rule": {
+        "source_paths": [
+          "application_number"
+        ],
+        "join_with": " ",
+        "when": null,
+        "target": "dyn.ip_application.number",
+        "valid_from_path": null,
+        "valid_to_path": null,
+        "validity_date_formats": null,
+        "claim_scope": null,
+        "steps": [
+          {
+            "op": "trim",
+            "args": {}
+          },
+          {
+            "op": "null_if",
+            "args": {
+              "values": [
+                "",
+                "null",
+                "n/a",
+                "na"
+              ]
+            }
+          }
+        ],
+        "confidence": 0.88,
+        "rationale": "application_number is the publisher-assigned IP application number; it is only unique within a right type, so the required right_type qualifier is carried from ip_right_type. The number is not a company registration number and is not mapped to entity.acn or ext.licence.number.",
+        "entity": "ip_application",
+        "qualifiers": {
+          "right_type": {
+            "source_path": "ip_right_type",
+            "value": null,
+            "steps": [
+              {
+                "op": "trim",
+                "args": {}
+              },
+              {
+                "op": "map_enum",
+                "args": {
+                  "mapping": {
+                    "patent": "patent",
+                    "trade mark": "trade_mark",
+                    "trade_mark": "trade_mark",
+                    "trademark": "trade_mark",
+                    "design": "design",
+                    "designs": "design",
+                    "plant breeder right": "plant_breeder_right",
+                    "plant_breeder_right": "plant_breeder_right",
+                    "pbr": "plant_breeder_right"
+                  },
+                  "default": "unknown"
+                }
+              }
+            ]
+          }
+        },
+        "one_hot": null
+      },
+      "source_schema": {
+        "columns": [
+          "abn",
+          "application_number",
+          "country_code",
+          "effective_from_date",
+          "effective_to_date",
+          "ip_right_type",
+          "is_current",
+          "is_founding",
+          "party_id",
+          "party_name",
+          "party_role",
+          "party_role_category",
+          "party_type",
+          "post_code",
+          "state_code"
+        ],
+        "reader": {
+          "format": "delimited",
+          "archive_member": null,
+          "encoding": "utf-8-sig",
+          "delimiter": ",",
+          "skip_rows": 0,
+          "sheet": null,
+          "record_path": null
+        },
+        "header_context": []
+      },
+      "concept": {
+        "path": "dyn.ip_application.number",
+        "type": "string",
+        "owner": "ip_application",
+        "definition": "Publisher-assigned application number for an IP application, unique only within a given right type; it must be read together with the right type and is not a company registration number.",
+        "values": [],
+        "multi": false,
+        "required_qualifiers": [
+          "right_type"
+        ],
+        "personal_data": "never"
+      },
+      "roles": {
+        "ip_application": {
+          "kind": "ip_application",
+          "key_paths": [
+            "ip_right_type",
+            "application_number"
+          ],
+          "rationale": "application_number is scoped by ip_right_type, so the pair is the application identifier; the same numeric string could occur under different right types."
+        },
+        "party": {
+          "kind": "party",
+          "key_paths": [
+            "party_id"
+          ],
+          "rationale": "party_id is the party identifier; abn is sparse and party_name is free text, so neither is a key and neither supports legal-form inference."
+        }
+      }
+    },
+    "fingerprint": "92f12daddc58f1fd6f2d58647da0addfe99622d3a78a341f4643f55ee902b06d",
+    "review_state": "new_requires_review",
+    "changed_contract_parts": [
+      "concept",
+      "roles",
+      "rule",
+      "source_schema"
+    ],
+    "previous_fingerprint": null,
+    "test_only": false
+  },
+  {
+    "key": "binding:d13ac74596df2190c7deb1730dbe36f1c6012ef40b0822d90c615cf737a37f00",
+    "kind": "binding",
+    "contract": {
+      "rule": {
+        "source_paths": [
+          "party_id"
+        ],
+        "join_with": " ",
+        "when": null,
+        "target": "dyn.party.identifier",
+        "valid_from_path": null,
+        "valid_to_path": null,
+        "validity_date_formats": null,
+        "claim_scope": null,
+        "steps": [
+          {
+            "op": "trim",
+            "args": {}
+          }
+        ],
+        "confidence": 0.9,
+        "rationale": "party_id is the publisher-assigned party identifier on an IP application; it is not an ACN/ABN and does not imply legal form, so the party-owned identifier concept is the correct target.",
+        "entity": "party",
+        "qualifiers": null,
+        "one_hot": null
+      },
+      "source_schema": {
+        "columns": [
+          "abn",
+          "application_number",
+          "country_code",
+          "effective_from_date",
+          "effective_to_date",
+          "ip_right_type",
+          "is_current",
+          "is_founding",
+          "party_id",
+          "party_name",
+          "party_role",
+          "party_role_category",
+          "party_type",
+          "post_code",
+          "state_code"
+        ],
+        "reader": {
+          "format": "delimited",
+          "archive_member": null,
+          "encoding": "utf-8-sig",
+          "delimiter": ",",
+          "skip_rows": 0,
+          "sheet": null,
+          "record_path": null
+        },
+        "header_context": []
+      },
+      "concept": {
+        "path": "dyn.party.identifier",
+        "type": "string",
+        "owner": "party",
+        "definition": "Publisher-assigned identifier for a party (organisation or individual) recorded on an IP application. It identifies the party across applications but is not a company registration number, ACN or ABN, and does not imply legal form or company status.",
+        "values": [],
+        "multi": false,
+        "required_qualifiers": [],
+        "personal_data": "never"
+      },
+      "roles": {
+        "ip_application": {
+          "kind": "ip_application",
+          "key_paths": [
+            "ip_right_type",
+            "application_number"
+          ],
+          "rationale": "application_number is scoped by ip_right_type, so the pair is the application identifier; the same numeric string could occur under different right types."
+        },
+        "party": {
+          "kind": "party",
+          "key_paths": [
+            "party_id"
+          ],
+          "rationale": "party_id is the party identifier; abn is sparse and party_name is free text, so neither is a key and neither supports legal-form inference."
+        }
+      }
+    },
+    "fingerprint": "b9ab89233a7f6cab88cea41ef3c60b2af8b07788ae1716a98425623a3e92d28b",
+    "review_state": "new_requires_review",
+    "changed_contract_parts": [
+      "concept",
+      "roles",
+      "rule",
+      "source_schema"
+    ],
+    "previous_fingerprint": null,
+    "test_only": false
+  },
+  {
+    "key": "binding:cadc26145c991022e9b1a8802b76d8a215e673c37072a80d17cff415ff70f60a",
+    "kind": "binding",
+    "contract": {
+      "rule": {
+        "source_paths": [
+          "party_name"
+        ],
+        "join_with": " ",
+        "when": null,
+        "target": "dyn.party.name",
+        "valid_from_path": null,
+        "valid_to_path": null,
+        "validity_date_formats": null,
+        "claim_scope": null,
+        "steps": [
+          {
+            "op": "trim",
+            "args": {}
+          },
+          {
+            "op": "collapse_whitespace",
+            "args": {}
+          }
+        ],
+        "confidence": 0.85,
+        "rationale": "party_name is the unnormalised free-text label for the party; mapped to the party-owned name concept, not to business legal/trading name. No case-folding or deduplication is claimed.",
+        "entity": "party",
+        "qualifiers": null,
+        "one_hot": null
+      },
+      "source_schema": {
+        "columns": [
+          "abn",
+          "application_number",
+          "country_code",
+          "effective_from_date",
+          "effective_to_date",
+          "ip_right_type",
+          "is_current",
+          "is_founding",
+          "party_id",
+          "party_name",
+          "party_role",
+          "party_role_category",
+          "party_type",
+          "post_code",
+          "state_code"
+        ],
+        "reader": {
+          "format": "delimited",
+          "archive_member": null,
+          "encoding": "utf-8-sig",
+          "delimiter": ",",
+          "skip_rows": 0,
+          "sheet": null,
+          "record_path": null
+        },
+        "header_context": []
+      },
+      "concept": {
+        "path": "dyn.party.name",
+        "type": "string",
+        "owner": "party",
+        "definition": "Party name as published for an IP application party, lower-cased and unnormalised free text. It is a label only, not a unique identifier, and must not be used to join or deduplicate parties or to infer legal form.",
+        "values": [],
+        "multi": false,
+        "required_qualifiers": [],
+        "personal_data": "always"
+      },
+      "roles": {
+        "ip_application": {
+          "kind": "ip_application",
+          "key_paths": [
+            "ip_right_type",
+            "application_number"
+          ],
+          "rationale": "application_number is scoped by ip_right_type, so the pair is the application identifier; the same numeric string could occur under different right types."
+        },
+        "party": {
+          "kind": "party",
+          "key_paths": [
+            "party_id"
+          ],
+          "rationale": "party_id is the party identifier; abn is sparse and party_name is free text, so neither is a key and neither supports legal-form inference."
+        }
+      }
+    },
+    "fingerprint": "11f2f8e4b8f3ed4a1078f1f8c63f3ef2d3e68ba1c23ec84d4263d7de5e123798",
+    "review_state": "new_requires_review",
+    "changed_contract_parts": [
+      "concept",
+      "roles",
+      "rule",
+      "source_schema"
+    ],
+    "previous_fingerprint": null,
+    "test_only": false
+  },
+  {
+    "key": "binding:5cad9a9f2417477558538ca9d7b802de3dcc16da40ccdb0ee78cfed53ac74e1a",
+    "kind": "binding",
+    "contract": {
+      "rule": {
+        "source_paths": [
+          "party_type"
+        ],
+        "join_with": " ",
+        "when": null,
+        "target": "dyn.party.kind",
+        "valid_from_path": null,
+        "valid_to_path": null,
+        "validity_date_formats": null,
+        "claim_scope": null,
+        "steps": [
+          {
+            "op": "trim",
+            "args": {}
+          },
+          {
+            "op": "map_enum",
+            "args": {
+              "mapping": {
+                "organisation": "organisation",
+                "individual": "individual"
+              },
+              "default": "unknown"
+            }
+          }
+        ],
+        "confidence": 0.9,
+        "rationale": "party_type states whether the party is an organisation or individual; this is a party classification only and must not be read as legal form or company status, so the party-owned kind concept is used rather than holder_kind or entity_type.",
+        "entity": "party",
+        "qualifiers": null,
+        "one_hot": null
+      },
+      "source_schema": {
+        "columns": [
+          "abn",
+          "application_number",
+          "country_code",
+          "effective_from_date",
+          "effective_to_date",
+          "ip_right_type",
+          "is_current",
+          "is_founding",
+          "party_id",
+          "party_name",
+          "party_role",
+          "party_role_category",
+          "party_type",
+          "post_code",
+          "state_code"
+        ],
+        "reader": {
+          "format": "delimited",
+          "archive_member": null,
+          "encoding": "utf-8-sig",
+          "delimiter": ",",
+          "skip_rows": 0,
+          "sheet": null,
+          "record_path": null
+        },
+        "header_context": []
+      },
+      "concept": {
+        "path": "dyn.party.kind",
+        "type": "enum",
+        "owner": "party",
+        "definition": "Whether the IP application party is recorded by the publisher as an organisation or an individual. This is a party classification only; it is not a legal form, not a company status, and never implies sole trader.",
+        "values": [
+          "organisation",
+          "individual",
+          "unknown"
+        ],
+        "multi": false,
+        "required_qualifiers": [],
+        "personal_data": "never"
+      },
+      "roles": {
+        "ip_application": {
+          "kind": "ip_application",
+          "key_paths": [
+            "ip_right_type",
+            "application_number"
+          ],
+          "rationale": "application_number is scoped by ip_right_type, so the pair is the application identifier; the same numeric string could occur under different right types."
+        },
+        "party": {
+          "kind": "party",
+          "key_paths": [
+            "party_id"
+          ],
+          "rationale": "party_id is the party identifier; abn is sparse and party_name is free text, so neither is a key and neither supports legal-form inference."
+        }
+      }
+    },
+    "fingerprint": "45942c9b18f8cab1b8ea14d1b90efd34b9f184dc9d49fccea181379aff0b6153",
+    "review_state": "new_requires_review",
+    "changed_contract_parts": [
+      "concept",
+      "roles",
+      "rule",
+      "source_schema"
+    ],
+    "previous_fingerprint": null,
+    "test_only": false
+  },
+  {
+    "key": "binding:dd1fe246943290b68fea896fa8656d03cc02e1b392fdda3d5b2e04bf17a12915",
+    "kind": "binding",
+    "contract": {
+      "rule": {
+        "source_paths": [
+          "abn"
+        ],
+        "join_with": " ",
+        "when": null,
+        "target": "dyn.party.abn",
+        "valid_from_path": null,
+        "valid_to_path": null,
+        "validity_date_formats": null,
+        "claim_scope": null,
+        "steps": [
+          {
+            "op": "trim",
+            "args": {}
+          },
+          {
+            "op": "null_if",
+            "args": {
+              "values": [
+                "",
+                "null",
+                "n/a"
+              ]
+            }
+          }
+        ],
+        "confidence": 0.75,
+        "rationale": "abn is a sparse, unvalidated party attribute; mapped to the party-owned ABN concept. No checksum validation is applied because the source is unvalidated and sparse, and it is not used to infer legal form or a business link.",
+        "entity": "party",
+        "qualifiers": null,
+        "one_hot": null
+      },
+      "source_schema": {
+        "columns": [
+          "abn",
+          "application_number",
+          "country_code",
+          "effective_from_date",
+          "effective_to_date",
+          "ip_right_type",
+          "is_current",
+          "is_founding",
+          "party_id",
+          "party_name",
+          "party_role",
+          "party_role_category",
+          "party_type",
+          "post_code",
+          "state_code"
+        ],
+        "reader": {
+          "format": "delimited",
+          "archive_member": null,
+          "encoding": "utf-8-sig",
+          "delimiter": ",",
+          "skip_rows": 0,
+          "sheet": null,
+          "record_path": null
+        },
+        "header_context": []
+      },
+      "concept": {
+        "path": "dyn.party.abn",
+        "type": "string",
+        "owner": "party",
+        "definition": "Australian Business Number supplied for an IP application party, sparsely populated and unvalidated in this source. It is an identifier only and must not be used to infer legal form, company status or a link to a business entity.",
+        "values": [],
+        "multi": false,
+        "required_qualifiers": [],
+        "personal_data": "never"
+      },
+      "roles": {
+        "ip_application": {
+          "kind": "ip_application",
+          "key_paths": [
+            "ip_right_type",
+            "application_number"
+          ],
+          "rationale": "application_number is scoped by ip_right_type, so the pair is the application identifier; the same numeric string could occur under different right types."
+        },
+        "party": {
+          "kind": "party",
+          "key_paths": [
+            "party_id"
+          ],
+          "rationale": "party_id is the party identifier; abn is sparse and party_name is free text, so neither is a key and neither supports legal-form inference."
+        }
+      }
+    },
+    "fingerprint": "9d258ef9e2e81de56ddf44505b7fdb827348314f8a6d75e829f0f09d795e7c43",
+    "review_state": "new_requires_review",
+    "changed_contract_parts": [
+      "concept",
+      "roles",
+      "rule",
+      "source_schema"
+    ],
+    "previous_fingerprint": null,
+    "test_only": false
+  },
+  {
+    "key": "binding:98871948b56b4a71a58f89d9451712ce00e37f78e9e28c8634a524ba554cfefb",
+    "kind": "binding",
+    "contract": {
+      "rule": {
+        "source_paths": [
+          "party_role_category"
+        ],
+        "join_with": " ",
+        "when": {
+          "source_path": "party_role_category",
+          "op": "present",
+          "values": []
+        },
+        "target": "dyn.party.role_category",
+        "valid_from_path": null,
+        "valid_to_path": null,
+        "validity_date_formats": null,
+        "claim_scope": null,
+        "steps": [
+          {
+            "op": "trim",
+            "args": {}
+          },
+          {
+            "op": "collapse_whitespace",
+            "args": {}
+          },
+          {
+            "op": "map_enum",
+            "args": {
+              "mapping": {
+                "applicant": "applicant",
+                "applicant_agent": "applicant_agent",
+                "opposition_agent": "opposition_agent",
+                "mortgagee": "mortgagee"
+              },
+              "default": "other"
+            }
+          }
+        ],
+        "confidence": 0.9,
+        "rationale": "party_role_category is the publisher's broad capacity of the party on the application; mapped to the party-owned role_category concept. The when-guard restricts emission to non-blank source values so that 'other' means a publisher category outside the enumerated subset (e.g. licensee), never a missing value; blank categories are declined rather than coerced to 'unknown'.",
+        "entity": "party",
+        "qualifiers": null,
+        "one_hot": null
+      },
+      "source_schema": {
+        "columns": [
+          "abn",
+          "application_number",
+          "country_code",
+          "effective_from_date",
+          "effective_to_date",
+          "ip_right_type",
+          "is_current",
+          "is_founding",
+          "party_id",
+          "party_name",
+          "party_role",
+          "party_role_category",
+          "party_type",
+          "post_code",
+          "state_code"
+        ],
+        "reader": {
+          "format": "delimited",
+          "archive_member": null,
+          "encoding": "utf-8-sig",
+          "delimiter": ",",
+          "skip_rows": 0,
+          "sheet": null,
+          "record_path": null
+        },
+        "header_context": []
+      },
+      "concept": {
+        "path": "dyn.party.role_category",
+        "type": "enum",
+        "owner": "party",
+        "definition": "The publisher's broad category of the capacity in which a party is recorded on an IP application (e.g. applicant, applicant_agent, opposition_agent, mortgagee). 'other' denotes a publisher category outside the enumerated subset (e.g. licensee) and is not a missing-value signal; 'unknown' is reserved for a blank source value. It is a role classification on the party-application involvement, not evidence of ownership of the right, not a legal form, and not a statement that the IP right is enforceable.",
+        "values": [
+          "applicant",
+          "applicant_agent",
+          "opposition_agent",
+          "mortgagee",
+          "other",
+          "unknown"
+        ],
+        "multi": false,
+        "required_qualifiers": [],
+        "personal_data": "never"
+      },
+      "roles": {
+        "ip_application": {
+          "kind": "ip_application",
+          "key_paths": [
+            "ip_right_type",
+            "application_number"
+          ],
+          "rationale": "application_number is scoped by ip_right_type, so the pair is the application identifier; the same numeric string could occur under different right types."
+        },
+        "party": {
+          "kind": "party",
+          "key_paths": [
+            "party_id"
+          ],
+          "rationale": "party_id is the party identifier; abn is sparse and party_name is free text, so neither is a key and neither supports legal-form inference."
+        }
+      }
+    },
+    "fingerprint": "e49c65401691a07d9501faab4ff3a46ae667d854cca0accdea8edbdff88e9e8f",
+    "review_state": "new_requires_review",
+    "changed_contract_parts": [
+      "concept",
+      "roles",
+      "rule",
+      "source_schema"
+    ],
+    "previous_fingerprint": null,
+    "test_only": false
+  },
+  {
+    "key": "binding:ab61a54113c25dbb2aac69202d8f1691a18c0d3c6d7872e69e5bbe91fab00518",
+    "kind": "binding",
+    "contract": {
+      "rule": {
+        "source_paths": [
+          "party_role"
+        ],
+        "join_with": " ",
+        "when": {
+          "source_path": "party_role",
+          "op": "present",
+          "values": []
+        },
+        "target": "dyn.party.role",
+        "valid_from_path": null,
+        "valid_to_path": null,
+        "validity_date_formats": null,
+        "claim_scope": null,
+        "steps": [
+          {
+            "op": "trim",
+            "args": {}
+          },
+          {
+            "op": "collapse_whitespace",
+            "args": {}
+          },
+          {
+            "op": "map_enum",
+            "args": {
+              "mapping": {
+                "patentee": "patentee",
+                "applicant": "applicant",
+                "agent": "agent",
+                "opponent_agent": "opponent_agent"
+              },
+              "default": "other"
+            }
+          }
+        ],
+        "confidence": 0.9,
+        "rationale": "party_role is the specific role label, a distinct dimension from party_role_category; kept separate so applicant/patentee/agent are not collapsed and an agent row is not read as ownership. The when-guard restricts emission to non-blank source values so 'other' denotes a publisher role label outside the enumerated subset, not a missing value; blank roles are declined rather than coerced to 'unknown'.",
+        "entity": "party",
+        "qualifiers": null,
+        "one_hot": null
+      },
+      "source_schema": {
+        "columns": [
+          "abn",
+          "application_number",
+          "country_code",
+          "effective_from_date",
+          "effective_to_date",
+          "ip_right_type",
+          "is_current",
+          "is_founding",
+          "party_id",
+          "party_name",
+          "party_role",
+          "party_role_category",
+          "party_type",
+          "post_code",
+          "state_code"
+        ],
+        "reader": {
+          "format": "delimited",
+          "archive_member": null,
+          "encoding": "utf-8-sig",
+          "delimiter": ",",
+          "skip_rows": 0,
+          "sheet": null,
+          "record_path": null
+        },
+        "header_context": []
+      },
+      "concept": {
+        "path": "dyn.party.role",
+        "type": "enum",
+        "owner": "party",
+        "definition": "The publisher's specific role label for the party on the IP application (e.g. patentee, applicant, agent, opponent_agent). 'other' denotes a publisher role label outside the enumerated subset and is not a missing-value signal; 'unknown' is reserved for a blank source value. It is a distinct dimension from the role category and must not be collapsed with it; an agent role is not evidence of ownership of the right.",
+        "values": [
+          "patentee",
+          "applicant",
+          "agent",
+          "opponent_agent",
+          "other",
+          "unknown"
+        ],
+        "multi": false,
+        "required_qualifiers": [],
+        "personal_data": "never"
+      },
+      "roles": {
+        "ip_application": {
+          "kind": "ip_application",
+          "key_paths": [
+            "ip_right_type",
+            "application_number"
+          ],
+          "rationale": "application_number is scoped by ip_right_type, so the pair is the application identifier; the same numeric string could occur under different right types."
+        },
+        "party": {
+          "kind": "party",
+          "key_paths": [
+            "party_id"
+          ],
+          "rationale": "party_id is the party identifier; abn is sparse and party_name is free text, so neither is a key and neither supports legal-form inference."
+        }
+      }
+    },
+    "fingerprint": "cae5be48333df5d9f40b06bfbe3fc63d49eb25452876cacfe76c72754ba5fcdc",
+    "review_state": "new_requires_review",
+    "changed_contract_parts": [
+      "concept",
+      "roles",
+      "rule",
+      "source_schema"
+    ],
+    "previous_fingerprint": null,
+    "test_only": false
+  },
+  {
+    "key": "binding:574831ac0619cea13b916c4d959cb91f0a27e62016a2510ad3be0679c019442d",
+    "kind": "binding",
+    "contract": {
+      "rule": {
+        "source_paths": [
+          "state_code"
+        ],
+        "join_with": " ",
+        "when": null,
+        "target": "dyn.party.address_state_code",
+        "valid_from_path": null,
+        "valid_to_path": null,
+        "validity_date_formats": null,
+        "claim_scope": null,
+        "steps": [
+          {
+            "op": "trim",
+            "args": {}
+          },
+          {
+            "op": "null_if",
+            "args": {
+              "values": [
+                "",
+                "null",
+                "n/a",
+                "na",
+                "unknown"
+              ]
+            }
+          }
+        ],
+        "confidence": 0.9,
+        "rationale": "state_code is the party's address state code on the IP application record; the party-owned concept keeps the raw lower-cased unnormalised value rather than the business subject's normalised address.state enum.",
+        "entity": "party",
+        "qualifiers": null,
+        "one_hot": null
+      },
+      "source_schema": {
+        "columns": [
+          "abn",
+          "application_number",
+          "country_code",
+          "effective_from_date",
+          "effective_to_date",
+          "ip_right_type",
+          "is_current",
+          "is_founding",
+          "party_id",
+          "party_name",
+          "party_role",
+          "party_role_category",
+          "party_type",
+          "post_code",
+          "state_code"
+        ],
+        "reader": {
+          "format": "delimited",
+          "archive_member": null,
+          "encoding": "utf-8-sig",
+          "delimiter": ",",
+          "skip_rows": 0,
+          "sheet": null,
+          "record_path": null
+        },
+        "header_context": []
+      },
+      "concept": {
+        "path": "dyn.party.address_state_code",
+        "type": "string",
+        "owner": "party",
+        "definition": "State or territory code as supplied in the party's address on an IP application record, lower-cased and unnormalised (e.g. 'vic', 'qld', 'nsw', 'wa'). It is a party address field only; it is not a statement of the party's legal jurisdiction, incorporation place or business operating location, and it must not be mapped onto the business subject's address.state enum without normalisation.",
+        "values": [],
+        "multi": false,
+        "required_qualifiers": [],
+        "personal_data": "never"
+      },
+      "roles": {
+        "ip_application": {
+          "kind": "ip_application",
+          "key_paths": [
+            "ip_right_type",
+            "application_number"
+          ],
+          "rationale": "application_number is scoped by ip_right_type, so the pair is the application identifier; the same numeric string could occur under different right types."
+        },
+        "party": {
+          "kind": "party",
+          "key_paths": [
+            "party_id"
+          ],
+          "rationale": "party_id is the party identifier; abn is sparse and party_name is free text, so neither is a key and neither supports legal-form inference."
+        }
+      }
+    },
+    "fingerprint": "b503aecf7e65e4b9cc4c5db65fc76f522a09273ce0f2e9d6e5211a55e4017dd5",
+    "review_state": "new_requires_review",
+    "changed_contract_parts": [
+      "concept",
+      "roles",
+      "rule",
+      "source_schema"
+    ],
+    "previous_fingerprint": null,
+    "test_only": false
+  },
+  {
+    "key": "binding:f828d46059092ac4fa607f579364ff59a5eedc5fb430e92459587b9b687eba8d",
+    "kind": "binding",
+    "contract": {
+      "rule": {
+        "source_paths": [
+          "post_code"
+        ],
+        "join_with": " ",
+        "when": null,
+        "target": "dyn.party.address_post_code",
+        "valid_from_path": null,
+        "valid_to_path": null,
+        "validity_date_formats": null,
+        "claim_scope": null,
+        "steps": [
+          {
+            "op": "trim",
+            "args": {}
+          },
+          {
+            "op": "null_if",
+            "args": {
+              "values": [
+                "",
+                "null",
+                "n/a",
+                "na",
+                "unknown"
+              ]
+            }
+          }
+        ],
+        "confidence": 0.9,
+        "rationale": "post_code is the party's postal code, kept as raw text because formats are mixed (e.g. 't6b 3n9', '110044'); no postcode normalisation is applied and it is not the business subject's address.postcode.",
+        "entity": "party",
+        "qualifiers": null,
+        "one_hot": null
+      },
+      "source_schema": {
+        "columns": [
+          "abn",
+          "application_number",
+          "country_code",
+          "effective_from_date",
+          "effective_to_date",
+          "ip_right_type",
+          "is_current",
+          "is_founding",
+          "party_id",
+          "party_name",
+          "party_role",
+          "party_role_category",
+          "party_type",
+          "post_code",
+          "state_code"
+        ],
+        "reader": {
+          "format": "delimited",
+          "archive_member": null,
+          "encoding": "utf-8-sig",
+          "delimiter": ",",
+          "skip_rows": 0,
+          "sheet": null,
+          "record_path": null
+        },
+        "header_context": []
+      },
+      "concept": {
+        "path": "dyn.party.address_post_code",
+        "type": "string",
+        "owner": "party",
+        "definition": "Postal code as supplied in the party's address on an IP application record, kept as raw text because formats are mixed and not normalised (e.g. '15666', '110044', '30024', 't6b 3n9'). It is a party address field only and is not a statement of the party's legal jurisdiction or of a business establishment location.",
+        "values": [],
+        "multi": false,
+        "required_qualifiers": [],
+        "personal_data": "never"
+      },
+      "roles": {
+        "ip_application": {
+          "kind": "ip_application",
+          "key_paths": [
+            "ip_right_type",
+            "application_number"
+          ],
+          "rationale": "application_number is scoped by ip_right_type, so the pair is the application identifier; the same numeric string could occur under different right types."
+        },
+        "party": {
+          "kind": "party",
+          "key_paths": [
+            "party_id"
+          ],
+          "rationale": "party_id is the party identifier; abn is sparse and party_name is free text, so neither is a key and neither supports legal-form inference."
+        }
+      }
+    },
+    "fingerprint": "3056cabff2a30ab76ae8a9e2c5a10a7039196695dfb0b3ff2d324afbb4f1245c",
+    "review_state": "new_requires_review",
+    "changed_contract_parts": [
+      "concept",
+      "roles",
+      "rule",
+      "source_schema"
+    ],
+    "previous_fingerprint": null,
+    "test_only": false
+  },
+  {
+    "key": "binding:005105a0bdcdacfd7d9715802bd59cf3fc8ea240640efe34af816d5785d55343",
+    "kind": "binding",
+    "contract": {
+      "rule": {
+        "source_paths": [
+          "country_code"
+        ],
+        "join_with": " ",
+        "when": null,
+        "target": "dyn.party.address_country_code",
+        "valid_from_path": null,
+        "valid_to_path": null,
+        "validity_date_formats": null,
+        "claim_scope": null,
+        "steps": [
+          {
+            "op": "trim",
+            "args": {}
+          },
+          {
+            "op": "null_if",
+            "args": {
+              "values": [
+                "",
+                "null",
+                "n/a",
+                "na",
+                "unknown"
+              ]
+            }
+          }
+        ],
+        "confidence": 0.9,
+        "rationale": "country_code is the party's address country code, unnormalised and lower-cased; it is a party address field, not a statement of legal jurisdiction, so the party-owned concept is used rather than address.country.",
+        "entity": "party",
+        "qualifiers": null,
+        "one_hot": null
+      },
+      "source_schema": {
+        "columns": [
+          "abn",
+          "application_number",
+          "country_code",
+          "effective_from_date",
+          "effective_to_date",
+          "ip_right_type",
+          "is_current",
+          "is_founding",
+          "party_id",
+          "party_name",
+          "party_role",
+          "party_role_category",
+          "party_type",
+          "post_code",
+          "state_code"
+        ],
+        "reader": {
+          "format": "delimited",
+          "archive_member": null,
+          "encoding": "utf-8-sig",
+          "delimiter": ",",
+          "skip_rows": 0,
+          "sheet": null,
+          "record_path": null
+        },
+        "header_context": []
+      },
+      "concept": {
+        "path": "dyn.party.address_country_code",
+        "type": "string",
+        "owner": "party",
+        "definition": "Country code as supplied in the party's address on an IP application record, lower-cased and unnormalised (e.g. 'us', 'hk', 'in', 'il'). It is a party address field only; it is not a statement of the party's legal jurisdiction, nationality or legal form.",
+        "values": [],
+        "multi": false,
+        "required_qualifiers": [],
+        "personal_data": "never"
+      },
+      "roles": {
+        "ip_application": {
+          "kind": "ip_application",
+          "key_paths": [
+            "ip_right_type",
+            "application_number"
+          ],
+          "rationale": "application_number is scoped by ip_right_type, so the pair is the application identifier; the same numeric string could occur under different right types."
+        },
+        "party": {
+          "kind": "party",
+          "key_paths": [
+            "party_id"
+          ],
+          "rationale": "party_id is the party identifier; abn is sparse and party_name is free text, so neither is a key and neither supports legal-form inference."
+        }
+      }
+    },
+    "fingerprint": "daac1fef91f1cc476dd0e48db23fd0100d54571b5beb9323cf0cda761a680058",
+    "review_state": "new_requires_review",
+    "changed_contract_parts": [
+      "concept",
+      "roles",
+      "rule",
+      "source_schema"
+    ],
+    "previous_fingerprint": null,
+    "test_only": false
+  },
+  {
+    "key": "binding:496a589fe0ebe1faa2ddb465612566dd7a9b34d7eb8f6e61f180e0d464109c5e",
+    "kind": "binding",
+    "contract": {
+      "rule": {
+        "source_paths": [
+          "effective_from_date"
+        ],
+        "join_with": " ",
+        "when": null,
+        "target": "dyn.party.activity_effective_from",
+        "valid_from_path": null,
+        "valid_to_path": null,
+        "validity_date_formats": null,
+        "claim_scope": null,
+        "steps": [
+          {
+            "op": "trim",
+            "args": {}
+          },
+          {
+            "op": "parse_date",
+            "args": {
+              "formats": [
+                "%Y-%m-%dT%H:%M:%S.%fZ",
+                "%Y-%m-%dT%H:%M:%SZ",
+                "%Y-%m-%d"
+              ]
+            }
+          }
+        ],
+        "confidence": 0.9,
+        "rationale": "effective_from_date is the start of the party-role episode's validity on a specific IP application, matching dyn.party.activity_effective_from. It is not a company incorporation or founding date and not an IP right grant date. Required qualifiers (party_id, ip_right_type, application_number, party_role) are carried from the row so the claim stays scoped to the party-role episode; the ISO-8601 Z timestamps are parsed as datetimes.",
+        "entity": "party",
+        "qualifiers": {
+          "party_id": {
+            "source_path": "party_id",
+            "value": null,
+            "steps": [
+              {
+                "op": "trim",
+                "args": {}
+              }
+            ]
+          },
+          "ip_right_type": {
+            "source_path": "ip_right_type",
+            "value": null,
+            "steps": [
+              {
+                "op": "trim",
+                "args": {}
+              }
+            ]
+          },
+          "application_number": {
+            "source_path": "application_number",
+            "value": null,
+            "steps": [
+              {
+                "op": "trim",
+                "args": {}
+              }
+            ]
+          },
+          "party_role": {
+            "source_path": "party_role",
+            "value": null,
+            "steps": [
+              {
+                "op": "trim",
+                "args": {}
+              }
+            ]
+          }
+        },
+        "one_hot": null
+      },
+      "source_schema": {
+        "columns": [
+          "abn",
+          "application_number",
+          "country_code",
+          "effective_from_date",
+          "effective_to_date",
+          "ip_right_type",
+          "is_current",
+          "is_founding",
+          "party_id",
+          "party_name",
+          "party_role",
+          "party_role_category",
+          "party_type",
+          "post_code",
+          "state_code"
+        ],
+        "reader": {
+          "format": "delimited",
+          "archive_member": null,
+          "encoding": "utf-8-sig",
+          "delimiter": ",",
+          "skip_rows": 0,
+          "sheet": null,
+          "record_path": null
+        },
+        "header_context": []
+      },
+      "concept": {
+        "path": "dyn.party.activity_effective_from",
+        "type": "datetime",
+        "owner": "party",
+        "definition": "Start of the validity period of a party's recorded role episode on a specific IP application, as published (ISO-8601 timestamp with Z suffix). It is a party-activity validity date only: it is not a company incorporation or founding date, not an IP right grant or expiry date, and not evidence that the right is enforceable. It must be read with the party, application and role it qualifies.",
+        "values": [],
+        "multi": false,
+        "required_qualifiers": [
+          "party_id",
+          "ip_right_type",
+          "application_number",
+          "party_role"
+        ],
+        "personal_data": "never"
+      },
+      "roles": {
+        "ip_application": {
+          "kind": "ip_application",
+          "key_paths": [
+            "ip_right_type",
+            "application_number"
+          ],
+          "rationale": "application_number is scoped by ip_right_type, so the pair is the application identifier; the same numeric string could occur under different right types."
+        },
+        "party": {
+          "kind": "party",
+          "key_paths": [
+            "party_id"
+          ],
+          "rationale": "party_id is the party identifier; abn is sparse and party_name is free text, so neither is a key and neither supports legal-form inference."
+        }
+      }
+    },
+    "fingerprint": "2c795b56a3f38a71de2392a4edd33fdc2b29509f0eda4c39dca4f47a50cf7b62",
+    "review_state": "new_requires_review",
+    "changed_contract_parts": [
+      "concept",
+      "roles",
+      "rule",
+      "source_schema"
+    ],
+    "previous_fingerprint": null,
+    "test_only": false
+  },
+  {
+    "key": "binding:37ea488d71bcfa33a971fbf32fcf9705731d2cb44b22dd9c478fe8647013ef71",
+    "kind": "binding",
+    "contract": {
+      "rule": {
+        "source_paths": [
+          "effective_to_date"
+        ],
+        "join_with": " ",
+        "when": null,
+        "target": "dyn.party.activity_effective_to",
+        "valid_from_path": null,
+        "valid_to_path": null,
+        "validity_date_formats": null,
+        "claim_scope": null,
+        "steps": [
+          {
+            "op": "trim",
+            "args": {}
+          },
+          {
+            "op": "null_if",
+            "args": {
+              "values": [
+                ""
+              ]
+            }
+          },
+          {
+            "op": "parse_date",
+            "args": {
+              "formats": [
+                "%Y-%m-%dT%H:%M:%S.%fZ",
+                "%Y-%m-%dT%H:%M:%SZ",
+                "%Y-%m-%d"
+              ]
+            }
+          }
+        ],
+        "confidence": 0.88,
+        "rationale": "effective_to_date ends the party-role episode's validity; blank where open-ended (only 94 of 357 nonempty). It is not a company dissolution date nor an IP right expiry date. Same required qualifiers as the start date keep the claim scoped to the party-role episode.",
+        "entity": "party",
+        "qualifiers": {
+          "party_id": {
+            "source_path": "party_id",
+            "value": null,
+            "steps": [
+              {
+                "op": "trim",
+                "args": {}
+              }
+            ]
+          },
+          "ip_right_type": {
+            "source_path": "ip_right_type",
+            "value": null,
+            "steps": [
+              {
+                "op": "trim",
+                "args": {}
+              }
+            ]
+          },
+          "application_number": {
+            "source_path": "application_number",
+            "value": null,
+            "steps": [
+              {
+                "op": "trim",
+                "args": {}
+              }
+            ]
+          },
+          "party_role": {
+            "source_path": "party_role",
+            "value": null,
+            "steps": [
+              {
+                "op": "trim",
+                "args": {}
+              }
+            ]
+          }
+        },
+        "one_hot": null
+      },
+      "source_schema": {
+        "columns": [
+          "abn",
+          "application_number",
+          "country_code",
+          "effective_from_date",
+          "effective_to_date",
+          "ip_right_type",
+          "is_current",
+          "is_founding",
+          "party_id",
+          "party_name",
+          "party_role",
+          "party_role_category",
+          "party_type",
+          "post_code",
+          "state_code"
+        ],
+        "reader": {
+          "format": "delimited",
+          "archive_member": null,
+          "encoding": "utf-8-sig",
+          "delimiter": ",",
+          "skip_rows": 0,
+          "sheet": null,
+          "record_path": null
+        },
+        "header_context": []
+      },
+      "concept": {
+        "path": "dyn.party.activity_effective_to",
+        "type": "datetime",
+        "owner": "party",
+        "definition": "End of the validity period of a party's recorded role episode on a specific IP application, as published (ISO-8601 timestamp with Z suffix); blank where the episode is open-ended. It is a party-activity validity date only: it is not a company dissolution date, not an IP right expiry date, and not evidence that the right is no longer enforceable.",
+        "values": [],
+        "multi": false,
+        "required_qualifiers": [
+          "party_id",
+          "ip_right_type",
+          "application_number",
+          "party_role"
+        ],
+        "personal_data": "never"
+      },
+      "roles": {
+        "ip_application": {
+          "kind": "ip_application",
+          "key_paths": [
+            "ip_right_type",
+            "application_number"
+          ],
+          "rationale": "application_number is scoped by ip_right_type, so the pair is the application identifier; the same numeric string could occur under different right types."
+        },
+        "party": {
+          "kind": "party",
+          "key_paths": [
+            "party_id"
+          ],
+          "rationale": "party_id is the party identifier; abn is sparse and party_name is free text, so neither is a key and neither supports legal-form inference."
+        }
+      }
+    },
+    "fingerprint": "e0643767b65b06aa5a9b02730877debe5d1031555c8cb93f972091539bf7f649",
+    "review_state": "new_requires_review",
+    "changed_contract_parts": [
+      "concept",
+      "roles",
+      "rule",
+      "source_schema"
+    ],
+    "previous_fingerprint": null,
+    "test_only": false
+  },
+  {
+    "key": "binding:03f34d59cb8d5424db6d57d3e578a1dfbd34f9b084dd9a535c3186e9684271e8",
+    "kind": "binding",
+    "contract": {
+      "rule": {
+        "source_paths": [
+          "is_current"
+        ],
+        "join_with": " ",
+        "when": null,
+        "target": "dyn.party.activity_is_current",
+        "valid_from_path": null,
+        "valid_to_path": null,
+        "validity_date_formats": null,
+        "claim_scope": null,
+        "steps": [
+          {
+            "op": "trim",
+            "args": {}
+          },
+          {
+            "op": "map_enum",
+            "args": {
+              "mapping": {
+                "true": "true",
+                "false": "false"
+              },
+              "default": "unknown"
+            }
+          }
+        ],
+        "confidence": 0.85,
+        "rationale": "is_current is the publisher flag for whether the party's recorded role episode is current in the extract; it refers to the party record, not to enforceability of the IP right and not to company status. Mapped to the true/false/unknown enum with required party-role qualifiers.",
+        "entity": "party",
+        "qualifiers": {
+          "party_id": {
+            "source_path": "party_id",
+            "value": null,
+            "steps": [
+              {
+                "op": "trim",
+                "args": {}
+              }
+            ]
+          },
+          "ip_right_type": {
+            "source_path": "ip_right_type",
+            "value": null,
+            "steps": [
+              {
+                "op": "trim",
+                "args": {}
+              }
+            ]
+          },
+          "application_number": {
+            "source_path": "application_number",
+            "value": null,
+            "steps": [
+              {
+                "op": "trim",
+                "args": {}
+              }
+            ]
+          },
+          "party_role": {
+            "source_path": "party_role",
+            "value": null,
+            "steps": [
+              {
+                "op": "trim",
+                "args": {}
+              }
+            ]
+          }
+        },
+        "one_hot": null
+      },
+      "source_schema": {
+        "columns": [
+          "abn",
+          "application_number",
+          "country_code",
+          "effective_from_date",
+          "effective_to_date",
+          "ip_right_type",
+          "is_current",
+          "is_founding",
+          "party_id",
+          "party_name",
+          "party_role",
+          "party_role_category",
+          "party_type",
+          "post_code",
+          "state_code"
+        ],
+        "reader": {
+          "format": "delimited",
+          "archive_member": null,
+          "encoding": "utf-8-sig",
+          "delimiter": ",",
+          "skip_rows": 0,
+          "sheet": null,
+          "record_path": null
+        },
+        "header_context": []
+      },
+      "concept": {
+        "path": "dyn.party.activity_is_current",
+        "type": "enum",
+        "owner": "party",
+        "definition": "Publisher flag stating whether the party's recorded role episode on the IP application is current in the source extract. It refers to the party record only; it is not a statement that the IP right is in force, enforceable or granted, and it is not a company status. It is not derivable from the validity dates.",
+        "values": [
+          "true",
+          "false",
+          "unknown"
+        ],
+        "multi": false,
+        "required_qualifiers": [
+          "party_id",
+          "ip_right_type",
+          "application_number",
+          "party_role"
+        ],
+        "personal_data": "never"
+      },
+      "roles": {
+        "ip_application": {
+          "kind": "ip_application",
+          "key_paths": [
+            "ip_right_type",
+            "application_number"
+          ],
+          "rationale": "application_number is scoped by ip_right_type, so the pair is the application identifier; the same numeric string could occur under different right types."
+        },
+        "party": {
+          "kind": "party",
+          "key_paths": [
+            "party_id"
+          ],
+          "rationale": "party_id is the party identifier; abn is sparse and party_name is free text, so neither is a key and neither supports legal-form inference."
+        }
+      }
+    },
+    "fingerprint": "96d2815d82e7ce01fa0c225d210d878ebde4a66408be3397da0ae74c84e2382a",
+    "review_state": "new_requires_review",
+    "changed_contract_parts": [
+      "concept",
+      "roles",
+      "rule",
+      "source_schema"
+    ],
+    "previous_fingerprint": null,
+    "test_only": false
+  },
+  {
+    "key": "binding:303bea07193021c7051ab19ceec9d869ec8fe83a97364a6dd012b273bd56d0c5",
+    "kind": "binding",
+    "contract": {
+      "rule": {
+        "source_paths": [
+          "is_founding"
+        ],
+        "join_with": " ",
+        "when": null,
+        "target": "dyn.party.is_founding_party_flag",
+        "valid_from_path": null,
+        "valid_to_path": null,
+        "validity_date_formats": null,
+        "claim_scope": null,
+        "steps": [
+          {
+            "op": "trim",
+            "args": {}
+          },
+          {
+            "op": "map_enum",
+            "args": {
+              "mapping": {
+                "true": "true",
+                "false": "false"
+              },
+              "default": "unknown"
+            }
+          }
+        ],
+        "confidence": 0.8,
+        "rationale": "is_founding is a supplied party attribute flag on the IP application record, matching dyn.party.is_founding_party_flag. It is explicitly not evidence of company incorporation and not a founding date, so it is not mapped to ext.entity.date_established. The source grain includes party_role and party_role_category, and a held-out agent row (party_role=agent, party_role_category=applicant_agent) carries is_founding=true, so the flag cannot be safely generalised to the party-application pair without role scope. party_role and party_role_category are therefore carried as qualifiers alongside party_id, ip_right_type and application_number so the claim stays scoped to the role episode it was published against.",
+        "entity": "party",
+        "qualifiers": {
+          "party_id": {
+            "source_path": "party_id",
+            "value": null,
+            "steps": [
+              {
+                "op": "trim",
+                "args": {}
+              }
+            ]
+          },
+          "ip_right_type": {
+            "source_path": "ip_right_type",
+            "value": null,
+            "steps": [
+              {
+                "op": "trim",
+                "args": {}
+              }
+            ]
+          },
+          "application_number": {
+            "source_path": "application_number",
+            "value": null,
+            "steps": [
+              {
+                "op": "trim",
+                "args": {}
+              }
+            ]
+          },
+          "party_role": {
+            "source_path": "party_role",
+            "value": null,
+            "steps": [
+              {
+                "op": "trim",
+                "args": {}
+              }
+            ]
+          },
+          "party_role_category": {
+            "source_path": "party_role_category",
+            "value": null,
+            "steps": [
+              {
+                "op": "trim",
+                "args": {}
+              }
+            ]
+          }
+        },
+        "one_hot": null
+      },
+      "source_schema": {
+        "columns": [
+          "abn",
+          "application_number",
+          "country_code",
+          "effective_from_date",
+          "effective_to_date",
+          "ip_right_type",
+          "is_current",
+          "is_founding",
+          "party_id",
+          "party_name",
+          "party_role",
+          "party_role_category",
+          "party_type",
+          "post_code",
+          "state_code"
+        ],
+        "reader": {
+          "format": "delimited",
+          "archive_member": null,
+          "encoding": "utf-8-sig",
+          "delimiter": ",",
+          "skip_rows": 0,
+          "sheet": null,
+          "record_path": null
+        },
+        "header_context": []
+      },
+      "concept": {
+        "path": "dyn.party.is_founding_party_flag",
+        "type": "enum",
+        "owner": "party",
+        "definition": "Publisher-supplied flag indicating whether the party is recorded as a founding party on the IP application record. It is a supplied party attribute flag only: it is not evidence of company incorporation, not a founding date, and not a statement of legal form or company status. Because the flag is published against a specific role episode (an agent row can carry it), it must be read with the party role and role category as well as the party and application.",
+        "values": [
+          "true",
+          "false",
+          "unknown"
+        ],
+        "multi": false,
+        "required_qualifiers": [
+          "party_id",
+          "ip_right_type",
+          "application_number",
+          "party_role",
+          "party_role_category"
+        ],
+        "personal_data": "never"
+      },
+      "roles": {
+        "ip_application": {
+          "kind": "ip_application",
+          "key_paths": [
+            "ip_right_type",
+            "application_number"
+          ],
+          "rationale": "application_number is scoped by ip_right_type, so the pair is the application identifier; the same numeric string could occur under different right types."
+        },
+        "party": {
+          "kind": "party",
+          "key_paths": [
+            "party_id"
+          ],
+          "rationale": "party_id is the party identifier; abn is sparse and party_name is free text, so neither is a key and neither supports legal-form inference."
+        }
+      }
+    },
+    "fingerprint": "0884d32e2289a97ce0e861f7dfec8e5ca91ba5642ea8970fe78b9e3dc3ad4403",
+    "review_state": "new_requires_review",
+    "changed_contract_parts": [
+      "concept",
+      "roles",
+      "rule",
+      "source_schema"
+    ],
+    "previous_fingerprint": null,
+    "test_only": false
+  },
+  {
+    "key": "relationship:PARTY_INVOLVED_IN_APPLICATION:ip_party_activity_new",
+    "kind": "relationship",
+    "contract": {
+      "edge": {
+        "type": "PARTY_INVOLVED_IN_APPLICATION",
+        "from_role": "party",
+        "to_role": "ip_application",
+        "rationale": "Each row pairs a party_id with an (ip_right_type, application_number) application and a party_role/party_role_category; the role and effective dates qualify the involvement rather than changing the entities."
+      },
+      "definition": {
+        "from_type": "party",
+        "to_type": "ip_application",
+        "definition": "A party is recorded on an IP application in a specific party role (applicant, patentee, agent or other), for a party-activity validity period."
+      },
+      "roles": {
+        "ip_application": {
+          "kind": "ip_application",
+          "key_paths": [
+            "ip_right_type",
+            "application_number"
+          ],
+          "rationale": "application_number is scoped by ip_right_type, so the pair is the application identifier; the same numeric string could occur under different right types."
+        },
+        "party": {
+          "kind": "party",
+          "key_paths": [
+            "party_id"
+          ],
+          "rationale": "party_id is the party identifier; abn is sparse and party_name is free text, so neither is a key and neither supports legal-form inference."
+        }
+      },
+      "source_schema": {
+        "columns": [
+          "abn",
+          "application_number",
+          "country_code",
+          "effective_from_date",
+          "effective_to_date",
+          "ip_right_type",
+          "is_current",
+          "is_founding",
+          "party_id",
+          "party_name",
+          "party_role",
+          "party_role_category",
+          "party_type",
+          "post_code",
+          "state_code"
+        ],
+        "reader": {
+          "format": "delimited",
+          "archive_member": null,
+          "encoding": "utf-8-sig",
+          "delimiter": ",",
+          "skip_rows": 0,
+          "sheet": null,
+          "record_path": null
+        },
+        "header_context": []
+      }
+    },
+    "fingerprint": "3cee013ea6ce5e794ea3e6b31686b6bd1641c56d237fff8ddb74fc90e797def2",
+    "review_state": "new_requires_review",
+    "changed_contract_parts": [
+      "definition",
+      "edge",
+      "roles",
+      "source_schema"
+    ],
+    "previous_fingerprint": null,
+    "test_only": false
+  }
+]

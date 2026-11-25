@@ -1,0 +1,83 @@
+{
+  "request_sha256": "2980430c3d1f417f583140a3bd813fecced83eb8f93168db8c2bef4294f040ac",
+  "role": "group_architect",
+  "model": "deepseek-v4-flash",
+  "seconds": 12.016,
+  "response": {
+    "concepts": [
+      {
+        "path": "dyn.gender_pay_gap.average_base_salary_gpg",
+        "type": "decimal",
+        "owner": "employer_reporting_unit",
+        "definition": "Average (mean) gender pay gap in base salary for the employer reporting unit, expressed as a decimal fraction of men's average base salary (0.16 = 16% in favour of men; negative = in favour of women). Prior-year (2023-24) comparison value; blank means no prior-year comparison, not a zero gap.",
+        "values": [],
+        "multi": false,
+        "required_qualifiers": [
+          "period",
+          "measure_basis",
+          "storage_convention"
+        ],
+        "source_paths": [
+          "Average base salary GPG (%)_2"
+        ],
+        "why_not_existing": "No shortlisted concept covers gender pay gap measures; existing financial concepts are income/revenue for the business owner, not pay-gap statistics for an employer reporting unit.",
+        "personal_data": "never"
+      },
+      {
+        "path": "dyn.gender_pay_gap.average_total_remuneration_gpg",
+        "type": "decimal",
+        "owner": "employer_reporting_unit",
+        "definition": "Average (mean) gender pay gap in total remuneration (base salary plus additional payments such as superannuation, bonuses and overtime) for the employer reporting unit, as a decimal fraction of men's average total remuneration. Prior-year (2023-24) comparison value; blank means no prior-year comparison, not a zero gap.",
+        "values": [],
+        "multi": false,
+        "required_qualifiers": [
+          "period",
+          "measure_basis",
+          "storage_convention"
+        ],
+        "source_paths": [
+          "Average total remuneration GPG (%)_2"
+        ],
+        "why_not_existing": "No shortlisted concept represents remuneration pay gaps; ext.financial.total_income is business income for a period, a different owner, meaning and unit.",
+        "personal_data": "never"
+      },
+      {
+        "path": "dyn.gender_pay_gap.median_base_salary_gpg",
+        "type": "decimal",
+        "owner": "employer_reporting_unit",
+        "definition": "Median gender pay gap in base salary for the employer reporting unit, as a decimal fraction of men's median base salary (negative values indicate a gap in favour of women). Prior-year (2023-24) comparison value; blank means no prior-year comparison, not a zero gap.",
+        "values": [],
+        "multi": false,
+        "required_qualifiers": [
+          "period",
+          "measure_basis",
+          "storage_convention"
+        ],
+        "source_paths": [
+          "Median base salary GPG (%)_2"
+        ],
+        "why_not_existing": "No shortlisted concept covers median pay-gap statistics; the shortlist holds no employer-reporting-unit remuneration measures at all.",
+        "personal_data": "never"
+      },
+      {
+        "path": "dyn.gender_pay_gap.median_total_remuneration_gpg",
+        "type": "decimal",
+        "owner": "employer_reporting_unit",
+        "definition": "Median gender pay gap in total remuneration (base salary plus additional payments) for the employer reporting unit, as a decimal fraction of men's median total remuneration. Prior-year (2023-24) comparison value; blank means no prior-year comparison, not a zero gap.",
+        "values": [],
+        "multi": false,
+        "required_qualifiers": [
+          "period",
+          "measure_basis",
+          "storage_convention"
+        ],
+        "source_paths": [
+          "Median total remuneration GPG (%)_2"
+        ],
+        "why_not_existing": "No shortlisted concept represents median total-remuneration pay gaps for an employer reporting unit; existing financial concepts are business income measures with different owner and meaning.",
+        "personal_data": "never"
+      }
+    ],
+    "reuse": {}
+  }
+}

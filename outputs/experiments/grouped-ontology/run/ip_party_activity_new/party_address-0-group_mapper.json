@@ -1,0 +1,119 @@
+{
+  "request_sha256": "94510c92ce81ec0ed298bc11ddb1f5a7baaa5b3af8bd3567468f8d26f127ff3e",
+  "role": "group_mapper",
+  "model": "deepseek-v4-flash",
+  "seconds": 6.876,
+  "response": {
+    "fields": [
+      {
+        "source_paths": [
+          "state_code"
+        ],
+        "join_with": " ",
+        "when": null,
+        "target": "dyn.party.address_state_code",
+        "valid_from_path": null,
+        "valid_to_path": null,
+        "validity_date_formats": null,
+        "claim_scope": null,
+        "steps": [
+          {
+            "op": "trim",
+            "args": {}
+          },
+          {
+            "op": "null_if",
+            "args": {
+              "values": [
+                "",
+                "null",
+                "n/a",
+                "na",
+                "unknown"
+              ]
+            }
+          }
+        ],
+        "confidence": 0.9,
+        "rationale": "state_code is the party's address state code on the IP application record; the party-owned concept keeps the raw lower-cased unnormalised value rather than the business subject's normalised address.state enum.",
+        "entity": "party",
+        "qualifiers": null,
+        "one_hot": null,
+        "claim_period": null
+      },
+      {
+        "source_paths": [
+          "post_code"
+        ],
+        "join_with": " ",
+        "when": null,
+        "target": "dyn.party.address_post_code",
+        "valid_from_path": null,
+        "valid_to_path": null,
+        "validity_date_formats": null,
+        "claim_scope": null,
+        "steps": [
+          {
+            "op": "trim",
+            "args": {}
+          },
+          {
+            "op": "null_if",
+            "args": {
+              "values": [
+                "",
+                "null",
+                "n/a",
+                "na",
+                "unknown"
+              ]
+            }
+          }
+        ],
+        "confidence": 0.9,
+        "rationale": "post_code is the party's postal code, kept as raw text because formats are mixed (e.g. 't6b 3n9', '110044'); no postcode normalisation is applied and it is not the business subject's address.postcode.",
+        "entity": "party",
+        "qualifiers": null,
+        "one_hot": null,
+        "claim_period": null
+      },
+      {
+        "source_paths": [
+          "country_code"
+        ],
+        "join_with": " ",
+        "when": null,
+        "target": "dyn.party.address_country_code",
+        "valid_from_path": null,
+        "valid_to_path": null,
+        "validity_date_formats": null,
+        "claim_scope": null,
+        "steps": [
+          {
+            "op": "trim",
+            "args": {}
+          },
+          {
+            "op": "null_if",
+            "args": {
+              "values": [
+                "",
+                "null",
+                "n/a",
+                "na",
+                "unknown"
+              ]
+            }
+          }
+        ],
+        "confidence": 0.9,
+        "rationale": "country_code is the party's address country code, unnormalised and lower-cased; it is a party address field, not a statement of legal jurisdiction, so the party-owned concept is used rather than address.country.",
+        "entity": "party",
+        "qualifiers": null,
+        "one_hot": null,
+        "claim_period": null
+      }
+    ],
+    "unmapped": []
+  }
+}

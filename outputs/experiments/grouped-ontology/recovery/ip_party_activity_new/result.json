@@ -1,0 +1,557 @@
+{
+  "source_id": "ip_party_activity_new",
+  "status": "AGENT_VALIDATED_CANDIDATE",
+  "ontology_version": "56734231175907bc9c0a5af11489eb69e9da4e2aeafc6c11680985fbeebfa996",
+  "parent_version": "db7f01dab23e6f042a75c6df261be2b61dfa1ceba7daff6afe5eab3543256f1b",
+  "snapshot_sha256": "1eca656dba51c20316ae718a799676c4b3a50d1bc4d744cf7ce6303c94d3f3c1",
+  "mapping_digest": "588cfd4c45297502b880c9b8235faf9fb77c4514f1942f5afa1506388bd27ea2",
+  "groups": [
+    {
+      "group": "ip_application_identity",
+      "columns": [
+        "ip_right_type",
+        "application_number"
+      ],
+      "status": "AGENT_VALIDATED",
+      "attempts": 0,
+      "reused_from": "outputs\\experiments\\grouped-ontology\\run\\ip_party_activity_new",
+      "feedback": null
+    },
+    {
+      "group": "party_identity",
+      "columns": [
+        "party_id",
+        "abn",
+        "party_name",
+        "party_type"
+      ],
+      "status": "AGENT_VALIDATED",
+      "attempts": 0,
+      "reused_from": "outputs\\experiments\\grouped-ontology\\run\\ip_party_activity_new",
+      "feedback": null
+    },
+    {
+      "group": "party_role_on_application",
+      "columns": [
+        "party_role_category",
+        "party_role"
+      ],
+      "status": "AGENT_VALIDATED",
+      "attempts": 0,
+      "reused_from": "outputs\\experiments\\grouped-ontology\\run\\ip_party_activity_new",
+      "feedback": null
+    },
+    {
+      "group": "party_address",
+      "columns": [
+        "state_code",
+        "post_code",
+        "country_code"
+      ],
+      "status": "AGENT_VALIDATED",
+      "attempts": 0,
+      "reused_from": "outputs\\experiments\\grouped-ontology\\run\\ip_party_activity_new",
+      "feedback": null
+    },
+    {
+      "group": "party_activity_validity",
+      "columns": [
+        "effective_from_date",
+        "effective_to_date",
+        "is_current",
+        "is_founding"
+      ],
+      "status": "AGENT_VALIDATED",
+      "attempts": 0,
+      "reused_from": "outputs\\experiments\\grouped-ontology\\run\\ip_party_activity_new",
+      "feedback": null
+    }
+  ],
+  "new_concepts": 15,
+  "mapping_rules": 15,
+  "unmapped_columns": [],
+  "quality": {
+    "present_values": 7397,
+    "emitted_observations": 7397,
+    "withheld_missing_context": 0,
+    "abstention_reasons": {},
+    "malformed_values": 0,
+    "malformed_reasons": {},
+    "eligible_present_values": 7397,
+    "malformed_rate": 0.0,
+    "abstention_rate": 0.0,
+    "record_errors": {},
+    "passes_technical_gate": true,
+    "semantic_precision": null,
+    "note": "Missing required context remains withheld. This gate does not establish semantic truth or useful coverage."
+  },
+  "raw_extraction": {
+    "records_in": 600,
+    "records_with_output": 600,
+    "record_errors": {},
+    "fields": [
+      {
+        "target": "dyn.ip_application.right_type",
+        "source_paths": [
+          "ip_right_type"
+        ],
+        "records": 600,
+        "source_present": 600,
+        "emitted": 600,
+        "coverage_of_records": 1.0,
+        "error_rate_of_present": 0.0,
+        "errors": {},
+        "error_examples": {},
+        "entity": "ip_application"
+      },
+      {
+        "target": "dyn.ip_application.number",
+        "source_paths": [
+          "application_number"
+        ],
+        "records": 600,
+        "source_present": 600,
+        "emitted": 600,
+        "coverage_of_records": 1.0,
+        "error_rate_of_present": 0.0,
+        "errors": {},
+        "error_examples": {},
+        "entity": "ip_application"
+      },
+      {
+        "target": "dyn.party.identifier",
+        "source_paths": [
+          "party_id"
+        ],
+        "records": 600,
+        "source_present": 600,
+        "emitted": 600,
+        "coverage_of_records": 1.0,
+        "error_rate_of_present": 0.0,
+        "errors": {},
+        "error_examples": {},
+        "entity": "party"
+      },
+      {
+        "target": "dyn.party.name",
+        "source_paths": [
+          "party_name"
+        ],
+        "records": 600,
+        "source_present": 600,
+        "emitted": 600,
+        "coverage_of_records": 1.0,
+        "error_rate_of_present": 0.0,
+        "errors": {},
+        "error_examples": {},
+        "entity": "party"
+      },
+      {
+        "target": "dyn.party.kind",
+        "source_paths": [
+          "party_type"
+        ],
+        "records": 600,
+        "source_present": 600,
+        "emitted": 600,
+        "coverage_of_records": 1.0,
+        "error_rate_of_present": 0.0,
+        "errors": {},
+        "error_examples": {},
+        "entity": "party"
+      },
+      {
+        "target": "dyn.party.abn",
+        "source_paths": [
+          "abn"
+        ],
+        "records": 600,
+        "source_present": 153,
+        "emitted": 153,
+        "coverage_of_records": 0.255,
+        "error_rate_of_present": 0.0,
+        "errors": {},
+        "error_examples": {},
+        "entity": "party"
+      },
+      {
+        "target": "dyn.party.role_category",
+        "source_paths": [
+          "party_role_category"
+        ],
+        "records": 600,
+        "source_present": 600,
+        "emitted": 600,
+        "coverage_of_records": 1.0,
+        "error_rate_of_present": 0.0,
+        "errors": {},
+        "error_examples": {},
+        "entity": "party"
+      },
+      {
+        "target": "dyn.party.role",
+        "source_paths": [
+          "party_role"
+        ],
+        "records": 600,
+        "source_present": 600,
+        "emitted": 600,
+        "coverage_of_records": 1.0,
+        "error_rate_of_present": 0.0,
+        "errors": {},
+        "error_examples": {},
+        "entity": "party"
+      },
+      {
+        "target": "dyn.party.address_state_code",
+        "source_paths": [
+          "state_code"
+        ],
+        "records": 600,
+        "source_present": 189,
+        "emitted": 189,
+        "coverage_of_records": 0.315,
+        "error_rate_of_present": 0.0,
+        "errors": {},
+        "error_examples": {},
+        "entity": "party"
+      },
+      {
+        "target": "dyn.party.address_post_code",
+        "source_paths": [
+          "post_code"
+        ],
+        "records": 600,
+        "source_present": 373,
+        "emitted": 373,
+        "coverage_of_records": 0.622,
+        "error_rate_of_present": 0.0,
+        "errors": {},
+        "error_examples": {},
+        "entity": "party"
+      },
+      {
+        "target": "dyn.party.address_country_code",
+        "source_paths": [
+          "country_code"
+        ],
+        "records": 600,
+        "source_present": 512,
+        "emitted": 512,
+        "coverage_of_records": 0.853,
+        "error_rate_of_present": 0.0,
+        "errors": {},
+        "error_examples": {},
+        "entity": "party"
+      },
+      {
+        "target": "dyn.party.activity_effective_from",
+        "source_paths": [
+          "effective_from_date"
+        ],
+        "records": 600,
+        "source_present": 600,
+        "emitted": 600,
+        "coverage_of_records": 1.0,
+        "error_rate_of_present": 0.0,
+        "errors": {},
+        "error_examples": {},
+        "entity": "party"
+      },
+      {
+        "target": "dyn.party.activity_effective_to",
+        "source_paths": [
+          "effective_to_date"
+        ],
+        "records": 600,
+        "source_present": 170,
+        "emitted": 170,
+        "coverage_of_records": 0.283,
+        "error_rate_of_present": 0.0,
+        "errors": {},
+        "error_examples": {},
+        "entity": "party"
+      },
+      {
+        "target": "dyn.party.activity_is_current",
+        "source_paths": [
+          "is_current"
+        ],
+        "records": 600,
+        "source_present": 600,
+        "emitted": 600,
+        "coverage_of_records": 1.0,
+        "error_rate_of_present": 0.0,
+        "errors": {},
+        "error_examples": {},
+        "entity": "party"
+      },
+      {
+        "target": "dyn.party.is_founding_party_flag",
+        "source_paths": [
+          "is_founding"
+        ],
+        "records": 600,
+        "source_present": 600,
+        "emitted": 600,
+        "coverage_of_records": 1.0,
+        "error_rate_of_present": 0.0,
+        "errors": {},
+        "error_examples": {},
+        "entity": "party"
+      }
+    ],
+    "relationships": {
+      "PARTY_INVOLVED_IN_APPLICATION": 600
+    },
+    "input_records": 600,
+    "refused_records": 0,
+    "observations": 7397,
+    "value_errors": 0,
+    "present_values": 7397,
+    "error_rate": 0.0
+  },
+  "test_quality": {
+    "present_values": 1533,
+    "emitted_observations": 1533,
+    "withheld_missing_context": 0,
+    "abstention_reasons": {},
+    "malformed_values": 0,
+    "malformed_reasons": {},
+    "eligible_present_values": 1533,
+    "malformed_rate": 0.0,
+    "abstention_rate": 0.0,
+    "record_errors": {},
+    "passes_technical_gate": true,
+    "semantic_precision": null,
+    "note": "Missing required context remains withheld. This gate does not establish semantic truth or useful coverage."
+  },
+  "test": {
+    "records_in": 123,
+    "records_with_output": 123,
+    "record_errors": {},
+    "fields": [
+      {
+        "target": "dyn.ip_application.right_type",
+        "source_paths": [
+          "ip_right_type"
+        ],
+        "records": 123,
+        "source_present": 123,
+        "emitted": 123,
+        "coverage_of_records": 1.0,
+        "error_rate_of_present": 0.0,
+        "errors": {},
+        "error_examples": {},
+        "entity": "ip_application"
+      },
+      {
+        "target": "dyn.ip_application.number",
+        "source_paths": [
+          "application_number"
+        ],
+        "records": 123,
+        "source_present": 123,
+        "emitted": 123,
+        "coverage_of_records": 1.0,
+        "error_rate_of_present": 0.0,
+        "errors": {},
+        "error_examples": {},
+        "entity": "ip_application"
+      },
+      {
+        "target": "dyn.party.identifier",
+        "source_paths": [
+          "party_id"
+        ],
+        "records": 123,
+        "source_present": 123,
+        "emitted": 123,
+        "coverage_of_records": 1.0,
+        "error_rate_of_present": 0.0,
+        "errors": {},
+        "error_examples": {},
+        "entity": "party"
+      },
+      {
+        "target": "dyn.party.name",
+        "source_paths": [
+          "party_name"
+        ],
+        "records": 123,
+        "source_present": 123,
+        "emitted": 123,
+        "coverage_of_records": 1.0,
+        "error_rate_of_present": 0.0,
+        "errors": {},
+        "error_examples": {},
+        "entity": "party"
+      },
+      {
+        "target": "dyn.party.kind",
+        "source_paths": [
+          "party_type"
+        ],
+        "records": 123,
+        "source_present": 123,
+        "emitted": 123,
+        "coverage_of_records": 1.0,
+        "error_rate_of_present": 0.0,
+        "errors": {},
+        "error_examples": {},
+        "entity": "party"
+      },
+      {
+        "target": "dyn.party.abn",
+        "source_paths": [
+          "abn"
+        ],
+        "records": 123,
+        "source_present": 29,
+        "emitted": 29,
+        "coverage_of_records": 0.236,
+        "error_rate_of_present": 0.0,
+        "errors": {},
+        "error_examples": {},
+        "entity": "party"
+      },
+      {
+        "target": "dyn.party.role_category",
+        "source_paths": [
+          "party_role_category"
+        ],
+        "records": 123,
+        "source_present": 123,
+        "emitted": 123,
+        "coverage_of_records": 1.0,
+        "error_rate_of_present": 0.0,
+        "errors": {},
+        "error_examples": {},
+        "entity": "party"
+      },
+      {
+        "target": "dyn.party.role",
+        "source_paths": [
+          "party_role"
+        ],
+        "records": 123,
+        "source_present": 123,
+        "emitted": 123,
+        "coverage_of_records": 1.0,
+        "error_rate_of_present": 0.0,
+        "errors": {},
+        "error_examples": {},
+        "entity": "party"
+      },
+      {
+        "target": "dyn.party.address_state_code",
+        "source_paths": [
+          "state_code"
+        ],
+        "records": 123,
+        "source_present": 44,
+        "emitted": 44,
+        "coverage_of_records": 0.358,
+        "error_rate_of_present": 0.0,
+        "errors": {},
+        "error_examples": {},
+        "entity": "party"
+      },
+      {
+        "target": "dyn.party.address_post_code",
+        "source_paths": [
+          "post_code"
+        ],
+        "records": 123,
+        "source_present": 86,
+        "emitted": 86,
+        "coverage_of_records": 0.699,
+        "error_rate_of_present": 0.0,
+        "errors": {},
+        "error_examples": {},
+        "entity": "party"
+      },
+      {
+        "target": "dyn.party.address_country_code",
+        "source_paths": [
+          "country_code"
+        ],
+        "records": 123,
+        "source_present": 109,
+        "emitted": 109,
+        "coverage_of_records": 0.886,
+        "error_rate_of_present": 0.0,
+        "errors": {},
+        "error_examples": {},
+        "entity": "party"
+      },
+      {
+        "target": "dyn.party.activity_effective_from",
+        "source_paths": [
+          "effective_from_date"
+        ],
+        "records": 123,
+        "source_present": 123,
+        "emitted": 123,
+        "coverage_of_records": 1.0,
+        "error_rate_of_present": 0.0,
+        "errors": {},
+        "error_examples": {},
+        "entity": "party"
+      },
+      {
+        "target": "dyn.party.activity_effective_to",
+        "source_paths": [
+          "effective_to_date"
+        ],
+        "records": 123,
+        "source_present": 35,
+        "emitted": 35,
+        "coverage_of_records": 0.285,
+        "error_rate_of_present": 0.0,
+        "errors": {},
+        "error_examples": {},
+        "entity": "party"
+      },
+      {
+        "target": "dyn.party.activity_is_current",
+        "source_paths": [
+          "is_current"
+        ],
+        "records": 123,
+        "source_present": 123,
+        "emitted": 123,
+        "coverage_of_records": 1.0,
+        "error_rate_of_present": 0.0,
+        "errors": {},
+        "error_examples": {},
+        "entity": "party"
+      },
+      {
+        "target": "dyn.party.is_founding_party_flag",
+        "source_paths": [
+          "is_founding"
+        ],
+        "records": 123,
+        "source_present": 123,
+        "emitted": 123,
+        "coverage_of_records": 1.0,
+        "error_rate_of_present": 0.0,
+        "errors": {},
+        "error_examples": {},
+        "entity": "party"
+      }
+    ],
+    "relationships": {
+      "PARTY_INVOLVED_IN_APPLICATION": 123
+    },
+    "input_records": 123,
+    "refused_records": 0,
+    "observations": 1533,
+    "value_errors": 0,
+    "present_values": 1533,
+    "error_rate": 0.0
+  },
+  "human_review": "pending",
+  "production_promoted": false
+}

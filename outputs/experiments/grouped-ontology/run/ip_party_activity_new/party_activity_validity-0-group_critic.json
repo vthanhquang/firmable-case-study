@@ -1,0 +1,42 @@
+{
+  "request_sha256": "c7f397127a228415d33bb77798d4c904d7b6c5365143e3b6816e08ba1080909a",
+  "role": "group_critic",
+  "model": "deepseek-v4-flash",
+  "seconds": 9.041,
+  "response": {
+    "verdict": "revise",
+    "findings": [
+      "Reader, encoding, delimiter and grain are consistent with the byte inspection and the declared prefix-cohort scope; no population-level claims are made.",
+      "Held-out validation shows 0 rejected values across all four targets (120/120 for effective_from, is_current, is_founding; 41/41 present for effective_to), so no malformed-value blocking issue exists.",
+      "effective_to coverage of 0.342 of records is honest partial coverage: the source column is blank for open-ended episodes and the mapping nulls blanks rather than inventing an end date. This is defensible abstention, not an error.",
+      "Semantic framing is correct: effective dates are party-activity validity dates, explicitly not incorporation, grant or expiry dates; is_current is scoped to the party record, not enforceability; is_founding is a supplied flag, not incorporation evidence. No legal-form or ABN inference is made.",
+      "Reuse rejections are sound: ext.entity.date_established (business founding date) and ext.licence.start_date/end_date/status (licence-owned) differ in owner, meaning and temporal scope, so new party-owned concepts are justified.",
+      "Qualifier scoping is mostly right: effective_from/to and is_current carry party_id, ip_right_type, application_number and party_role; is_founding carries the three identity qualifiers without party_role, which is the blocking concern below.",
+      "The PARTY_INVOLVED_IN_APPLICATION edge is declared with both roles present and no claimed equality guard; consistent with the execution contract.",
+      "unmapped entries for the other columns are labelled as out-of-group reconciliation, which is honest for a group-scoped proposal."
+    ],
+    "semantic_risks": [
+      "is_founding is emitted with only party_id, ip_right_type and application_number as qualifiers, while the source row also carries party_role and party_role_category. If the publisher's is_founding flag is role-specific (e.g. founding applicant vs founding agent), dropping party_role could attach a role-scoped flag to the party-application pair generally.",
+      "Held-out example ordinal 39 shows an agent row (party_role=agent, party_role_category=applicant_agent) with is_founding=true; this illustrates that the flag can appear on agent rows, so any downstream reading of is_founding as 'founding applicant/owner' would be wrong.",
+      "effective_from/to are parsed to date precision (raw ISO timestamps are all midnight Z), so the datetime type is emitted at day granularity; this is a loss of the time component but not a semantic error given all observed values are 00:00:00.000Z.",
+      "observed_at falls back to resource_last_modified / retrieved_at, which is observation-at-retrieval, not a publisher-stated update date; the proposal does not claim otherwise, but consumers should not read it as a publisher update timestamp."
+    ],
+    "checked_reuse": [
+      "ext.entity.date_established — rejected for both activity_effective_from and is_founding_party_flag: business-owned founding date, different owner/meaning/type.",
+      "ext.licence.start_date — rejected for activity_effective_from: licence-owned commencement, not a party-role episode start.",
+      "ext.licence.end_date — rejected for activity_effective_to: licence-owned end, not a party-role episode end.",
+      "ext.licence.status — rejected for activity_is_current: licence status, not currency of a party-role episode."
+    ],
+    "rationale": "The group's four concepts are semantically defensible: dates are scoped as party-activity validity, is_current is scoped to the party record rather than enforceability, and is_founding is a supplied flag explicitly not treated as incorporation evidence. Held-out validation shows zero rejected values and honest partial coverage for the blank-prone effective_to column, which is abstention rather than error. Reuse rejections against business and licence concepts are correct on owner and meaning. The only substantive concern is that is_founding is emitted without the party_role qualifier even though the source row carries role information and a held-out agent row shows is_founding=true; this is a scoping risk rather than a demonstrated wrong value, so the verdict is revise with a mapping-level correction to either add party_role as a qualifier or explicitly document in the concept definition that the flag is application-scoped and not role-scoped. No ontology change is required beyond that definition clarification.",
+    "blocking_findings": [
+      {
+        "field": "dyn.party.is_founding_party_flag",
+        "actual": "Emitted with qualifiers party_id, ip_right_type, application_number only; party_role and party_role_category are dropped, and the definition says 'founding party on the IP application record' without stating whether the flag is role-scoped.",
+        "expected": "Either the flag is emitted with party_role (and party_role_category) as an additional qualifier so the claim stays scoped to the role episode it was published against, or the concept definition explicitly states that the publisher flag is application-scoped and not role-scoped, with that scope documented in the mapping rationale.",
+        "evidence": "Held-out example ordinal 39: party_role=agent, party_role_category=applicant_agent, is_founding=true on the same row; the mapping for is_founding omits party_role from qualifiers while the other three concepts include it. The source grain includes party_role, so a role-scoped flag cannot be safely generalised to the party-application pair without an explicit statement.",
+        "correction": "In the mapping field for dyn.party.is_founding_party_flag, add qualifiers party_role (source_path party_role, trim) and party_role_category (source_path party_role_category, trim); if the publisher flag is genuinely application-scoped, instead amend the concept definition and mapping rationale to state that is_founding is application-scoped and not role-scoped, and record the held-out agent-row example as the justification. Re-run validation to confirm 0 rejected values are retained."
+      }
+    ],
+    "repair_scope": "mapping"
+  }
+}

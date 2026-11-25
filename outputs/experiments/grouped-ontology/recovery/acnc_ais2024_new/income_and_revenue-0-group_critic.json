@@ -1,0 +1,52 @@
+{
+  "request_sha256": "e2c1c875607bf10819ff434d187b4d04de45c3db483b878631da3f1a62c5a173",
+  "role": "group_critic",
+  "model": "deepseek-v4-flash",
+  "seconds": 11.51,
+  "response": {
+    "verdict": "revise",
+    "findings": [
+      "All ten income/revenue concepts are charity-owned, period-qualified, AUD-qualified and correctly distinguished from business-owned ext.financial.total_income; the reuse refusal is defensible on owner and scope grounds.",
+      "The period qualifier is bound to 'fin report from' only, so the emitted period is a start date, not a period. Held-out row 561 shows fin report from 01/01/2024 and fin report to 16/08/2024, yet the emitted qualifier reads period=01/01/2024; row 733 reads period=01/07/2023 for a 01/07/2023-30/06/2024 period. The concept definitions promise 'its own financial reporting period', which the emitted qualifier does not carry.",
+      "The 26 withheld values per field (260 total, QUALIFIER_MISSING_PERIOD) are honest abstentions where the period start is absent; that is acceptable coverage, not an incorrect emission, and no fallback date should be invented.",
+      "Semantic separation of the ten lines is sound: total revenue vs total gross income (other income), other revenue vs other income, other comprehensive income vs total comprehensive income, and inbound donations/bequests vs outbound grants and donations made are all kept distinct.",
+      "Sign handling is correct: row 1018 other income -440 and row 733 net surplus -952 are retained by parse_decimal, consistent with the total comprehensive income definition allowing negatives.",
+      "The mapping's record_id uses content_hash with empty source_paths and empty rationale; the execution contract states a content hash is used regardless, so this is not a blocking defect, but the empty rationale is uninformative.",
+      "The mapping declares a fundraising_authorisation entity and HOLDS_FUNDRAISING_AUTHORISATION edge, but this group's proposal contains no fundraising concepts and no fields target that role; the edge can never emit from this group's claims. This is out of scope for the income group and should not be presented as part of its output.",
+      "The observed_at fallback is resource_last_modified, which the contract maps to retrieved_at when modification metadata is absent; this is observation-at-retrieval and must not be described as a publisher-stated update date.",
+      "No company legal form, incorporation date or licence date is inferred from ABN, name or registration status; the identity cautions correctly treat registration status and AIS dates as regulatory lodgement, not incorporation.",
+      "The 'charity size' classification is not used as a scale or legal-form claim, consistent with the identity cautions."
+    ],
+    "semantic_risks": [
+      "Period qualifier carrying only the start date risks cross-row comparison of amounts from different-length reporting periods (e.g. a 7.5-month period vs a 12-month period) as if comparable.",
+      "Zero values in small-charity rows (e.g. row 561 all revenue components zero except donations) are reported figures, not evidence of nil activity; consumers must not read them as inactivity.",
+      "Withheld charities are excluded from the dataset, so absence of a row is not evidence a charity does not exist; coverage figures must not be read as population completeness.",
+      "The dataset is refreshed weekly; the local snapshot is point-in-time and later versions may differ."
+    ],
+    "checked_reuse": [
+      "ext.financial.total_income: correctly not reused — business owner and aggregate scope differ from charity-role AIS lines.",
+      "ext.financial.taxable_income: correctly not reused — tax concept, not gross income.",
+      "dyn.charity.other_revenue vs dyn.charity.other_income: kept as separate concepts matching separate AIS columns; reuse would conflate meaning.",
+      "dyn.charity.other_comprehensive_income vs dyn.charity.total_comprehensive_income: kept separate; correct.",
+      "dyn.charity.donations_and_bequests_revenue vs outbound 'grants and donations made' columns: direction kept distinct; correct."
+    ],
+    "rationale": "The ten concepts are semantically defensible: charity-owned, AUD, period-specific, with revenue, other income and comprehensive income correctly separated and business-owned total income correctly refused. The blocking defect is that the required 'period' qualifier is bound only to 'fin report from', so emitted periods are start dates rather than reporting periods, contradicting the concepts' own definitions and the grain statement. The 26-per-field abstentions are honest missing-context abstentions, not incorrect values, and should be preserved. The fundraising entity/edge is out of scope for this group and should be removed from this group's mapping rather than repaired here. Repair is confined to mapping bindings; no ontology change is needed.",
+    "blocking_findings": [
+      {
+        "field": "dyn.charity.total_gross_income (and all nine sibling income concepts) qualifiers.period",
+        "actual": "period qualifier bound to source_path 'fin report from' only, emitting a start date such as period=01/01/2024 (row 561) and period=01/07/2023 (row 733)",
+        "expected": "period qualifier representing the charity's full reporting period, e.g. a start-end interval derived from both 'fin report from' and 'fin report to', consistent with the concept definition 'for its own financial reporting period'",
+        "evidence": "Held-out row 561 has fin report from 01/01/2024 and fin report to 16/08/2024 but emitted period=01/01/2024; row 733 has 01/07/2023-30/06/2024 but emitted period=01/07/2023. The mapping's qualifiers.period declares source_path 'fin report from' with value null for every field.",
+        "correction": "In the mapping, change each field's qualifiers.period to bind both 'fin report from' and 'fin report to' (e.g. a period interval qualifier with start and end source paths, or two qualifier keys period_start/period_end), keeping the existing %d/%m/%Y validity_date_formats; retain QUALIFIER_MISSING_PERIOD abstention when either date is absent rather than inventing a fallback."
+      },
+      {
+        "field": "mapping.entities.fundraising_authorisation and mapping.relationships[HOLDS_FUNDRAISING_AUTHORISATION]",
+        "actual": "A fundraising_authorisation entity and HOLDS_FUNDRAISING_AUTHORISATION edge are declared in this income group's mapping, but no field in the group targets that role",
+        "expected": "The income group's mapping should declare only roles its fields actually populate, or the fundraising role should be moved to the group that owns fundraising fields",
+        "evidence": "The proposal's ten fields all target dyn.charity.* concepts with entity 'charity'; none target fundraising_authorisation, so the edge can never emit from this group's claims.",
+        "correction": "Remove the fundraising_authorisation entity and HOLDS_FUNDRAISING_AUTHORISATION relationship from this group's mapping, or relocate them to the group whose fields populate fundraising numbers; do not add hypothetical fundraising fields to this income group."
+      }
+    ],
+    "repair_scope": "mapping"
+  }
+}

@@ -1,0 +1,37 @@
+{
+  "request_sha256": "a87dc6feca417caaddd89d828c7b6780713d947f0e484c74fc75043e545d2c71",
+  "role": "group_critic",
+  "model": "deepseek-v4-flash",
+  "seconds": 12.298,
+  "response": {
+    "verdict": "accept",
+    "findings": [
+      "All 12 emitted targets are charity-role reporting/lodgement attributes; each definition explicitly disclaims the tempting wrong reading (size band ≠ revenue band/legal form; AIS due/received ≠ registration or licence dates; consolidation flag ≠ group ownership; coop lodgement flag ≠ registration status).",
+      "Held-out validation shows 0.0 error rate of present values on every field, with coverage honestly bounded by source presence (financial_statement_type 0.264, report_modification_type 0.021, accounting_basis 0.55, financial_report_received_date 0.607, period dates 0.814). These are source-absent cells, not mapping failures, and are correctly withheld rather than defaulted.",
+      "The report_modification_type mapping is guarded on 'charity report has a modification' = y, and the enum was extended to include the observed 'Adverse' label (row 10550) rather than withholding a genuine kind; unlisted labels still fall to null.",
+      "financial_statement_type handles the whitespace variant ('General purpose financial statements   simplified disclosure', row 13750) via collapse_whitespace before map_enum; the probe confirms the transform collapses NBSP/tab/space runs, and the mapped value matches the enum.",
+      "Date parsing uses %d/%m/%Y consistently and examples (30/06/2025, 09/10/2024, 01/07/2023) confirm day-first interpretation; no US/EU ambiguity is silently resolved.",
+      "Reuse decisions are defensible: ext.financial.revenue_band, ext.entity.financial_year_end, ext.licence.start_date/end_date and entity.date_registered are all rejected for good reasons (different owner or different meaning), and dyn.charity.registration_status / basic_religious_charity are reused unchanged only as prior concepts, not remapped here.",
+      "Grain and identity cautions are correct: ABN as text key, name not a join key, per-charity reporting period rather than calendar 2024, and absence of a row ≠ nonexistence (withheld charities)."
+    ],
+    "semantic_risks": [
+      "dyn.charity.coop_financial_report_submitted_flag: the source column name says 'coop', and the definition hedges ('cooperative or other regulator ... exact regulator ... not asserted'). This is honest but slightly under-specified; it is acceptable because it does not over-claim, but downstream users should not read it as 'report not lodged with ACNC'.",
+      "dyn.charity.report_modification_type enum is closed to three labels; if the publisher uses other modification kinds (e.g. 'Emphasis of matter'), those rows will be withheld. This is a coverage limitation, not a semantic error, and is consistent with the stated withhold-don't-guess policy.",
+      "dyn.charity.financial_statement_type enum is closed to three labels; other framework labels would be withheld. Same coverage-not-correctness caveat.",
+      "The mapping declares a fundraising_authorisation entity and HOLDS_FUNDRAISING_AUTHORISATION edge, but no field in this group's 12 targets emits a fundraising number, so the edge will not fire from this group's claims. This is inert, not incorrect, but the group purpose text does not mention fundraising, so the entity declaration is slightly out of scope for the stated purpose.",
+      "observed_at falls back to resource_last_modified/retrieved_at; this is observation-at-retrieval, not a publisher-stated AIS update time, and should not be presented as the latter."
+    ],
+    "checked_reuse": [
+      "dyn.charity.registration_status — reused unchanged, charity owner, registration state; not conflated with AIS lodgement dates or coop lodgement flag.",
+      "dyn.charity.basic_religious_charity — reused unchanged, charity owner; not remapped in this group.",
+      "ext.financial.revenue_band — correctly rejected for size_band (different owner and thresholds).",
+      "ext.entity.financial_year_end — correctly rejected for financial_report_period_end (recurring cycle attribute vs specific period end).",
+      "ext.licence.start_date / ext.licence.end_date — correctly rejected for AIS and report period dates (licence role, different meaning).",
+      "entity.date_registered / ext.entity.date_established — correctly rejected for AIS due/received and report received dates.",
+      "entity.entity_type / ext.entity.legal_form — correctly rejected for financial_statement_type (legal structure vs reporting framework)."
+    ],
+    "rationale": "Held-out validation shows zero error rate of present values across all 12 fields, with coverage honestly bounded by source presence and no invented fallbacks. Every concept is owned by the charity role, definitions explicitly disclaim the adjacent wrong meanings (registration/licence dates, revenue band, legal form, group ownership), and the two enum extensions (Adverse modification type, simplified-disclosure statement type) are grounded in observed held-out rows. Reuse rejections are well-reasoned. Remaining issues are coverage limitations and one inert out-of-scope entity declaration, none of which make an emitted claim semantically wrong, so no blocking findings.",
+    "blocking_findings": [],
+    "repair_scope": "none"
+  }
+}

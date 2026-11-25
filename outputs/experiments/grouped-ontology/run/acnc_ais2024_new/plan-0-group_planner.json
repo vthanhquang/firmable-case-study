@@ -1,0 +1,214 @@
+{
+  "request_sha256": "6a8bef30bc7c1f23751b98744c06e598671a1bd4b9e1c1e61018db33cd057910",
+  "role": "group_planner",
+  "model": "deepseek-v4-flash",
+  "seconds": 13.766,
+  "response": {
+    "grain": "One row per charity (identified by ABN) for the 2024 Annual Information Statement reporting year, carrying that charity's registration details, AIS lodgement dates, activity descriptions, staffing/volunteer counts, financial-report classification and reported financial figures for its own reporting period (period start/end dates appear as separate columns, so the financial figures are period-specific rather than calendar-2024).",
+    "groups": [
+      {
+        "name": "charity_identity_and_registration",
+        "purpose": "Core charity identity and ACNC registration status: ABN key, name, website, registration status, basic religious charity flag, incorporated association flag and the state association numbers held by the charity.",
+        "columns": [
+          "abn",
+          "charity name",
+          "charity website",
+          "registration status",
+          "basic religious charity",
+          "incorporated association",
+          "association number - act",
+          "association number - nsw",
+          "association number - nt",
+          "association number - qld",
+          "association number - sa",
+          "association number - tas",
+          "association number - vic",
+          "association number - wa"
+        ]
+      },
+      {
+        "name": "ais_lodgement_and_reporting_classification",
+        "purpose": "Regulatory lodgement and reporting classification: AIS due/received dates, charity size band, financial-report period dates, statement type, modification flags and consolidation/cash-basis indicators.",
+        "columns": [
+          "ais due date",
+          "date ais received",
+          "charity size",
+          "fin report from",
+          "fin report to",
+          "financial report date received",
+          "type of financial statement",
+          "charity report has a modification",
+          "type of report modification",
+          "report consolidated with more than one entity",
+          "coop financial report submitted to regulator",
+          "cash or accrual"
+        ]
+      },
+      {
+        "name": "activities_and_programs",
+        "purpose": "Narrative and flag description of what the charity did in the period: whether activities were conducted, how purposes were pursued, reasons for no activity, and international activity flags and descriptions.",
+        "columns": [
+          "conducted activities",
+          "why charity did not conduct activities",
+          "how purposes were pursued",
+          "international activities undertaken - operating overseas including programs",
+          "international activities undertaken - transferring goods or services overseas",
+          "other international activities",
+          "international activities details",
+          "other international activities description"
+        ]
+      },
+      {
+        "name": "fundraising_registrations",
+        "purpose": "State-by-state and online fundraising activity flags together with the corresponding fundraising licence/registration numbers held by the charity.",
+        "columns": [
+          "fundraising - act",
+          "fundraising - nsw",
+          "fundraising - nt",
+          "fundraising - online",
+          "fundraising - qld",
+          "fundraising - sa",
+          "fundraising - tas",
+          "fundraising - vic",
+          "fundraising - wa",
+          "fundraising number - act",
+          "fundraising number - nsw",
+          "fundraising number - qld",
+          "fundraising number - sa",
+          "fundraising number - tas",
+          "fundraising number - vic",
+          "fundraising number - wa"
+        ]
+      },
+      {
+        "name": "workforce_and_volunteers",
+        "purpose": "Staffing and volunteer headcounts reported by the charity, including full-time, part-time, casual and volunteer counts and total full-time-equivalent staff.",
+        "columns": [
+          "staff - full time",
+          "staff - part time",
+          "staff - casual",
+          "staff - volunteers",
+          "total full time equivalent staff"
+        ]
+      },
+      {
+        "name": "income_and_revenue",
+        "purpose": "Reported income and revenue lines for the charity's own reporting period: total gross income, total revenue and its components (government, goods and services, investments, donations and bequests, other revenue, other income) plus other comprehensive income.",
+        "columns": [
+          "total gross income",
+          "total revenue",
+          "revenue from government",
+          "revenue from goods and services",
+          "revenue from investments",
+          "donations and bequests",
+          "all other revenue",
+          "other income",
+          "other comprehensive income",
+          "total comprehensive income"
+        ]
+      },
+      {
+        "name": "expenses_and_grants_made",
+        "purpose": "Reported expense lines and outbound grants/donations made by the charity for its own reporting period, including employee, interest and other expenses and grants for use in and outside Australia.",
+        "columns": [
+          "total expenses",
+          "employee expenses",
+          "interest expenses",
+          "all other expenses",
+          "grants and donations made for use in Australia",
+          "grants and donations made for use outside Australia",
+          "net surplus/deficit"
+        ]
+      },
+      {
+        "name": "assets_and_liabilities",
+        "purpose": "Reported balance-sheet position for the charity's own reporting period: current and non-current assets and liabilities, loans payable/receivable, net assets/liabilities and the narrative assets and liabilities description.",
+        "columns": [
+          "total assets",
+          "total current assets",
+          "total non-current assets",
+          "other non-current assets",
+          "total liabilities",
+          "total current liabilities",
+          "total non-current liabilities",
+          "other non-current liabilities",
+          "non-current loans payable",
+          "non-current loans receivable",
+          "net assets/liabilities",
+          "assets and liabilities description"
+        ]
+      },
+      {
+        "name": "key_management_and_related_parties",
+        "purpose": "Related-party and key management personnel disclosures: whether reportable related party transactions exist, the nature of those transactions, KMP flag and headcount, total paid to KMP, and free-text other details.",
+        "columns": [
+          "charity has reportable related party transactions",
+          "Relevant transactions",
+          "Key Management Personnel",
+          "Number of Key Management Personnel",
+          "Total paid to Key Management Personnel",
+          "Other Relevant details",
+          "Other details"
+        ]
+      }
+    ],
+    "entity_types": [
+      {
+        "name": "charity",
+        "definition": "A registered charity lodging an Annual Information Statement with the ACNC, identified by its ABN; its legal form is not inferred from its name."
+      },
+      {
+        "name": "fundraising_authorisation",
+        "definition": "A state or territory fundraising registration/licence number held by a charity, evidenced by a fundraising number column for that jurisdiction."
+      }
+    ],
+    "entities": {
+      "charity": {
+        "kind": "charity",
+        "key_paths": [
+          "abn"
+        ],
+        "rationale": "ABN is the only stable identifier for the row subject; charity name is free text and must not be used as a key."
+      },
+      "fundraising_authorisation": {
+        "kind": "fundraising_authorisation",
+        "key_paths": [
+          "fundraising number - act",
+          "fundraising number - nsw",
+          "fundraising number - qld",
+          "fundraising number - sa",
+          "fundraising number - tas",
+          "fundraising number - vic",
+          "fundraising number - wa"
+        ],
+        "rationale": "Each populated fundraising number column evidences a jurisdiction-specific fundraising registration held by the charity; the number is the only identifier present."
+      }
+    },
+    "relationship_types": [
+      {
+        "name": "HOLDS_FUNDRAISING_AUTHORISATION",
+        "from_type": "charity",
+        "to_type": "fundraising_authorisation",
+        "definition": "Charity holds a state or territory fundraising registration evidenced by a fundraising number column for that jurisdiction."
+      }
+    ],
+    "relationships": [
+      {
+        "type": "HOLDS_FUNDRAISING_AUTHORISATION",
+        "from_role": "charity",
+        "to_role": "fundraising_authorisation",
+        "rationale": "Fundraising number columns (act, nsw, qld, sa, tas, vic, wa) are populated only for charities holding that jurisdiction's fundraising registration; the corresponding fundraising flag columns indicate activity, not the authorisation itself."
+      }
+    ],
+    "cautions": [
+      "ABN is the only stable identifier; charity name is free text and must not be used as a join key or to infer legal form.",
+      "Financial figures relate to each charity's own reporting period (fin report from/to), not a common financial year; cross-row comparison without checking those dates is unsafe.",
+      "Charity size (Small/Medium/Large) is a reporting classification, not company scale or legal form; blanks and zeros for small charities are not evidence of nil activity.",
+      "Registration status and AIS due/received dates describe regulatory lodgement, not business incorporation or a licence date.",
+      "Association numbers and fundraising numbers are state-specific registrations; their presence does not establish company legal form or a single national licence.",
+      "Numeric columns are stored without units or percent signs; fraction-versus-percentage storage cannot be confirmed from the visible bytes.",
+      "Some charities have withheld information and are excluded, so absence of a row is not evidence a charity does not exist.",
+      "The dataset is refreshed weekly; the local snapshot is a point-in-time copy."
+    ]
+  }
+}

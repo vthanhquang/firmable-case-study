@@ -1,0 +1,38 @@
+{
+  "request_sha256": "92cf752dd363ff20411b470f54ff1209fc1658e0b6f4c53ff9ef35cb673ec713",
+  "role": "critic",
+  "model": "deepseek-v4-flash",
+  "seconds": 23.257,
+  "response": {
+    "verdict": "accept",
+    "findings": [
+      "Ownership: all new concepts are owner=business and the subject role is business; entity.abn reuse is correct (11-digit checksummed, transform 'abn' applied, 121/121 emitted with 0 errors).",
+      "No legal-name claim: 'Employer name' is mapped to dyn.workforce.employer_name (publisher-reported reporting-unit name), not entity.legal_name; the inspector's non-uniqueness and corporate-group-name collision warning is respected. No legal form inferred from name, ABN or Sector.",
+      "Units/currency: remuneration concepts are decimal with currency=AUD and currency_basis=inferred, matching the execution contract's allowance for an inference qualifier; the rationale explicitly says the header states only '($)' and does not describe AUD as source-stated. Remuneration is not mapped to ext.financial.total_income/revenue_band.",
+      "GPG proportion handling: held-out rows show values like 0.044, 0.221, 0 and 0.068 under '(%)' headers, so parse_decimal without a percent-to-proportion step is consistent with observed data; the concept definition bounds the risk of a future percent-formatted value.",
+      "Time scopes: 2024-25 and 2023-24 are carried as period qualifiers on the same wide employer row, matching the inspector's grain statement; the four '_2' columns are mapped by position with confidence 0.8 and an explicit positional rationale, and blank prior-year cells are abstained (100/104 of 121 present, not zero-filled).",
+      "Size band kept as enum label with scheme qualifier, not converted to an integer headcount; Sector kept as WGEA classification with scheme=wgea_sector, not legal_form; ANZSIC Division/Class kept as name-valued concepts with scheme=anzsic2006 rather than forcing codes into ext.entity.industry_code.",
+      "Validation: 121/121 records with output, 0 refused, 0 value errors, 2828 observations; the only sub-1.0 coverage is the expected blank 2023-24 GPG columns, which is an abstention not an incorrect emitted claim.",
+      "No relationships declared and no establishment/licence/address facts invented; unmapped is empty and the notes state corporate group sheets are out of scope for this reader."
+    ],
+    "semantic_risks": [
+      "The 2023-24 period labels are positional (trailing '_2' is a wide-layout artefact); if the publisher reorders columns in a future snapshot, the period qualifier could be wrong. This is bounded by the explicit positional rationale and confidence 0.8, but a column-order guard is not expressible in the current config.",
+      "AUD is inferred from the Australian federal publisher, not stated in the header; if a future snapshot includes non-AUD remuneration the currency_basis=inferred qualifier would be misleading. Bounded by the explicit inference label.",
+      "dyn.workforce.anzsic_division and dyn.workforce.anzsic_class are name-valued and not crosswalked to codes; downstream consumers expecting ext.entity.industry_code codes will not find them here. This is an honest scoping choice, not an error.",
+      "dyn.workforce.employer_name is not unique and may coincide with a corporate group name; consumers must not treat it as a legal name or join it to corporate group sheets by name. Bounded by the concept definition and inspector cautions.",
+      "GPG values are assumed already proportions; a future percent-formatted value (e.g. 4.4) would be emitted as 4.4 without a percent-to-proportion step. Bounded by the concept definition's explicit note."
+    ],
+    "checked_reuse": [
+      "entity.abn: correct reuse for the stable employer identifier; checksum transform applied, 0 errors.",
+      "entity.legal_name: correctly NOT reused, since the source states a reporting-unit name, not a registrar legal name.",
+      "ext.financial.total_income / taxable_income / tax_payable: correctly NOT reused for remuneration, which is employee pay not business income.",
+      "ext.financial.revenue_band: correctly NOT reused for the employer size band, which is a workforce band not a revenue band.",
+      "ext.entity.sector_tag: correctly NOT reused for the WGEA Private/Public sector classification, which is a public/private sector classification not an activity/beneficiary tag.",
+      "ext.entity.legal_form: correctly NOT reused for Sector, since Sector is not a registrar legal form.",
+      "ext.entity.industry_code: correctly NOT reused for ANZSIC Division/Class names, since that concept is restricted to crosswalked codes.",
+      "observation.source_id / source_record_id / observed_at / ingested_at / licence: reused consistently with the execution contract; observed_at falls back to retrieved_at, which is observation-at-retrieval not a publisher-stated update."
+    ],
+    "rationale": "The proposal and mapping are internally consistent with the inspector's grain, identity cautions and the held-out rows. Ownership is correct (business subject, no licence/establishment roles invented), units and currency are handled with an explicit inferred basis rather than a false source-stated claim, time scopes are carried as period qualifiers on a wide employer row, and the 2023-24 positional mapping is honestly bounded at confidence 0.8. No legal-name, legal-form, revenue or headcount claims are invented, and the only sub-1.0 coverage is the expected blank prior-year GPG columns, which is an abstention not an incorrect emitted claim. Remaining risks (positional period labels, inferred AUD, name-valued ANZSIC, non-unique employer name, future percent-formatted GPG) are explicitly bounded in the concept definitions and notes and are not known semantic errors. This is an agent review, not a human sign-off.",
+    "blocking_findings": []
+  }
+}

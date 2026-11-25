@@ -1,0 +1,53 @@
+{
+  "request_sha256": "48510c6f5e161a98bc51071914a066f03ed72ee4fd522ba81a4bfc71557a5a1a",
+  "role": "group_architect",
+  "model": "deepseek-v4-flash",
+  "seconds": 7.288,
+  "response": {
+    "concepts": [
+      {
+        "path": "dyn.party.role_category",
+        "type": "enum",
+        "owner": "party",
+        "definition": "The publisher's broad category of the capacity in which a party is recorded on an IP application (e.g. applicant, applicant_agent, opposition_agent, mortgagee). It is a role classification on the party-application involvement, not evidence of ownership of the right, not a legal form, and not a statement that the IP right is enforceable.",
+        "values": [
+          "applicant",
+          "applicant_agent",
+          "opposition_agent",
+          "mortgagee",
+          "other",
+          "unknown"
+        ],
+        "multi": false,
+        "required_qualifiers": [],
+        "source_paths": [
+          "party_role_category"
+        ],
+        "why_not_existing": "No shortlisted concept describes the capacity in which a party acts on an IP application; ext.contact.* and ext.licence.* concepts are owned by other entities and describe contact channels or licence authorisations, so reuse would change owner and meaning.",
+        "personal_data": "never"
+      },
+      {
+        "path": "dyn.party.role",
+        "type": "enum",
+        "owner": "party",
+        "definition": "The publisher's specific role label for the party on the IP application (e.g. patentee, applicant, agent, opponent_agent). It is a distinct dimension from the role category and must not be collapsed with it; an agent role is not evidence of ownership of the right.",
+        "values": [
+          "patentee",
+          "applicant",
+          "agent",
+          "opponent_agent",
+          "other",
+          "unknown"
+        ],
+        "multi": false,
+        "required_qualifiers": [],
+        "source_paths": [
+          "party_role"
+        ],
+        "why_not_existing": "No shortlisted concept captures a party's specific role on an IP application; ext.licence.category describes a licence category held by a business, a different owner and meaning, so reuse would misstate the fact.",
+        "personal_data": "never"
+      }
+    ],
+    "reuse": {}
+  }
+}

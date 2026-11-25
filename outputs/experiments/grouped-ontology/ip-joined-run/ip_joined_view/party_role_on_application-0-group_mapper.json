@@ -1,0 +1,233 @@
+{
+  "request_sha256": "0cd10b5cad94f0045c0b485155151071c05cdd92517b34d28cd2cee1a5225607",
+  "role": "group_mapper",
+  "model": "deepseek-v4-flash",
+  "seconds": 8.103,
+  "response": {
+    "fields": [
+      {
+        "source_paths": [
+          "party_activity.party_role_category"
+        ],
+        "join_with": " ",
+        "when": null,
+        "target": "dyn.party_activity.role_category",
+        "valid_from_path": null,
+        "valid_to_path": null,
+        "validity_date_formats": null,
+        "claim_scope": null,
+        "steps": [
+          {
+            "op": "trim",
+            "args": {}
+          },
+          {
+            "op": "map_enum",
+            "args": {
+              "mapping": {
+                "applicant": "applicant",
+                "applicant_agent": "applicant_agent",
+                "opposition": "opposition",
+                "mortgagee": "mortgagee"
+              },
+              "default": null,
+              "passthrough": false
+            }
+          }
+        ],
+        "confidence": 0.9,
+        "rationale": "party_activity.party_role_category is the publisher's broad role category on the party-role record; maps to the party_activity-owned role_category concept. Unlisted categories are withheld rather than passed through.",
+        "entity": "party_activity",
+        "qualifiers": null,
+        "one_hot": null,
+        "claim_period": null
+      },
+      {
+        "source_paths": [
+          "party_activity.party_role"
+        ],
+        "join_with": " ",
+        "when": null,
+        "target": "dyn.party_activity.role",
+        "valid_from_path": null,
+        "valid_to_path": null,
+        "validity_date_formats": null,
+        "claim_scope": null,
+        "steps": [
+          {
+            "op": "trim",
+            "args": {}
+          },
+          {
+            "op": "map_enum",
+            "args": {
+              "mapping": {
+                "applicant": "applicant",
+                "patentee": "patentee",
+                "agent": "agent",
+                "opponent": "opponent"
+              },
+              "default": null,
+              "passthrough": false
+            }
+          }
+        ],
+        "confidence": 0.9,
+        "rationale": "party_activity.party_role is the specific role the party holds on the application; maps to the party_activity-owned role concept. Unlisted roles are withheld.",
+        "entity": "party_activity",
+        "qualifiers": null,
+        "one_hot": null,
+        "claim_period": null
+      },
+      {
+        "source_paths": [
+          "party_activity.is_founding"
+        ],
+        "join_with": " ",
+        "when": null,
+        "target": "dyn.party_activity.is_founding",
+        "valid_from_path": null,
+        "valid_to_path": null,
+        "validity_date_formats": null,
+        "claim_scope": null,
+        "steps": [
+          {
+            "op": "trim",
+            "args": {}
+          },
+          {
+            "op": "map_enum",
+            "args": {
+              "mapping": {
+                "true": "true",
+                "false": "false"
+              },
+              "default": null,
+              "passthrough": false
+            }
+          }
+        ],
+        "confidence": 0.9,
+        "rationale": "Boolean founding flag on the party-role record; kept as a party_activity attribute, not a business establishment date.",
+        "entity": "party_activity",
+        "qualifiers": null,
+        "one_hot": null,
+        "claim_period": null
+      },
+      {
+        "source_paths": [
+          "party_activity.is_current"
+        ],
+        "join_with": " ",
+        "when": null,
+        "target": "dyn.party_activity.is_current",
+        "valid_from_path": null,
+        "valid_to_path": null,
+        "validity_date_formats": null,
+        "claim_scope": null,
+        "steps": [
+          {
+            "op": "trim",
+            "args": {}
+          },
+          {
+            "op": "map_enum",
+            "args": {
+              "mapping": {
+                "true": "true",
+                "false": "false"
+              },
+              "default": null,
+              "passthrough": false
+            }
+          }
+        ],
+        "confidence": 0.9,
+        "rationale": "Boolean currency flag on the party-role record; describes the role association's validity, not the application or business lifecycle.",
+        "entity": "party_activity",
+        "qualifiers": null,
+        "one_hot": null,
+        "claim_period": null
+      },
+      {
+        "source_paths": [
+          "party_activity.effective_from_date"
+        ],
+        "join_with": " ",
+        "when": null,
+        "target": "dyn.party_activity.effective_from_date",
+        "valid_from_path": null,
+        "valid_to_path": null,
+        "validity_date_formats": null,
+        "claim_scope": null,
+        "steps": [
+          {
+            "op": "trim",
+            "args": {}
+          },
+          {
+            "op": "parse_date",
+            "args": {
+              "formats": [
+                "%Y-%m-%dT%H:%M:%S.%fZ",
+                "%Y-%m-%dT%H:%M:%SZ",
+                "%Y-%m-%d"
+              ]
+            }
+          }
+        ],
+        "confidence": 0.9,
+        "rationale": "Publisher-stated start of the party-role validity window; an independently reported date owned by the party-activity record, not the application filing date or business establishment.",
+        "entity": "party_activity",
+        "qualifiers": null,
+        "one_hot": null,
+        "claim_period": null
+      },
+      {
+        "source_paths": [
+          "party_activity.effective_to_date"
+        ],
+        "join_with": " ",
+        "when": null,
+        "target": "dyn.party_activity.effective_to_date",
+        "valid_from_path": null,
+        "valid_to_path": null,
+        "validity_date_formats": null,
+        "claim_scope": null,
+        "steps": [
+          {
+            "op": "trim",
+            "args": {}
+          },
+          {
+            "op": "null_if",
+            "args": {
+              "values": [
+                "",
+                "null",
+                "NULL"
+              ]
+            }
+          },
+          {
+            "op": "parse_date",
+            "args": {
+              "formats": [
+                "%Y-%m-%dT%H:%M:%S.%fZ",
+                "%Y-%m-%dT%H:%M:%SZ",
+                "%Y-%m-%d"
+              ]
+            }
+          }
+        ],
+        "confidence": 0.9,
+        "rationale": "Publisher-stated end of the party-role validity window, frequently blank for open-ended roles; blank is treated as missing, not as a date.",
+        "entity": "party_activity",
+        "qualifiers": null,
+        "one_hot": null,
+        "claim_period": null
+      }
+    ],
+    "unmapped": []
+  }
+}

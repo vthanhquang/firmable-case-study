@@ -1,0 +1,192 @@
+{
+  "request_sha256": "a07376ae0c396fe6f2294b48dd21f787b2e9f83767d257c9c6328d72b3dfe86e",
+  "role": "group_mapper",
+  "model": "deepseek-v4-flash",
+  "seconds": 8.43,
+  "response": {
+    "fields": [
+      {
+        "source_paths": [
+          "Employer name"
+        ],
+        "join_with": " ",
+        "when": null,
+        "target": "dyn.employer_reporting_unit.reporting_name",
+        "valid_from_path": null,
+        "valid_to_path": null,
+        "validity_date_formats": null,
+        "claim_scope": null,
+        "steps": [
+          {
+            "op": "trim",
+            "args": {}
+          },
+          {
+            "op": "collapse_whitespace",
+            "args": {}
+          }
+        ],
+        "confidence": 0.9,
+        "rationale": "Employer name is the WGEA reporting-unit label for the submission; it is not a verified legal or trading name, so it maps to the reporting-unit reporting_name concept rather than entity.legal_name.",
+        "entity": "employer",
+        "qualifiers": null,
+        "one_hot": null,
+        "claim_period": null
+      },
+      {
+        "source_paths": [
+          "Employer ABN"
+        ],
+        "join_with": " ",
+        "when": null,
+        "target": "dyn.employer_reporting_unit.reporting_abn",
+        "valid_from_path": null,
+        "valid_to_path": null,
+        "validity_date_formats": null,
+        "claim_scope": null,
+        "steps": [
+          {
+            "op": "abn",
+            "args": {}
+          }
+        ],
+        "confidence": 0.85,
+        "rationale": "Employer ABN is the reporting unit's submission identifier; the abn transform validates the 11-digit checksum. It is owned by the reporting unit, not asserted as the business legal person's ABN.",
+        "entity": "employer",
+        "qualifiers": null,
+        "one_hot": null,
+        "claim_period": null
+      },
+      {
+        "source_paths": [
+          "Sector"
+        ],
+        "join_with": " ",
+        "when": null,
+        "target": "dyn.employer_reporting_unit.sector",
+        "valid_from_path": null,
+        "valid_to_path": null,
+        "validity_date_formats": null,
+        "claim_scope": null,
+        "steps": [
+          {
+            "op": "trim",
+            "args": {}
+          },
+          {
+            "op": "map_enum",
+            "args": {
+              "mapping": {
+                "Private": "Private",
+                "Public": "Public"
+              },
+              "default": null,
+              "passthrough": false
+            }
+          }
+        ],
+        "confidence": 0.9,
+        "rationale": "Sector is the WGEA private/public reporting classification of the reporting unit, not a legal form or a scheme-tagged activity, so it maps to the reporting-unit sector enum.",
+        "entity": "employer",
+        "qualifiers": null,
+        "one_hot": null,
+        "claim_period": null
+      },
+      {
+        "source_paths": [
+          "Employer size range (# employees)"
+        ],
+        "join_with": " ",
+        "when": null,
+        "target": "dyn.employer_reporting_unit.size_band",
+        "valid_from_path": null,
+        "valid_to_path": null,
+        "validity_date_formats": null,
+        "claim_scope": null,
+        "steps": [
+          {
+            "op": "trim",
+            "args": {}
+          },
+          {
+            "op": "map_enum",
+            "args": {
+              "mapping": {
+                "<250": "<250",
+                "250-499": "250-499",
+                "500-999": "500-999",
+                "1000-4999": "1000-4999",
+                "5000+": "5000+"
+              },
+              "default": null,
+              "passthrough": false
+            }
+          }
+        ],
+        "confidence": 0.85,
+        "rationale": "Employer size range is an employee-count band for the reporting unit, not an exact headcount and not a revenue band; it maps to the reporting-unit size_band enum, now including the publisher's open-ended top band '5000+'.",
+        "entity": "employer",
+        "qualifiers": null,
+        "one_hot": null,
+        "claim_period": null
+      },
+      {
+        "source_paths": [
+          "Industry (ANZSIC Division)"
+        ],
+        "join_with": " ",
+        "when": null,
+        "target": "dyn.employer_reporting_unit.anzsic_division",
+        "valid_from_path": null,
+        "valid_to_path": null,
+        "validity_date_formats": null,
+        "claim_scope": null,
+        "steps": [
+          {
+            "op": "trim",
+            "args": {}
+          },
+          {
+            "op": "collapse_whitespace",
+            "args": {}
+          }
+        ],
+        "confidence": 0.85,
+        "rationale": "The column holds the ANZSIC division name label reported for the submission, not a coded ANZSIC value, so it maps to the reporting-unit division label concept rather than a coded industry_code.",
+        "entity": "employer",
+        "qualifiers": null,
+        "one_hot": null,
+        "claim_period": null
+      },
+      {
+        "source_paths": [
+          "Industry (ANZSIC Class)"
+        ],
+        "join_with": " ",
+        "when": null,
+        "target": "dyn.employer_reporting_unit.anzsic_class",
+        "valid_from_path": null,
+        "valid_to_path": null,
+        "validity_date_formats": null,
+        "claim_scope": null,
+        "steps": [
+          {
+            "op": "trim",
+            "args": {}
+          },
+          {
+            "op": "collapse_whitespace",
+            "args": {}
+          }
+        ],
+        "confidence": 0.85,
+        "rationale": "The column holds the ANZSIC class name label reported for the submission, not a coded class number, so it maps to the reporting-unit class label concept rather than a coded industry_code.",
+        "entity": "employer",
+        "qualifiers": null,
+        "one_hot": null,
+        "claim_period": null
+      }
+    ],
+    "unmapped": []
+  }
+}

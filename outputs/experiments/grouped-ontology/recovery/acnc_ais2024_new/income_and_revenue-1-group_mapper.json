@@ -1,0 +1,431 @@
+{
+  "request_sha256": "f6407d24bef06609214b37ec730d7dc64872f27fd344ab6122904f6b5d4285c8",
+  "role": "group_mapper",
+  "model": "deepseek-v4-flash",
+  "seconds": 12.429,
+  "response": {
+    "fields": [
+      {
+        "source_paths": [
+          "total gross income"
+        ],
+        "join_with": " ",
+        "when": null,
+        "target": "dyn.charity.total_gross_income",
+        "valid_from_path": null,
+        "valid_to_path": null,
+        "validity_date_formats": null,
+        "claim_scope": null,
+        "steps": [
+          {
+            "op": "parse_decimal",
+            "args": {}
+          }
+        ],
+        "confidence": 0.9,
+        "rationale": "Total gross income is the charity's AIS-reported gross income for its own reporting period; qualified as AUD and dated by the fin report from/to columns. Owner is the charity role, not the business subject.",
+        "entity": "charity",
+        "qualifiers": {
+          "currency": {
+            "source_path": null,
+            "value": "AUD",
+            "steps": []
+          },
+          "period": {
+            "source_path": "fin report from",
+            "value": null,
+            "steps": []
+          }
+        },
+        "one_hot": null,
+        "claim_period": {
+          "from_column": "fin report from",
+          "to_column": "fin report to",
+          "formats": [
+            "%d/%m/%Y"
+          ],
+          "meaning": "Charity's own financial reporting period covered by the lodged financial report"
+        }
+      },
+      {
+        "source_paths": [
+          "total revenue"
+        ],
+        "join_with": " ",
+        "when": null,
+        "target": "dyn.charity.total_revenue",
+        "valid_from_path": null,
+        "valid_to_path": null,
+        "validity_date_formats": null,
+        "claim_scope": null,
+        "steps": [
+          {
+            "op": "parse_decimal",
+            "args": {}
+          }
+        ],
+        "confidence": 0.9,
+        "rationale": "Total revenue is a distinct AIS revenue line (excludes other income) for the charity's own period; dated by fin report from/to.",
+        "entity": "charity",
+        "qualifiers": {
+          "currency": {
+            "source_path": null,
+            "value": "AUD",
+            "steps": []
+          },
+          "period": {
+            "source_path": "fin report from",
+            "value": null,
+            "steps": []
+          }
+        },
+        "one_hot": null,
+        "claim_period": {
+          "from_column": "fin report from",
+          "to_column": "fin report to",
+          "formats": [
+            "%d/%m/%Y"
+          ],
+          "meaning": "Charity's own financial reporting period covered by the lodged financial report"
+        }
+      },
+      {
+        "source_paths": [
+          "revenue from government"
+        ],
+        "join_with": " ",
+        "when": null,
+        "target": "dyn.charity.revenue_from_government",
+        "valid_from_path": null,
+        "valid_to_path": null,
+        "validity_date_formats": null,
+        "claim_scope": null,
+        "steps": [
+          {
+            "op": "parse_decimal",
+            "args": {}
+          }
+        ],
+        "confidence": 0.9,
+        "rationale": "Government-sourced revenue component reported by the charity; not a grant/contract amount and not business income.",
+        "entity": "charity",
+        "qualifiers": {
+          "currency": {
+            "source_path": null,
+            "value": "AUD",
+            "steps": []
+          },
+          "period": {
+            "source_path": "fin report from",
+            "value": null,
+            "steps": []
+          }
+        },
+        "one_hot": null,
+        "claim_period": {
+          "from_column": "fin report from",
+          "to_column": "fin report to",
+          "formats": [
+            "%d/%m/%Y"
+          ],
+          "meaning": "Charity's own financial reporting period covered by the lodged financial report"
+        }
+      },
+      {
+        "source_paths": [
+          "revenue from goods and services"
+        ],
+        "join_with": " ",
+        "when": null,
+        "target": "dyn.charity.revenue_from_goods_and_services",
+        "valid_from_path": null,
+        "valid_to_path": null,
+        "validity_date_formats": null,
+        "claim_scope": null,
+        "steps": [
+          {
+            "op": "parse_decimal",
+            "args": {}
+          }
+        ],
+        "confidence": 0.9,
+        "rationale": "Goods-and-services revenue component for the charity's own period; not business turnover.",
+        "entity": "charity",
+        "qualifiers": {
+          "currency": {
+            "source_path": null,
+            "value": "AUD",
+            "steps": []
+          },
+          "period": {
+            "source_path": "fin report from",
+            "value": null,
+            "steps": []
+          }
+        },
+        "one_hot": null,
+        "claim_period": {
+          "from_column": "fin report from",
+          "to_column": "fin report to",
+          "formats": [
+            "%d/%m/%Y"
+          ],
+          "meaning": "Charity's own financial reporting period covered by the lodged financial report"
+        }
+      },
+      {
+        "source_paths": [
+          "revenue from investments"
+        ],
+        "join_with": " ",
+        "when": null,
+        "target": "dyn.charity.revenue_from_investments",
+        "valid_from_path": null,
+        "valid_to_path": null,
+        "validity_date_formats": null,
+        "claim_scope": null,
+        "steps": [
+          {
+            "op": "parse_decimal",
+            "args": {}
+          }
+        ],
+        "confidence": 0.9,
+        "rationale": "Investment revenue component (returns, not holdings) for the charity's own period.",
+        "entity": "charity",
+        "qualifiers": {
+          "currency": {
+            "source_path": null,
+            "value": "AUD",
+            "steps": []
+          },
+          "period": {
+            "source_path": "fin report from",
+            "value": null,
+            "steps": []
+          }
+        },
+        "one_hot": null,
+        "claim_period": {
+          "from_column": "fin report from",
+          "to_column": "fin report to",
+          "formats": [
+            "%d/%m/%Y"
+          ],
+          "meaning": "Charity's own financial reporting period covered by the lodged financial report"
+        }
+      },
+      {
+        "source_paths": [
+          "donations and bequests"
+        ],
+        "join_with": " ",
+        "when": null,
+        "target": "dyn.charity.donations_and_bequests_revenue",
+        "valid_from_path": null,
+        "valid_to_path": null,
+        "validity_date_formats": null,
+        "claim_scope": null,
+        "steps": [
+          {
+            "op": "parse_decimal",
+            "args": {}
+          }
+        ],
+        "confidence": 0.9,
+        "rationale": "Inbound donations and bequests revenue; distinct from outbound grants and donations made columns.",
+        "entity": "charity",
+        "qualifiers": {
+          "currency": {
+            "source_path": null,
+            "value": "AUD",
+            "steps": []
+          },
+          "period": {
+            "source_path": "fin report from",
+            "value": null,
+            "steps": []
+          }
+        },
+        "one_hot": null,
+        "claim_period": {
+          "from_column": "fin report from",
+          "to_column": "fin report to",
+          "formats": [
+            "%d/%m/%Y"
+          ],
+          "meaning": "Charity's own financial reporting period covered by the lodged financial report"
+        }
+      },
+      {
+        "source_paths": [
+          "all other revenue"
+        ],
+        "join_with": " ",
+        "when": null,
+        "target": "dyn.charity.other_revenue",
+        "valid_from_path": null,
+        "valid_to_path": null,
+        "validity_date_formats": null,
+        "claim_scope": null,
+        "steps": [
+          {
+            "op": "parse_decimal",
+            "args": {}
+          }
+        ],
+        "confidence": 0.9,
+        "rationale": "Residual revenue line within revenue, separate from the other income line.",
+        "entity": "charity",
+        "qualifiers": {
+          "currency": {
+            "source_path": null,
+            "value": "AUD",
+            "steps": []
+          },
+          "period": {
+            "source_path": "fin report from",
+            "value": null,
+            "steps": []
+          }
+        },
+        "one_hot": null,
+        "claim_period": {
+          "from_column": "fin report from",
+          "to_column": "fin report to",
+          "formats": [
+            "%d/%m/%Y"
+          ],
+          "meaning": "Charity's own financial reporting period covered by the lodged financial report"
+        }
+      },
+      {
+        "source_paths": [
+          "other income"
+        ],
+        "join_with": " ",
+        "when": null,
+        "target": "dyn.charity.other_income",
+        "valid_from_path": null,
+        "valid_to_path": null,
+        "validity_date_formats": null,
+        "claim_scope": null,
+        "steps": [
+          {
+            "op": "parse_decimal",
+            "args": {}
+          }
+        ],
+        "confidence": 0.9,
+        "rationale": "Other income outside revenue components; distinct from other revenue and other comprehensive income.",
+        "entity": "charity",
+        "qualifiers": {
+          "currency": {
+            "source_path": null,
+            "value": "AUD",
+            "steps": []
+          },
+          "period": {
+            "source_path": "fin report from",
+            "value": null,
+            "steps": []
+          }
+        },
+        "one_hot": null,
+        "claim_period": {
+          "from_column": "fin report from",
+          "to_column": "fin report to",
+          "formats": [
+            "%d/%m/%Y"
+          ],
+          "meaning": "Charity's own financial reporting period covered by the lodged financial report"
+        }
+      },
+      {
+        "source_paths": [
+          "other comprehensive income"
+        ],
+        "join_with": " ",
+        "when": null,
+        "target": "dyn.charity.other_comprehensive_income",
+        "valid_from_path": null,
+        "valid_to_path": null,
+        "validity_date_formats": null,
+        "claim_scope": null,
+        "steps": [
+          {
+            "op": "parse_decimal",
+            "args": {}
+          }
+        ],
+        "confidence": 0.9,
+        "rationale": "Other comprehensive income line for the charity's own period; not revenue.",
+        "entity": "charity",
+        "qualifiers": {
+          "currency": {
+            "source_path": null,
+            "value": "AUD",
+            "steps": []
+          },
+          "period": {
+            "source_path": "fin report from",
+            "value": null,
+            "steps": []
+          }
+        },
+        "one_hot": null,
+        "claim_period": {
+          "from_column": "fin report from",
+          "to_column": "fin report to",
+          "formats": [
+            "%d/%m/%Y"
+          ],
+          "meaning": "Charity's own financial reporting period covered by the lodged financial report"
+        }
+      },
+      {
+        "source_paths": [
+          "total comprehensive income"
+        ],
+        "join_with": " ",
+        "when": null,
+        "target": "dyn.charity.total_comprehensive_income",
+        "valid_from_path": null,
+        "valid_to_path": null,
+        "validity_date_formats": null,
+        "claim_scope": null,
+        "steps": [
+          {
+            "op": "parse_decimal",
+            "args": {}
+          }
+        ],
+        "confidence": 0.9,
+        "rationale": "Total comprehensive income may be negative; parse_decimal retains signs. Distinct from total gross income.",
+        "entity": "charity",
+        "qualifiers": {
+          "currency": {
+            "source_path": null,
+            "value": "AUD",
+            "steps": []
+          },
+          "period": {
+            "source_path": "fin report from",
+            "value": null,
+            "steps": []
+          }
+        },
+        "one_hot": null,
+        "claim_period": {
+          "from_column": "fin report from",
+          "to_column": "fin report to",
+          "formats": [
+            "%d/%m/%Y"
+          ],
+          "meaning": "Charity's own financial reporting period covered by the lodged financial report"
+        }
+      }
+    ],
+    "unmapped": []
+  }
+}

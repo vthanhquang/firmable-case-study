@@ -1,0 +1,64 @@
+{
+  "concepts": [
+    {
+      "path": "dyn.party.party_key",
+      "type": "string",
+      "owner": "party",
+      "definition": "Publisher's identifier for the party named on an IP right application record (party_activity.party_id). Identifies the party across applications and roles; it is not a business registration number, ABN or ACN, and does not by itself establish a legal entity.",
+      "values": [],
+      "multi": false,
+      "required_qualifiers": [],
+      "source_paths": [
+        "party_activity.party_id"
+      ],
+      "why_not_existing": "No shortlisted concept covers an IP-office party key; entity.abn and entity.acn are checksummed business/company registrations with different owners and meaning, and entity.legal_name is a registered name, not an identifier.",
+      "personal_data": "never"
+    },
+    {
+      "path": "dyn.party.party_name",
+      "type": "string",
+      "owner": "party",
+      "definition": "Party name as published on the IP right application record (party_activity.party_name), free text and lower-cased. It may be an organisation name variant or a personal name; it is not asserted to be a registered legal name or a trading name.",
+      "values": [],
+      "multi": false,
+      "required_qualifiers": [],
+      "source_paths": [
+        "party_activity.party_name"
+      ],
+      "why_not_existing": "entity.legal_name and entity.trading_name are owned by business and assert registered/trading status; this value is an unverified IP-office party label owned by the party role, so reuse would change meaning and owner.",
+      "personal_data": "always"
+    },
+    {
+      "path": "dyn.party.party_kind",
+      "type": "enum",
+      "owner": "party",
+      "definition": "Publisher's classification of the party on the IP right application record as an organisation or an individual (party_activity.party_type). This is a party classification only; it does not state a company legal form, sole-trader status or beneficial ownership.",
+      "values": [
+        "organisation",
+        "individual"
+      ],
+      "multi": false,
+      "required_qualifiers": [],
+      "source_paths": [
+        "party_activity.party_type"
+      ],
+      "why_not_existing": "ext.entity.holder_kind is owned by business and is matching evidence about a licence/registration holder; entity.entity_type and ext.entity.legal_form assert business legal structure. A party-level organisation/individual flag with no legal-form implication is a distinct meaning on a different owner.",
+      "personal_data": "never"
+    },
+    {
+      "path": "dyn.party.abn_supplied",
+      "type": "string",
+      "owner": "party",
+      "definition": "Australian Business Number as supplied on the IP right application party record (party_activity.abn), recorded as an 11-digit string. It is frequently blank, and a blank must not be read as absence of a business or of an Australian presence; it is not validated here and does not establish the party's legal identity.",
+      "values": [],
+      "multi": false,
+      "required_qualifiers": [],
+      "source_paths": [
+        "party_activity.abn"
+      ],
+      "why_not_existing": "entity.abn is owned by business and is defined as a validated business identifier; this value is an unvalidated, often-missing party-record attribute whose absence is not evidence, so reuse would change meaning, owner and validation scope.",
+      "personal_data": "never"
+    }
+  ],
+  "reuse": {}
+}

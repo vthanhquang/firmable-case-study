@@ -1,0 +1,44 @@
+{
+  "request_sha256": "7d78d396635132a729ce50dd1864d4da6983eeb1efac1bfd10fcc49e163e782a",
+  "role": "group_architect",
+  "model": "deepseek-v4-flash",
+  "seconds": 7.098,
+  "response": {
+    "concepts": [
+      {
+        "path": "dyn.ip_application.description_type",
+        "type": "enum",
+        "owner": "ip_application",
+        "definition": "Publisher's classification of the kind of description text attached to the IP right application (application_description.description_type). In this snapshot every observed value is 'description'; the list is not asserted to be exhaustive of the publisher's vocabulary. It classifies the description record, not the application's status or the business.",
+        "values": [
+          "description"
+        ],
+        "multi": false,
+        "required_qualifiers": [],
+        "source_paths": [
+          "application_description.description_type"
+        ],
+        "why_not_existing": "No shortlisted concept classifies a description record attached to an IP application; ext.licence.category and ext.licence.authorisation are owned by licence and describe an authorisation, so reuse would change owner and meaning.",
+        "personal_data": "never"
+      },
+      {
+        "path": "dyn.ip_application.description_text",
+        "type": "string",
+        "owner": "ip_application",
+        "definition": "Free-text description of the IP right application as published (application_description.description_value), e.g. a title or abstract-like statement of the subject matter. It describes the application, not the party or the business, and is not asserted to be a complete specification, a claim scope or evidence of grant or enforceability.",
+        "values": [],
+        "multi": false,
+        "required_qualifiers": [],
+        "source_paths": [
+          "application_description.description_value"
+        ],
+        "why_not_existing": "No shortlisted concept carries descriptive text of an IP application; entity.legal_name, entity.trading_name and ext.licence.authorisation have different owners and meanings, so reuse would change meaning.",
+        "personal_data": "never"
+      }
+    ],
+    "reuse": {
+      "application_description.application_number": "dyn.ip_application.application_number",
+      "application_description.ip_right_type": "dyn.ip_application.ip_right_type"
+    }
+  }
+}

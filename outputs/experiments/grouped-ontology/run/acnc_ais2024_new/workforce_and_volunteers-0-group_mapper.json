@@ -1,0 +1,296 @@
+{
+  "request_sha256": "b74e674078b90397411bb42fad2def4c90a303f3f55c97e43e837c932e145a1b",
+  "role": "group_mapper",
+  "model": "deepseek-v4-flash",
+  "seconds": 11.393,
+  "response": {
+    "fields": [
+      {
+        "source_paths": [
+          "staff - full time"
+        ],
+        "join_with": " ",
+        "when": null,
+        "target": "dyn.charity.staff_headcount",
+        "valid_from_path": null,
+        "valid_to_path": null,
+        "validity_date_formats": null,
+        "claim_scope": null,
+        "steps": [
+          {
+            "op": "trim",
+            "args": {}
+          },
+          {
+            "op": "parse_integer",
+            "args": {}
+          }
+        ],
+        "confidence": 0.85,
+        "rationale": "Column is the charity's reported number of full-time staff; the ontology's staff_headcount concept covers full time/part time/casual with an employment_category qualifier. Counts are plain integers; the reporting period comes from the charity's own fin report from/to dates, not calendar 2024.",
+        "entity": "charity",
+        "qualifiers": {
+          "employment_category": {
+            "source_path": null,
+            "value": "full_time",
+            "steps": []
+          },
+          "period": {
+            "source_path": "fin report from",
+            "value": null,
+            "steps": [
+              {
+                "op": "trim",
+                "args": {}
+              },
+              {
+                "op": "parse_date",
+                "args": {
+                  "formats": [
+                    "%d/%m/%Y"
+                  ]
+                }
+              }
+            ]
+          }
+        },
+        "one_hot": null,
+        "claim_period": {
+          "from_column": "fin report from",
+          "to_column": "fin report to",
+          "formats": [
+            "%d/%m/%Y"
+          ],
+          "meaning": "The charity's own financial reporting period to which the reported staff headcount relates, as stated by the reporting-period start and end dates."
+        }
+      },
+      {
+        "source_paths": [
+          "staff - part time"
+        ],
+        "join_with": " ",
+        "when": null,
+        "target": "dyn.charity.staff_headcount",
+        "valid_from_path": null,
+        "valid_to_path": null,
+        "validity_date_formats": null,
+        "claim_scope": null,
+        "steps": [
+          {
+            "op": "trim",
+            "args": {}
+          },
+          {
+            "op": "parse_integer",
+            "args": {}
+          }
+        ],
+        "confidence": 0.85,
+        "rationale": "Same headcount concept as full-time staff, distinguished by the part_time employment_category qualifier; period taken from the charity's own reporting period columns.",
+        "entity": "charity",
+        "qualifiers": {
+          "employment_category": {
+            "source_path": null,
+            "value": "part_time",
+            "steps": []
+          },
+          "period": {
+            "source_path": "fin report from",
+            "value": null,
+            "steps": [
+              {
+                "op": "trim",
+                "args": {}
+              },
+              {
+                "op": "parse_date",
+                "args": {
+                  "formats": [
+                    "%d/%m/%Y"
+                  ]
+                }
+              }
+            ]
+          }
+        },
+        "one_hot": null,
+        "claim_period": {
+          "from_column": "fin report from",
+          "to_column": "fin report to",
+          "formats": [
+            "%d/%m/%Y"
+          ],
+          "meaning": "The charity's own financial reporting period to which the reported staff headcount relates, as stated by the reporting-period start and end dates."
+        }
+      },
+      {
+        "source_paths": [
+          "staff - casual"
+        ],
+        "join_with": " ",
+        "when": null,
+        "target": "dyn.charity.staff_headcount",
+        "valid_from_path": null,
+        "valid_to_path": null,
+        "validity_date_formats": null,
+        "claim_scope": null,
+        "steps": [
+          {
+            "op": "trim",
+            "args": {}
+          },
+          {
+            "op": "parse_integer",
+            "args": {}
+          }
+        ],
+        "confidence": 0.85,
+        "rationale": "Casual staff headcount, same concept with the casual employment_category qualifier; a reported 0 is retained as published rather than treated as missing.",
+        "entity": "charity",
+        "qualifiers": {
+          "employment_category": {
+            "source_path": null,
+            "value": "casual",
+            "steps": []
+          },
+          "period": {
+            "source_path": "fin report from",
+            "value": null,
+            "steps": [
+              {
+                "op": "trim",
+                "args": {}
+              },
+              {
+                "op": "parse_date",
+                "args": {
+                  "formats": [
+                    "%d/%m/%Y"
+                  ]
+                }
+              }
+            ]
+          }
+        },
+        "one_hot": null,
+        "claim_period": {
+          "from_column": "fin report from",
+          "to_column": "fin report to",
+          "formats": [
+            "%d/%m/%Y"
+          ],
+          "meaning": "The charity's own financial reporting period to which the reported staff headcount relates, as stated by the reporting-period start and end dates."
+        }
+      },
+      {
+        "source_paths": [
+          "staff - volunteers"
+        ],
+        "join_with": " ",
+        "when": null,
+        "target": "dyn.charity.volunteer_count",
+        "valid_from_path": null,
+        "valid_to_path": null,
+        "validity_date_formats": null,
+        "claim_scope": null,
+        "steps": [
+          {
+            "op": "trim",
+            "args": {}
+          },
+          {
+            "op": "parse_integer",
+            "args": {}
+          }
+        ],
+        "confidence": 0.85,
+        "rationale": "Volunteers are unpaid and reported in a separate column, so they map to the dedicated volunteer_count concept rather than staff_headcount; period from the charity's own reporting period.",
+        "entity": "charity",
+        "qualifiers": {
+          "period": {
+            "source_path": "fin report from",
+            "value": null,
+            "steps": [
+              {
+                "op": "trim",
+                "args": {}
+              },
+              {
+                "op": "parse_date",
+                "args": {
+                  "formats": [
+                    "%d/%m/%Y"
+                  ]
+                }
+              }
+            ]
+          }
+        },
+        "one_hot": null,
+        "claim_period": {
+          "from_column": "fin report from",
+          "to_column": "fin report to",
+          "formats": [
+            "%d/%m/%Y"
+          ],
+          "meaning": "The charity's own financial reporting period to which the reported volunteer count relates, as stated by the reporting-period start and end dates."
+        }
+      },
+      {
+        "source_paths": [
+          "total full time equivalent staff"
+        ],
+        "join_with": " ",
+        "when": null,
+        "target": "dyn.charity.full_time_equivalent_staff",
+        "valid_from_path": null,
+        "valid_to_path": null,
+        "validity_date_formats": null,
+        "claim_scope": null,
+        "steps": [
+          {
+            "op": "trim",
+            "args": {}
+          },
+          {
+            "op": "parse_decimal",
+            "args": {}
+          }
+        ],
+        "confidence": 0.85,
+        "rationale": "Fractional values (e.g. 4.14) show this is an FTE workload measure, not a headcount, so it maps to the decimal full_time_equivalent_staff concept; parsed as decimal to preserve fractions.",
+        "entity": "charity",
+        "qualifiers": {
+          "period": {
+            "source_path": "fin report from",
+            "value": null,
+            "steps": [
+              {
+                "op": "trim",
+                "args": {}
+              },
+              {
+                "op": "parse_date",
+                "args": {
+                  "formats": [
+                    "%d/%m/%Y"
+                  ]
+                }
+              }
+            ]
+          }
+        },
+        "one_hot": null,
+        "claim_period": {
+          "from_column": "fin report from",
+          "to_column": "fin report to",
+          "formats": [
+            "%d/%m/%Y"
+          ],
+          "meaning": "The charity's own financial reporting period to which the reported full-time-equivalent staff figure relates, as stated by the reporting-period start and end dates."
+        }
+      }
+    ],
+    "unmapped": []
+  }
+}

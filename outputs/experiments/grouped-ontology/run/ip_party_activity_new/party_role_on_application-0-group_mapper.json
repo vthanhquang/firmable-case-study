@@ -1,0 +1,91 @@
+{
+  "request_sha256": "49ba6551719ed5d92e194aecefa0c5ab163f6393caefd3537af8c9e9d8b56268",
+  "role": "group_mapper",
+  "model": "deepseek-v4-flash",
+  "seconds": 6.975,
+  "response": {
+    "fields": [
+      {
+        "source_paths": [
+          "party_role_category"
+        ],
+        "join_with": " ",
+        "when": null,
+        "target": "dyn.party.role_category",
+        "valid_from_path": null,
+        "valid_to_path": null,
+        "validity_date_formats": null,
+        "claim_scope": null,
+        "steps": [
+          {
+            "op": "trim",
+            "args": {}
+          },
+          {
+            "op": "collapse_whitespace",
+            "args": {}
+          },
+          {
+            "op": "map_enum",
+            "args": {
+              "mapping": {
+                "applicant": "applicant",
+                "applicant_agent": "applicant_agent",
+                "opposition_agent": "opposition_agent",
+                "mortgagee": "mortgagee"
+              },
+              "default": "other"
+            }
+          }
+        ],
+        "confidence": 0.9,
+        "rationale": "party_role_category is the publisher's broad capacity of the party on the application; mapped to the party-owned role_category concept. Unlisted categories fall to 'other' rather than being forced into a known role.",
+        "entity": "party",
+        "qualifiers": null,
+        "one_hot": null,
+        "claim_period": null
+      },
+      {
+        "source_paths": [
+          "party_role"
+        ],
+        "join_with": " ",
+        "when": null,
+        "target": "dyn.party.role",
+        "valid_from_path": null,
+        "valid_to_path": null,
+        "validity_date_formats": null,
+        "claim_scope": null,
+        "steps": [
+          {
+            "op": "trim",
+            "args": {}
+          },
+          {
+            "op": "collapse_whitespace",
+            "args": {}
+          },
+          {
+            "op": "map_enum",
+            "args": {
+              "mapping": {
+                "patentee": "patentee",
+                "applicant": "applicant",
+                "agent": "agent",
+                "opponent_agent": "opponent_agent"
+              },
+              "default": "other"
+            }
+          }
+        ],
+        "confidence": 0.9,
+        "rationale": "party_role is the specific role label, a distinct dimension from party_role_category; kept separate so applicant/patentee/agent are not collapsed. Unlisted labels fall to 'other'.",
+        "entity": "party",
+        "qualifiers": null,
+        "one_hot": null,
+        "claim_period": null
+      }
+    ],
+    "unmapped": []
+  }
+}

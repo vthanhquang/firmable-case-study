@@ -1,0 +1,779 @@
+{
+  "source_id": "ip_party_activity_new",
+  "record_grain": "One row per (ip_right_type, application_number, party_id, party_role_category, party_role, effective_from_date) party-role episode on a single IP application; the same party_id can appear on many applications and the same application can carry several parties and roles, so no single column is a key. Rows are a prefix cohort of 25,000 records, not the full party_activity.csv.",
+  "grain_rationale": "Model-authored grain and groups; executable envelope compiled deterministically.",
+  "reader": {
+    "format": "delimited",
+    "archive_member": null,
+    "encoding": "utf-8-sig",
+    "delimiter": ",",
+    "skip_rows": 0,
+    "sheet": null,
+    "record_path": null
+  },
+  "record_id": {
+    "strategy": "content_hash",
+    "source_paths": [],
+    "rationale": ""
+  },
+  "observed_at": {
+    "source_path": null,
+    "steps": [],
+    "fallback": "resource_last_modified"
+  },
+  "fields": [
+    {
+      "source_paths": [
+        "ip_right_type"
+      ],
+      "join_with": " ",
+      "when": null,
+      "target": "dyn.ip_application.right_type",
+      "valid_from_path": null,
+      "valid_to_path": null,
+      "validity_date_formats": null,
+      "claim_scope": null,
+      "steps": [
+        {
+          "op": "trim",
+          "args": {}
+        },
+        {
+          "op": "map_enum",
+          "args": {
+            "mapping": {
+              "patent": "patent",
+              "trade mark": "trade_mark",
+              "trade_mark": "trade_mark",
+              "trademark": "trade_mark",
+              "design": "design",
+              "designs": "design",
+              "plant breeder right": "plant_breeder_right",
+              "plant_breeder_right": "plant_breeder_right",
+              "pbr": "plant_breeder_right"
+            },
+            "default": "unknown"
+          }
+        }
+      ],
+      "confidence": 0.9,
+      "rationale": "ip_right_type is the publisher's kind of IP right for the application; mapped to the enumerated right_type concept with unlisted values falling back to unknown rather than being guessed.",
+      "entity": "ip_application",
+      "qualifiers": null,
+      "one_hot": null
+    },
+    {
+      "source_paths": [
+        "application_number"
+      ],
+      "join_with": " ",
+      "when": null,
+      "target": "dyn.ip_application.number",
+      "valid_from_path": null,
+      "valid_to_path": null,
+      "validity_date_formats": null,
+      "claim_scope": null,
+      "steps": [
+        {
+          "op": "trim",
+          "args": {}
+        },
+        {
+          "op": "null_if",
+          "args": {
+            "values": [
+              "",
+              "null",
+              "n/a",
+              "na"
+            ]
+          }
+        }
+      ],
+      "confidence": 0.88,
+      "rationale": "application_number is the publisher-assigned IP application number; it is only unique within a right type, so the required right_type qualifier is carried from ip_right_type. The number is not a company registration number and is not mapped to entity.acn or ext.licence.number.",
+      "entity": "ip_application",
+      "qualifiers": {
+        "right_type": {
+          "source_path": "ip_right_type",
+          "value": null,
+          "steps": [
+            {
+              "op": "trim",
+              "args": {}
+            },
+            {
+              "op": "map_enum",
+              "args": {
+                "mapping": {
+                  "patent": "patent",
+                  "trade mark": "trade_mark",
+                  "trade_mark": "trade_mark",
+                  "trademark": "trade_mark",
+                  "design": "design",
+                  "designs": "design",
+                  "plant breeder right": "plant_breeder_right",
+                  "plant_breeder_right": "plant_breeder_right",
+                  "pbr": "plant_breeder_right"
+                },
+                "default": "unknown"
+              }
+            }
+          ]
+        }
+      },
+      "one_hot": null
+    },
+    {
+      "source_paths": [
+        "party_id"
+      ],
+      "join_with": " ",
+      "when": null,
+      "target": "dyn.party.identifier",
+      "valid_from_path": null,
+      "valid_to_path": null,
+      "validity_date_formats": null,
+      "claim_scope": null,
+      "steps": [
+        {
+          "op": "trim",
+          "args": {}
+        }
+      ],
+      "confidence": 0.9,
+      "rationale": "party_id is the publisher-assigned party identifier on an IP application; it is not an ACN/ABN and does not imply legal form, so the party-owned identifier concept is the correct target.",
+      "entity": "party",
+      "qualifiers": null,
+      "one_hot": null
+    },
+    {
+      "source_paths": [
+        "party_name"
+      ],
+      "join_with": " ",
+      "when": null,
+      "target": "dyn.party.name",
+      "valid_from_path": null,
+      "valid_to_path": null,
+      "validity_date_formats": null,
+      "claim_scope": null,
+      "steps": [
+        {
+          "op": "trim",
+          "args": {}
+        },
+        {
+          "op": "collapse_whitespace",
+          "args": {}
+        }
+      ],
+      "confidence": 0.85,
+      "rationale": "party_name is the unnormalised free-text label for the party; mapped to the party-owned name concept, not to business legal/trading name. No case-folding or deduplication is claimed.",
+      "entity": "party",
+      "qualifiers": null,
+      "one_hot": null
+    },
+    {
+      "source_paths": [
+        "party_type"
+      ],
+      "join_with": " ",
+      "when": null,
+      "target": "dyn.party.kind",
+      "valid_from_path": null,
+      "valid_to_path": null,
+      "validity_date_formats": null,
+      "claim_scope": null,
+      "steps": [
+        {
+          "op": "trim",
+          "args": {}
+        },
+        {
+          "op": "map_enum",
+          "args": {
+            "mapping": {
+              "organisation": "organisation",
+              "individual": "individual"
+            },
+            "default": "unknown"
+          }
+        }
+      ],
+      "confidence": 0.9,
+      "rationale": "party_type states whether the party is an organisation or individual; this is a party classification only and must not be read as legal form or company status, so the party-owned kind concept is used rather than holder_kind or entity_type.",
+      "entity": "party",
+      "qualifiers": null,
+      "one_hot": null
+    },
+    {
+      "source_paths": [
+        "abn"
+      ],
+      "join_with": " ",
+      "when": null,
+      "target": "dyn.party.abn",
+      "valid_from_path": null,
+      "valid_to_path": null,
+      "validity_date_formats": null,
+      "claim_scope": null,
+      "steps": [
+        {
+          "op": "trim",
+          "args": {}
+        },
+        {
+          "op": "null_if",
+          "args": {
+            "values": [
+              "",
+              "null",
+              "n/a"
+            ]
+          }
+        }
+      ],
+      "confidence": 0.75,
+      "rationale": "abn is a sparse, unvalidated party attribute; mapped to the party-owned ABN concept. No checksum validation is applied because the source is unvalidated and sparse, and it is not used to infer legal form or a business link.",
+      "entity": "party",
+      "qualifiers": null,
+      "one_hot": null
+    },
+    {
+      "source_paths": [
+        "party_role_category"
+      ],
+      "join_with": " ",
+      "when": {
+        "source_path": "party_role_category",
+        "op": "present",
+        "values": []
+      },
+      "target": "dyn.party.role_category",
+      "valid_from_path": null,
+      "valid_to_path": null,
+      "validity_date_formats": null,
+      "claim_scope": null,
+      "steps": [
+        {
+          "op": "trim",
+          "args": {}
+        },
+        {
+          "op": "collapse_whitespace",
+          "args": {}
+        },
+        {
+          "op": "map_enum",
+          "args": {
+            "mapping": {
+              "applicant": "applicant",
+              "applicant_agent": "applicant_agent",
+              "opposition_agent": "opposition_agent",
+              "mortgagee": "mortgagee"
+            },
+            "default": "other"
+          }
+        }
+      ],
+      "confidence": 0.9,
+      "rationale": "party_role_category is the publisher's broad capacity of the party on the application; mapped to the party-owned role_category concept. The when-guard restricts emission to non-blank source values so that 'other' means a publisher category outside the enumerated subset (e.g. licensee), never a missing value; blank categories are declined rather than coerced to 'unknown'.",
+      "entity": "party",
+      "qualifiers": null,
+      "one_hot": null
+    },
+    {
+      "source_paths": [
+        "party_role"
+      ],
+      "join_with": " ",
+      "when": {
+        "source_path": "party_role",
+        "op": "present",
+        "values": []
+      },
+      "target": "dyn.party.role",
+      "valid_from_path": null,
+      "valid_to_path": null,
+      "validity_date_formats": null,
+      "claim_scope": null,
+      "steps": [
+        {
+          "op": "trim",
+          "args": {}
+        },
+        {
+          "op": "collapse_whitespace",
+          "args": {}
+        },
+        {
+          "op": "map_enum",
+          "args": {
+            "mapping": {
+              "patentee": "patentee",
+              "applicant": "applicant",
+              "agent": "agent",
+              "opponent_agent": "opponent_agent"
+            },
+            "default": "other"
+          }
+        }
+      ],
+      "confidence": 0.9,
+      "rationale": "party_role is the specific role label, a distinct dimension from party_role_category; kept separate so applicant/patentee/agent are not collapsed and an agent row is not read as ownership. The when-guard restricts emission to non-blank source values so 'other' denotes a publisher role label outside the enumerated subset, not a missing value; blank roles are declined rather than coerced to 'unknown'.",
+      "entity": "party",
+      "qualifiers": null,
+      "one_hot": null
+    },
+    {
+      "source_paths": [
+        "state_code"
+      ],
+      "join_with": " ",
+      "when": null,
+      "target": "dyn.party.address_state_code",
+      "valid_from_path": null,
+      "valid_to_path": null,
+      "validity_date_formats": null,
+      "claim_scope": null,
+      "steps": [
+        {
+          "op": "trim",
+          "args": {}
+        },
+        {
+          "op": "null_if",
+          "args": {
+            "values": [
+              "",
+              "null",
+              "n/a",
+              "na",
+              "unknown"
+            ]
+          }
+        }
+      ],
+      "confidence": 0.9,
+      "rationale": "state_code is the party's address state code on the IP application record; the party-owned concept keeps the raw lower-cased unnormalised value rather than the business subject's normalised address.state enum.",
+      "entity": "party",
+      "qualifiers": null,
+      "one_hot": null
+    },
+    {
+      "source_paths": [
+        "post_code"
+      ],
+      "join_with": " ",
+      "when": null,
+      "target": "dyn.party.address_post_code",
+      "valid_from_path": null,
+      "valid_to_path": null,
+      "validity_date_formats": null,
+      "claim_scope": null,
+      "steps": [
+        {
+          "op": "trim",
+          "args": {}
+        },
+        {
+          "op": "null_if",
+          "args": {
+            "values": [
+              "",
+              "null",
+              "n/a",
+              "na",
+              "unknown"
+            ]
+          }
+        }
+      ],
+      "confidence": 0.9,
+      "rationale": "post_code is the party's postal code, kept as raw text because formats are mixed (e.g. 't6b 3n9', '110044'); no postcode normalisation is applied and it is not the business subject's address.postcode.",
+      "entity": "party",
+      "qualifiers": null,
+      "one_hot": null
+    },
+    {
+      "source_paths": [
+        "country_code"
+      ],
+      "join_with": " ",
+      "when": null,
+      "target": "dyn.party.address_country_code",
+      "valid_from_path": null,
+      "valid_to_path": null,
+      "validity_date_formats": null,
+      "claim_scope": null,
+      "steps": [
+        {
+          "op": "trim",
+          "args": {}
+        },
+        {
+          "op": "null_if",
+          "args": {
+            "values": [
+              "",
+              "null",
+              "n/a",
+              "na",
+              "unknown"
+            ]
+          }
+        }
+      ],
+      "confidence": 0.9,
+      "rationale": "country_code is the party's address country code, unnormalised and lower-cased; it is a party address field, not a statement of legal jurisdiction, so the party-owned concept is used rather than address.country.",
+      "entity": "party",
+      "qualifiers": null,
+      "one_hot": null
+    },
+    {
+      "source_paths": [
+        "effective_from_date"
+      ],
+      "join_with": " ",
+      "when": null,
+      "target": "dyn.party.activity_effective_from",
+      "valid_from_path": null,
+      "valid_to_path": null,
+      "validity_date_formats": null,
+      "claim_scope": null,
+      "steps": [
+        {
+          "op": "trim",
+          "args": {}
+        },
+        {
+          "op": "parse_date",
+          "args": {
+            "formats": [
+              "%Y-%m-%dT%H:%M:%S.%fZ",
+              "%Y-%m-%dT%H:%M:%SZ",
+              "%Y-%m-%d"
+            ]
+          }
+        }
+      ],
+      "confidence": 0.9,
+      "rationale": "effective_from_date is the start of the party-role episode's validity on a specific IP application, matching dyn.party.activity_effective_from. It is not a company incorporation or founding date and not an IP right grant date. Required qualifiers (party_id, ip_right_type, application_number, party_role) are carried from the row so the claim stays scoped to the party-role episode; the ISO-8601 Z timestamps are parsed as datetimes.",
+      "entity": "party",
+      "qualifiers": {
+        "party_id": {
+          "source_path": "party_id",
+          "value": null,
+          "steps": [
+            {
+              "op": "trim",
+              "args": {}
+            }
+          ]
+        },
+        "ip_right_type": {
+          "source_path": "ip_right_type",
+          "value": null,
+          "steps": [
+            {
+              "op": "trim",
+              "args": {}
+            }
+          ]
+        },
+        "application_number": {
+          "source_path": "application_number",
+          "value": null,
+          "steps": [
+            {
+              "op": "trim",
+              "args": {}
+            }
+          ]
+        },
+        "party_role": {
+          "source_path": "party_role",
+          "value": null,
+          "steps": [
+            {
+              "op": "trim",
+              "args": {}
+            }
+          ]
+        }
+      },
+      "one_hot": null
+    },
+    {
+      "source_paths": [
+        "effective_to_date"
+      ],
+      "join_with": " ",
+      "when": null,
+      "target": "dyn.party.activity_effective_to",
+      "valid_from_path": null,
+      "valid_to_path": null,
+      "validity_date_formats": null,
+      "claim_scope": null,
+      "steps": [
+        {
+          "op": "trim",
+          "args": {}
+        },
+        {
+          "op": "null_if",
+          "args": {
+            "values": [
+              ""
+            ]
+          }
+        },
+        {
+          "op": "parse_date",
+          "args": {
+            "formats": [
+              "%Y-%m-%dT%H:%M:%S.%fZ",
+              "%Y-%m-%dT%H:%M:%SZ",
+              "%Y-%m-%d"
+            ]
+          }
+        }
+      ],
+      "confidence": 0.88,
+      "rationale": "effective_to_date ends the party-role episode's validity; blank where open-ended (only 94 of 357 nonempty). It is not a company dissolution date nor an IP right expiry date. Same required qualifiers as the start date keep the claim scoped to the party-role episode.",
+      "entity": "party",
+      "qualifiers": {
+        "party_id": {
+          "source_path": "party_id",
+          "value": null,
+          "steps": [
+            {
+              "op": "trim",
+              "args": {}
+            }
+          ]
+        },
+        "ip_right_type": {
+          "source_path": "ip_right_type",
+          "value": null,
+          "steps": [
+            {
+              "op": "trim",
+              "args": {}
+            }
+          ]
+        },
+        "application_number": {
+          "source_path": "application_number",
+          "value": null,
+          "steps": [
+            {
+              "op": "trim",
+              "args": {}
+            }
+          ]
+        },
+        "party_role": {
+          "source_path": "party_role",
+          "value": null,
+          "steps": [
+            {
+              "op": "trim",
+              "args": {}
+            }
+          ]
+        }
+      },
+      "one_hot": null
+    },
+    {
+      "source_paths": [
+        "is_current"
+      ],
+      "join_with": " ",
+      "when": null,
+      "target": "dyn.party.activity_is_current",
+      "valid_from_path": null,
+      "valid_to_path": null,
+      "validity_date_formats": null,
+      "claim_scope": null,
+      "steps": [
+        {
+          "op": "trim",
+          "args": {}
+        },
+        {
+          "op": "map_enum",
+          "args": {
+            "mapping": {
+              "true": "true",
+              "false": "false"
+            },
+            "default": "unknown"
+          }
+        }
+      ],
+      "confidence": 0.85,
+      "rationale": "is_current is the publisher flag for whether the party's recorded role episode is current in the extract; it refers to the party record, not to enforceability of the IP right and not to company status. Mapped to the true/false/unknown enum with required party-role qualifiers.",
+      "entity": "party",
+      "qualifiers": {
+        "party_id": {
+          "source_path": "party_id",
+          "value": null,
+          "steps": [
+            {
+              "op": "trim",
+              "args": {}
+            }
+          ]
+        },
+        "ip_right_type": {
+          "source_path": "ip_right_type",
+          "value": null,
+          "steps": [
+            {
+              "op": "trim",
+              "args": {}
+            }
+          ]
+        },
+        "application_number": {
+          "source_path": "application_number",
+          "value": null,
+          "steps": [
+            {
+              "op": "trim",
+              "args": {}
+            }
+          ]
+        },
+        "party_role": {
+          "source_path": "party_role",
+          "value": null,
+          "steps": [
+            {
+              "op": "trim",
+              "args": {}
+            }
+          ]
+        }
+      },
+      "one_hot": null
+    },
+    {
+      "source_paths": [
+        "is_founding"
+      ],
+      "join_with": " ",
+      "when": null,
+      "target": "dyn.party.is_founding_party_flag",
+      "valid_from_path": null,
+      "valid_to_path": null,
+      "validity_date_formats": null,
+      "claim_scope": null,
+      "steps": [
+        {
+          "op": "trim",
+          "args": {}
+        },
+        {
+          "op": "map_enum",
+          "args": {
+            "mapping": {
+              "true": "true",
+              "false": "false"
+            },
+            "default": "unknown"
+          }
+        }
+      ],
+      "confidence": 0.8,
+      "rationale": "is_founding is a supplied party attribute flag on the IP application record, matching dyn.party.is_founding_party_flag. It is explicitly not evidence of company incorporation and not a founding date, so it is not mapped to ext.entity.date_established. The source grain includes party_role and party_role_category, and a held-out agent row (party_role=agent, party_role_category=applicant_agent) carries is_founding=true, so the flag cannot be safely generalised to the party-application pair without role scope. party_role and party_role_category are therefore carried as qualifiers alongside party_id, ip_right_type and application_number so the claim stays scoped to the role episode it was published against.",
+      "entity": "party",
+      "qualifiers": {
+        "party_id": {
+          "source_path": "party_id",
+          "value": null,
+          "steps": [
+            {
+              "op": "trim",
+              "args": {}
+            }
+          ]
+        },
+        "ip_right_type": {
+          "source_path": "ip_right_type",
+          "value": null,
+          "steps": [
+            {
+              "op": "trim",
+              "args": {}
+            }
+          ]
+        },
+        "application_number": {
+          "source_path": "application_number",
+          "value": null,
+          "steps": [
+            {
+              "op": "trim",
+              "args": {}
+            }
+          ]
+        },
+        "party_role": {
+          "source_path": "party_role",
+          "value": null,
+          "steps": [
+            {
+              "op": "trim",
+              "args": {}
+            }
+          ]
+        },
+        "party_role_category": {
+          "source_path": "party_role_category",
+          "value": null,
+          "steps": [
+            {
+              "op": "trim",
+              "args": {}
+            }
+          ]
+        }
+      },
+      "one_hot": null
+    }
+  ],
+  "entities": {
+    "ip_application": {
+      "kind": "ip_application",
+      "key_paths": [
+        "ip_right_type",
+        "application_number"
+      ],
+      "rationale": "application_number is scoped by ip_right_type, so the pair is the application identifier; the same numeric string could occur under different right types."
+    },
+    "party": {
+      "kind": "party",
+      "key_paths": [
+        "party_id"
+      ],
+      "rationale": "party_id is the party identifier; abn is sparse and party_name is free text, so neither is a key and neither supports legal-form inference."
+    }
+  },
+  "relationships": [
+    {
+      "type": "PARTY_INVOLVED_IN_APPLICATION",
+      "from_role": "party",
+      "to_role": "ip_application",
+      "rationale": "Each row pairs a party_id with an (ip_right_type, application_number) application and a party_role/party_role_category; the role and effective dates qualify the involvement rather than changing the entities."
+    }
+  ],
+  "unmapped": [],
+  "notes": "Grouped semantic intents; no manually authored mapping rules.",
+  "constants": [],
+  "profile_context": null,
+  "extensions": "dynamic"
+}

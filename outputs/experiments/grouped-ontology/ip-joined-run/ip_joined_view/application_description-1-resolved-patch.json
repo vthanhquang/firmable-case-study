@@ -1,0 +1,38 @@
+{
+  "concepts": [
+    {
+      "path": "dyn.ip_application.description_type",
+      "type": "enum",
+      "owner": "ip_application",
+      "definition": "Publisher's classification of the kind of description text attached to the IP right application (application_description.description_type). In this snapshot every observed value is 'description'; the list is not asserted to be exhaustive of the publisher's vocabulary. It classifies the description record, not the application's status or the business.",
+      "values": [
+        "description"
+      ],
+      "multi": false,
+      "required_qualifiers": [],
+      "source_paths": [
+        "application_description.description_type"
+      ],
+      "why_not_existing": "No shortlisted concept classifies a description attached to an IP application; ext.licence.category and ext.licence.authorisation are owned by licence and describe an authorisation, so reuse would change owner and meaning.",
+      "personal_data": "never"
+    },
+    {
+      "path": "dyn.ip_application.description_text",
+      "type": "string",
+      "owner": "ip_application",
+      "definition": "Free-text description attached to the IP right application (application_description.description_value), e.g. a title or abstract-like phrase such as 'PROTEIN MARKERS FOR MILD COGNITIVE IMPAIRMENT AND ALZHEIMERS DISEASE'. At most one description per application in this snapshot. It is the publisher's description of the application, not a business activity description, product name or trading name.",
+      "values": [],
+      "multi": false,
+      "required_qualifiers": [],
+      "source_paths": [
+        "application_description.description_value"
+      ],
+      "why_not_existing": "No shortlisted concept holds an IP application's description text; entity.legal_name, entity.trading_name and ext.entity.former_name are owned by business and assert name status, and ext.licence.authorisation describes an authorised activity, so reuse would change owner and meaning.",
+      "personal_data": "never"
+    }
+  ],
+  "reuse": {
+    "dyn.ip_application.application_number": "application_description.application_number is the same publisher application identifier already defined for ip_application (application.application_number, repeated as party_activity.application_number); the description table's copy links the description to the same application and carries identical meaning, owner and units, so it is reused rather than aliased.",
+    "dyn.ip_application.ip_right_type": "application_description.ip_right_type is the same publisher classification of the application's IP right kind already defined for ip_application (application.ip_right_type, repeated as party_activity.ip_right_type); it is the join key component alongside application_number and carries identical meaning, owner and scope, so it is reused."
+  }
+}

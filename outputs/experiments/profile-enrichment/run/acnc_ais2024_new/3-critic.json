@@ -1,0 +1,41 @@
+{
+  "request_sha256": "6bb5a13aa33738849721ac9898bb4448b0abd8ec1a6be81b6e985b53ff02e827",
+  "role": "critic",
+  "model": "deepseek-v4-flash",
+  "seconds": 19.031,
+  "response": {
+    "verdict": "accept",
+    "findings": [
+      "Ownership: every proposed concept is owner=business and the subject role is business; no licence/establishment role is invented for fundraising numbers, which is correct because the source states no issuer or licence role (mapping.fields[fundraising number - *].rationale).",
+      "Units/currency: all money concepts carry required_qualifiers ['currency','period'] and the mapping supplies currency literal 'AUD' plus period from 'fin report to' (e.g. mapping.fields[revenue from government].qualifiers). The AUD literal is justified by the ACNC AIS guide in proposal.notes; it is a publisher-stated scheme currency, not an invented one.",
+      "Time scopes: dyn.charity.ais_due_date, ais_received_date, financial_report_received_date, reporting_period_start/end are explicitly defined as administrative/reporting-period dates, not incorporation or licence dates (proposal.concepts definitions; mapping.notes). observation.valid_from/valid_to are not reused for the reporting period.",
+      "Ambiguous identifiers: ABN is the sole key, validated with the abn checksum transform (mapping.fields[abn].steps). Charity name is mapped to entity.legal_name with claim_scope current_legal_name and an explicit note that it is not a trading name or legal-form determination (mapping.notes).",
+      "Role binding filters: no bindings are declared and the grain is one row per AIS lodgement; the execution contract's singleton rule is satisfied because the file is flat with no nested arrays (mapping.grain_rationale).",
+      "Unsupported semantic assumptions: incorporated_association, charity size, registration_status and basic_religious_charity are kept as ACNC administrative classifications rather than coerced into ext.entity.legal_form, ext.financial.revenue_band or entity.status (proposal.concepts why_not_existing; mapping.notes).",
+      "Duplicate concepts: revenue_total, income_gross_total and ext.financial.total_income are kept distinct with stated reasons (proposal.concepts[revenue_total].why_not_existing; income_gross_total.why_not_existing). grants_donations_made_domestic/overseas are defined as expense outflows, not business income.",
+      "Inappropriate reuse: ext.entity.responsible_persons is not reused for KMP count or staff headcounts (proposal.concepts[key_management_personnel_count].why_not_existing; staff_*). ext.licence.number is not reused for fundraising numbers because the source states no issuer/role (proposal.concepts[fundraising_number].why_not_existing).",
+      "Source-stated new information emitted: validation shows 140/140 records with output and 8158 observations; every header column is consumed by a field rule (mapping.notes). The 26 QUALIFIER_MISSING_PERIOD refusals on money fields are an expected abstention where 'fin report to' is blank (validation.fields[revenue from government].errors), not an incorrect emitted claim.",
+      "Held-out rows: ordinal 561 (ABN 11927459017) shows registration_status 'Voluntarily Revoked No Longer Operating' emitted verbatim, association_number_wa 'A0710094Z' with scheme association_number_wa, and money qualifiers period '2024-08-16' from 'fin report to' — consistent with the mapping. Ordinal 733 shows related_party_transaction_type split on ';' into two observations with scheme relevant_transactions, and fundraising_number_vic 'FR0014958' with scheme fundraising_number_vic. Ordinal 958 has blank 'fin report to' and blank 'cash or accrual', and the money/period qualifier is correctly absent rather than invented.",
+      "Deterministic evidence: the executed_transform_probe for collapse_whitespace ('A\\u00a0\\t B' -> 'A B') matches the observed raw->value pairs (e.g. ordinal 561 purpose_pursuit_description double-space collapsed), so no transform bug is asserted.",
+      "Privacy: all concepts are personal_data=never; narrative fields (inactivity_reason, purpose_pursuit_description, related_party_transaction_detail) are charity-authored free text, not natural-person data, so no suppression is required."
+    ],
+    "semantic_risks": [
+      "dyn.charity.related_party_transaction_detail is fed by two publisher fields ('Other details' and 'Other Relevant details') with scheme qualifiers other_details/other_relevant_details; a consumer that ignores the scheme could conflate two different disclosure contexts. Bounded by the required scheme qualifier.",
+      "dyn.charity.international_activity_description similarly merges 'international activities details' and 'other international activities description' under scheme qualifiers; same bounded risk.",
+      "dyn.charity.registration_status is a free string carrying ACNC revocation wording; a future source with a different registrar vocabulary must not reuse this concept without a scheme qualifier.",
+      "dyn.charity.size values Small/Medium/Large are ACNC administrative bands; a future consumer must not read them as ext.financial.revenue_band thresholds. Bounded by the explicit definition and why_not_existing.",
+      "The AUD currency literal is justified by the ACNC AIS guide; a future source in another currency must use a different literal (mapping.notes).",
+      "observed_at uses the resource_last_modified fallback resolved to retrieved_at when source modification metadata is absent (mapping.notes); this is observation-at-retrieval, not a publisher-stated update, and is honestly scoped.",
+      "The dataset excludes charities with withheld information and is updated weekly; no population-completeness claim is made (inspection.identity_cautions; mapping.notes)."
+    ],
+    "checked_reuse": [
+      "entity.abn — exact fit for the 11-digit ABN with checksum transform.",
+      "entity.legal_name — fits the ACNC-registered name with claim_scope current_legal_name; not a trading name or legal-form determination.",
+      "ext.contact.website_domain — fits published website URLs after url_domain normalisation (e.g. 'www.chapterseven.au' -> 'chapterseven.au').",
+      "observation.source_id, observation.source_record_id, observation.observed_at, observation.ingested_at, observation.licence, observation.extractor_version — dataset/per-row provenance concepts fit the ACNC AIS dataset identifier, content-hash record id, retrieval time, CC-BY licence and extractor version.",
+      "Rejected reuse: entity.status, ext.entity.status_detail, ext.financial.revenue_band, ext.entity.legal_form, ext.entity.tax_concession, ext.entity.operating_region, ext.entity.operating_country, ext.entity.responsible_persons, ext.licence.number, ext.financial.total_income, ext.entity.prior_registration_number, ext.entity.sector_tag — each rejected with a stated meaning/owner mismatch in proposal.concepts why_not_existing."
+    ],
+    "rationale": "The proposal and mapping are internally consistent with the publisher metadata, validation results and held-out rows. Ownership is uniformly business; money concepts carry currency and period qualifiers with an AUD literal justified by the ACNC AIS guide; administrative dates are kept distinct from incorporation/licence dates; ABN is the sole key with checksum validation; charity name is scoped as the ACNC-registered name without asserting legal form; administrative classifications (size, registration status, incorporated association, basic religious charity) are kept as ACNC categories rather than coerced into existing financial/legal-form concepts. The 26 QUALIFIER_MISSING_PERIOD refusals are an expected abstention where 'fin report to' is blank, not an incorrect emitted claim, and the held-out rows confirm the qualifier behaviour. Remaining risks (scheme-qualified narrative merges, free-string registration status, AUD literal, observed_at fallback, withheld-information exclusion) are explicitly bounded in the proposal notes and do not constitute a known semantic error. This is an agent review, not a human sign-off.",
+    "blocking_findings": []
+  }
+}

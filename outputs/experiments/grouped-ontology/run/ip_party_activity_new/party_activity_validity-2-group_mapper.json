@@ -1,0 +1,354 @@
+{
+  "request_sha256": "2048d9612cf5369154d76d6418a78ac527cbaadbee777567d5c034982bfb7ebe",
+  "role": "group_mapper",
+  "model": "deepseek-v4-flash",
+  "seconds": 9.983,
+  "response": {
+    "fields": [
+      {
+        "source_paths": [
+          "effective_from_date"
+        ],
+        "join_with": " ",
+        "when": null,
+        "target": "dyn.party.activity_effective_from",
+        "valid_from_path": null,
+        "valid_to_path": null,
+        "validity_date_formats": null,
+        "claim_scope": null,
+        "steps": [
+          {
+            "op": "trim",
+            "args": {}
+          },
+          {
+            "op": "parse_date",
+            "args": {
+              "formats": [
+                "%Y-%m-%dT%H:%M:%S.%fZ",
+                "%Y-%m-%dT%H:%M:%SZ",
+                "%Y-%m-%d"
+              ]
+            }
+          }
+        ],
+        "confidence": 0.9,
+        "rationale": "effective_from_date is the start of the party-role episode's validity on a specific IP application, matching dyn.party.activity_effective_from. It is not a company incorporation or founding date and not an IP right grant date. Required qualifiers (party_id, ip_right_type, application_number, party_role) are carried from the row so the claim stays scoped to the party-role episode; the ISO-8601 Z timestamps are parsed as datetimes.",
+        "entity": "party",
+        "qualifiers": {
+          "party_id": {
+            "source_path": "party_id",
+            "value": null,
+            "steps": [
+              {
+                "op": "trim",
+                "args": {}
+              }
+            ]
+          },
+          "ip_right_type": {
+            "source_path": "ip_right_type",
+            "value": null,
+            "steps": [
+              {
+                "op": "trim",
+                "args": {}
+              }
+            ]
+          },
+          "application_number": {
+            "source_path": "application_number",
+            "value": null,
+            "steps": [
+              {
+                "op": "trim",
+                "args": {}
+              }
+            ]
+          },
+          "party_role": {
+            "source_path": "party_role",
+            "value": null,
+            "steps": [
+              {
+                "op": "trim",
+                "args": {}
+              }
+            ]
+          }
+        },
+        "one_hot": null,
+        "claim_period": null
+      },
+      {
+        "source_paths": [
+          "effective_to_date"
+        ],
+        "join_with": " ",
+        "when": null,
+        "target": "dyn.party.activity_effective_to",
+        "valid_from_path": null,
+        "valid_to_path": null,
+        "validity_date_formats": null,
+        "claim_scope": null,
+        "steps": [
+          {
+            "op": "trim",
+            "args": {}
+          },
+          {
+            "op": "null_if",
+            "args": {
+              "values": [
+                ""
+              ]
+            }
+          },
+          {
+            "op": "parse_date",
+            "args": {
+              "formats": [
+                "%Y-%m-%dT%H:%M:%S.%fZ",
+                "%Y-%m-%dT%H:%M:%SZ",
+                "%Y-%m-%d"
+              ]
+            }
+          }
+        ],
+        "confidence": 0.88,
+        "rationale": "effective_to_date ends the party-role episode's validity; blank where open-ended (only 94 of 357 nonempty). It is not a company dissolution date nor an IP right expiry date. Same required qualifiers as the start date keep the claim scoped to the party-role episode.",
+        "entity": "party",
+        "qualifiers": {
+          "party_id": {
+            "source_path": "party_id",
+            "value": null,
+            "steps": [
+              {
+                "op": "trim",
+                "args": {}
+              }
+            ]
+          },
+          "ip_right_type": {
+            "source_path": "ip_right_type",
+            "value": null,
+            "steps": [
+              {
+                "op": "trim",
+                "args": {}
+              }
+            ]
+          },
+          "application_number": {
+            "source_path": "application_number",
+            "value": null,
+            "steps": [
+              {
+                "op": "trim",
+                "args": {}
+              }
+            ]
+          },
+          "party_role": {
+            "source_path": "party_role",
+            "value": null,
+            "steps": [
+              {
+                "op": "trim",
+                "args": {}
+              }
+            ]
+          }
+        },
+        "one_hot": null,
+        "claim_period": null
+      },
+      {
+        "source_paths": [
+          "is_current"
+        ],
+        "join_with": " ",
+        "when": null,
+        "target": "dyn.party.activity_is_current",
+        "valid_from_path": null,
+        "valid_to_path": null,
+        "validity_date_formats": null,
+        "claim_scope": null,
+        "steps": [
+          {
+            "op": "trim",
+            "args": {}
+          },
+          {
+            "op": "map_enum",
+            "args": {
+              "mapping": {
+                "true": "true",
+                "false": "false"
+              },
+              "default": "unknown"
+            }
+          }
+        ],
+        "confidence": 0.85,
+        "rationale": "is_current is the publisher flag for whether the party's recorded role episode is current in the extract; it refers to the party record, not to enforceability of the IP right and not to company status. Mapped to the true/false/unknown enum with required party-role qualifiers.",
+        "entity": "party",
+        "qualifiers": {
+          "party_id": {
+            "source_path": "party_id",
+            "value": null,
+            "steps": [
+              {
+                "op": "trim",
+                "args": {}
+              }
+            ]
+          },
+          "ip_right_type": {
+            "source_path": "ip_right_type",
+            "value": null,
+            "steps": [
+              {
+                "op": "trim",
+                "args": {}
+              }
+            ]
+          },
+          "application_number": {
+            "source_path": "application_number",
+            "value": null,
+            "steps": [
+              {
+                "op": "trim",
+                "args": {}
+              }
+            ]
+          },
+          "party_role": {
+            "source_path": "party_role",
+            "value": null,
+            "steps": [
+              {
+                "op": "trim",
+                "args": {}
+              }
+            ]
+          }
+        },
+        "one_hot": null,
+        "claim_period": null
+      },
+      {
+        "source_paths": [
+          "is_founding"
+        ],
+        "join_with": " ",
+        "when": null,
+        "target": "dyn.party.is_founding_party_flag",
+        "valid_from_path": null,
+        "valid_to_path": null,
+        "validity_date_formats": null,
+        "claim_scope": null,
+        "steps": [
+          {
+            "op": "trim",
+            "args": {}
+          },
+          {
+            "op": "map_enum",
+            "args": {
+              "mapping": {
+                "true": "true",
+                "false": "false"
+              },
+              "default": "unknown"
+            }
+          }
+        ],
+        "confidence": 0.8,
+        "rationale": "is_founding is a supplied party attribute flag on the IP application record, matching dyn.party.is_founding_party_flag. It is explicitly not evidence of company incorporation and not a founding date, so it is not mapped to ext.entity.date_established. The source grain includes party_role and party_role_category, and a held-out agent row (party_role=agent, party_role_category=applicant_agent) carries is_founding=true, so the flag cannot be safely generalised to the party-application pair without role scope. party_role and party_role_category are therefore carried as qualifiers alongside party_id, ip_right_type and application_number so the claim stays scoped to the role episode it was published against.",
+        "entity": "party",
+        "qualifiers": {
+          "party_id": {
+            "source_path": "party_id",
+            "value": null,
+            "steps": [
+              {
+                "op": "trim",
+                "args": {}
+              }
+            ]
+          },
+          "ip_right_type": {
+            "source_path": "ip_right_type",
+            "value": null,
+            "steps": [
+              {
+                "op": "trim",
+                "args": {}
+              }
+            ]
+          },
+          "application_number": {
+            "source_path": "application_number",
+            "value": null,
+            "steps": [
+              {
+                "op": "trim",
+                "args": {}
+              }
+            ]
+          },
+          "party_role": {
+            "source_path": "party_role",
+            "value": null,
+            "steps": [
+              {
+                "op": "trim",
+                "args": {}
+              }
+            ]
+          },
+          "party_role_category": {
+            "source_path": "party_role_category",
+            "value": null,
+            "steps": [
+              {
+                "op": "trim",
+                "args": {}
+              }
+            ]
+          }
+        },
+        "one_hot": null,
+        "claim_period": null
+      }
+    ],
+    "unmapped": [
+      {
+        "source_path": "abn",
+        "reason": "Outside this group; reconciled in the final source mapping."
+      },
+      {
+        "source_path": "party_name",
+        "reason": "Outside this group; reconciled in the final source mapping."
+      },
+      {
+        "source_path": "party_type",
+        "reason": "Outside this group; reconciled in the final source mapping."
+      },
+      {
+        "source_path": "state_code",
+        "reason": "Outside this group; reconciled in the final source mapping."
+      },
+      {
+        "source_path": "post_code",
+        "reason": "Outside this group; reconciled in the final source mapping."
+      },
+      {
+        "source_path": "country_code",
+        "reason": "Outside this group; reconciled in the final source mapping."
+      }
+    ]
+  }
+}

@@ -1,0 +1,1069 @@
+{
+  "request_sha256": "99c86f28816fa5003711f9d2a9b9536906af37953dcc1185bca6027a32303106",
+  "role": "architect",
+  "model": "deepseek-v4-flash",
+  "seconds": 41.471,
+  "response": {
+    "entity_types": [],
+    "concepts": [
+      {
+        "path": "dyn.charity.registration_status",
+        "type": "string",
+        "owner": "business",
+        "definition": "ACNC charity registration status as published in the AIS (e.g. Registered, Voluntarily Revoked Not Entitled To Be A Charity, Revoked Double Defaulter). An administrative registration state, not a legal form or trading status.",
+        "values": [],
+        "multi": false,
+        "required_qualifiers": [],
+        "source_paths": [
+          "registration status"
+        ],
+        "why_not_existing": "entity.status is a coarse enum (active/deregistered/in_liquidation/suspended/unknown) and ext.entity.status_detail is defined as a registrar company status code+label; neither can carry the ACNC's charity-specific revocation wording without changing meaning or owner.",
+        "personal_data": "never"
+      },
+      {
+        "path": "dyn.charity.size",
+        "type": "enum",
+        "owner": "business",
+        "definition": "ACNC charity size classification (Small, Medium, Large) as published for the reporting year. An administrative size band, not a revenue figure.",
+        "values": [
+          "Small",
+          "Medium",
+          "Large"
+        ],
+        "multi": false,
+        "required_qualifiers": [],
+        "source_paths": [
+          "charity size"
+        ],
+        "why_not_existing": "ext.financial.revenue_band is a revenue/turnover band from a named scheme and would misrepresent an ACNC size classification as a financial measure; no existing concept holds charity size.",
+        "personal_data": "never"
+      },
+      {
+        "path": "dyn.charity.basic_religious_charity",
+        "type": "enum",
+        "owner": "business",
+        "definition": "Whether the charity self-identifies as a basic religious charity in its AIS (y/n). A regulatory category, not a statement of religious activity.",
+        "values": [
+          "y",
+          "n"
+        ],
+        "multi": false,
+        "required_qualifiers": [],
+        "source_paths": [
+          "basic religious charity"
+        ],
+        "why_not_existing": "No existing concept captures this ACNC regulatory category; ext.entity.tax_concession covers PBI/HPC/DGR only and would change meaning.",
+        "personal_data": "never"
+      },
+      {
+        "path": "dyn.charity.incorporated_association",
+        "type": "enum",
+        "owner": "business",
+        "definition": "Whether the charity reports being an incorporated association (y/n) in the AIS. A self-reported indicator, not a legal-form determination.",
+        "values": [
+          "y",
+          "n"
+        ],
+        "multi": false,
+        "required_qualifiers": [],
+        "source_paths": [
+          "incorporated association"
+        ],
+        "why_not_existing": "ext.entity.legal_form is a registrar-decoded company type; using it here would assert a legal form the source does not state, and no existing concept holds this AIS indicator.",
+        "personal_data": "never"
+      },
+      {
+        "path": "dyn.charity.association_number",
+        "type": "string",
+        "owner": "business",
+        "definition": "State or territory incorporated-association registration number as published, one observation per state. The state is carried in the scheme qualifier.",
+        "values": [],
+        "multi": true,
+        "required_qualifiers": [
+          "scheme"
+        ],
+        "source_paths": [
+          "association number - act",
+          "association number - nsw",
+          "association number - nt",
+          "association number - qld",
+          "association number - sa",
+          "association number - tas",
+          "association number - vic",
+          "association number - wa"
+        ],
+        "why_not_existing": "ext.entity.prior_registration_number is a single legacy state registration number for a national registrar transition; these are current state association numbers across up to eight jurisdictions and need a scheme qualifier to distinguish them.",
+        "personal_data": "never"
+      },
+      {
+        "path": "dyn.charity.fundraising_activity",
+        "type": "enum",
+        "owner": "business",
+        "definition": "Whether the charity reports fundraising activity in a given jurisdiction or channel (y/n). The jurisdiction or channel is carried in the scheme qualifier.",
+        "values": [
+          "y",
+          "n"
+        ],
+        "multi": true,
+        "required_qualifiers": [
+          "scheme"
+        ],
+        "source_paths": [
+          "fundraising - act",
+          "fundraising - nsw",
+          "fundraising - nt",
+          "fundraising - qld",
+          "fundraising - sa",
+          "fundraising - tas",
+          "fundraising - vic",
+          "fundraising - wa",
+          "fundraising - online"
+        ],
+        "why_not_existing": "ext.entity.operating_region describes where the business operates, not whether it fundraises there; no existing concept holds fundraising activity indicators.",
+        "personal_data": "never"
+      },
+      {
+        "path": "dyn.charity.fundraising_number",
+        "type": "string",
+        "owner": "business",
+        "definition": "Fundraising licence or registration number issued by a state or territory regulator, as published. The jurisdiction is carried in the scheme qualifier.",
+        "values": [],
+        "multi": true,
+        "required_qualifiers": [
+          "scheme"
+        ],
+        "source_paths": [
+          "fundraising number - act",
+          "fundraising number - nsw",
+          "fundraising number - qld",
+          "fundraising number - sa",
+          "fundraising number - tas",
+          "fundraising number - vic",
+          "fundraising number - wa"
+        ],
+        "why_not_existing": "ext.licence.number is owned by the licence entity type and identifies a licence held by a business; these are charity fundraising registrations reported in the AIS and would need a licence role and issuer that the source does not state.",
+        "personal_data": "never"
+      },
+      {
+        "path": "dyn.charity.conducted_activities",
+        "type": "enum",
+        "owner": "business",
+        "definition": "Whether the charity reports having conducted activities during the reporting period (y/n).",
+        "values": [
+          "y",
+          "n"
+        ],
+        "multi": false,
+        "required_qualifiers": [],
+        "source_paths": [
+          "conducted activities"
+        ],
+        "why_not_existing": "No existing concept records whether the entity was active in the period; entity.status is a coarse registration state and would change meaning.",
+        "personal_data": "never"
+      },
+      {
+        "path": "dyn.charity.inactivity_reason",
+        "type": "string",
+        "owner": "business",
+        "definition": "Free-text explanation the charity gives for not conducting activities in the reporting period.",
+        "values": [],
+        "multi": false,
+        "required_qualifiers": [],
+        "source_paths": [
+          "why charity did not conduct activities"
+        ],
+        "why_not_existing": "No existing concept holds a narrative reason for inactivity; ext.entity.status_detail is a registrar code+label.",
+        "personal_data": "never"
+      },
+      {
+        "path": "dyn.charity.purpose_pursuit_description",
+        "type": "string",
+        "owner": "business",
+        "definition": "Free-text description of how the charity pursued its purposes during the reporting period, in the charity's own words.",
+        "values": [],
+        "multi": false,
+        "required_qualifiers": [],
+        "source_paths": [
+          "how purposes were pursued"
+        ],
+        "why_not_existing": "ext.entity.sector_tag is a short source-stated tag with a scheme qualifier; this is a long narrative activity description and would lose meaning if stored as a tag.",
+        "personal_data": "never"
+      },
+      {
+        "path": "dyn.charity.international_activity",
+        "type": "enum",
+        "owner": "business",
+        "definition": "Whether the charity reports a given kind of international activity (operating overseas including programs, transferring goods or services overseas, other). The kind is carried in the scheme qualifier.",
+        "values": [
+          "y",
+          "n"
+        ],
+        "multi": true,
+        "required_qualifiers": [
+          "scheme"
+        ],
+        "source_paths": [
+          "international activities undertaken - operating overseas including programs",
+          "international activities undertaken - transferring goods or services overseas",
+          "other international activities"
+        ],
+        "why_not_existing": "ext.entity.operating_country records a country, not an activity indicator; no existing concept holds these AIS international-activity flags.",
+        "personal_data": "never"
+      },
+      {
+        "path": "dyn.charity.international_activity_description",
+        "type": "string",
+        "owner": "business",
+        "definition": "Free-text description of the charity's international activities, in the charity's own words. The scheme qualifier records which publisher field the text came from (international_activities_details vs other_international_activities_description).",
+        "values": [],
+        "multi": true,
+        "required_qualifiers": [
+          "scheme"
+        ],
+        "source_paths": [
+          "international activities details",
+          "other international activities description"
+        ],
+        "why_not_existing": "No existing concept holds narrative international-activity text; ext.entity.operating_country is a country value only. Two distinct publisher fields feed this concept, so a scheme qualifier is needed to preserve provenance.",
+        "personal_data": "never"
+      },
+      {
+        "path": "dyn.charity.reportable_related_party_transactions",
+        "type": "enum",
+        "owner": "business",
+        "definition": "Whether the charity reports having reportable related party transactions in the period (y/n).",
+        "values": [
+          "y",
+          "n"
+        ],
+        "multi": false,
+        "required_qualifiers": [],
+        "source_paths": [
+          "charity has reportable related party transactions"
+        ],
+        "why_not_existing": "No existing concept covers related-party transaction reporting; it is not a financial amount and not a licence condition.",
+        "personal_data": "never"
+      },
+      {
+        "path": "dyn.charity.related_party_transaction_type",
+        "type": "string",
+        "owner": "business",
+        "definition": "One type of related party transaction the charity reports (e.g. fees paid to a related party for goods or services, loans from/to a related party), split from the publisher's semicolon list. The scheme qualifier records the publisher field the value came from.",
+        "values": [],
+        "multi": true,
+        "required_qualifiers": [
+          "scheme"
+        ],
+        "source_paths": [
+          "Relevant transactions"
+        ],
+        "why_not_existing": "No existing concept holds related-party transaction categories; the field is a list of transaction kinds, not a financial amount or licence condition. A scheme qualifier is required so a future second related-party transaction field stays distinguishable from this one.",
+        "personal_data": "never"
+      },
+      {
+        "path": "dyn.charity.related_party_transaction_detail",
+        "type": "string",
+        "owner": "business",
+        "definition": "Free-text detail the charity gives about related party transactions or other relevant matters, in the charity's own words. The scheme qualifier records which publisher field the text came from (other_details vs other_relevant_details).",
+        "values": [],
+        "multi": true,
+        "required_qualifiers": [
+          "scheme"
+        ],
+        "source_paths": [
+          "Other details",
+          "Other Relevant details"
+        ],
+        "why_not_existing": "No existing concept holds narrative related-party disclosure text. Two distinct publisher fields feed this concept, so a scheme qualifier is needed to preserve provenance.",
+        "personal_data": "never"
+      },
+      {
+        "path": "dyn.charity.key_management_personnel_reported",
+        "type": "enum",
+        "owner": "business",
+        "definition": "Whether the charity reports key management personnel in its AIS (y/n).",
+        "values": [
+          "y",
+          "n"
+        ],
+        "multi": false,
+        "required_qualifiers": [],
+        "source_paths": [
+          "Key Management Personnel"
+        ],
+        "why_not_existing": "ext.entity.responsible_persons is a board-size count from a different regulator; this is a yes/no AIS indicator and would change meaning if reused.",
+        "personal_data": "never"
+      },
+      {
+        "path": "dyn.charity.key_management_personnel_count",
+        "type": "integer",
+        "owner": "business",
+        "definition": "Number of key management personnel the charity reports in its AIS.",
+        "values": [],
+        "multi": false,
+        "required_qualifiers": [],
+        "source_paths": [
+          "Number of Key Management Personnel"
+        ],
+        "why_not_existing": "ext.entity.responsible_persons is the regulator's responsible-persons (board) count for a different scheme; reusing it would conflate two different populations.",
+        "personal_data": "never"
+      },
+      {
+        "path": "dyn.charity.key_management_personnel_remuneration",
+        "type": "decimal",
+        "owner": "business",
+        "definition": "Total amount paid to key management personnel as reported in the AIS for the reporting period. Currency is AUD as stated by the ACNC AIS guide; the period is the charity's financial reporting period.",
+        "values": [],
+        "multi": false,
+        "required_qualifiers": [
+          "currency",
+          "period"
+        ],
+        "source_paths": [
+          "Total paid to Key Management Personnel"
+        ],
+        "why_not_existing": "ext.financial.total_income and other financial concepts cover income/tax measures, not KMP remuneration; a new money concept with currency and period qualifiers is required.",
+        "personal_data": "never"
+      },
+      {
+        "path": "dyn.charity.assets_liabilities_description",
+        "type": "string",
+        "owner": "business",
+        "definition": "Free-text description of the charity's assets and liabilities as reported in the AIS.",
+        "values": [],
+        "multi": false,
+        "required_qualifiers": [],
+        "source_paths": [
+          "assets and liabilities description"
+        ],
+        "why_not_existing": "No existing concept holds narrative balance-sheet description; the financial concepts are numeric amounts.",
+        "personal_data": "never"
+      },
+      {
+        "path": "dyn.charity.financial_report_basis",
+        "type": "enum",
+        "owner": "business",
+        "definition": "Accounting basis the charity reports for its AIS financial information (Cash or Accrual).",
+        "values": [
+          "Cash",
+          "Accrual"
+        ],
+        "multi": false,
+        "required_qualifiers": [],
+        "source_paths": [
+          "cash or accrual"
+        ],
+        "why_not_existing": "No existing concept records the accounting basis of reported financials; it is a methodological qualifier, not a financial amount.",
+        "personal_data": "never"
+      },
+      {
+        "path": "dyn.charity.financial_statement_type",
+        "type": "string",
+        "owner": "business",
+        "definition": "Type of financial statement the charity reports (e.g. Special purpose financial statements, General purpose financial statements), in the publisher's wording.",
+        "values": [],
+        "multi": false,
+        "required_qualifiers": [],
+        "source_paths": [
+          "type of financial statement"
+        ],
+        "why_not_existing": "No existing concept records the financial-statement type; it is a reporting classification, not a financial amount or licence attribute.",
+        "personal_data": "never"
+      },
+      {
+        "path": "dyn.charity.report_consolidated",
+        "type": "enum",
+        "owner": "business",
+        "definition": "Whether the charity's financial report is consolidated with more than one entity (y/n).",
+        "values": [
+          "y",
+          "n"
+        ],
+        "multi": false,
+        "required_qualifiers": [],
+        "source_paths": [
+          "report consolidated with more than one entity"
+        ],
+        "why_not_existing": "No existing concept records consolidation scope of a financial report.",
+        "personal_data": "never"
+      },
+      {
+        "path": "dyn.charity.report_modified",
+        "type": "enum",
+        "owner": "business",
+        "definition": "Whether the charity's financial report has a modification (y/n).",
+        "values": [
+          "y",
+          "n"
+        ],
+        "multi": false,
+        "required_qualifiers": [],
+        "source_paths": [
+          "charity report has a modification"
+        ],
+        "why_not_existing": "No existing concept records audit/report modification status.",
+        "personal_data": "never"
+      },
+      {
+        "path": "dyn.charity.report_modification_type",
+        "type": "string",
+        "owner": "business",
+        "definition": "Type of financial report modification reported (e.g. Qualified/qualification, Disclaimed/disclaimer), in the publisher's wording.",
+        "values": [],
+        "multi": false,
+        "required_qualifiers": [],
+        "source_paths": [
+          "type of report modification"
+        ],
+        "why_not_existing": "No existing concept records the kind of report modification; it is not a licence condition or entity status.",
+        "personal_data": "never"
+      },
+      {
+        "path": "dyn.charity.coop_financial_report_submitted",
+        "type": "enum",
+        "owner": "business",
+        "definition": "Whether a cooperative financial report was submitted to the regulator (y/n), as reported in the AIS.",
+        "values": [
+          "y",
+          "n"
+        ],
+        "multi": false,
+        "required_qualifiers": [],
+        "source_paths": [
+          "coop financial report submitted to regulator"
+        ],
+        "why_not_existing": "No existing concept records this regulatory submission indicator.",
+        "personal_data": "never"
+      },
+      {
+        "path": "dyn.charity.ais_due_date",
+        "type": "date",
+        "owner": "business",
+        "definition": "Date the Annual Information Statement was due to the ACNC. An administrative lodgement deadline, not an incorporation or licence date.",
+        "values": [],
+        "multi": false,
+        "required_qualifiers": [],
+        "source_paths": [
+          "ais due date"
+        ],
+        "why_not_existing": "No existing concept holds AIS lodgement deadlines; entity.date_registered and licence dates have different meanings.",
+        "personal_data": "never"
+      },
+      {
+        "path": "dyn.charity.ais_received_date",
+        "type": "date",
+        "owner": "business",
+        "definition": "Date the ACNC received the Annual Information Statement. An administrative lodgement date, not an incorporation or licence date.",
+        "values": [],
+        "multi": false,
+        "required_qualifiers": [],
+        "source_paths": [
+          "date ais received"
+        ],
+        "why_not_existing": "No existing concept holds AIS receipt dates; observation.observed_at is when the source stated it, not the lodgement date.",
+        "personal_data": "never"
+      },
+      {
+        "path": "dyn.charity.financial_report_received_date",
+        "type": "date",
+        "owner": "business",
+        "definition": "Date the ACNC received the charity's financial report. An administrative lodgement date, not an incorporation or licence date.",
+        "values": [],
+        "multi": false,
+        "required_qualifiers": [],
+        "source_paths": [
+          "financial report date received"
+        ],
+        "why_not_existing": "No existing concept holds financial-report receipt dates; observation.observed_at is a different notion.",
+        "personal_data": "never"
+      },
+      {
+        "path": "dyn.charity.reporting_period_start",
+        "type": "date",
+        "owner": "business",
+        "definition": "Start date of the charity's financial reporting period covered by the AIS financial information.",
+        "values": [],
+        "multi": false,
+        "required_qualifiers": [],
+        "source_paths": [
+          "fin report from"
+        ],
+        "why_not_existing": "observation.valid_from is the validity of a claim, not the charity's financial reporting period; no existing concept holds the reporting period boundaries.",
+        "personal_data": "never"
+      },
+      {
+        "path": "dyn.charity.reporting_period_end",
+        "type": "date",
+        "owner": "business",
+        "definition": "End date of the charity's financial reporting period covered by the AIS financial information.",
+        "values": [],
+        "multi": false,
+        "required_qualifiers": [],
+        "source_paths": [
+          "fin report to"
+        ],
+        "why_not_existing": "observation.valid_to is the validity of a claim, not the charity's financial reporting period; no existing concept holds the reporting period boundaries.",
+        "personal_data": "never"
+      },
+      {
+        "path": "dyn.charity.staff_full_time",
+        "type": "integer",
+        "owner": "business",
+        "definition": "Number of full-time staff the charity reports for the reporting period.",
+        "values": [],
+        "multi": false,
+        "required_qualifiers": [],
+        "source_paths": [
+          "staff - full time"
+        ],
+        "why_not_existing": "No existing concept holds staff headcounts; ext.entity.responsible_persons is a board count.",
+        "personal_data": "never"
+      },
+      {
+        "path": "dyn.charity.staff_part_time",
+        "type": "integer",
+        "owner": "business",
+        "definition": "Number of part-time staff the charity reports for the reporting period.",
+        "values": [],
+        "multi": false,
+        "required_qualifiers": [],
+        "source_paths": [
+          "staff - part time"
+        ],
+        "why_not_existing": "No existing concept holds staff headcounts; ext.entity.responsible_persons is a board count.",
+        "personal_data": "never"
+      },
+      {
+        "path": "dyn.charity.staff_casual",
+        "type": "integer",
+        "owner": "business",
+        "definition": "Number of casual staff the charity reports for the reporting period.",
+        "values": [],
+        "multi": false,
+        "required_qualifiers": [],
+        "source_paths": [
+          "staff - casual"
+        ],
+        "why_not_existing": "No existing concept holds staff headcounts; ext.entity.responsible_persons is a board count.",
+        "personal_data": "never"
+      },
+      {
+        "path": "dyn.charity.staff_volunteers",
+        "type": "integer",
+        "owner": "business",
+        "definition": "Number of volunteers the charity reports for the reporting period.",
+        "values": [],
+        "multi": false,
+        "required_qualifiers": [],
+        "source_paths": [
+          "staff - volunteers"
+        ],
+        "why_not_existing": "No existing concept holds volunteer counts; ext.entity.responsible_persons is a board count.",
+        "personal_data": "never"
+      },
+      {
+        "path": "dyn.charity.staff_full_time_equivalent",
+        "type": "decimal",
+        "owner": "business",
+        "definition": "Total full-time-equivalent staff the charity reports for the reporting period.",
+        "values": [],
+        "multi": false,
+        "required_qualifiers": [],
+        "source_paths": [
+          "total full time equivalent staff"
+        ],
+        "why_not_existing": "No existing concept holds FTE staff counts; ext.entity.responsible_persons is a board count.",
+        "personal_data": "never"
+      },
+      {
+        "path": "dyn.charity.revenue_government",
+        "type": "decimal",
+        "owner": "business",
+        "definition": "Revenue from government as reported in the AIS for the charity's reporting period. Currency is AUD as stated by the ACNC AIS guide.",
+        "values": [],
+        "multi": false,
+        "required_qualifiers": [
+          "currency",
+          "period"
+        ],
+        "source_paths": [
+          "revenue from government"
+        ],
+        "why_not_existing": "ext.financial.total_income is a single total; no existing concept holds the AIS revenue breakdown by source.",
+        "personal_data": "never"
+      },
+      {
+        "path": "dyn.charity.revenue_donations_bequests",
+        "type": "decimal",
+        "owner": "business",
+        "definition": "Donations and bequests revenue as reported in the AIS for the charity's reporting period. Currency is AUD as stated by the ACNC AIS guide.",
+        "values": [],
+        "multi": false,
+        "required_qualifiers": [
+          "currency",
+          "period"
+        ],
+        "source_paths": [
+          "donations and bequests"
+        ],
+        "why_not_existing": "ext.financial.total_income is a single total; no existing concept holds the AIS revenue breakdown by source.",
+        "personal_data": "never"
+      },
+      {
+        "path": "dyn.charity.revenue_goods_and_services",
+        "type": "decimal",
+        "owner": "business",
+        "definition": "Revenue from goods and services as reported in the AIS for the charity's reporting period. Currency is AUD as stated by the ACNC AIS guide.",
+        "values": [],
+        "multi": false,
+        "required_qualifiers": [
+          "currency",
+          "period"
+        ],
+        "source_paths": [
+          "revenue from goods and services"
+        ],
+        "why_not_existing": "ext.financial.total_income is a single total; no existing concept holds the AIS revenue breakdown by source.",
+        "personal_data": "never"
+      },
+      {
+        "path": "dyn.charity.revenue_investments",
+        "type": "decimal",
+        "owner": "business",
+        "definition": "Revenue from investments as reported in the AIS for the charity's reporting period. Currency is AUD as stated by the ACNC AIS guide.",
+        "values": [],
+        "multi": false,
+        "required_qualifiers": [
+          "currency",
+          "period"
+        ],
+        "source_paths": [
+          "revenue from investments"
+        ],
+        "why_not_existing": "ext.financial.total_income is a single total; no existing concept holds the AIS revenue breakdown by source.",
+        "personal_data": "never"
+      },
+      {
+        "path": "dyn.charity.revenue_other",
+        "type": "decimal",
+        "owner": "business",
+        "definition": "All other revenue as reported in the AIS for the charity's reporting period. Currency is AUD as stated by the ACNC AIS guide.",
+        "values": [],
+        "multi": false,
+        "required_qualifiers": [
+          "currency",
+          "period"
+        ],
+        "source_paths": [
+          "all other revenue"
+        ],
+        "why_not_existing": "ext.financial.total_income is a single total; no existing concept holds the AIS revenue breakdown by source.",
+        "personal_data": "never"
+      },
+      {
+        "path": "dyn.charity.revenue_total",
+        "type": "decimal",
+        "owner": "business",
+        "definition": "Total revenue as reported in the AIS for the charity's reporting period. Currency is AUD as stated by the ACNC AIS guide.",
+        "values": [],
+        "multi": false,
+        "required_qualifiers": [
+          "currency",
+          "period"
+        ],
+        "source_paths": [
+          "total revenue"
+        ],
+        "why_not_existing": "ext.financial.total_income is defined as total income for a period; the AIS distinguishes total revenue from total gross income and other income, so reuse would change meaning.",
+        "personal_data": "never"
+      },
+      {
+        "path": "dyn.charity.income_other",
+        "type": "decimal",
+        "owner": "business",
+        "definition": "Other income as reported in the AIS for the charity's reporting period. Currency is AUD as stated by the ACNC AIS guide.",
+        "values": [],
+        "multi": false,
+        "required_qualifiers": [
+          "currency",
+          "period"
+        ],
+        "source_paths": [
+          "other income"
+        ],
+        "why_not_existing": "No existing concept holds the AIS other-income line; ext.financial.total_income is a total.",
+        "personal_data": "never"
+      },
+      {
+        "path": "dyn.charity.income_gross_total",
+        "type": "decimal",
+        "owner": "business",
+        "definition": "Total gross income as reported in the AIS for the charity's reporting period. Currency is AUD as stated by the ACNC AIS guide.",
+        "values": [],
+        "multi": false,
+        "required_qualifiers": [
+          "currency",
+          "period"
+        ],
+        "source_paths": [
+          "total gross income"
+        ],
+        "why_not_existing": "ext.financial.total_income is a total income concept; the AIS reports total gross income as a distinct line from total revenue and other income, so reuse would change meaning.",
+        "personal_data": "never"
+      },
+      {
+        "path": "dyn.charity.expense_employee",
+        "type": "decimal",
+        "owner": "business",
+        "definition": "Employee expenses as reported in the AIS for the charity's reporting period. Currency is AUD as stated by the ACNC AIS guide.",
+        "values": [],
+        "multi": false,
+        "required_qualifiers": [
+          "currency",
+          "period"
+        ],
+        "source_paths": [
+          "employee expenses"
+        ],
+        "why_not_existing": "No existing concept holds AIS expense lines; ext.financial concepts cover income and tax only.",
+        "personal_data": "never"
+      },
+      {
+        "path": "dyn.charity.expense_interest",
+        "type": "decimal",
+        "owner": "business",
+        "definition": "Interest expenses as reported in the AIS for the charity's reporting period. Currency is AUD as stated by the ACNC AIS guide.",
+        "values": [],
+        "multi": false,
+        "required_qualifiers": [
+          "currency",
+          "period"
+        ],
+        "source_paths": [
+          "interest expenses"
+        ],
+        "why_not_existing": "No existing concept holds AIS expense lines; ext.financial concepts cover income and tax only.",
+        "personal_data": "never"
+      },
+      {
+        "path": "dyn.charity.grants_donations_made_domestic",
+        "type": "decimal",
+        "owner": "business",
+        "definition": "Grants and donations made for use in Australia as reported in the AIS for the charity's reporting period. Currency is AUD as stated by the ACNC AIS guide.",
+        "values": [],
+        "multi": false,
+        "required_qualifiers": [
+          "currency",
+          "period"
+        ],
+        "source_paths": [
+          "grants and donations made for use in Australia"
+        ],
+        "why_not_existing": "No existing concept holds grants made; a grant amount is an expense outflow, not business income.",
+        "personal_data": "never"
+      },
+      {
+        "path": "dyn.charity.grants_donations_made_overseas",
+        "type": "decimal",
+        "owner": "business",
+        "definition": "Grants and donations made for use outside Australia as reported in the AIS for the charity's reporting period. Currency is AUD as stated by the ACNC AIS guide.",
+        "values": [],
+        "multi": false,
+        "required_qualifiers": [
+          "currency",
+          "period"
+        ],
+        "source_paths": [
+          "grants and donations made for use outside Australia"
+        ],
+        "why_not_existing": "No existing concept holds grants made; a grant amount is an expense outflow, not business income.",
+        "personal_data": "never"
+      },
+      {
+        "path": "dyn.charity.expense_other",
+        "type": "decimal",
+        "owner": "business",
+        "definition": "All other expenses as reported in the AIS for the charity's reporting period. Currency is AUD as stated by the ACNC AIS guide.",
+        "values": [],
+        "multi": false,
+        "required_qualifiers": [
+          "currency",
+          "period"
+        ],
+        "source_paths": [
+          "all other expenses"
+        ],
+        "why_not_existing": "No existing concept holds AIS expense lines; ext.financial concepts cover income and tax only.",
+        "personal_data": "never"
+      },
+      {
+        "path": "dyn.charity.expense_total",
+        "type": "decimal",
+        "owner": "business",
+        "definition": "Total expenses as reported in the AIS for the charity's reporting period. Currency is AUD as stated by the ACNC AIS guide.",
+        "values": [],
+        "multi": false,
+        "required_qualifiers": [
+          "currency",
+          "period"
+        ],
+        "source_paths": [
+          "total expenses"
+        ],
+        "why_not_existing": "No existing concept holds AIS expense totals; ext.financial concepts cover income and tax only.",
+        "personal_data": "never"
+      },
+      {
+        "path": "dyn.charity.net_surplus_deficit",
+        "type": "decimal",
+        "owner": "business",
+        "definition": "Net surplus or deficit as reported in the AIS for the charity's reporting period. Currency is AUD as stated by the ACNC AIS guide.",
+        "values": [],
+        "multi": false,
+        "required_qualifiers": [
+          "currency",
+          "period"
+        ],
+        "source_paths": [
+          "net surplus/deficit"
+        ],
+        "why_not_existing": "No existing concept holds the AIS net result; ext.financial.total_income is an income total, not a surplus.",
+        "personal_data": "never"
+      },
+      {
+        "path": "dyn.charity.other_comprehensive_income",
+        "type": "decimal",
+        "owner": "business",
+        "definition": "Other comprehensive income as reported in the AIS for the charity's reporting period. Currency is AUD as stated by the ACNC AIS guide.",
+        "values": [],
+        "multi": false,
+        "required_qualifiers": [
+          "currency",
+          "period"
+        ],
+        "source_paths": [
+          "other comprehensive income"
+        ],
+        "why_not_existing": "No existing concept holds other comprehensive income; ext.financial.total_income is a different measure.",
+        "personal_data": "never"
+      },
+      {
+        "path": "dyn.charity.total_comprehensive_income",
+        "type": "decimal",
+        "owner": "business",
+        "definition": "Total comprehensive income as reported in the AIS for the charity's reporting period. Currency is AUD as stated by the ACNC AIS guide.",
+        "values": [],
+        "multi": false,
+        "required_qualifiers": [
+          "currency",
+          "period"
+        ],
+        "source_paths": [
+          "total comprehensive income"
+        ],
+        "why_not_existing": "No existing concept holds total comprehensive income; ext.financial.total_income is a different measure.",
+        "personal_data": "never"
+      },
+      {
+        "path": "dyn.charity.assets_current_total",
+        "type": "decimal",
+        "owner": "business",
+        "definition": "Total current assets as reported in the AIS at the end of the charity's reporting period. Currency is AUD as stated by the ACNC AIS guide.",
+        "values": [],
+        "multi": false,
+        "required_qualifiers": [
+          "currency",
+          "period"
+        ],
+        "source_paths": [
+          "total current assets"
+        ],
+        "why_not_existing": "No existing concept holds balance-sheet asset lines; ext.financial concepts cover income and tax only.",
+        "personal_data": "never"
+      },
+      {
+        "path": "dyn.charity.assets_noncurrent_loans_receivable",
+        "type": "decimal",
+        "owner": "business",
+        "definition": "Non-current loans receivable as reported in the AIS at the end of the charity's reporting period. Currency is AUD as stated by the ACNC AIS guide.",
+        "values": [],
+        "multi": false,
+        "required_qualifiers": [
+          "currency",
+          "period"
+        ],
+        "source_paths": [
+          "non-current loans receivable"
+        ],
+        "why_not_existing": "No existing concept holds balance-sheet asset lines; ext.financial concepts cover income and tax only.",
+        "personal_data": "never"
+      },
+      {
+        "path": "dyn.charity.assets_noncurrent_other",
+        "type": "decimal",
+        "owner": "business",
+        "definition": "Other non-current assets as reported in the AIS at the end of the charity's reporting period. Currency is AUD as stated by the ACNC AIS guide.",
+        "values": [],
+        "multi": false,
+        "required_qualifiers": [
+          "currency",
+          "period"
+        ],
+        "source_paths": [
+          "other non-current assets"
+        ],
+        "why_not_existing": "No existing concept holds balance-sheet asset lines; ext.financial concepts cover income and tax only.",
+        "personal_data": "never"
+      },
+      {
+        "path": "dyn.charity.assets_noncurrent_total",
+        "type": "decimal",
+        "owner": "business",
+        "definition": "Total non-current assets as reported in the AIS at the end of the charity's reporting period. Currency is AUD as stated by the ACNC AIS guide.",
+        "values": [],
+        "multi": false,
+        "required_qualifiers": [
+          "currency",
+          "period"
+        ],
+        "source_paths": [
+          "total non-current assets"
+        ],
+        "why_not_existing": "No existing concept holds balance-sheet asset lines; ext.financial concepts cover income and tax only.",
+        "personal_data": "never"
+      },
+      {
+        "path": "dyn.charity.assets_total",
+        "type": "decimal",
+        "owner": "business",
+        "definition": "Total assets as reported in the AIS at the end of the charity's reporting period. Currency is AUD as stated by the ACNC AIS guide.",
+        "values": [],
+        "multi": false,
+        "required_qualifiers": [
+          "currency",
+          "period"
+        ],
+        "source_paths": [
+          "total assets"
+        ],
+        "why_not_existing": "No existing concept holds balance-sheet asset totals; ext.financial concepts cover income and tax only.",
+        "personal_data": "never"
+      },
+      {
+        "path": "dyn.charity.liabilities_current_total",
+        "type": "decimal",
+        "owner": "business",
+        "definition": "Total current liabilities as reported in the AIS at the end of the charity's reporting period. Currency is AUD as stated by the ACNC AIS guide.",
+        "values": [],
+        "multi": false,
+        "required_qualifiers": [
+          "currency",
+          "period"
+        ],
+        "source_paths": [
+          "total current liabilities"
+        ],
+        "why_not_existing": "No existing concept holds balance-sheet liability lines; ext.financial concepts cover income and tax only.",
+        "personal_data": "never"
+      },
+      {
+        "path": "dyn.charity.liabilities_noncurrent_loans_payable",
+        "type": "decimal",
+        "owner": "business",
+        "definition": "Non-current loans payable as reported in the AIS at the end of the charity's reporting period. Currency is AUD as stated by the ACNC AIS guide.",
+        "values": [],
+        "multi": false,
+        "required_qualifiers": [
+          "currency",
+          "period"
+        ],
+        "source_paths": [
+          "non-current loans payable"
+        ],
+        "why_not_existing": "No existing concept holds balance-sheet liability lines; ext.financial concepts cover income and tax only.",
+        "personal_data": "never"
+      },
+      {
+        "path": "dyn.charity.liabilities_noncurrent_other",
+        "type": "decimal",
+        "owner": "business",
+        "definition": "Other non-current liabilities as reported in the AIS at the end of the charity's reporting period. Currency is AUD as stated by the ACNC AIS guide.",
+        "values": [],
+        "multi": false,
+        "required_qualifiers": [
+          "currency",
+          "period"
+        ],
+        "source_paths": [
+          "other non-current liabilities"
+        ],
+        "why_not_existing": "No existing concept holds balance-sheet liability lines; ext.financial concepts cover income and tax only.",
+        "personal_data": "never"
+      },
+      {
+        "path": "dyn.charity.liabilities_noncurrent_total",
+        "type": "decimal",
+        "owner": "business",
+        "definition": "Total non-current liabilities as reported in the AIS at the end of the charity's reporting period. Currency is AUD as stated by the ACNC AIS guide.",
+        "values": [],
+        "multi": false,
+        "required_qualifiers": [
+          "currency",
+          "period"
+        ],
+        "source_paths": [
+          "total non-current liabilities"
+        ],
+        "why_not_existing": "No existing concept holds balance-sheet liability lines; ext.financial concepts cover income and tax only.",
+        "personal_data": "never"
+      },
+      {
+        "path": "dyn.charity.liabilities_total",
+        "type": "decimal",
+        "owner": "business",
+        "definition": "Total liabilities as reported in the AIS at the end of the charity's reporting period. Currency is AUD as stated by the ACNC AIS guide.",
+        "values": [],
+        "multi": false,
+        "required_qualifiers": [
+          "currency",
+          "period"
+        ],
+        "source_paths": [
+          "total liabilities"
+        ],
+        "why_not_existing": "No existing concept holds balance-sheet liability totals; ext.financial concepts cover income and tax only.",
+        "personal_data": "never"
+      },
+      {
+        "path": "dyn.charity.net_assets_liabilities",
+        "type": "decimal",
+        "owner": "business",
+        "definition": "Net assets or liabilities as reported in the AIS at the end of the charity's reporting period. Currency is AUD as stated by the ACNC AIS guide.",
+        "values": [],
+        "multi": false,
+        "required_qualifiers": [
+          "currency",
+          "period"
+        ],
+        "source_paths": [
+          "net assets/liabilities"
+        ],
+        "why_not_existing": "No existing concept holds net assets; ext.financial concepts cover income and tax only.",
+        "personal_data": "never"
+      }
+    ],
+    "relationships": [],
+    "reuse": {
+      "entity.abn": "The 'abn' column is an 11-digit Australian Business Number and is the sole stable key for the charity; entity.abn is the exact existing concept for this identifier.",
+      "entity.legal_name": "The 'charity name' column is the name the charity is registered under with the ACNC; entity.legal_name is the registered-name concept and fits without asserting legal form. This is the ACNC-registered name, not a legal-form determination; a future source with a separate trading-name column would need to keep that distinction explicit.",
+      "ext.contact.website_domain": "The 'charity website' column holds published website URLs; ext.contact.website_domain is the existing concept for a registrable published website host and fits after normalisation.",
+      "observation.source_id": "Dataset-level provenance for every claim; the existing observation.source_id concept fits the ACNC AIS dataset identifier.",
+      "observation.source_record_id": "Per-row provenance; the existing observation.source_record_id concept fits the deterministic content-hash record identifier used for this flat CSV.",
+      "observation.observed_at": "Observation timestamp for each claim; the existing observation.observed_at concept fits the retrieval/observation time.",
+      "observation.ingested_at": "Ingestion timestamp for each claim; the existing observation.ingested_at concept fits.",
+      "observation.licence": "Dataset licence (CC-BY) from the metadata; the existing observation.licence concept fits.",
+      "observation.extractor_version": "Mapping/extractor version for each claim; the existing observation.extractor_version concept fits."
+    },
+    "unmapped": []
+  }
+}

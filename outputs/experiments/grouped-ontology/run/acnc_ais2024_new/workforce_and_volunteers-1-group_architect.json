@@ -1,0 +1,62 @@
+{
+  "request_sha256": "53e99291a5b0020a5288c70898264dd836789aa8bff6f97ab1af224e4ec7b7c0",
+  "role": "group_architect",
+  "model": "deepseek-v4-flash",
+  "seconds": 7.827,
+  "response": {
+    "concepts": [
+      {
+        "path": "dyn.charity.staff_headcount",
+        "type": "integer",
+        "owner": "charity",
+        "definition": "Number of people the charity reports in its ACNC Annual Information Statement as staff of a given employment category (full time, part time or casual) for its own reporting period. A headcount of people, not full-time-equivalent staff and not a monetary amount; a reported zero is retained as published and is not evidence of no activity.",
+        "values": [],
+        "multi": false,
+        "required_qualifiers": [
+          "employment_category",
+          "period"
+        ],
+        "source_paths": [
+          "staff - full time",
+          "staff - part time",
+          "staff - casual"
+        ],
+        "why_not_existing": "No shortlisted concept records charity staff headcounts; ext.financial.total_income is a monetary business-owned measure and employee expenses is a money amount, so reuse would change meaning, owner and units. The three columns share one meaning (people per employment category) and differ only by category, so one concept with an employment_category qualifier avoids needless aliases.",
+        "personal_data": "never"
+      },
+      {
+        "path": "dyn.charity.volunteer_count",
+        "type": "integer",
+        "owner": "charity",
+        "definition": "Number of volunteers the charity reports in its ACNC Annual Information Statement for its own reporting period. A count of volunteers, distinct from paid staff headcount and from full-time-equivalent staff; a reported zero is retained as published.",
+        "values": [],
+        "multi": false,
+        "required_qualifiers": [
+          "period"
+        ],
+        "source_paths": [
+          "staff - volunteers"
+        ],
+        "why_not_existing": "No shortlisted concept covers volunteer numbers; dyn.charity.staff_headcount (proposed) covers paid staff by employment category, and volunteers are unpaid and reported in a separate column, so folding them in would change meaning.",
+        "personal_data": "never"
+      },
+      {
+        "path": "dyn.charity.full_time_equivalent_staff",
+        "type": "decimal",
+        "owner": "charity",
+        "definition": "Total full-time-equivalent staff the charity reports in its ACNC Annual Information Statement for its own reporting period, expressed as an FTE number of persons (decimal, e.g. 4.14). This is a workload-equivalent measure, not a headcount and not a monetary amount.",
+        "values": [],
+        "multi": false,
+        "required_qualifiers": [
+          "period"
+        ],
+        "source_paths": [
+          "total full time equivalent staff"
+        ],
+        "why_not_existing": "No shortlisted concept holds an FTE measure; dyn.charity.staff_headcount (proposed) counts people per employment category and cannot represent fractional FTE, so reuse would change units and meaning.",
+        "personal_data": "never"
+      }
+    ],
+    "reuse": {}
+  }
+}

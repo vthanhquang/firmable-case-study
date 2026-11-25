@@ -1,0 +1,33 @@
+{
+  "request_sha256": "36c5493f2ceddf9c5f1f982b9db60a69f7826524993fec1b0e27c915445ceb30",
+  "role": "group_architect",
+  "model": "deepseek-v4-flash",
+  "seconds": 4.866,
+  "response": {
+    "concepts": [
+      {
+        "path": "dyn.remuneration.average_total_remuneration",
+        "type": "decimal",
+        "owner": "employer_reporting_unit",
+        "definition": "Average total remuneration in Australian dollars paid to employees of the employer reporting unit over the WGEA reporting year, for a stated workforce segment (total workforce or a pay quartile). This is a pay level, not revenue, business income or an exact headcount.",
+        "values": [],
+        "multi": false,
+        "required_qualifiers": [
+          "currency",
+          "period",
+          "workforce_segment"
+        ],
+        "source_paths": [
+          "Total workforce - average total remuneration ($)*",
+          "Lower quartile - average total remuneration ($)",
+          "Lower-middle quartile - average total remuneration ($)",
+          "Upper-middle quartile - average total remuneration ($)",
+          "Upper quartile - average total remuneration ($)"
+        ],
+        "why_not_existing": "No shortlisted concept covers remuneration or pay levels; ext.financial.total_income, ext.financial.taxable_income and ext.financial.revenue_band are business income/revenue measures owned by business, not employer pay measures owned by the employer reporting unit, and reusing them would change meaning and owner.",
+        "personal_data": "never"
+      }
+    ],
+    "reuse": {}
+  }
+}

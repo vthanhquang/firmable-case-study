@@ -1,0 +1,91 @@
+{
+  "source_fingerprints": {
+    "party_activity": "9ad75e5c603a756acb738ead9afdef6c2f3035d6caf59ef1972f2d965638b3e7",
+    "application": "56e7e3c0685a58c1b9fb41cc5c0807cee32404e4cad30e8c67e3b94493b39d1a",
+    "application_description": "5783d35579c7ab3b8ff6b38ae57dd616174d253a3a651c5ffbaaf4cb62a6e31d"
+  },
+  "etag": "\"1795394111.646-1351218010-3514699609\"",
+  "anchor_rows": 25000,
+  "view_rows": 25000,
+  "steps": [
+    {
+      "step": {
+        "left_table": "party_activity",
+        "right_table": "application",
+        "left_columns": [
+          "ip_right_type",
+          "application_number"
+        ],
+        "right_columns": [
+          "ip_right_type",
+          "application_number"
+        ],
+        "cardinality": "many_to_one",
+        "meaning": "Each reported party role row on a right is matched to the single application record for the same right type and application number, so analysts can attach source-stated status and dates to each party role.",
+        "cautions": [
+          "Composite key required because application numbers are scoped by ip_right_type; joining on application_number alone could match a different right type.",
+          "Assumes application is unique per (ip_right_type, application_number); duplicates in the full right table will cause the join to be refused rather than silently deduplicated.",
+          "Party role presence does not imply ownership, entitlement, or current enforceability of the right.",
+          "Status and dates are source-stated values, not derived legal conclusions."
+        ]
+      },
+      "measurement": {
+        "left_rows": 25000,
+        "right_rows_scanned": 4383361,
+        "matched_left_rows": 25000,
+        "match_rate": 1.0,
+        "unique_left_keys": 24113,
+        "right_duplicate_keys_in_cohort": 0,
+        "left_duplicate_keys_in_cohort": 868,
+        "refusal_reasons": {},
+        "refusals": [],
+        "would_be_inner_join_rows_without_guard": 25000,
+        "materialized_rows_per_left_max": 1,
+        "semantic_equivalence_established": false,
+        "passes_cardinality_gate": true,
+        "scope": "Key/cardinality checks cover the supplied anchor cohort, not all business identities."
+      }
+    },
+    {
+      "step": {
+        "left_table": "party_activity",
+        "right_table": "application_description",
+        "left_columns": [
+          "ip_right_type",
+          "application_number"
+        ],
+        "right_columns": [
+          "ip_right_type",
+          "application_number"
+        ],
+        "cardinality": "many_to_one",
+        "meaning": "Each party role row is matched to the description record for the same right type and application number, giving a human-readable description of the right alongside the party role.",
+        "cautions": [
+          "Only valid as many_to_one if application_description holds at most one row per (ip_right_type, application_number); the schema includes description_type, so multiple description types per application would break this and the join must be refused.",
+          "If multiple description types exist, a description_type filter (e.g. 'description') would be needed, which is a selection not a star join.",
+          "Description text is source-stated and may be truncated or absent; it is not a legal scope of the right."
+        ]
+      },
+      "measurement": {
+        "left_rows": 25000,
+        "right_rows_scanned": 7485828,
+        "matched_left_rows": 25000,
+        "match_rate": 1.0,
+        "unique_left_keys": 24113,
+        "right_duplicate_keys_in_cohort": 0,
+        "left_duplicate_keys_in_cohort": 868,
+        "refusal_reasons": {},
+        "refusals": [],
+        "would_be_inner_join_rows_without_guard": 25000,
+        "materialized_rows_per_left_max": 1,
+        "semantic_equivalence_established": false,
+        "passes_cardinality_gate": true,
+        "scope": "Key/cardinality checks cover the supplied anchor cohort, not all business identities."
+      }
+    }
+  ],
+  "view_path": "data\\profile-enrichment\\ip-join-new\\joined_view.csv",
+  "view_sha256": "10ce770880944510df491b5e15d7928b84064e6c4ec8fe530c0b838f1549f511",
+  "semantic_precision": null,
+  "human_review": "pending"
+}

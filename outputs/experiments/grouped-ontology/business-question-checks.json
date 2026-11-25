@@ -1,0 +1,334 @@
+[
+  {
+    "source_id": "acnc_ais2024_new",
+    "question": "Reported gross income and assets, with currency, period and consolidation context?",
+    "key": "charity_financials",
+    "input_records": 600,
+    "rows_with_requested_values": 0,
+    "rows_meeting_evidence_contract": 0,
+    "rows_connected_to_business": 0,
+    "violations_by_row": {},
+    "status": "UNSUPPORTED",
+    "examples": [],
+    "scope": "Structural evidence check on this sample; not measured semantic accuracy or a production profile merge."
+  },
+  {
+    "source_id": "acnc_ais2024_new",
+    "question": "Reported employee and volunteer counts?",
+    "key": "charity_workforce",
+    "input_records": 600,
+    "rows_with_requested_values": 502,
+    "rows_meeting_evidence_contract": 502,
+    "rows_connected_to_business": 0,
+    "violations_by_row": {},
+    "status": "PARTIAL",
+    "examples": [
+      {
+        "record_id": "434af5919e09287e66034f95d405c4dc2c2146ebde5313ba064e5c125d8ed86f",
+        "claims": [
+          {
+            "observation_id": "cdd00d9270b301ef5ab133b2",
+            "field": "dyn.charity.full_time_equivalent_staff",
+            "value": 55,
+            "qualifiers": {
+              "period": "2024-01-01"
+            },
+            "entity_kind": "charity",
+            "entity_role": "charity",
+            "source_fields": [
+              "total full time equivalent staff"
+            ],
+            "source_row_ordinal": 1,
+            "valid_from": "2024-01-01",
+            "valid_to": "2024-12-31"
+          },
+          {
+            "observation_id": "6c75062f9403eb6274883910",
+            "field": "dyn.charity.volunteer_count",
+            "value": 1,
+            "qualifiers": {
+              "period": "2024-01-01"
+            },
+            "entity_kind": "charity",
+            "entity_role": "charity",
+            "source_fields": [
+              "staff - volunteers"
+            ],
+            "source_row_ordinal": 1,
+            "valid_from": "2024-01-01",
+            "valid_to": "2024-12-31"
+          }
+        ]
+      },
+      {
+        "record_id": "08b9ff5aebba961c61dfdffe7ea5a949ca30caab1a60aad6788c169b3d36d5b7",
+        "claims": [
+          {
+            "observation_id": "99cc1e3c8cdae036bca4bc5e",
+            "field": "dyn.charity.full_time_equivalent_staff",
+            "value": 153.4,
+            "qualifiers": {
+              "period": "2023-07-01"
+            },
+            "entity_kind": "charity",
+            "entity_role": "charity",
+            "source_fields": [
+              "total full time equivalent staff"
+            ],
+            "source_row_ordinal": 2,
+            "valid_from": "2023-07-01",
+            "valid_to": "2024-06-30"
+          },
+          {
+            "observation_id": "385ae8038bca39956ed36c7e",
+            "field": "dyn.charity.volunteer_count",
+            "value": 6,
+            "qualifiers": {
+              "period": "2023-07-01"
+            },
+            "entity_kind": "charity",
+            "entity_role": "charity",
+            "source_fields": [
+              "staff - volunteers"
+            ],
+            "source_row_ordinal": 2,
+            "valid_from": "2023-07-01",
+            "valid_to": "2024-06-30"
+          }
+        ]
+      },
+      {
+        "record_id": "b258007aa3c6bf69602c11b551bdbe5c35bfc5b0d1bab8b70a6055ddfe1f65d7",
+        "claims": [
+          {
+            "observation_id": "3eaf3c3f058063e2af1bf90f",
+            "field": "dyn.charity.full_time_equivalent_staff",
+            "value": 4.14,
+            "qualifiers": {
+              "period": "2024-01-01"
+            },
+            "entity_kind": "charity",
+            "entity_role": "charity",
+            "source_fields": [
+              "total full time equivalent staff"
+            ],
+            "source_row_ordinal": 3,
+            "valid_from": "2024-01-01",
+            "valid_to": "2024-12-31"
+          },
+          {
+            "observation_id": "bc73c145486b5b5d4c7e8194",
+            "field": "dyn.charity.volunteer_count",
+            "value": 2,
+            "qualifiers": {
+              "period": "2024-01-01"
+            },
+            "entity_kind": "charity",
+            "entity_role": "charity",
+            "source_fields": [
+              "staff - volunteers"
+            ],
+            "source_row_ordinal": 3,
+            "valid_from": "2024-01-01",
+            "valid_to": "2024-12-31"
+          }
+        ]
+      }
+    ],
+    "scope": "Structural evidence check on this sample; not measured semantic accuracy or a production profile merge."
+  },
+  {
+    "source_id": "wgea_employers_new",
+    "question": "What employee size band and reporting period are supplied?",
+    "key": "workforce_band",
+    "input_records": 600,
+    "rows_with_requested_values": 600,
+    "rows_meeting_evidence_contract": 0,
+    "rows_connected_to_business": 0,
+    "violations_by_row": {
+      "missing_period": 600
+    },
+    "status": "PARTIAL",
+    "examples": [],
+    "scope": "Structural evidence check on this sample; not measured semantic accuracy or a production profile merge."
+  },
+  {
+    "source_id": "wgea_employers_new",
+    "question": "What is the exact employee headcount?",
+    "key": "workforce_exact",
+    "input_records": 600,
+    "rows_with_requested_values": 0,
+    "rows_meeting_evidence_contract": 0,
+    "rows_connected_to_business": 0,
+    "violations_by_row": {},
+    "status": "UNSUPPORTED",
+    "examples": [],
+    "scope": "Structural evidence check on this sample; not measured semantic accuracy or a production profile merge."
+  },
+  {
+    "source_id": "ip_party_activity_new",
+    "question": "What party role and role-validity dates are recorded?",
+    "key": "ip_role",
+    "input_records": 600,
+    "rows_with_requested_values": 600,
+    "rows_meeting_evidence_contract": 0,
+    "rows_connected_to_business": 0,
+    "violations_by_row": {
+      "missing_period": 600
+    },
+    "status": "PARTIAL",
+    "examples": [],
+    "scope": "Structural evidence check on this sample; not measured semantic accuracy or a production profile merge."
+  },
+  {
+    "source_id": "ip_party_activity_new",
+    "question": "What application status and description are linked to the party record?",
+    "key": "ip_status_description",
+    "input_records": 600,
+    "rows_with_requested_values": 0,
+    "rows_meeting_evidence_contract": 0,
+    "rows_connected_to_business": 0,
+    "violations_by_row": {},
+    "status": "UNSUPPORTED",
+    "examples": [],
+    "scope": "Structural evidence check on this sample; not measured semantic accuracy or a production profile merge."
+  },
+  {
+    "source_id": "ip_party_activity_new",
+    "question": "What source-stated application status is available?",
+    "key": "ip_status",
+    "input_records": 600,
+    "rows_with_requested_values": 0,
+    "rows_meeting_evidence_contract": 0,
+    "rows_connected_to_business": 0,
+    "violations_by_row": {},
+    "status": "UNSUPPORTED",
+    "examples": [],
+    "scope": "Structural evidence check on this sample; not measured semantic accuracy or a production profile merge."
+  },
+  {
+    "source_id": "ip_party_activity_new",
+    "question": "Who is the verified ultimate beneficial owner of the IP?",
+    "key": "ip_ownership",
+    "input_records": 600,
+    "rows_with_requested_values": 0,
+    "rows_meeting_evidence_contract": 0,
+    "rows_connected_to_business": 0,
+    "violations_by_row": {},
+    "status": "UNSUPPORTED",
+    "examples": [],
+    "scope": "Structural evidence check on this sample; not measured semantic accuracy or a production profile merge."
+  },
+  {
+    "source_id": "ip_joined_view",
+    "question": "What party role and role-validity dates are recorded?",
+    "key": "ip_role",
+    "input_records": 600,
+    "rows_with_requested_values": 596,
+    "rows_meeting_evidence_contract": 0,
+    "rows_connected_to_business": 0,
+    "violations_by_row": {
+      "missing_period": 596
+    },
+    "status": "PARTIAL",
+    "examples": [],
+    "scope": "Structural evidence check on this sample; not measured semantic accuracy or a production profile merge."
+  },
+  {
+    "source_id": "ip_joined_view",
+    "question": "What application status and description are linked to the party record?",
+    "key": "ip_status_description",
+    "input_records": 600,
+    "rows_with_requested_values": 0,
+    "rows_meeting_evidence_contract": 0,
+    "rows_connected_to_business": 0,
+    "violations_by_row": {},
+    "status": "UNSUPPORTED",
+    "examples": [],
+    "scope": "Structural evidence check on this sample; not measured semantic accuracy or a production profile merge."
+  },
+  {
+    "source_id": "ip_joined_view",
+    "question": "What source-stated application status is available?",
+    "key": "ip_status",
+    "input_records": 600,
+    "rows_with_requested_values": 598,
+    "rows_meeting_evidence_contract": 598,
+    "rows_connected_to_business": 0,
+    "violations_by_row": {},
+    "status": "PARTIAL",
+    "examples": [
+      {
+        "record_id": "51ce26f78f53bb7b155b4e46bcef737514937d2dbf0128fb623dc773a696795d",
+        "claims": [
+          {
+            "observation_id": "e4300c9b9a03bae1a71a2403",
+            "field": "dyn.ip_application.status",
+            "value": "filed",
+            "qualifiers": null,
+            "entity_kind": "ip_application",
+            "entity_role": "ip_application",
+            "source_fields": [
+              "application.status"
+            ],
+            "source_row_ordinal": 1,
+            "valid_from": null,
+            "valid_to": null
+          }
+        ]
+      },
+      {
+        "record_id": "eb99c7317e5670901c006a54a1246b3cc0a6228ff26ebfa72673da43edd26d53",
+        "claims": [
+          {
+            "observation_id": "01aebbd8f5439c946e10dd86",
+            "field": "dyn.ip_application.status",
+            "value": "lapsed",
+            "qualifiers": null,
+            "entity_kind": "ip_application",
+            "entity_role": "ip_application",
+            "source_fields": [
+              "application.status"
+            ],
+            "source_row_ordinal": 2,
+            "valid_from": null,
+            "valid_to": null
+          }
+        ]
+      },
+      {
+        "record_id": "d2682a58790d2ad41cd9efc868100fa6ad329c3ebdf440342c8426dce768e17e",
+        "claims": [
+          {
+            "observation_id": "9ddee43917a73f68c97cdd09",
+            "field": "dyn.ip_application.status",
+            "value": "granted",
+            "qualifiers": null,
+            "entity_kind": "ip_application",
+            "entity_role": "ip_application",
+            "source_fields": [
+              "application.status"
+            ],
+            "source_row_ordinal": 3,
+            "valid_from": null,
+            "valid_to": null
+          }
+        ]
+      }
+    ],
+    "scope": "Structural evidence check on this sample; not measured semantic accuracy or a production profile merge."
+  },
+  {
+    "source_id": "ip_joined_view",
+    "question": "Who is the verified ultimate beneficial owner of the IP?",
+    "key": "ip_ownership",
+    "input_records": 600,
+    "rows_with_requested_values": 0,
+    "rows_meeting_evidence_contract": 0,
+    "rows_connected_to_business": 0,
+    "violations_by_row": {},
+    "status": "UNSUPPORTED",
+    "examples": [],
+    "scope": "Structural evidence check on this sample; not measured semantic accuracy or a production profile merge."
+  }
+]

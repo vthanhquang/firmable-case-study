@@ -1,0 +1,229 @@
+{
+  "scope": "Three latest sources; WGEA repaired run and independent IP run are separate assisted attempts, not duplicates of budget-skipped baseline attempts.",
+  "sources": [
+    {
+      "source": "ACNC AIS",
+      "source_id": "acnc_ais2024_new",
+      "run": "run",
+      "status": "INGESTION_FAILED_REVIEW_REQUIRED",
+      "sample_records": 600,
+      "partitions": {
+        "discovery": 342,
+        "test": 118,
+        "validation": 140
+      },
+      "architect_attempts": 5,
+      "mapper_attempts": 4,
+      "unique_mapping_responses": 4,
+      "executed_evaluations": 4,
+      "critic_verdicts": [
+        "revise",
+        "accept",
+        "revise",
+        "accept"
+      ],
+      "latest_validation_observations": 8158,
+      "latest_validation_present_values": 8870,
+      "latest_validation_rejection_reasons": {
+        "QUALIFIER_MISSING_PERIOD": 728
+      },
+      "new_concepts": 63,
+      "reuse_decisions": 9,
+      "new_entity_types": 0,
+      "new_relationship_types": 0,
+      "mapping_rules": 91,
+      "mapped_source_columns": 91,
+      "unmapped_declarations": 0,
+      "accepted_observations": 0,
+      "sealed_test": {
+        "input_records": null,
+        "present_values": null,
+        "value_errors": null
+      },
+      "model_calls": 14,
+      "failed_requests": 0,
+      "input_tokens": 954928,
+      "output_tokens": 121165,
+      "cumulative_request_seconds": 652.2,
+      "proposal_file": "outputs/experiments/profile-enrichment/run/acnc_ais2024_new/4-architect.json",
+      "mapping_file": "outputs/experiments/profile-enrichment/run/acnc_ais2024_new/3-mapper.json"
+    },
+    {
+      "source": "WGEA",
+      "source_id": "wgea_employers_new",
+      "run": "wgea-retest",
+      "status": "AGENT_VALIDATED_CANDIDATE",
+      "sample_records": 600,
+      "partitions": {
+        "discovery": 370,
+        "validation": 121,
+        "test": 109
+      },
+      "architect_attempts": 2,
+      "mapper_attempts": 2,
+      "unique_mapping_responses": 2,
+      "executed_evaluations": 2,
+      "critic_verdicts": [
+        "revise",
+        "accept"
+      ],
+      "latest_validation_observations": 2828,
+      "latest_validation_present_values": 2828,
+      "latest_validation_rejection_reasons": {},
+      "new_concepts": 10,
+      "reuse_decisions": 6,
+      "new_entity_types": 0,
+      "new_relationship_types": 0,
+      "mapping_rules": 24,
+      "mapped_source_columns": 24,
+      "unmapped_declarations": 0,
+      "accepted_observations": 13948,
+      "sealed_test": {
+        "input_records": 109,
+        "present_values": 2556,
+        "value_errors": 0
+      },
+      "model_calls": 7,
+      "failed_requests": 0,
+      "input_tokens": 161932,
+      "output_tokens": 17927,
+      "cumulative_request_seconds": 194.5,
+      "proposal_file": "outputs/experiments/profile-enrichment/wgea-retest/wgea_employers_new/1-architect.json",
+      "mapping_file": "outputs/experiments/profile-enrichment/wgea-retest/wgea_employers_new/1-mapper.json"
+    },
+    {
+      "source": "IP Australia",
+      "source_id": "ip_party_activity_new",
+      "run": "ip-pilot",
+      "status": "NEEDS_REVIEW",
+      "sample_records": 600,
+      "partitions": {
+        "discovery": 357,
+        "validation": 120,
+        "test": 123
+      },
+      "architect_attempts": 5,
+      "mapper_attempts": 5,
+      "unique_mapping_responses": 2,
+      "executed_evaluations": 0,
+      "critic_verdicts": [],
+      "latest_validation_observations": null,
+      "latest_validation_present_values": null,
+      "latest_validation_rejection_reasons": {},
+      "new_concepts": 13,
+      "reuse_decisions": 8,
+      "new_entity_types": 2,
+      "new_relationship_types": 1,
+      "mapping_rules": 15,
+      "mapped_source_columns": 15,
+      "unmapped_declarations": 0,
+      "accepted_observations": 0,
+      "sealed_test": {
+        "input_records": null,
+        "present_values": null,
+        "value_errors": null
+      },
+      "model_calls": 11,
+      "failed_requests": 0,
+      "input_tokens": 228057,
+      "output_tokens": 28634,
+      "cumulative_request_seconds": 214.2,
+      "proposal_file": "outputs/experiments/profile-enrichment/ip-pilot/ip_party_activity_new/4-architect.json",
+      "mapping_file": "outputs/experiments/profile-enrichment/ip-pilot/ip_party_activity_new/4-mapper.json"
+    }
+  ],
+  "totals": {
+    "sample_records": 1800,
+    "new_concepts": 86,
+    "reuse_decisions": 23,
+    "new_entity_types": 2,
+    "new_relationship_types": 1,
+    "mapping_rules": 130,
+    "model_calls": 32,
+    "failed_requests": 0,
+    "input_tokens": 1344917,
+    "output_tokens": 167726,
+    "accepted_sources": 1,
+    "sources": 3,
+    "recorded_human_semantic_verdicts": 0,
+    "recorded_human_work_minutes": null,
+    "manually_edited_mappings": 0,
+    "external_shared_reader_repairs": 1
+  },
+  "historical_assisted_runs": [
+    {
+      "source_id": "austender_new",
+      "status": "AGENT_VALIDATED_CANDIDATE",
+      "rounds": 8,
+      "new_concepts": 12,
+      "observations": 1631,
+      "test_present_values": 333
+    },
+    {
+      "source_id": "brisbane_grants_new",
+      "status": "AGENT_VALIDATED_CANDIDATE",
+      "rounds": 6,
+      "new_concepts": 8,
+      "observations": 4685,
+      "test_present_values": 981
+    },
+    {
+      "source_id": "npi_facilities_new",
+      "status": "AGENT_VALIDATED_CANDIDATE",
+      "rounds": 7,
+      "new_concepts": 17,
+      "observations": 12200,
+      "test_present_values": 2302
+    }
+  ],
+  "human_effort_scenario": [
+    {
+      "source": "ACNC AIS",
+      "review_minutes_low": 206.5,
+      "review_minutes_high": 408,
+      "condition": "After technical blockers are fixed; includes 20 record checks, excludes engineering and new audit findings."
+    },
+    {
+      "source": "WGEA",
+      "review_minutes_low": 67.0,
+      "review_minutes_high": 129,
+      "condition": "After technical blockers are fixed; includes 20 record checks, excludes engineering and new audit findings."
+    },
+    {
+      "source": "IP Australia",
+      "review_minutes_low": 74.5,
+      "review_minutes_high": 144,
+      "condition": "After technical blockers are fixed; includes 20 record checks, excludes engineering and new audit findings."
+    }
+  ],
+  "effort_assumptions_minutes": {
+    "source_scope": [
+      10,
+      15
+    ],
+    "per_new_ontology_item": [
+      2,
+      4
+    ],
+    "per_mapping_rule": [
+      0.5,
+      1
+    ],
+    "per_sample_record": [
+      1,
+      2
+    ],
+    "records_per_source": 20,
+    "signoff": [
+      5,
+      10
+    ]
+  },
+  "limitations": [
+    "No measured human semantic precision or manual-work baseline.",
+    "No measured autonomy/time-saving percentage.",
+    "Rules and ontology concepts overlap in reviewer effort; the itemized scenario may double-count bundled work and undercount difficult cases.",
+    "Reused concepts are examined through mapping review; provenance-only reuse is not an additional full semantic review in the time model.",
+    "Twenty records are a debugging/review sample, not evidence of high population precision. Sample informative edge cases as well as random records."
+  ]
+}

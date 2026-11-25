@@ -1,0 +1,37 @@
+{
+  "request_sha256": "4c7fe683b122dd9a3ed78439f99bcd1a377e991145136c04209b984c6bb20099",
+  "role": "group_critic",
+  "model": "deepseek-v4-flash",
+  "seconds": 8.571,
+  "response": {
+    "verdict": "accept",
+    "findings": [
+      "Grain is stated correctly: one row per party-activity record, with application-level columns repeating across party rows; the group does not claim one row per application or per party.",
+      "All three emitted concepts are owned by ip_application and describe the application, not the party or the business; no grant, enforceability, legal-form or business-income claim is made.",
+      "Reuse decisions are defensible: ext.licence.* and ext.entity.prior_registration_number are owned by licence/entity and would change owner and meaning, so new dyn.ip_application.* concepts are justified.",
+      "The redundant party_activity.application_number and party_activity.ip_right_type are explicitly unmapped with a stated reason (duplicated identifiers, 'patent patent' failing the enum map); this is honest and does not silently drop data.",
+      "Held-out validation shows 110/110 source-present and 110/110 emitted for each of the three fields with 0 error rate; the quality block correctly notes this does not establish semantic truth or population coverage.",
+      "The ip_right_type enum value list ['patent'] is explicitly bounded to the patent-prefix cohort and not asserted as a general vocabulary; the sub_type list is explicitly not asserted exhaustive, with unlisted values yielding no claim.",
+      "The ip_application key (application_number + ip_right_type) matches the stated caution that the number identifies the application only together with the IP right type.",
+      "No invented fallback dates, no population accuracy claim, and no human-review label is present."
+    ],
+    "semantic_risks": [
+      "The sub_type vocabulary (standard_complete, innovation, provisional, petty) is drawn from this snapshot; if the publisher uses other labels, those rows will abstain rather than mis-emit, which is acceptable but reduces coverage.",
+      "ip_right_type is a single-value enum here; if the cohort were widened beyond patents, the enum would need extension rather than silent default-to-null.",
+      "The application_number is a publisher identifier and must not be conflated with ABN/ACN or business registration numbers; the definition states this, but downstream consumers should not treat it as a business key."
+    ],
+    "checked_reuse": [
+      "dyn.party.party_kind vs party_activity.party_type: party classification, owner party, meaning preserved.",
+      "dyn.party.party_key vs party_activity.party_id: party key, unchanged.",
+      "dyn.party.abn_supplied vs party_activity.abn: unvalidated, often-blank party value, unchanged.",
+      "dyn.party.party_name vs party_activity.party_name: free-text lower-cased label, unchanged.",
+      "dyn.party_activity.role / role_category vs party_role / party_role_category: specific and broad role, unchanged.",
+      "dyn.party.address_postcode / address_state / address_country vs post_code / state_code / country_code: raw mixed-format address attributes, unchanged.",
+      "dyn.party_activity.effective_from_date / effective_to_date / is_current / is_founding: party-role validity and founding flag, not business establishment, unchanged.",
+      "Rejected reuse of ext.licence.number, ext.licence.related_licence_number, ext.licence.category, ext.licence.authorisation and ext.entity.prior_registration_number for the new ip_application concepts: owner and meaning differ."
+    ],
+    "rationale": "The group emits three application-scoped concepts with correct ownership, bounded vocabularies, explicit unmapped reasons for the redundant party_activity columns, and held-out validation showing full source-present coverage with zero rejected values. No blocking semantic, ownership, unit, date, legal or provenance defect is identified; the abstention on unlisted sub-types is honest bounded coverage rather than an incorrect emission. Accept with no repair required.",
+    "blocking_findings": [],
+    "repair_scope": "none"
+  }
+}

@@ -44,6 +44,10 @@ npm --prefix frontend start
 
 Open **http://127.0.0.1:4173**. No npm dependencies or installation are needed. The site includes discovery previews, mapping coverage, source-link graphs, review evidence, searchable profiles, the write-up and architecture. Checked-in snapshots work before running the Python pipeline.
 
+The **Architecture** tab and its downloadable SVG show the current grouped ontology experiment, agent revision loop, join checks and review memory alongside the established identity/profile engine. Candidate-to-production promotion is explicitly marked as not implemented. Diagram nodes link to the corresponding evidence stage; mobile screens use expandable pipeline sections.
+
+A high-resolution PNG overview appears first; click it to open the full-size image. The interactive diagram is available under **Explore the interactive architecture**. To refresh the checked-in PNG after editing the diagram, install the optional renderer with `npm install --prefix tmp/architecture-render --no-save --package-lock=false @resvg/resvg-js`, then run `node frontend/scripts/render-architecture-png.mjs` and `npm --prefix frontend run build`. Normal serving and builds need no renderer installation.
+
 ```bash
 npm --prefix frontend run check
 node --test frontend/tests/source-pairs.test.mjs
@@ -127,6 +131,52 @@ python scripts/build_evolution_report.py
 ```
 
 Replay needs no model key and makes no API calls. Live onboarding is optional and paid; follow the design document for download/registration and `run --live` commands. This experiment's type/constraint validation is not a new human-measured semantic precision result. Agent review is labelled as agent review.
+
+## New-source stress test: workforce, IP and charity financials
+
+The later [company-intelligence experiment](outputs/experiments/profile-enrichment/RESULTS.md) tests WGEA, IP Australia and ACNC Annual Information Statements. Open the [standalone HTML review](reports/profile-enrichment.html) for outcomes, proposed concepts and evidence examples. This is a separate experiment, not an update to the submitted benchmark.
+
+The test exposed silent loss of repeated XLSX columns. A shared-reader fix preserves them, and WGEA passed a fresh agent run: 600 records, 13,948 observations and 10 proposed concepts. An independent automated comparison checked 468 emitted values across 20 records with no value/year mismatches; this is **not human semantic precision**. A targeted demonstration applies the unchanged agent mapping to 21 existing profiles, yielding 500 observations in [a separate review file](outputs/experiments/profile-enrichment/targeted-wgea-profiles.json). No production profiles or human approvals are changed. ACNC exposed a rejection/abstention gate issue; the IP pilot exhausted five revision rounds on prohibited date mappings. See the report for exact statuses and spending limits.
+
+```bash
+# Offline replay of the successful candidate; no key or new downloads needed.
+python -m firmable.evolution replay --output outputs/experiments/profile-enrichment/wgea-retest
+python scripts/report_profile_enrichment.py
+
+# Optional: restore publisher inputs for the independent workbook check/demo.
+# Snapshot changes are rejected rather than silently replacing evidence.
+python scripts/prepare_profile_enrichment.py
+python -m scripts.check_profile_enrichment
+```
+
+Inputs are full ACNC CSV and WGEA XLSX downloads, plus a documented 25,000-record prefix of IP RAPID's party-activity table. The IP prefix contains patents only; it does not test trademark ingestion or multi-table joins. The raw files stay in ignored `data/`; frozen experiment samples, model responses, licences and hashes are retained. Recorded live calls used the owner's authorised gateway; credentials remain external. These experiments and the reader fix are local review changes, not automatically committed or pushed.
+
+## Grouped ontology and join experiment
+
+Open **Onboarding** in the demo (`http://127.0.0.1:4173/?part=onboarding`), or open [the self-contained HTML replay](reports/dataset-onboarding.html) directly in a browser. It works offline and shows three recorded cases: IP Australia, ACNC and WGEA. Follow seven stages, inspect 50 frozen sample rows, explore ontology nodes, compare actual mapping revisions and tokens, download blank review queues, and preview candidate facts beside existing profiles where a source ABN overlaps. The page makes no model calls and never writes approvals or production profile changes.
+
+```bash
+# Regenerate both the demo's compact JSON and the standalone HTML from saved evidence.
+python scripts/build_onboarding_demo.py
+cd frontend
+npm run check
+npm run build
+npm start
+```
+
+The HTML embeds the same renderer and data as the tab. Graph nodes, stage controls, dataset selection, record previews and review downloads all work without a server in the standalone version. Profile links into the main demo are shown only in the served tab.
+
+[Demo verification and known design-check findings](docs/ONBOARDING_DEMO_REVIEW.md) includes the evidence checks, interaction-test commands and responsive review.
+
+The [implementation comparison](outputs/experiments/grouped-ontology/RESULTS.md) evaluates bounded group agents, deterministic mapping compilation, change-based human review and model-proposed multi-table joins. It includes the failures and cumulative token costs. This remains experimental: IP party ingestion recovers, while grouping reduces WGEA coverage and leaves ACNC financial groups unfinished. An offline ACNC ablation shows that correcting abstention accounting alone recovers more coverage than the grouped run, with no new model calls.
+
+```bash
+# Offline: frozen evidence, no API key or publisher downloads required.
+python -m scripts.evaluate_grouped_ontology
+python -m firmable.evolution2 replay --output outputs/experiments/grouped-ontology/recovery
+```
+
+The [review inventory](outputs/experiments/grouped-ontology/human-review-inventory.csv) and [business-question checks](outputs/experiments/grouped-ontology/business-question-checks.json) distinguish extracted facts from facts actually connected to a business. All new review verdicts remain blank. [Experiment instructions](docs/ONTOLOGY_IMPROVEMENT_PLAN.md) cover optional paid runs and explicit human decisions. The separate IP join scans full application tables against a 25,000-record patent-prefix cohort; it does not claim full-population ingestion. No production profiles are replaced.
 
 ## Known limitations
 

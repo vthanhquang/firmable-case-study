@@ -1,0 +1,41 @@
+{
+  "request_sha256": "a349faed1c16e2cf6a9a5a2c05a2d4de727284e48ab2467c6cbf1101ad984189",
+  "role": "group_critic",
+  "model": "deepseek-v4-flash",
+  "seconds": 12.636,
+  "response": {
+    "verdict": "accept",
+    "findings": [
+      "All 16 declared source columns in the group are mapped: 9 activity flags and 7 jurisdiction fundraising numbers; no group column is left unmapped.",
+      "Validation evidence shows 0.0 error rate of present values for every field, with full coverage (140/140) on all nine activity-flag columns and exact coverage of present values on all seven number columns (2, 12, 5, 4, 1, 5, 4).",
+      "Low coverage on number columns (e.g. TAS 1/140, ACT 2/140) reflects genuine sparsity of published fundraising numbers, not mapping loss; emitted counts equal source-present counts in every case.",
+      "Held-out examples confirm verbatim retention of jurisdiction-specific formats (FR0014958 for VIC, CFN/25582 and 13540 for NSW) with the correct jurisdiction qualifier attached.",
+      "Activity flags are correctly separated from numbers: ordinal 561 shows all 'n' flags with empty numbers, and ordinal 733 shows VIC 'y' with a VIC number, consistent with the stated relationship that flags indicate activity, not the authorisation itself.",
+      "The concept definition explicitly warns that a 'y' flag does not prove a registration number exists and that placeholder values like 00000 are not evidence of valid registration; this is an honest semantic bound rather than an overclaim.",
+      "Owner assignment to fundraising_authorisation (not charity or licence) is defensible: the number is jurisdiction-qualified and the flag is a per-jurisdiction activity indicator, neither of which is a charity attribute or a business licence.",
+      "Reuse rejections are correctly reasoned: state_association_number is a different regime (incorporated associations) and charity-owned; ext.licence.number is licence-owned; ext.licence.authorisation is text not a y/n flag; address.state is an address, not an activity indicator.",
+      "The 'online' literal used as the jurisdiction qualifier for the online column is explicitly documented in the concept definition, so it is a stated convention rather than an unmarked inference.",
+      "No legal-form, incorporation-date or licence-date claims are made from these columns; the group does not infer company legal form from names or ABNs.",
+      "The grain and identity cautions correctly note ABN as the only stable key and that absence of a row is not evidence a charity does not exist (withheld information)."
+    ],
+    "semantic_risks": [
+      "The 'online' value in the jurisdiction qualifier is a non-geographic literal mixed into a jurisdiction-qualified concept; consumers filtering by jurisdiction must know to treat 'online' specially, and a future concept split (e.g. a separate online-fundraising flag) may be cleaner.",
+      "The number concept is single-valued per jurisdiction, but the source has one column per jurisdiction, so a charity with multiple registrations in one jurisdiction could not be represented; the data does not appear to exhibit this, but the cardinality assumption is not evidenced.",
+      "Placeholder values such as 00000 are retained as published; downstream consumers may mistake them for valid registrations unless they read the concept definition, so the caveat lives only in documentation, not in the value.",
+      "Activity flags are self-reported AIS answers, not regulator-verified registrations; the concept definition says so, but any downstream use as proof of authorisation would be a semantic error.",
+      "The relationship HOLDS_FUNDRAISING_AUTHORISATION is declared but the execution contract emits edges only when both roles have claims; for charities with flags but no numbers, no authorisation edge will exist, which is correct but should not be read as 'no authorisation'.",
+      "The number columns are sparse (TAS 1/140), so any aggregate 'number of jurisdictions registered' derived from this group will undercount relative to flags; this is a coverage property, not a mapping error."
+    ],
+    "checked_reuse": [
+      "dyn.charity.state_association_number: correctly not reused — different registration regime (incorporated associations) and charity-owned, not fundraising_authorisation-owned.",
+      "ext.licence.number: correctly not reused — licence-owned business licence number, not a jurisdiction-qualified fundraising registration.",
+      "ext.licence.authorisation: correctly not reused — licence authorisation text, not a y/n activity flag.",
+      "address.state: correctly not reused — a business address state, not a fundraising activity indicator or registration jurisdiction.",
+      "No existing concept was found that records a per-jurisdiction or online fundraising activity flag, so the new activity_flag concept is justified.",
+      "No existing concept was found that records a jurisdiction-qualified state fundraising registration number owned by a fundraising_authorisation role, so the new number concept is justified."
+    ],
+    "rationale": "The group maps all 16 declared columns with zero error rate of present values and exact coverage of present values on every field. Held-out examples confirm verbatim number retention with correct jurisdiction qualifiers and correct separation of activity flags from registration numbers. Reuse rejections are semantically sound (different owner, regime or units in each case), and the concept definitions honestly bound the meaning (self-reported flags, placeholder numbers, no proof of registration). Remaining concerns are documentation-level semantic risks and sparsity-driven coverage limits, not blocking mapping or ontology defects. No blocking findings are raised, so the verdict is accept with repair_scope none.",
+    "blocking_findings": [],
+    "repair_scope": "none"
+  }
+}

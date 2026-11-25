@@ -1,0 +1,105 @@
+{
+  "quality": {
+    "present_values": 229,
+    "emitted_observations": 229,
+    "withheld_missing_context": 0,
+    "abstention_reasons": {},
+    "malformed_values": 0,
+    "malformed_reasons": {},
+    "eligible_present_values": 229,
+    "malformed_rate": 0.0,
+    "abstention_rate": 0.0,
+    "record_errors": {},
+    "passes_technical_gate": true,
+    "semantic_precision": null,
+    "note": "Missing required context remains withheld. This gate does not establish semantic truth or useful coverage."
+  },
+  "raw_validation": {
+    "records_in": 110,
+    "records_with_output": 98,
+    "record_errors": {},
+    "fields": [
+      {
+        "target": "dyn.party.address_country",
+        "source_paths": [
+          "party_activity.country_code"
+        ],
+        "records": 110,
+        "source_present": 98,
+        "emitted": 98,
+        "coverage_of_records": 0.891,
+        "error_rate_of_present": 0.0,
+        "errors": {},
+        "error_examples": {},
+        "entity": "party"
+      },
+      {
+        "target": "dyn.party.address_state",
+        "source_paths": [
+          "party_activity.state_code"
+        ],
+        "records": 110,
+        "source_present": 52,
+        "emitted": 52,
+        "coverage_of_records": 0.473,
+        "error_rate_of_present": 0.0,
+        "errors": {},
+        "error_examples": {},
+        "entity": "party"
+      },
+      {
+        "target": "dyn.party.address_postcode",
+        "source_paths": [
+          "party_activity.post_code"
+        ],
+        "records": 110,
+        "source_present": 79,
+        "emitted": 79,
+        "coverage_of_records": 0.718,
+        "error_rate_of_present": 0.0,
+        "errors": {},
+        "error_examples": {},
+        "entity": "party"
+      }
+    ],
+    "relationships": {},
+    "input_records": 110,
+    "refused_records": 12,
+    "observations": 229,
+    "value_errors": 0,
+    "present_values": 229,
+    "error_rate": 0.0
+  },
+  "critic": {
+    "verdict": "accept",
+    "findings": [
+      "All three proposed concepts (dyn.party.address_country, dyn.party.address_state, dyn.party.address_postcode) are owned by the party role, not the business subject, and their definitions explicitly disclaim incorporation, registered office, operating region and Australian-only scope.",
+      "Held-out validation shows 0 errors of present values for all three fields (country 98/98, state 52/52, postcode 79/79), with coverage of records 0.891, 0.473 and 0.718 respectively; the low state coverage reflects genuine source blanks, not mapping failure.",
+      "Held-out examples confirm raw preservation: country 'us'/'cz'/'ch', state 'vic'/'nsw'/'qld', postcode '760 01'/'3000'/'91522' — mixed formats retained, no forced 4-digit Australian postcode normalisation, consistent with the stated rationale.",
+      "Blank handling is correct: ordinal 731 has empty country_code, state_code and post_code and no address claims are emitted for it; blanks are not converted to 'au' or to any default.",
+      "The mapping deliberately omits a postcode transform and state normalisation, which matches the source's non-uniform formats and non-Australian values; this is a defensible abstention from over-normalisation, not missing coverage.",
+      "Grain and identity cautions are consistent with the joined view: party_id plus role plus application keys, application-level columns flagged as repeating, and no inference of legal form or beneficial ownership from party_type or party_name.",
+      "Reuse of dyn.party.party_key, party_name, party_kind, abn_supplied and the party_activity role/validity fields is unchanged and does not alter meaning.",
+      "Quality gate reports 229 present values, 0 malformed, 0 withheld-missing-context and passes_technical_gate=true; semantic_precision is null, so no population accuracy claim is made."
+    ],
+    "semantic_risks": [
+      "Consumers could misread dyn.party.address_country as the party's country of incorporation or the business's registered office; the definition forbids this but downstream views must preserve the disclaimer.",
+      "dyn.party.address_state holds non-Australian values (e.g. foreign provinces) and must not be joined to Australian state enums or used as a business operating-region filter.",
+      "dyn.party.address_postcode is unnormalised and mixed-format; any downstream postcode-based geocoding or Australian postcode validation would be invalid.",
+      "Address attributes are recorded per party-role record and may differ across applications for the same party_id; they are not a single canonical party address.",
+      "The cohort is a patent-prefix subset, so coverage figures (0.891/0.473/0.718) describe this cohort only and cannot be generalised to a population."
+    ],
+    "checked_reuse": [
+      "dyn.party.party_key — same party-role record, unchanged.",
+      "dyn.party.party_name — same party-role record, unchanged.",
+      "dyn.party.party_kind — party organisation/individual classification, unchanged and not treated as legal form.",
+      "dyn.party.abn_supplied — ABN as supplied, unchanged; blanks not read as non-Australian.",
+      "dyn.party_activity.role and role_category — unchanged.",
+      "dyn.party_activity.effective_from_date, effective_to_date, is_current, is_founding — unchanged party-role validity, not application or business lifecycle.",
+      "Rejected reuse of business-owned address.country, address.state and address.postcode because owner and meaning would change."
+    ],
+    "rationale": "The group's three address concepts are semantically defensible: they are party-owned, explicitly disclaim incorporation/registered-office/operating-region meaning, preserve raw published values including non-Australian and mixed-format postcodes, and treat blanks as missing rather than defaulting to Australia. Held-out validation shows zero errors of present values across all three fields, and the held-out examples confirm raw preservation and correct blank handling. Coverage is honestly bounded (state 0.473 of records) and reflects source blanks, which is acceptable partial coverage rather than a mapping defect. No blocking findings are identified; the remaining items are downstream semantic risks to be carried forward, not corrections to the emitted mapping or ontology.",
+    "blocking_findings": [],
+    "repair_scope": "none"
+  }
+}

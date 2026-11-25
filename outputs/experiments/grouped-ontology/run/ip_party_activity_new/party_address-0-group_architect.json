@@ -1,0 +1,53 @@
+{
+  "request_sha256": "20cb8b675b83aea06fa92c8a9e88f64dbe414232af9df0146c5d9c8a686783a2",
+  "role": "group_architect",
+  "model": "deepseek-v4-flash",
+  "seconds": 7.264,
+  "response": {
+    "concepts": [
+      {
+        "path": "dyn.party.address_state_code",
+        "type": "string",
+        "owner": "party",
+        "definition": "State or territory code as supplied in the party's address on an IP application record, lower-cased and unnormalised (e.g. 'vic', 'qld', 'nsw', 'wa'). It is a party address field only; it is not a statement of the party's legal jurisdiction, incorporation place or business operating location, and it must not be mapped onto the business subject's address.state enum without normalisation.",
+        "values": [],
+        "multi": false,
+        "required_qualifiers": [],
+        "source_paths": [
+          "state_code"
+        ],
+        "why_not_existing": "address.state is an enum owned by the business subject with normalised Australian/NZ/OTHER values; this value is an unnormalised, lower-cased party address code owned by the IP-application party, so reuse would change both owner and value domain.",
+        "personal_data": "never"
+      },
+      {
+        "path": "dyn.party.address_post_code",
+        "type": "string",
+        "owner": "party",
+        "definition": "Postal code as supplied in the party's address on an IP application record, kept as raw text because formats are mixed and not normalised (e.g. '15666', '110044', '30024', 't6b 3n9'). It is a party address field only and is not a statement of the party's legal jurisdiction or of a business establishment location.",
+        "values": [],
+        "multi": false,
+        "required_qualifiers": [],
+        "source_paths": [
+          "post_code"
+        ],
+        "why_not_existing": "address.postcode is owned by the business subject and implies a normalised business address; this value is an unnormalised party address field with non-Australian and alphanumeric formats, so owner, meaning and value domain differ.",
+        "personal_data": "never"
+      },
+      {
+        "path": "dyn.party.address_country_code",
+        "type": "string",
+        "owner": "party",
+        "definition": "Country code as supplied in the party's address on an IP application record, lower-cased and unnormalised (e.g. 'us', 'hk', 'in', 'il'). It is a party address field only; it is not a statement of the party's legal jurisdiction, nationality or legal form.",
+        "values": [],
+        "multi": false,
+        "required_qualifiers": [],
+        "source_paths": [
+          "country_code"
+        ],
+        "why_not_existing": "address.country is owned by the business subject and describes the business's own address country; this value is an unnormalised party address code on an IP application, so reuse would change owner and meaning.",
+        "personal_data": "never"
+      }
+    ],
+    "reuse": {}
+  }
+}

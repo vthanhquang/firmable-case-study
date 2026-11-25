@@ -1,0 +1,87 @@
+[
+  {
+    "group": "party_identity",
+    "columns": [
+      "party_activity.party_id",
+      "party_activity.party_name",
+      "party_activity.party_type",
+      "party_activity.abn"
+    ],
+    "status": "AGENT_VALIDATED",
+    "attempts": 0,
+    "reused_from": "outputs\\experiments\\grouped-ontology\\ip-joined-run\\ip_joined_view",
+    "feedback": null
+  },
+  {
+    "group": "party_role_on_application",
+    "columns": [
+      "party_activity.party_role_category",
+      "party_activity.party_role",
+      "party_activity.is_founding",
+      "party_activity.is_current",
+      "party_activity.effective_from_date",
+      "party_activity.effective_to_date"
+    ],
+    "status": "AGENT_VALIDATED",
+    "attempts": 0,
+    "reused_from": "outputs\\experiments\\grouped-ontology\\ip-joined-run\\ip_joined_view",
+    "feedback": null
+  },
+  {
+    "group": "party_address",
+    "columns": [
+      "party_activity.country_code",
+      "party_activity.state_code",
+      "party_activity.post_code"
+    ],
+    "status": "AGENT_VALIDATED",
+    "attempts": 0,
+    "reused_from": "outputs\\experiments\\grouped-ontology\\ip-joined-run\\ip_joined_view",
+    "feedback": null
+  },
+  {
+    "group": "application_identity_and_type",
+    "columns": [
+      "application.application_number",
+      "application.ip_right_type",
+      "application.ip_right_sub_type",
+      "party_activity.application_number",
+      "party_activity.ip_right_type"
+    ],
+    "status": "AGENT_VALIDATED",
+    "attempts": 0,
+    "reused_from": "outputs\\experiments\\grouped-ontology\\ip-joined-run\\ip_joined_view",
+    "feedback": null
+  },
+  {
+    "group": "application_status_and_dates",
+    "columns": [
+      "application.status",
+      "application.application_date",
+      "application.earliest_filed_date",
+      "application.priority_date",
+      "application.gained_registration_status_date",
+      "application.gained_enforceable_status_date",
+      "application.enforceable_from_date",
+      "application.deemed_retired_date"
+    ],
+    "status": "AGENT_VALIDATED",
+    "attempts": 3,
+    "feedback": null
+  },
+  {
+    "group": "application_description",
+    "columns": [
+      "application_description.application_number",
+      "application_description.ip_right_type",
+      "application_description.description_type",
+      "application_description.description_value"
+    ],
+    "status": "NEEDS_REVIEW",
+    "attempts": 2,
+    "feedback": {
+      "stop_reason": "SOURCE_BUDGET",
+      "error": "Per-source request reservation exhausted; other sources retain their allowances"
+    }
+  }
+]

@@ -1,0 +1,71 @@
+{
+  "request_sha256": "a84f33ee5a605e1b8928ac1317f16937910e2b613fab2b834743825e66f9e1f0",
+  "role": "group_architect",
+  "model": "deepseek-v4-flash",
+  "seconds": 7.97,
+  "response": {
+    "concepts": [
+      {
+        "path": "dyn.party.identifier",
+        "type": "string",
+        "owner": "party",
+        "definition": "Publisher-assigned identifier for a party (organisation or individual) recorded on an IP application. It identifies the party across applications but is not a company registration number, ACN or ABN, and does not imply legal form or company status.",
+        "values": [],
+        "multi": false,
+        "required_qualifiers": [],
+        "source_paths": [
+          "party_id"
+        ],
+        "why_not_existing": "No shortlisted concept identifies an IP-application party; entity.acn and entity.abn are business registration identifiers owned by the business subject, and ext.licence.number identifies a licence, so reuse would change both owner and meaning.",
+        "personal_data": "never"
+      },
+      {
+        "path": "dyn.party.name",
+        "type": "string",
+        "owner": "party",
+        "definition": "Party name as published for an IP application party, lower-cased and unnormalised free text. It is a label only, not a unique identifier, and must not be used to join or deduplicate parties or to infer legal form.",
+        "values": [],
+        "multi": false,
+        "required_qualifiers": [],
+        "source_paths": [
+          "party_name"
+        ],
+        "why_not_existing": "entity.legal_name and entity.trading_name are registered business names owned by the business subject; this value is an unnormalised party label on an IP application and may belong to an individual or an agent, so reuse would change owner and meaning.",
+        "personal_data": "always"
+      },
+      {
+        "path": "dyn.party.kind",
+        "type": "enum",
+        "owner": "party",
+        "definition": "Whether the IP application party is recorded by the publisher as an organisation or an individual. This is a party classification only; it is not a legal form, not a company status, and never implies sole trader.",
+        "values": [
+          "organisation",
+          "individual",
+          "unknown"
+        ],
+        "multi": false,
+        "required_qualifiers": [],
+        "source_paths": [
+          "party_type"
+        ],
+        "why_not_existing": "ext.entity.holder_kind is owned by the business subject and describes the holder of a business record; entity.entity_type is a business legal-structure guess. Neither is owned by an IP-application party, and reusing either would assert business legal form from a party classification.",
+        "personal_data": "never"
+      },
+      {
+        "path": "dyn.party.abn",
+        "type": "string",
+        "owner": "party",
+        "definition": "Australian Business Number supplied for an IP application party, sparsely populated and unvalidated in this source. It is an identifier only and must not be used to infer legal form, company status or a link to a business entity.",
+        "values": [],
+        "multi": false,
+        "required_qualifiers": [],
+        "source_paths": [
+          "abn"
+        ],
+        "why_not_existing": "entity.abn is owned by the business subject and is checksum-validated as a business identifier; here the value is an optional, sparse attribute of a party that may be an individual or an agent, so owner and validation scope differ.",
+        "personal_data": "never"
+      }
+    ],
+    "reuse": {}
+  }
+}

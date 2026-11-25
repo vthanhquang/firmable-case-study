@@ -1,0 +1,40 @@
+{
+  "request_sha256": "ea61675ffc8e13c1351592b2fc465078762359a8ad73066561fe6acb180aa35b",
+  "role": "group_critic",
+  "model": "deepseek-v4-flash",
+  "seconds": 12.499,
+  "response": {
+    "verdict": "revise",
+    "findings": [
+      "Date fields (application_date, earliest_filed_date, priority_date, registration_status_date, enforceable_status_date, deemed_retired_date) show 0 errors on present values and defensible application-level ownership; the ISO-8601 parse formats match the observed raw values (e.g. '2001-07-06T00:00:00.000Z').",
+      "The status enum is incomplete: held-out validation shows 33 of 110 present status values rejected as INVALID_ENUM_VALUE_INVALID with actual value 'ceased', which is absent from the declared enum values (filed, accepted, granted, lapsed, withdrawn, expired, unknown). This is a real semantic gap, not a missing-context abstention.",
+      "The mapping uses map_enum with passthrough=true, so 'ceased' is passed through and then rejected by the enum guard rather than being mapped or explicitly withheld; the emitted coverage of 0.7 on status is therefore an artefact of the enum gap, not a deliberate abstention.",
+      "application.enforceable_from_date is correctly unmapped with an explicit reason (0 nonempty of 381); this is honest abstention and not a defect.",
+      "Grain, identity cautions and the 'application status/dates are not business facts' framing are consistent with the source notes; no business-incorporation or legal-form inference is made from party names or ABNs.",
+      "The APPLICATION_HAS_DESCRIPTION relationship is declared from ip_application to ip_application (self-role); the rationale describes a description table link, but the edge as declared does not express a distinct description role. This is a modelling weakness rather than a proven wrong emitted value, since no description claims are in this group's scope."
+    ],
+    "semantic_risks": [
+      "Adding 'ceased' to the enum must be treated as a publisher-stated application lifecycle state; it must not be reinterpreted as business cessation or as evidence of a party's status.",
+      "If 'ceased' is instead withheld, the abstention must be recorded with an explicit unmapped/withheld reason so it is not silently dropped and does not inflate apparent coverage.",
+      "The self-referential APPLICATION_HAS_DESCRIPTION edge could be misread as an application-to-application relationship; if retained, its meaning should be clarified or the edge removed from this group's scope.",
+      "Dates such as registration_status_date and enforceable_status_date are frequently blank; blanks must remain missing and must not be read as 'never registered' or 'not enforceable' — the definitions already state this, and it should be preserved in any repair."
+    ],
+    "checked_reuse": [
+      "dyn.ip_application.application_number — reuse accepted: same owner and meaning (application identifier).",
+      "dyn.ip_application.ip_right_type and dyn.ip_application.ip_right_sub_type — reuse accepted: application-level classification, same owner.",
+      "dyn.party_activity.effective_from_date / effective_to_date / is_current — reuse accepted: party-role validity, correctly kept distinct from application.deemed_retired_date and application dates.",
+      "Rejection of ext.licence.status, ext.licence.start_date/end_date and ext.entity.date_established for these application-level fields — accepted: different owner and meaning, reuse would change semantics."
+    ],
+    "rationale": "The date concepts are semantically sound, correctly owned by ip_application, and validated with zero errors on present values; the unmapped enforceable_from_date is honest abstention. The blocking defect is the status enum: held-out evidence shows the publisher vocabulary includes 'ceased', which the enum omits, causing 33 rejected values and a 0.3 error rate on present status values. This is a mapping/ontology completeness issue that must be repaired before acceptance. The self-referential description edge is a secondary modelling concern noted as a semantic risk, not a blocking emitted-value error. Verdict is revise, not accept, because a blocking finding exists.",
+    "blocking_findings": [
+      {
+        "field": "dyn.ip_application.status",
+        "actual": "Enum values are filed, accepted, granted, lapsed, withdrawn, expired, unknown; 'ceased' is not a member, so 33 of 110 present values are rejected as INVALID_ENUM_VALUE_INVALID.",
+        "expected": "The status enum must cover the full observed publisher vocabulary, including 'ceased' as a publisher-stated application lifecycle state (or, if deliberately withheld, an explicit unmapped/withheld reason must be recorded for it).",
+        "evidence": "validation_fields for dyn.ip_application.status: records 110, source_present 110, emitted 77, error_rate_of_present 0.3, errors {INVALID_ENUM_VALUE_INVALID: 33}, error_examples ['ceased','ceased','ceased','ceased']; quality.malformed_reasons INVALID_ENUM_VALUE_INVALID 33.",
+        "correction": "Add 'ceased' to dyn.ip_application.status.values in the ontology and to the map_enum mapping in the mapping (e.g. \"ceased\": \"ceased\"), keeping passthrough=false or ensuring all observed values are explicitly mapped; alternatively, if 'ceased' is to be withheld, set the mapping to drop it and record an explicit unmapped/withheld reason. Re-run validation and confirm error_rate_of_present for dyn.ip_application.status is 0.0."
+      }
+    ],
+    "repair_scope": "both"
+  }
+}

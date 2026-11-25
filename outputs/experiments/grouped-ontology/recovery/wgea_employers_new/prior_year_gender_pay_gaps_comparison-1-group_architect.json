@@ -1,0 +1,75 @@
+{
+  "request_sha256": "049c73ebce657e7847096e3a54827d28970aa3f088ff768292127e066ab9f321",
+  "role": "group_architect",
+  "model": "deepseek-v4-flash",
+  "seconds": 9.182,
+  "response": {
+    "concepts": [
+      {
+        "path": "dyn.employer_reporting_unit.prior_year_average_base_salary_gpg",
+        "type": "decimal",
+        "owner": "employer_reporting_unit",
+        "definition": "The average (mean) gender pay gap in base salary for the employer reporting unit, as reported for the 2023-24 WGEA Gender Equality Reporting year (the prior-year comparison block of the 2024-25 workbook). Stored by the publisher as a decimal fraction (0.16 = 16%), not a whole percentage; a negative value indicates a gap favouring women. It is a pay gap, not a pay level or business income. Blank means no prior-year comparison, not a zero gap.",
+        "values": [],
+        "multi": false,
+        "required_qualifiers": [
+          "period"
+        ],
+        "source_paths": [
+          "Average base salary GPG (%)_2"
+        ],
+        "why_not_existing": "The existing dyn.employer_reporting_unit.average_base_salary_gpg is scoped to the 2024-25 reporting year and cannot be mutated; this column is the 2023-24 comparison value, so a distinct concept is needed to keep the temporal scope explicit rather than overwriting the current-year measure.",
+        "personal_data": "never"
+      },
+      {
+        "path": "dyn.employer_reporting_unit.prior_year_average_total_remuneration_gpg",
+        "type": "decimal",
+        "owner": "employer_reporting_unit",
+        "definition": "The average (mean) gender pay gap in total remuneration for the employer reporting unit, as reported for the 2023-24 WGEA Gender Equality Reporting year (the prior-year comparison block of the 2024-25 workbook). Total remuneration is pay (base salary plus superannuation and other payments), not revenue or business income. Stored by the publisher as a decimal fraction (0.16 = 16%); a negative value indicates a gap favouring women. Blank means no prior-year comparison, not a zero gap.",
+        "values": [],
+        "multi": false,
+        "required_qualifiers": [
+          "period"
+        ],
+        "source_paths": [
+          "Average total remuneration GPG (%)_2"
+        ],
+        "why_not_existing": "The existing dyn.employer_reporting_unit.average_total_remuneration_gpg is scoped to the 2024-25 reporting year and cannot be mutated; this column is the 2023-24 comparison value, so reuse would change the temporal scope of the measure.",
+        "personal_data": "never"
+      },
+      {
+        "path": "dyn.employer_reporting_unit.prior_year_median_base_salary_gpg",
+        "type": "decimal",
+        "owner": "employer_reporting_unit",
+        "definition": "The median gender pay gap in base salary for the employer reporting unit, as reported for the 2023-24 WGEA Gender Equality Reporting year (the prior-year comparison block of the 2024-25 workbook). Stored by the publisher as a decimal fraction (0.165 = 16.5%), not a whole percentage; a negative value indicates a gap favouring women. It is a pay gap, not a pay level or business income. Blank means no prior-year comparison, not a zero gap.",
+        "values": [],
+        "multi": false,
+        "required_qualifiers": [
+          "period"
+        ],
+        "source_paths": [
+          "Median base salary GPG (%)_2"
+        ],
+        "why_not_existing": "The existing dyn.employer_reporting_unit.median_base_salary_gpg is scoped to the 2024-25 reporting year and cannot be mutated; this column is the 2023-24 comparison value, so reuse would change the temporal scope of the measure.",
+        "personal_data": "never"
+      },
+      {
+        "path": "dyn.employer_reporting_unit.prior_year_median_total_remuneration_gpg",
+        "type": "decimal",
+        "owner": "employer_reporting_unit",
+        "definition": "The median gender pay gap in total remuneration for the employer reporting unit, as reported for the 2023-24 WGEA Gender Equality Reporting year (the prior-year comparison block of the 2024-25 workbook). Total remuneration is pay (base salary plus superannuation and other payments), not revenue or business income. Stored by the publisher as a decimal fraction (0.165 = 16.5%); a negative value indicates a gap favouring women. Blank means no prior-year comparison, not a zero gap.",
+        "values": [],
+        "multi": false,
+        "required_qualifiers": [
+          "period"
+        ],
+        "source_paths": [
+          "Median total remuneration GPG (%)_2"
+        ],
+        "why_not_existing": "The existing dyn.employer_reporting_unit.median_total_remuneration_gpg is scoped to the 2024-25 reporting year and cannot be mutated; this column is the 2023-24 comparison value, so reuse would change the temporal scope of the measure.",
+        "personal_data": "never"
+      }
+    ],
+    "reuse": {}
+  }
+}

@@ -1,0 +1,875 @@
+{
+  "source_id": "wgea_employers_new",
+  "record_grain": "One row per employer reporting unit for the 2024-25 WGEA Gender Equality Reporting, identified by Employer name plus Employer ABN; each row also carries a contextual 2023-24 comparison block of four GPG columns, so a row is an employer-year-pair record rather than a single-year measure.",
+  "grain_rationale": "Model-authored grain and groups; executable envelope compiled deterministically.",
+  "reader": {
+    "format": "xlsx",
+    "archive_member": null,
+    "encoding": "utf-8-sig",
+    "delimiter": null,
+    "skip_rows": 3,
+    "sheet": "2. Employers ",
+    "record_path": null
+  },
+  "record_id": {
+    "strategy": "content_hash",
+    "source_paths": [],
+    "rationale": ""
+  },
+  "observed_at": {
+    "source_path": null,
+    "steps": [],
+    "fallback": "resource_last_modified"
+  },
+  "fields": [
+    {
+      "source_paths": [
+        "Employer name"
+      ],
+      "join_with": " ",
+      "when": null,
+      "target": "dyn.employer_reporting_unit.reporting_name",
+      "valid_from_path": null,
+      "valid_to_path": null,
+      "validity_date_formats": null,
+      "claim_scope": null,
+      "steps": [
+        {
+          "op": "trim",
+          "args": {}
+        },
+        {
+          "op": "collapse_whitespace",
+          "args": {}
+        }
+      ],
+      "confidence": 0.9,
+      "rationale": "Employer name is the WGEA reporting-unit label for the submission; it is not a verified legal or trading name, so it maps to the reporting-unit reporting_name concept rather than entity.legal_name.",
+      "entity": "employer",
+      "qualifiers": null,
+      "one_hot": null
+    },
+    {
+      "source_paths": [
+        "Employer ABN"
+      ],
+      "join_with": " ",
+      "when": null,
+      "target": "dyn.employer_reporting_unit.reporting_abn",
+      "valid_from_path": null,
+      "valid_to_path": null,
+      "validity_date_formats": null,
+      "claim_scope": null,
+      "steps": [
+        {
+          "op": "abn",
+          "args": {}
+        }
+      ],
+      "confidence": 0.85,
+      "rationale": "Employer ABN is the reporting unit's submission identifier; the abn transform validates the 11-digit checksum. It is owned by the reporting unit, not asserted as the business legal person's ABN.",
+      "entity": "employer",
+      "qualifiers": null,
+      "one_hot": null
+    },
+    {
+      "source_paths": [
+        "Sector"
+      ],
+      "join_with": " ",
+      "when": null,
+      "target": "dyn.employer_reporting_unit.sector",
+      "valid_from_path": null,
+      "valid_to_path": null,
+      "validity_date_formats": null,
+      "claim_scope": null,
+      "steps": [
+        {
+          "op": "trim",
+          "args": {}
+        },
+        {
+          "op": "map_enum",
+          "args": {
+            "mapping": {
+              "Private": "Private",
+              "Public": "Public"
+            },
+            "default": null,
+            "passthrough": false
+          }
+        }
+      ],
+      "confidence": 0.9,
+      "rationale": "Sector is the WGEA private/public reporting classification of the reporting unit, not a legal form or a scheme-tagged activity, so it maps to the reporting-unit sector enum.",
+      "entity": "employer",
+      "qualifiers": null,
+      "one_hot": null
+    },
+    {
+      "source_paths": [
+        "Employer size range (# employees)"
+      ],
+      "join_with": " ",
+      "when": null,
+      "target": "dyn.employer_reporting_unit.size_band",
+      "valid_from_path": null,
+      "valid_to_path": null,
+      "validity_date_formats": null,
+      "claim_scope": null,
+      "steps": [
+        {
+          "op": "trim",
+          "args": {}
+        },
+        {
+          "op": "map_enum",
+          "args": {
+            "mapping": {
+              "<250": "<250",
+              "250-499": "250-499",
+              "500-999": "500-999",
+              "1000-4999": "1000-4999",
+              "5000+": "5000+"
+            },
+            "default": null,
+            "passthrough": false
+          }
+        }
+      ],
+      "confidence": 0.85,
+      "rationale": "Employer size range is an employee-count band for the reporting unit, not an exact headcount and not a revenue band; it maps to the reporting-unit size_band enum, now including the publisher's open-ended top band '5000+'.",
+      "entity": "employer",
+      "qualifiers": null,
+      "one_hot": null
+    },
+    {
+      "source_paths": [
+        "Industry (ANZSIC Division)"
+      ],
+      "join_with": " ",
+      "when": null,
+      "target": "dyn.employer_reporting_unit.anzsic_division",
+      "valid_from_path": null,
+      "valid_to_path": null,
+      "validity_date_formats": null,
+      "claim_scope": null,
+      "steps": [
+        {
+          "op": "trim",
+          "args": {}
+        },
+        {
+          "op": "collapse_whitespace",
+          "args": {}
+        }
+      ],
+      "confidence": 0.85,
+      "rationale": "The column holds the ANZSIC division name label reported for the submission, not a coded ANZSIC value, so it maps to the reporting-unit division label concept rather than a coded industry_code.",
+      "entity": "employer",
+      "qualifiers": null,
+      "one_hot": null
+    },
+    {
+      "source_paths": [
+        "Industry (ANZSIC Class)"
+      ],
+      "join_with": " ",
+      "when": null,
+      "target": "dyn.employer_reporting_unit.anzsic_class",
+      "valid_from_path": null,
+      "valid_to_path": null,
+      "validity_date_formats": null,
+      "claim_scope": null,
+      "steps": [
+        {
+          "op": "trim",
+          "args": {}
+        },
+        {
+          "op": "collapse_whitespace",
+          "args": {}
+        }
+      ],
+      "confidence": 0.85,
+      "rationale": "The column holds the ANZSIC class name label reported for the submission, not a coded class number, so it maps to the reporting-unit class label concept rather than a coded industry_code.",
+      "entity": "employer",
+      "qualifiers": null,
+      "one_hot": null
+    },
+    {
+      "source_paths": [
+        "Total workforce % women"
+      ],
+      "join_with": " ",
+      "when": null,
+      "target": "dyn.employer_reporting_unit.total_workforce_women_share",
+      "valid_from_path": null,
+      "valid_to_path": null,
+      "validity_date_formats": null,
+      "claim_scope": null,
+      "steps": [
+        {
+          "op": "trim",
+          "args": {}
+        },
+        {
+          "op": "null_if",
+          "args": {
+            "values": [
+              "",
+              "NA",
+              "N/A",
+              "-"
+            ]
+          }
+        },
+        {
+          "op": "parse_decimal",
+          "args": {}
+        }
+      ],
+      "confidence": 0.82,
+      "rationale": "2024-25 total-workforce female share for the employer reporting unit, stored as a decimal fraction (0.6 = 60%), not a whole percentage and not a pay gap. The reporting year appears only in the sheet header, not in a per-row date column, so no claim_period is attached; the required 'period' qualifier is carried as a literal reporting_year value.",
+      "entity": "employer",
+      "qualifiers": {
+        "period": {
+          "source_path": null,
+          "value": "2024-25",
+          "steps": []
+        }
+      },
+      "one_hot": null
+    },
+    {
+      "source_paths": [
+        "Lower quartile % women"
+      ],
+      "join_with": " ",
+      "when": null,
+      "target": "dyn.employer_reporting_unit.lower_quartile_women_share",
+      "valid_from_path": null,
+      "valid_to_path": null,
+      "validity_date_formats": null,
+      "claim_scope": null,
+      "steps": [
+        {
+          "op": "trim",
+          "args": {}
+        },
+        {
+          "op": "null_if",
+          "args": {
+            "values": [
+              "",
+              "NA",
+              "N/A",
+              "-"
+            ]
+          }
+        },
+        {
+          "op": "parse_decimal",
+          "args": {}
+        }
+      ],
+      "confidence": 0.82,
+      "rationale": "Lower pay quartile female share for the 2024-25 reporting year; decimal fraction, a distinct population from the total-workforce share and not a pay gap. No per-row date column exists, so the required 'period' qualifier is a literal reporting_year value rather than a claim_period.",
+      "entity": "employer",
+      "qualifiers": {
+        "period": {
+          "source_path": null,
+          "value": "2024-25",
+          "steps": []
+        }
+      },
+      "one_hot": null
+    },
+    {
+      "source_paths": [
+        "Lower-middle quartile % women"
+      ],
+      "join_with": " ",
+      "when": null,
+      "target": "dyn.employer_reporting_unit.lower_middle_quartile_women_share",
+      "valid_from_path": null,
+      "valid_to_path": null,
+      "validity_date_formats": null,
+      "claim_scope": null,
+      "steps": [
+        {
+          "op": "trim",
+          "args": {}
+        },
+        {
+          "op": "null_if",
+          "args": {
+            "values": [
+              "",
+              "NA",
+              "N/A",
+              "-"
+            ]
+          }
+        },
+        {
+          "op": "parse_decimal",
+          "args": {}
+        }
+      ],
+      "confidence": 0.82,
+      "rationale": "Lower-middle pay quartile female share for the 2024-25 reporting year; decimal fraction, a distinct population from the total-workforce share and not a pay gap. No per-row date column exists, so the required 'period' qualifier is a literal reporting_year value rather than a claim_period.",
+      "entity": "employer",
+      "qualifiers": {
+        "period": {
+          "source_path": null,
+          "value": "2024-25",
+          "steps": []
+        }
+      },
+      "one_hot": null
+    },
+    {
+      "source_paths": [
+        "Upper-middle quartile % women"
+      ],
+      "join_with": " ",
+      "when": null,
+      "target": "dyn.employer_reporting_unit.upper_middle_quartile_women_share",
+      "valid_from_path": null,
+      "valid_to_path": null,
+      "validity_date_formats": null,
+      "claim_scope": null,
+      "steps": [
+        {
+          "op": "trim",
+          "args": {}
+        },
+        {
+          "op": "null_if",
+          "args": {
+            "values": [
+              "",
+              "NA",
+              "N/A",
+              "-"
+            ]
+          }
+        },
+        {
+          "op": "parse_decimal",
+          "args": {}
+        }
+      ],
+      "confidence": 0.82,
+      "rationale": "Upper-middle pay quartile female share for the 2024-25 reporting year; decimal fraction, a distinct population from the total-workforce share and not a pay gap. No per-row date column exists, so the required 'period' qualifier is a literal reporting_year value rather than a claim_period.",
+      "entity": "employer",
+      "qualifiers": {
+        "period": {
+          "source_path": null,
+          "value": "2024-25",
+          "steps": []
+        }
+      },
+      "one_hot": null
+    },
+    {
+      "source_paths": [
+        "Upper quartile % women"
+      ],
+      "join_with": " ",
+      "when": null,
+      "target": "dyn.employer_reporting_unit.upper_quartile_women_share",
+      "valid_from_path": null,
+      "valid_to_path": null,
+      "validity_date_formats": null,
+      "claim_scope": null,
+      "steps": [
+        {
+          "op": "trim",
+          "args": {}
+        },
+        {
+          "op": "null_if",
+          "args": {
+            "values": [
+              "",
+              "NA",
+              "N/A",
+              "-"
+            ]
+          }
+        },
+        {
+          "op": "parse_decimal",
+          "args": {}
+        }
+      ],
+      "confidence": 0.82,
+      "rationale": "Upper pay quartile female share for the 2024-25 reporting year; decimal fraction, a distinct population from the total-workforce share and not a pay gap. No per-row date column exists, so the required 'period' qualifier is a literal reporting_year value rather than a claim_period.",
+      "entity": "employer",
+      "qualifiers": {
+        "period": {
+          "source_path": null,
+          "value": "2024-25",
+          "steps": []
+        }
+      },
+      "one_hot": null
+    },
+    {
+      "source_paths": [
+        "Total workforce - average total remuneration ($)*"
+      ],
+      "join_with": " ",
+      "when": null,
+      "target": "dyn.employer_reporting_unit.total_workforce_average_total_remuneration",
+      "valid_from_path": null,
+      "valid_to_path": null,
+      "validity_date_formats": null,
+      "claim_scope": null,
+      "steps": [
+        {
+          "op": "trim",
+          "args": {}
+        },
+        {
+          "op": "null_if",
+          "args": {
+            "values": [
+              "",
+              "-",
+              "n/a",
+              "N/A"
+            ]
+          }
+        },
+        {
+          "op": "parse_decimal",
+          "args": {}
+        }
+      ],
+      "confidence": 0.88,
+      "rationale": "Column is the 2024-25 block's total-workforce average total remuneration in dollars; concept is owned by the employer reporting unit and requires currency and period. Currency AUD is inferred from the publisher's Australian dollar reporting, not stated in the cell. The reporting year is carried as a literal period qualifier because the sheet has no per-row date column to attach as a claim_period; no claim_period is emitted.",
+      "entity": "employer",
+      "qualifiers": {
+        "currency": {
+          "source_path": null,
+          "value": "AUD",
+          "steps": []
+        },
+        "period": {
+          "source_path": null,
+          "value": "2024-25",
+          "steps": []
+        }
+      },
+      "one_hot": null
+    },
+    {
+      "source_paths": [
+        "Lower quartile - average total remuneration ($)"
+      ],
+      "join_with": " ",
+      "when": null,
+      "target": "dyn.employer_reporting_unit.lower_quartile_average_total_remuneration",
+      "valid_from_path": null,
+      "valid_to_path": null,
+      "validity_date_formats": null,
+      "claim_scope": null,
+      "steps": [
+        {
+          "op": "trim",
+          "args": {}
+        },
+        {
+          "op": "null_if",
+          "args": {
+            "values": [
+              "",
+              "-",
+              "n/a",
+              "N/A"
+            ]
+          }
+        },
+        {
+          "op": "parse_decimal",
+          "args": {}
+        }
+      ],
+      "confidence": 0.88,
+      "rationale": "Lower pay quartile average total remuneration in dollars for the 2024-25 block; a pay level for one quartile, not a gap and not business income. Currency inferred as AUD. Reporting year carried as a literal period qualifier; no date column exists, so no claim_period is emitted.",
+      "entity": "employer",
+      "qualifiers": {
+        "currency": {
+          "source_path": null,
+          "value": "AUD",
+          "steps": []
+        },
+        "period": {
+          "source_path": null,
+          "value": "2024-25",
+          "steps": []
+        }
+      },
+      "one_hot": null
+    },
+    {
+      "source_paths": [
+        "Lower-middle quartile - average total remuneration ($)"
+      ],
+      "join_with": " ",
+      "when": null,
+      "target": "dyn.employer_reporting_unit.lower_middle_quartile_average_total_remuneration",
+      "valid_from_path": null,
+      "valid_to_path": null,
+      "validity_date_formats": null,
+      "claim_scope": null,
+      "steps": [
+        {
+          "op": "trim",
+          "args": {}
+        },
+        {
+          "op": "null_if",
+          "args": {
+            "values": [
+              "",
+              "-",
+              "n/a",
+              "N/A"
+            ]
+          }
+        },
+        {
+          "op": "parse_decimal",
+          "args": {}
+        }
+      ],
+      "confidence": 0.88,
+      "rationale": "Lower-middle pay quartile average total remuneration in dollars for the 2024-25 block; a pay level for one quartile, not a gap and not business income. Currency inferred as AUD. Reporting year carried as a literal period qualifier; no date column exists, so no claim_period is emitted.",
+      "entity": "employer",
+      "qualifiers": {
+        "currency": {
+          "source_path": null,
+          "value": "AUD",
+          "steps": []
+        },
+        "period": {
+          "source_path": null,
+          "value": "2024-25",
+          "steps": []
+        }
+      },
+      "one_hot": null
+    },
+    {
+      "source_paths": [
+        "Upper-middle quartile - average total remuneration ($)"
+      ],
+      "join_with": " ",
+      "when": null,
+      "target": "dyn.employer_reporting_unit.upper_middle_quartile_average_total_remuneration",
+      "valid_from_path": null,
+      "valid_to_path": null,
+      "validity_date_formats": null,
+      "claim_scope": null,
+      "steps": [
+        {
+          "op": "trim",
+          "args": {}
+        },
+        {
+          "op": "null_if",
+          "args": {
+            "values": [
+              "",
+              "-",
+              "n/a",
+              "N/A"
+            ]
+          }
+        },
+        {
+          "op": "parse_decimal",
+          "args": {}
+        }
+      ],
+      "confidence": 0.88,
+      "rationale": "Upper-middle pay quartile average total remuneration in dollars for the 2024-25 block; a pay level for one quartile, not a gap and not business income. Currency inferred as AUD. Reporting year carried as a literal period qualifier; no date column exists, so no claim_period is emitted.",
+      "entity": "employer",
+      "qualifiers": {
+        "currency": {
+          "source_path": null,
+          "value": "AUD",
+          "steps": []
+        },
+        "period": {
+          "source_path": null,
+          "value": "2024-25",
+          "steps": []
+        }
+      },
+      "one_hot": null
+    },
+    {
+      "source_paths": [
+        "Upper quartile - average total remuneration ($)"
+      ],
+      "join_with": " ",
+      "when": null,
+      "target": "dyn.employer_reporting_unit.upper_quartile_average_total_remuneration",
+      "valid_from_path": null,
+      "valid_to_path": null,
+      "validity_date_formats": null,
+      "claim_scope": null,
+      "steps": [
+        {
+          "op": "trim",
+          "args": {}
+        },
+        {
+          "op": "null_if",
+          "args": {
+            "values": [
+              "",
+              "-",
+              "n/a",
+              "N/A"
+            ]
+          }
+        },
+        {
+          "op": "parse_decimal",
+          "args": {}
+        }
+      ],
+      "confidence": 0.88,
+      "rationale": "Upper pay quartile average total remuneration in dollars for the 2024-25 block; a pay level for one quartile, not a gap and not business income. Currency inferred as AUD. Reporting year carried as a literal period qualifier; no date column exists, so no claim_period is emitted.",
+      "entity": "employer",
+      "qualifiers": {
+        "currency": {
+          "source_path": null,
+          "value": "AUD",
+          "steps": []
+        },
+        "period": {
+          "source_path": null,
+          "value": "2024-25",
+          "steps": []
+        }
+      },
+      "one_hot": null
+    },
+    {
+      "source_paths": [
+        "Average base salary GPG (%)"
+      ],
+      "join_with": " ",
+      "when": null,
+      "target": "dyn.employer_reporting_unit.average_base_salary_gpg",
+      "valid_from_path": null,
+      "valid_to_path": null,
+      "validity_date_formats": null,
+      "claim_scope": null,
+      "steps": [
+        {
+          "op": "trim",
+          "args": {}
+        },
+        {
+          "op": "null_if",
+          "args": {
+            "values": [
+              "",
+              "-",
+              "n/a",
+              "N/A"
+            ]
+          }
+        },
+        {
+          "op": "parse_decimal",
+          "args": {}
+        }
+      ],
+      "confidence": 0.93,
+      "rationale": "2024-25 average base salary gender pay gap for the employer reporting unit; stored as a decimal fraction per the publisher convention. The 2023-24 comparison column is a separate header and is not consumed here. No date column exists in the source, so the reporting year is carried as a literal period qualifier rather than a claim_period. Explicit trim/null_if/parse_decimal steps make the decimal-fraction strings (including '0') parse as decimals without multiplication or whole-percentage relabelling.",
+      "entity": "employer",
+      "qualifiers": {
+        "period": {
+          "source_path": null,
+          "value": "2024-25",
+          "steps": []
+        }
+      },
+      "one_hot": null
+    },
+    {
+      "source_paths": [
+        "Average total remuneration GPG (%)"
+      ],
+      "join_with": " ",
+      "when": null,
+      "target": "dyn.employer_reporting_unit.average_total_remuneration_gpg",
+      "valid_from_path": null,
+      "valid_to_path": null,
+      "validity_date_formats": null,
+      "claim_scope": null,
+      "steps": [
+        {
+          "op": "trim",
+          "args": {}
+        },
+        {
+          "op": "null_if",
+          "args": {
+            "values": [
+              "",
+              "-",
+              "n/a",
+              "N/A"
+            ]
+          }
+        },
+        {
+          "op": "parse_decimal",
+          "args": {}
+        }
+      ],
+      "confidence": 0.93,
+      "rationale": "2024-25 average total remuneration gender pay gap for the employer reporting unit; total remuneration is pay, not business income. The duplicate-labelled 2023-24 column is disambiguated by year group and not consumed. No date column exists, so the year is a literal period qualifier. Explicit trim/null_if/parse_decimal steps accept the publisher's decimal-fraction strings as decimals.",
+      "entity": "employer",
+      "qualifiers": {
+        "period": {
+          "source_path": null,
+          "value": "2024-25",
+          "steps": []
+        }
+      },
+      "one_hot": null
+    },
+    {
+      "source_paths": [
+        "Median base salary GPG (%)"
+      ],
+      "join_with": " ",
+      "when": null,
+      "target": "dyn.employer_reporting_unit.median_base_salary_gpg",
+      "valid_from_path": null,
+      "valid_to_path": null,
+      "validity_date_formats": null,
+      "claim_scope": null,
+      "steps": [
+        {
+          "op": "trim",
+          "args": {}
+        },
+        {
+          "op": "null_if",
+          "args": {
+            "values": [
+              "",
+              "-",
+              "n/a",
+              "N/A"
+            ]
+          }
+        },
+        {
+          "op": "parse_decimal",
+          "args": {}
+        }
+      ],
+      "confidence": 0.93,
+      "rationale": "2024-25 median base salary gender pay gap for the employer reporting unit; decimal-fraction storage convention preserved, with '0' treated as a legitimate zero gap rather than missing. No date column exists, so the year is a literal period qualifier. Explicit trim/null_if/parse_decimal steps make the decimal-fraction strings parse as decimals.",
+      "entity": "employer",
+      "qualifiers": {
+        "period": {
+          "source_path": null,
+          "value": "2024-25",
+          "steps": []
+        }
+      },
+      "one_hot": null
+    },
+    {
+      "source_paths": [
+        "Median total remuneration GPG (%)"
+      ],
+      "join_with": " ",
+      "when": null,
+      "target": "dyn.employer_reporting_unit.median_total_remuneration_gpg",
+      "valid_from_path": null,
+      "valid_to_path": null,
+      "validity_date_formats": null,
+      "claim_scope": null,
+      "steps": [
+        {
+          "op": "trim",
+          "args": {}
+        },
+        {
+          "op": "null_if",
+          "args": {
+            "values": [
+              "",
+              "-",
+              "n/a",
+              "N/A"
+            ]
+          }
+        },
+        {
+          "op": "parse_decimal",
+          "args": {}
+        }
+      ],
+      "confidence": 0.93,
+      "rationale": "2024-25 median total remuneration gender pay gap for the employer reporting unit; the 2023-24 duplicate-labelled column is not consumed. No date column exists, so the year is a literal period qualifier. Explicit trim/null_if/parse_decimal steps accept the publisher's decimal-fraction strings (including '0') as decimals.",
+      "entity": "employer",
+      "qualifiers": {
+        "period": {
+          "source_path": null,
+          "value": "2024-25",
+          "steps": []
+        }
+      },
+      "one_hot": null
+    }
+  ],
+  "entities": {
+    "employer": {
+      "kind": "employer_reporting_unit",
+      "key_paths": [
+        "Employer ABN",
+        "Employer name"
+      ],
+      "rationale": "The row's subject is the reporting employer; Employer ABN is the reporting identifier and Employer name is a non-unique label, so both are needed to bind identity. No legal form or group-wide scope is inferred."
+    }
+  },
+  "relationships": [],
+  "unmapped": [
+    {
+      "source_path": "Average base salary GPG (%)_2",
+      "reason": "2023-24 contextual comparison value, not the current reporting year; the group's purpose is 2024-25 measures and merging years would misstate the claim period."
+    },
+    {
+      "source_path": "Average total remuneration GPG (%)_2",
+      "reason": "2023-24 contextual comparison value, not the current reporting year; must not be merged with the 2024-25 measure."
+    },
+    {
+      "source_path": "Median base salary GPG (%)_2",
+      "reason": "2023-24 contextual comparison value, not the current reporting year; must not be merged with the 2024-25 measure."
+    },
+    {
+      "source_path": "Median total remuneration GPG (%)_2",
+      "reason": "2023-24 contextual comparison value, not the current reporting year; must not be merged with the 2024-25 measure."
+    }
+  ],
+  "notes": "Grouped semantic intents; no manually authored mapping rules.",
+  "constants": [],
+  "profile_context": null,
+  "extensions": "dynamic"
+}

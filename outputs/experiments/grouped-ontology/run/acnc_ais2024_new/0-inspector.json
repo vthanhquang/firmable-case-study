@@ -1,0 +1,31 @@
+{
+  "request_sha256": "095816856a12965bf693dd9d5a83e877bcd0f5e68924ef4bc727f4fff3568c58",
+  "role": "inspector",
+  "model": "deepseek-v4-flash",
+  "seconds": 12.485,
+  "response": {
+    "reader": {
+      "format": "delimited",
+      "archive_member": null,
+      "encoding": "utf-8-sig",
+      "delimiter": ",",
+      "skip_rows": 0,
+      "sheet": null,
+      "record_path": null
+    },
+    "bindings": [],
+    "grain": "One row per charity (identified by ABN) for the 2024 Annual Information Statement reporting year, carrying that charity's registration details, AIS lodgement dates, activity descriptions, staffing/volunteer counts, financial-report classification and reported financial figures for its own reporting period (period start/end dates appear as separate columns, so the financial figures are period-specific rather than calendar-2024).",
+    "identity_cautions": [
+      "ABN is the only stable identifier; charity name is free text and may vary in case, punctuation and legal suffix, so names must not be used as a join key.",
+      "ABN is stored as a bare digit string with no separators and may lose leading structure if coerced to a number; keep it as text.",
+      "The file is a single flat CSV with no header groups or multi-row headers; the header row is row 1 and every subsequent row is a data record. Quoted fields contain commas and semicolons, so a naive split on commas will misalign columns.",
+      "Financial figures relate to each charity's own reporting period (start/end date columns), not a common 1 July–30 June year; comparing amounts across rows without checking those dates is unsafe.",
+      "Charity size (Small/Medium/Large) is a reporting classification, not a measure of company scale or legal form, and small charities are not required to supply detailed financials, so blanks and zeros are not evidence of nil activity.",
+      "Registration status and AIS due/received dates describe regulatory lodgement, not business incorporation or a licence date.",
+      "Percentage-like and count-like columns (e.g. staffing/volunteer counts, financial breakdowns) are stored as plain numbers without units or percent signs; storage as a fraction versus a whole-number percentage cannot be confirmed from the visible bytes and must be checked per column before use.",
+      "Some charities have withheld information and are excluded from the dataset, so absence of a row is not evidence a charity does not exist.",
+      "The dataset is refreshed weekly; the local snapshot is a point-in-time copy and later versions may differ."
+    ],
+    "rationale": "The bytes are plain UTF-8 text (BOM present, hence utf-8-sig) with a comma delimiter: the first line is a single header row of ~90+ comma-separated field names beginning 'abn,charity name,registration status,...', and data lines show the same comma count with quoted fields containing embedded commas. There is no ZIP container, no workbook and no documentation sheet, so a delimited reader with skip_rows 0 and comma delimiter is the correct shared reader; no sheet name needs preserving and no nested objects exist to bind. Header groups are absent (flat single header), and the identifier caution is that ABN, not the free-text charity name, is the row key. Contextual years appear as AIS due/received dates and per-charity reporting period start/end dates rather than a single dataset year column, and percentage storage is not visibly marked, so both are flagged as cautions rather than assumed."
+  }
+}

@@ -1,0 +1,92 @@
+{
+  "request_sha256": "6d1647f4d800cf1612dcbcc8d90c9cf383cb15088fc735829cc5d139de252509",
+  "role": "group_architect",
+  "model": "deepseek-v4-flash",
+  "seconds": 11.108,
+  "response": {
+    "concepts": [
+      {
+        "path": "dyn.employer_reporting_unit.average_base_salary_gpg",
+        "type": "decimal",
+        "owner": "employer_reporting_unit",
+        "definition": "The average (mean) gender pay gap in base salary for the employer reporting unit, as reported for the 2024-25 WGEA Gender Equality Reporting year. Stored by the publisher as a decimal fraction (0.244 = 24.4%), not a whole percentage; a negative value indicates a gap favouring women. It is a pay gap, not a pay level or business income.",
+        "values": [],
+        "multi": false,
+        "required_qualifiers": [
+          "period"
+        ],
+        "source_paths": [
+          "Average base salary GPG (%)"
+        ],
+        "why_not_existing": "No shortlisted concept represents a gender pay gap; the shortlisted employer_reporting_unit concepts are workforce composition shares and remuneration levels, and ext.financial.total_income is business income owned by business, so reuse would change meaning.",
+        "personal_data": "never"
+      },
+      {
+        "path": "dyn.employer_reporting_unit.average_total_remuneration_gpg",
+        "type": "decimal",
+        "owner": "employer_reporting_unit",
+        "definition": "The average (mean) gender pay gap in total remuneration for the employer reporting unit, as reported for the 2024-25 WGEA Gender Equality Reporting year. Total remuneration is pay (base salary plus superannuation and other payments), not revenue or business income. Stored by the publisher as a decimal fraction (0.244 = 24.4%); a negative value indicates a gap favouring women.",
+        "values": [],
+        "multi": false,
+        "required_qualifiers": [
+          "period"
+        ],
+        "source_paths": [
+          "Average total remuneration GPG (%)"
+        ],
+        "why_not_existing": "No shortlisted concept represents a total-remuneration gender pay gap; the shortlisted total_workforce_average_total_remuneration is a dollar pay level, not a gap, and the base-salary gap is a different measure, so reuse would change meaning.",
+        "personal_data": "never"
+      },
+      {
+        "path": "dyn.employer_reporting_unit.median_base_salary_gpg",
+        "type": "decimal",
+        "owner": "employer_reporting_unit",
+        "definition": "The median gender pay gap in base salary for the employer reporting unit, as reported for the 2024-25 WGEA Gender Equality Reporting year. Stored by the publisher as a decimal fraction (0.069 = 6.9%), not a whole percentage; a negative value indicates a gap favouring women. It is a pay gap, not a pay level or business income.",
+        "values": [],
+        "multi": false,
+        "required_qualifiers": [
+          "period"
+        ],
+        "source_paths": [
+          "Median base salary GPG (%)"
+        ],
+        "why_not_existing": "No shortlisted concept represents a median gender pay gap; the average base salary gap is a different statistic, and the shortlisted employer_reporting_unit concepts are composition shares and pay levels, so reuse would change meaning.",
+        "personal_data": "never"
+      },
+      {
+        "path": "dyn.employer_reporting_unit.median_total_remuneration_gpg",
+        "type": "decimal",
+        "owner": "employer_reporting_unit",
+        "definition": "The median gender pay gap in total remuneration for the employer reporting unit, as reported for the 2024-25 WGEA Gender Equality Reporting year. Total remuneration is pay (base salary plus superannuation and other payments), not revenue or business income. Stored by the publisher as a decimal fraction (0.069 = 6.9%); a negative value indicates a gap favouring women.",
+        "values": [],
+        "multi": false,
+        "required_qualifiers": [
+          "period"
+        ],
+        "source_paths": [
+          "Median total remuneration GPG (%)"
+        ],
+        "why_not_existing": "No shortlisted concept represents a median total-remuneration gender pay gap; the average total-remuneration gap and the median base-salary gap are different statistics, so reuse would change meaning.",
+        "personal_data": "never"
+      }
+    ],
+    "reuse": {
+      "dyn.employer_reporting_unit.total_workforce_women_share": "Context column; same owner, meaning, units and 2024-25 period.",
+      "dyn.employer_reporting_unit.total_workforce_average_total_remuneration": "Context column; same owner, meaning, units and 2024-25 period.",
+      "dyn.employer_reporting_unit.lower_quartile_women_share": "Context column; same owner, meaning, units and 2024-25 period.",
+      "dyn.employer_reporting_unit.upper_quartile_women_share": "Context column; same owner, meaning, units and 2024-25 period.",
+      "dyn.employer_reporting_unit.lower_middle_quartile_women_share": "Context column; same owner, meaning, units and 2024-25 period.",
+      "dyn.employer_reporting_unit.upper_middle_quartile_women_share": "Context column; same owner, meaning, units and 2024-25 period.",
+      "dyn.employer_reporting_unit.lower_quartile_average_total_remuneration": "Context column; same owner, meaning, units and 2024-25 period.",
+      "dyn.employer_reporting_unit.lower_middle_quartile_average_total_remuneration": "Context column; same owner, meaning, units and 2024-25 period.",
+      "dyn.employer_reporting_unit.upper_middle_quartile_average_total_remuneration": "Context column; same owner, meaning, units and 2024-25 period.",
+      "dyn.employer_reporting_unit.upper_quartile_average_total_remuneration": "Context column; same owner, meaning, units and 2024-25 period.",
+      "dyn.employer_reporting_unit.reporting_name": "Identity column; same owner and meaning.",
+      "dyn.employer_reporting_unit.reporting_abn": "Identity column; same owner and meaning.",
+      "dyn.employer_reporting_unit.sector": "Context column; same owner and meaning.",
+      "dyn.employer_reporting_unit.anzsic_division": "Context column; same owner and meaning.",
+      "dyn.employer_reporting_unit.anzsic_class": "Context column; same owner and meaning.",
+      "dyn.employer_reporting_unit.size_band": "Context column; same owner and meaning."
+    }
+  }
+}

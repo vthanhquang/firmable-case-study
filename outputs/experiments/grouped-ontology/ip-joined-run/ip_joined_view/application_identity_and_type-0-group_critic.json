@@ -1,0 +1,53 @@
+{
+  "request_sha256": "ae59994e948c9663450e41df58fde050067f1705577679cafd426665a1944a23",
+  "role": "group_critic",
+  "model": "deepseek-v4-flash",
+  "seconds": 12.511,
+  "response": {
+    "verdict": "revise",
+    "findings": [
+      "dyn.ip_application.application_number: emitted values are duplicated ('2000032355 2000032355') because the mapping joins two identical source columns with a space instead of coalescing them; the concept definition says the two columns are the same value repeated, so the emitted identifier is not the publisher's identifier as published.",
+      "dyn.ip_application.ip_right_type: 110/110 validation records fail with ENUM_UNMAPPED because the join produces 'patent patent' before map_enum, so the field emits nothing (coverage 0.0) despite the source being present in every record.",
+      "dyn.ip_application.ip_right_sub_type: one validation record ('petty') is rejected as ENUM_UNMAPPED; the enum values list omits a value that is present in the source, so the closed enum is incomplete for the observed data.",
+      "Technical gate fails (passes_technical_gate=false, malformed_rate 0.336) driven entirely by the two join-with-space defects above; this is a mapping-execution defect, not a semantic-owner defect.",
+      "The application_number concept definition and the mapping rationale both state the two columns are the same repeated value, yet the executable mapping uses join_with=' ' rather than a coalesce/first-non-blank step; the rationale and the executed transform contradict each other."
+    ],
+    "semantic_risks": [
+      "ip_right_type and ip_right_sub_type are correctly owned by ip_application and explicitly disclaim grant/enforceability; no business-attribute leakage observed, but the sub_type enum must not be silently widened to cover non-patent types without a definition update.",
+      "application_number is correctly stated to identify the application only together with ip_right_type; the emitted duplicated string weakens that qualifier because the value is no longer a clean identifier.",
+      "The 'petty' sub-type value suggests the patent-prefix cohort may include petty patent applications; the enum should reflect the publisher's actual vocabulary rather than a guessed three-value list.",
+      "No population or legal-identity claims are made; the cohort caveat is preserved. This is not a human review."
+    ],
+    "checked_reuse": [
+      "dyn.ip_application.application_number vs ext.licence.number / ext.licence.related_licence_number / ext.entity.prior_registration_number: different owner and meaning; new concept justified.",
+      "dyn.ip_application.ip_right_type vs ext.licence.category / ext.licence.authorisation: licence-owned authorisation concepts; new concept justified.",
+      "dyn.ip_application.ip_right_sub_type vs ext.licence.category: different owner and meaning; new concept justified.",
+      "dyn.party.* and dyn.party_activity.* reuse entries: owner and meaning match the party-activity grain; unchanged reuse is defensible."
+    ],
+    "rationale": "The three proposed concepts are semantically well-scoped: they are owned by ip_application, explicitly disclaim grant, enforceability and business identity, and correctly avoid reuse of licence or entity-registration concepts. The blocking problems are executable mapping defects, not ontology defects: joining two identical repeated columns with a space produces duplicated application numbers and 'patent patent', which fails the enum map on every validation record, and the sub_type enum omits the observed 'petty' value. These are fixable in the mapping (coalesce instead of space-join; extend the enum or map unknown values with an explicit unmapped reason). Because the technical gate fails and the emitted application_number is not the publisher's identifier as published, the group cannot be accepted as-is; revise the mapping and re-run validation.",
+    "blocking_findings": [
+      {
+        "field": "dyn.ip_application.application_number",
+        "actual": "Emitted values are space-joined duplicates such as '2000032355 2000032355'.",
+        "expected": "A single publisher application number, e.g. '2000032355', taken from the first non-blank of application.application_number and party_activity.application_number.",
+        "evidence": "field_evidence examples for dyn.ip_application.application_number@ip_application show value and raw_value '2000032355 2000032355', '1913007951 1913007951', '2001254594 2001254594'; the concept definition states the two source columns are the same value repeated.",
+        "correction": "Replace join_with=' ' with a coalesce/first-non-blank step over the two source paths (or map only application.application_number with party_activity.application_number as fallback when blank), then re-run validation and confirm no duplicated identifiers."
+      },
+      {
+        "field": "dyn.ip_application.ip_right_type",
+        "actual": "0 of 110 validation records emitted; 110 ENUM_UNMAPPED errors with examples 'patent patent'.",
+        "expected": "110 of 110 records emitted as 'patent' (or an explicit unmapped reason for any non-patent value).",
+        "evidence": "validation_fields for dyn.ip_application.ip_right_type: source_present 110, emitted 0, error_rate_of_present 1.0, error_examples ENUM_UNMAPPED ['patent patent', ...]; quality malformed_reasons ENUM_UNMAPPED 111.",
+        "correction": "Apply the same coalesce/first-non-blank fix before map_enum so the input to map_enum is 'patent', not 'patent patent'; re-run validation and require emitted coverage 1.0 with zero ENUM_UNMAPPED for this field."
+      },
+      {
+        "field": "dyn.ip_application.ip_right_sub_type",
+        "actual": "Enum values are limited to standard_complete, innovation, provisional; observed value 'petty' is rejected as ENUM_UNMAPPED.",
+        "expected": "Enum covers the publisher's observed sub-type vocabulary, including 'petty', or the value is emitted with an explicit documented unmapped reason rather than silently dropped.",
+        "evidence": "validation_fields for dyn.ip_application.ip_right_sub_type: error_examples ENUM_UNMAPPED ['petty']; quality malformed_reasons ENUM_UNMAPPED 111.",
+        "correction": "Add 'petty' to dyn.ip_application.ip_right_sub_type values (and to the map_enum mapping) or document an explicit unmapped reason for it; re-run validation and confirm the one malformed record is resolved or explicitly abstained."
+      }
+    ],
+    "repair_scope": "mapping"
+  }
+}

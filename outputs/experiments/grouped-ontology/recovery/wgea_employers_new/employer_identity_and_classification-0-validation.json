@@ -1,0 +1,160 @@
+{
+  "quality": {
+    "present_values": 726,
+    "emitted_observations": 721,
+    "withheld_missing_context": 0,
+    "abstention_reasons": {},
+    "malformed_values": 5,
+    "malformed_reasons": {
+      "ENUM_UNMAPPED": 5
+    },
+    "eligible_present_values": 726,
+    "malformed_rate": 0.006887052341597796,
+    "abstention_rate": 0.0,
+    "record_errors": {},
+    "passes_technical_gate": true,
+    "semantic_precision": null,
+    "note": "Missing required context remains withheld. This gate does not establish semantic truth or useful coverage."
+  },
+  "raw_validation": {
+    "records_in": 121,
+    "records_with_output": 121,
+    "record_errors": {},
+    "fields": [
+      {
+        "target": "dyn.employer_reporting_unit.reporting_name",
+        "source_paths": [
+          "Employer name"
+        ],
+        "records": 121,
+        "source_present": 121,
+        "emitted": 121,
+        "coverage_of_records": 1.0,
+        "error_rate_of_present": 0.0,
+        "errors": {},
+        "error_examples": {},
+        "entity": "employer"
+      },
+      {
+        "target": "dyn.employer_reporting_unit.reporting_abn",
+        "source_paths": [
+          "Employer ABN"
+        ],
+        "records": 121,
+        "source_present": 121,
+        "emitted": 121,
+        "coverage_of_records": 1.0,
+        "error_rate_of_present": 0.0,
+        "errors": {},
+        "error_examples": {},
+        "entity": "employer"
+      },
+      {
+        "target": "dyn.employer_reporting_unit.sector",
+        "source_paths": [
+          "Sector"
+        ],
+        "records": 121,
+        "source_present": 121,
+        "emitted": 121,
+        "coverage_of_records": 1.0,
+        "error_rate_of_present": 0.0,
+        "errors": {},
+        "error_examples": {},
+        "entity": "employer"
+      },
+      {
+        "target": "dyn.employer_reporting_unit.size_band",
+        "source_paths": [
+          "Employer size range (# employees)"
+        ],
+        "records": 121,
+        "source_present": 121,
+        "emitted": 116,
+        "coverage_of_records": 0.959,
+        "error_rate_of_present": 0.041,
+        "errors": {
+          "ENUM_UNMAPPED": 5
+        },
+        "error_examples": {
+          "ENUM_UNMAPPED": [
+            "5000+",
+            "5000+",
+            "5000+",
+            "5000+"
+          ]
+        },
+        "entity": "employer"
+      },
+      {
+        "target": "dyn.employer_reporting_unit.anzsic_division",
+        "source_paths": [
+          "Industry (ANZSIC Division)"
+        ],
+        "records": 121,
+        "source_present": 121,
+        "emitted": 121,
+        "coverage_of_records": 1.0,
+        "error_rate_of_present": 0.0,
+        "errors": {},
+        "error_examples": {},
+        "entity": "employer"
+      },
+      {
+        "target": "dyn.employer_reporting_unit.anzsic_class",
+        "source_paths": [
+          "Industry (ANZSIC Class)"
+        ],
+        "records": 121,
+        "source_present": 121,
+        "emitted": 121,
+        "coverage_of_records": 1.0,
+        "error_rate_of_present": 0.0,
+        "errors": {},
+        "error_examples": {},
+        "entity": "employer"
+      }
+    ],
+    "input_records": 121,
+    "refused_records": 0,
+    "observations": 721,
+    "value_errors": 5,
+    "present_values": 726,
+    "error_rate": 0.006887052341597796
+  },
+  "critic": {
+    "verdict": "revise",
+    "findings": [
+      "Identity, sector, ANZSIC division/class and reporting name/ABN mappings are semantically defensible: they are owned by the reporting unit, not asserted as legal-person attributes, and the ABN is treated as a reporting identifier rather than proof of legal form or company-wide scope.",
+      "The size_band enum is incomplete relative to the observed source vocabulary: held-out validation shows '5000+' present in 5 of 121 records, all rejected as ENUM_UNMAPPED (error_rate_of_present 0.041, coverage 0.959). This is a mapping/ontology defect, not a deliberate abstention.",
+      "The grain statement correctly notes the dual-year block (2024-25 in F-I, 2023-24 in J-M) and the group correctly excludes those measure columns, so no year-mixing claim is emitted.",
+      "The reader (sheet '2. Employers ' with trailing space, skip_rows=3) and the identity caution that name is non-unique and ABN is the binding identifier are consistent with the held-out rows.",
+      "No legal-form, incorporation-date, revenue-as-income or group-scope claims are emitted; the concepts explicitly disclaim these, which is correct.",
+      "The 'why_not_existing' text for anzsic_division and anzsic_class repeats 'ext.entity.industry_code and entity.industry_code' — a duplicated reference that should name the two distinct existing concepts it is distinguishing from."
+    ],
+    "semantic_risks": [
+      "size_band enum omits the '5000+' band that the publisher uses, so the largest employers are silently dropped rather than represented; this understates coverage of the top band and could bias any downstream size analysis.",
+      "The size_band definition lists only four example bands; if the enum is extended, the definition should state that the band set is publisher-defined and open-ended at the top.",
+      "ANZSIC division/class are stored as name labels, not codes; downstream consumers must not treat them as coded ANZSIC values — the definitions say this, but the risk remains if joined to coded industry data.",
+      "ABN transform validates checksum but does not establish that the ABN belongs to the legal person; the concept correctly scopes it to the reporting unit, but any join to entity.abn would be an unsupported identity claim."
+    ],
+    "checked_reuse": [
+      "entity.legal_name / entity.trading_name — correctly not reused; source is a reporting label, not a verified legal/trading name.",
+      "entity.abn — correctly not reused; source ABN is a reporting-unit submission identifier, not asserted as the business legal person's ABN.",
+      "ext.entity.sector_tag — correctly not reused; WGEA private/public sector is a reporting classification, not a scheme-tagged activity/beneficiary tag.",
+      "ext.financial.revenue_band — correctly not reused; employee-count band is not a revenue band.",
+      "ext.entity.industry_code / entity.industry_code — correctly not reused for name labels; coded ANZSIC values differ in type and meaning."
+    ],
+    "rationale": "The group's emitted claims are semantically sound for identity, sector, industry labels and reporting name/ABN, and correctly avoid legal-form, revenue and group-scope overreach. The one blocking defect is the incomplete size_band enum: held-out validation shows the publisher's '5000+' band is present and rejected as ENUM_UNMAPPED in 5 records, so the enum must be extended (and the definition updated) rather than left as a silent coverage gap. A secondary non-blocking cleanup is the duplicated 'ext.entity.industry_code and entity.industry_code' reference in the ANZSIC why_not_existing text. Repair is confined to mapping/ontology for size_band; no reader or grain change is required.",
+    "blocking_findings": [
+      {
+        "field": "dyn.employer_reporting_unit.size_band",
+        "actual": "enum values [\"<250\", \"250-499\", \"500-999\", \"1000-4999\"]; map_enum has no entry for '5000+', producing 5 ENUM_UNMAPPED rejections",
+        "expected": "enum includes the publisher's top band '5000+' and map_enum maps '5000+' -> '5000+', so all observed size bands are representable",
+        "evidence": "validation_fields for dyn.employer_reporting_unit.size_band: source_present 121, emitted 116, coverage 0.959, errors ENUM_UNMAPPED 5, error_examples ['5000+','5000+','5000+','5000+']; quality.malformed_reasons ENUM_UNMAPPED 5",
+        "correction": "Add '5000+' to dyn.employer_reporting_unit.size_band.values and add \"5000+\": \"5000+\" to the map_enum mapping for the 'Employer size range (# employees)' field; update the concept definition to state the band set is publisher-defined and open-ended at the top. Re-run validation and confirm size_band coverage reaches 1.0 with zero ENUM_UNMAPPED."
+      }
+    ],
+    "repair_scope": "both"
+  }
+}

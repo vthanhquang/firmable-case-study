@@ -805,12 +805,18 @@ export async function mountPart(part, root, helpers) {
   };
   const ui = components(helpers);
   const params = new URLSearchParams(window.location.search);
+  if (part === "onboarding") {
+    const { mountOnboarding } = await import("./onboarding.js");
+    mountOnboarding(await snapshot("onboarding"), root);
+    return;
+  }
   if (part === "demo") {
     demoView(await snapshot("raw-demo"), root, ui);
     return;
   }
   if (part === "architecture") {
-    architectureView(await snapshot("raw-demo"), root, ui);
+    const [core, onboarding] = await Promise.all([snapshot("raw-demo"), snapshot("onboarding")]);
+    architectureView(core, root, ui, onboarding);
     return;
   }
   let archived = params.get("run") === "benchmark" || (!params.has("run") && part === "identity" && params.has("pair"));

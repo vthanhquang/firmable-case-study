@@ -1,0 +1,254 @@
+{
+  "fields": [
+    {
+      "source_paths": [
+        "application.status"
+      ],
+      "join_with": " ",
+      "when": null,
+      "target": "dyn.ip_application.status",
+      "valid_from_path": null,
+      "valid_to_path": null,
+      "validity_date_formats": null,
+      "claim_scope": null,
+      "steps": [
+        {
+          "op": "trim",
+          "args": {}
+        },
+        {
+          "op": "map_enum",
+          "args": {
+            "mapping": {
+              "filed": "filed",
+              "lapsed": "lapsed",
+              "granted": "granted",
+              "accepted": "accepted",
+              "unknown": "unknown",
+              "withdrawn": "withdrawn",
+              "expired": "expired",
+              "ceased": "ceased"
+            },
+            "passthrough": false
+          }
+        }
+      ],
+      "confidence": 0.9,
+      "rationale": "application.status is the publisher's lifecycle status of the IP right application; dyn.ip_application.status is owned by ip_application and enumerates the observed publisher vocabulary including 'ceased', which is a publisher-stated application lifecycle state and must not be read as business cessation or as a party's status. passthrough is disabled so any unlisted value is withheld rather than emitted against an incomplete enum. It is not a business status, so it is attached to the ip_application role, not the subject.",
+      "entity": "ip_application",
+      "qualifiers": null,
+      "one_hot": null,
+      "claim_period": null
+    },
+    {
+      "source_paths": [
+        "application.application_date"
+      ],
+      "join_with": " ",
+      "when": null,
+      "target": "dyn.ip_application.application_date",
+      "valid_from_path": null,
+      "valid_to_path": null,
+      "validity_date_formats": null,
+      "claim_scope": null,
+      "steps": [
+        {
+          "op": "trim",
+          "args": {}
+        },
+        {
+          "op": "parse_date",
+          "args": {
+            "formats": [
+              "%Y-%m-%dT%H:%M:%S.%fZ",
+              "%Y-%m-%dT%H:%M:%SZ",
+              "%Y-%m-%d"
+            ]
+          }
+        }
+      ],
+      "confidence": 0.9,
+      "rationale": "application.application_date is the application's own filing/lodging date, matching dyn.ip_application.application_date (owner ip_application). It is not a business establishment date or a party-role validity start.",
+      "entity": "ip_application",
+      "qualifiers": null,
+      "one_hot": null,
+      "claim_period": null
+    },
+    {
+      "source_paths": [
+        "application.earliest_filed_date"
+      ],
+      "join_with": " ",
+      "when": null,
+      "target": "dyn.ip_application.earliest_filed_date",
+      "valid_from_path": null,
+      "valid_to_path": null,
+      "validity_date_formats": null,
+      "claim_scope": null,
+      "steps": [
+        {
+          "op": "trim",
+          "args": {}
+        },
+        {
+          "op": "parse_date",
+          "args": {
+            "formats": [
+              "%Y-%m-%dT%H:%M:%S.%fZ",
+              "%Y-%m-%dT%H:%M:%SZ",
+              "%Y-%m-%d"
+            ]
+          }
+        }
+      ],
+      "confidence": 0.9,
+      "rationale": "application.earliest_filed_date is the earliest filing date recorded for the application, matching dyn.ip_application.earliest_filed_date. It is an application-level date, distinct from the current filing date and from any business date.",
+      "entity": "ip_application",
+      "qualifiers": null,
+      "one_hot": null,
+      "claim_period": null
+    },
+    {
+      "source_paths": [
+        "application.priority_date"
+      ],
+      "join_with": " ",
+      "when": null,
+      "target": "dyn.ip_application.priority_date",
+      "valid_from_path": null,
+      "valid_to_path": null,
+      "validity_date_formats": null,
+      "claim_scope": null,
+      "steps": [
+        {
+          "op": "trim",
+          "args": {}
+        },
+        {
+          "op": "parse_date",
+          "args": {
+            "formats": [
+              "%Y-%m-%dT%H:%M:%S.%fZ",
+              "%Y-%m-%dT%H:%M:%SZ",
+              "%Y-%m-%d"
+            ]
+          }
+        }
+      ],
+      "confidence": 0.9,
+      "rationale": "application.priority_date is the priority date claimed for the application, matching dyn.ip_application.priority_date. It is a legal date of the application, not a grant or business date.",
+      "entity": "ip_application",
+      "qualifiers": null,
+      "one_hot": null,
+      "claim_period": null
+    },
+    {
+      "source_paths": [
+        "application.gained_registration_status_date"
+      ],
+      "join_with": " ",
+      "when": null,
+      "target": "dyn.ip_application.registration_status_date",
+      "valid_from_path": null,
+      "valid_to_path": null,
+      "validity_date_formats": null,
+      "claim_scope": null,
+      "steps": [
+        {
+          "op": "trim",
+          "args": {}
+        },
+        {
+          "op": "parse_date",
+          "args": {
+            "formats": [
+              "%Y-%m-%dT%H:%M:%S.%fZ",
+              "%Y-%m-%dT%H:%M:%SZ",
+              "%Y-%m-%d"
+            ]
+          }
+        }
+      ],
+      "confidence": 0.88,
+      "rationale": "application.gained_registration_status_date is the date the application gained registered status, matching dyn.ip_application.registration_status_date. Blank values are left missing and must not be read as 'never registered'; it is not a business registration date.",
+      "entity": "ip_application",
+      "qualifiers": null,
+      "one_hot": null,
+      "claim_period": null
+    },
+    {
+      "source_paths": [
+        "application.gained_enforceable_status_date"
+      ],
+      "join_with": " ",
+      "when": null,
+      "target": "dyn.ip_application.enforceable_status_date",
+      "valid_from_path": null,
+      "valid_to_path": null,
+      "validity_date_formats": null,
+      "claim_scope": null,
+      "steps": [
+        {
+          "op": "trim",
+          "args": {}
+        },
+        {
+          "op": "parse_date",
+          "args": {
+            "formats": [
+              "%Y-%m-%dT%H:%M:%S.%fZ",
+              "%Y-%m-%dT%H:%M:%SZ",
+              "%Y-%m-%d"
+            ]
+          }
+        }
+      ],
+      "confidence": 0.88,
+      "rationale": "application.gained_enforceable_status_date is the date the application gained enforceable status, matching dyn.ip_application.enforceable_status_date. It is an application milestone and does not assert actual enforceability; blanks stay missing.",
+      "entity": "ip_application",
+      "qualifiers": null,
+      "one_hot": null,
+      "claim_period": null
+    },
+    {
+      "source_paths": [
+        "application.deemed_retired_date"
+      ],
+      "join_with": " ",
+      "when": null,
+      "target": "dyn.ip_application.deemed_retired_date",
+      "valid_from_path": null,
+      "valid_to_path": null,
+      "validity_date_formats": null,
+      "claim_scope": null,
+      "steps": [
+        {
+          "op": "trim",
+          "args": {}
+        },
+        {
+          "op": "parse_date",
+          "args": {
+            "formats": [
+              "%Y-%m-%dT%H:%M:%S.%fZ",
+              "%Y-%m-%dT%H:%M:%SZ",
+              "%Y-%m-%d"
+            ]
+          }
+        }
+      ],
+      "confidence": 0.88,
+      "rationale": "application.deemed_retired_date is the date the application is deemed retired, matching dyn.ip_application.deemed_retired_date. It is an application-level date, not the end of a party-role association or of the business; blanks stay missing.",
+      "entity": "ip_application",
+      "qualifiers": null,
+      "one_hot": null,
+      "claim_period": null
+    }
+  ],
+  "unmapped": [
+    {
+      "source_path": "application.enforceable_from_date",
+      "reason": "Column is entirely empty in this snapshot (0 nonempty of 381). The ontology concept dyn.ip_application.enforceable_from_date exists for schema completeness only, but no value can be asserted; mapping it would emit no claims and could be misread as evidence of enforceability. Declined rather than mapped to avoid implying a value exists."
+    }
+  ]
+}

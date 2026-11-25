@@ -1,0 +1,59 @@
+{
+  "request_sha256": "aa9630344193edccecfc3edf6259c6150d6e0368ddd872883bc710dd5b0747bf",
+  "role": "group_architect",
+  "model": "deepseek-v4-flash",
+  "seconds": 11.127,
+  "response": {
+    "concepts": [
+      {
+        "path": "dyn.charity.report_modification_type",
+        "type": "enum",
+        "owner": "charity",
+        "definition": "The type of modification the auditor or reviewer applied to the charity's financial report, as published by the ACNC (e.g. qualified/qualification, disclaimed/disclaimer, adverse). Only meaningful where the report modification flag is y; unlisted source labels are withheld rather than guessed.",
+        "values": [
+          "Qualified/qualification",
+          "Disclaimed/disclaimer",
+          "Adverse"
+        ],
+        "multi": false,
+        "required_qualifiers": [],
+        "source_paths": [
+          "type of report modification"
+        ],
+        "why_not_existing": "No shortlisted concept captures audit/review modification types; dyn.charity.report_modification_flag only records presence, not the modification kind. Enum extended to include the observed 'Adverse' label so genuine modification kinds are not withheld.",
+        "personal_data": "never"
+      },
+      {
+        "path": "dyn.charity.coop_financial_report_submitted_flag",
+        "type": "enum",
+        "owner": "charity",
+        "definition": "Flag published by the ACNC indicating whether the charity submitted its financial report to a cooperative or other regulator rather than to the ACNC (y/n), as recorded in the 'coop financial report submitted to regulator' column. A lodgement-channel indicator, not a registration status; the exact regulator and whether it replaces ACNC lodgement are not asserted.",
+        "values": [
+          "y",
+          "n"
+        ],
+        "multi": false,
+        "required_qualifiers": [],
+        "source_paths": [
+          "coop financial report submitted to regulator"
+        ],
+        "why_not_existing": "No shortlisted concept covers alternative financial-report lodgement channels; dyn.charity.registration_status is a registration state, not a lodgement route. Definition narrowed to avoid over-specifying the regulator semantics.",
+        "personal_data": "never"
+      }
+    ],
+    "reuse": {
+      "dyn.charity.ais_due_date": "Reused unchanged: ACNC AIS lodgement deadline owned by the charity role; a regulatory deadline, not a licence or registration date.",
+      "dyn.charity.ais_received_date": "Reused unchanged: ACNC AIS receipt date owned by the charity role; a lodgement receipt date, not establishment or registration.",
+      "dyn.charity.size_band": "Reused unchanged: ACNC charity size classification (Small/Medium/Large) owned by the charity role; a regulator reporting classification, not a business revenue band or legal form.",
+      "dyn.charity.financial_report_period_start": "Reused unchanged: start of the reporting period covered by the charity's lodged financial report; a period boundary, not a registration or licence start date.",
+      "dyn.charity.financial_report_period_end": "Reused unchanged: end of the reporting period covered by the charity's lodged financial report; a specific period end, not a recurring financial-year-end attribute or licence end date.",
+      "dyn.charity.financial_report_received_date": "Reused unchanged: ACNC receipt date of the charity's financial report; a document lodgement date distinct from the AIS receipt date.",
+      "dyn.charity.financial_statement_type": "Reused unchanged: accounting framework of the lodged statement (special purpose / general purpose / simplified disclosure); a reporting-framework classification, not legal form or entity type.",
+      "dyn.charity.report_modification_flag": "Reused unchanged: y/n flag for whether the lodged financial report carries a modification; a report-quality indicator, not a registration or compliance status.",
+      "dyn.charity.report_consolidated_flag": "Reused unchanged: y/n reporting-scope indicator for consolidation; not evidence of group structure or ownership.",
+      "dyn.charity.accounting_basis": "Reused unchanged: accounting basis (Cash/Accrual) of the reported financial information; a reporting-basis classification, not a financial measure.",
+      "dyn.charity.registration_status": "Reused unchanged: ACNC charity registration status owned by the charity role; not a column in this group but an accepted prior concept.",
+      "dyn.charity.basic_religious_charity": "Reused unchanged: ACNC basic religious charity flag owned by the charity role; not a column in this group but an accepted prior concept."
+    }
+  }
+}

@@ -1,0 +1,47 @@
+{
+  "request_sha256": "8a4aa8a4296c43beb8aae96dae66b6eee3a38195e53a267e2066a42a77cb5178",
+  "role": "group_critic",
+  "model": "deepseek-v4-flash",
+  "seconds": 8.864,
+  "response": {
+    "verdict": "accept",
+    "findings": [
+      "All four emitted GPG concepts are semantically distinct measures (mean vs median × base salary vs total remuneration) owned by employer_reporting_unit, matching the row's subject; no reuse of pay-level or business-income concepts was attempted.",
+      "Units are handled correctly: publisher decimal fractions are parsed as decimals with no multiplication or whole-percentage relabelling, and '0' is preserved as a legitimate zero gap rather than nulled.",
+      "Year-group disambiguation is correct: the 2024-25 block (F-I) is consumed and the duplicate-labelled 2023-24 block is explicitly unmapped with a defensible reason, so the period qualifier '2024-25' is not misstated.",
+      "Held-out validation shows 121/121 present and emitted for each field with 0.0 error rate and no malformed values; the two held-out examples (ordinals 13, 38) match the emitted values exactly, including the zero-gap case.",
+      "Identity is bound on Employer ABN plus Employer name with an explicit caution that ABN is a reporting identifier, not proof of legal form or company-wide scope; no legal-form or group-scope claim is made.",
+      "Total remuneration is correctly described as pay (base salary plus superannuation and other payments), not revenue or business income; size band is not treated as exact headcount.",
+      "Corporate-group and documentation sheets are excluded from the reader, and the trailing-space sheet name '2. Employers ' is preserved.",
+      "No date column exists in the source; carrying the reporting year as a literal period qualifier rather than inventing a claim_period or fallback date is an honest, bounded choice, not a defect."
+    ],
+    "semantic_risks": [
+      "The 'period' qualifier is a literal string rather than a source-derived date; downstream consumers must not treat it as a publisher-stated effective date.",
+      "Grain is described as an employer-year-pair record because of the contextual 2023-24 block; if a future reader consumes both blocks, the single-year period qualifier would need to be split per year group.",
+      "Employer name collisions across sheets remain a latent risk if identity is ever re-bound on name alone; current binding on ABN mitigates this.",
+      "Negative GPG values (gap favouring women) are documented but not separately validated in the held-out sample; sign handling should be spot-checked if negative rows appear."
+    ],
+    "checked_reuse": [
+      "dyn.employer_reporting_unit.total_workforce_women_share",
+      "dyn.employer_reporting_unit.total_workforce_average_total_remuneration",
+      "dyn.employer_reporting_unit.lower_quartile_women_share",
+      "dyn.employer_reporting_unit.upper_quartile_women_share",
+      "dyn.employer_reporting_unit.lower_middle_quartile_women_share",
+      "dyn.employer_reporting_unit.upper_middle_quartile_women_share",
+      "dyn.employer_reporting_unit.lower_quartile_average_total_remuneration",
+      "dyn.employer_reporting_unit.lower_middle_quartile_average_total_remuneration",
+      "dyn.employer_reporting_unit.upper_middle_quartile_average_total_remuneration",
+      "dyn.employer_reporting_unit.upper_quartile_average_total_remuneration",
+      "dyn.employer_reporting_unit.reporting_name",
+      "dyn.employer_reporting_unit.reporting_abn",
+      "dyn.employer_reporting_unit.sector",
+      "dyn.employer_reporting_unit.anzsic_division",
+      "dyn.employer_reporting_unit.anzsic_class",
+      "dyn.employer_reporting_unit.size_band",
+      "ext.financial.total_income"
+    ],
+    "rationale": "The group emits four new GPG concepts with correct owner, units, year-group disambiguation and pay-not-income semantics. Held-out validation shows full coverage of present values with zero error rate and exact matches on the sampled rows, including a zero-gap case. Identity, sheet selection and the exclusion of the 2023-24 block and corporate-group sheets are all defensible. No blocking semantic or mapping defect was found; the noted risks are bounded and do not require repair.",
+    "blocking_findings": [],
+    "repair_scope": "none"
+  }
+}

@@ -1,0 +1,141 @@
+{
+  "quality": {
+    "present_values": 574,
+    "emitted_observations": 574,
+    "withheld_missing_context": 0,
+    "abstention_reasons": {},
+    "malformed_values": 0,
+    "malformed_reasons": {},
+    "eligible_present_values": 574,
+    "malformed_rate": 0.0,
+    "abstention_rate": 0.0,
+    "record_errors": {},
+    "passes_technical_gate": true,
+    "semantic_precision": null,
+    "note": "Missing required context remains withheld. This gate does not establish semantic truth or useful coverage."
+  },
+  "raw_validation": {
+    "records_in": 110,
+    "records_with_output": 110,
+    "record_errors": {},
+    "fields": [
+      {
+        "target": "dyn.party_activity.role_category",
+        "source_paths": [
+          "party_activity.party_role_category"
+        ],
+        "records": 110,
+        "source_present": 110,
+        "emitted": 110,
+        "coverage_of_records": 1.0,
+        "error_rate_of_present": 0.0,
+        "errors": {},
+        "error_examples": {},
+        "entity": "party_activity"
+      },
+      {
+        "target": "dyn.party_activity.role",
+        "source_paths": [
+          "party_activity.party_role"
+        ],
+        "records": 110,
+        "source_present": 110,
+        "emitted": 110,
+        "coverage_of_records": 1.0,
+        "error_rate_of_present": 0.0,
+        "errors": {},
+        "error_examples": {},
+        "entity": "party_activity"
+      },
+      {
+        "target": "dyn.party_activity.is_founding",
+        "source_paths": [
+          "party_activity.is_founding"
+        ],
+        "records": 110,
+        "source_present": 110,
+        "emitted": 110,
+        "coverage_of_records": 1.0,
+        "error_rate_of_present": 0.0,
+        "errors": {},
+        "error_examples": {},
+        "entity": "party_activity"
+      },
+      {
+        "target": "dyn.party_activity.is_current",
+        "source_paths": [
+          "party_activity.is_current"
+        ],
+        "records": 110,
+        "source_present": 110,
+        "emitted": 110,
+        "coverage_of_records": 1.0,
+        "error_rate_of_present": 0.0,
+        "errors": {},
+        "error_examples": {},
+        "entity": "party_activity"
+      },
+      {
+        "target": "dyn.party_activity.effective_from_date",
+        "source_paths": [
+          "party_activity.effective_from_date"
+        ],
+        "records": 110,
+        "source_present": 110,
+        "emitted": 110,
+        "coverage_of_records": 1.0,
+        "error_rate_of_present": 0.0,
+        "errors": {},
+        "error_examples": {},
+        "entity": "party_activity"
+      },
+      {
+        "target": "dyn.party_activity.effective_to_date",
+        "source_paths": [
+          "party_activity.effective_to_date"
+        ],
+        "records": 110,
+        "source_present": 24,
+        "emitted": 24,
+        "coverage_of_records": 0.218,
+        "error_rate_of_present": 0.0,
+        "errors": {},
+        "error_examples": {},
+        "entity": "party_activity"
+      }
+    ],
+    "relationships": {},
+    "input_records": 110,
+    "refused_records": 0,
+    "observations": 574,
+    "value_errors": 0,
+    "present_values": 574,
+    "error_rate": 0.0
+  },
+  "critic": {
+    "verdict": "accept",
+    "findings": [
+      "All six proposed concepts are owned by party_activity and their definitions consistently scope the values to the party-role record, explicitly excluding application status/dates and business lifecycle/incorporation.",
+      "Held-out validation shows 0.0 error rate of present values for all six fields; role_category, role, is_founding, is_current and effective_from_date each cover 110/110 records, and effective_to_date covers 24/110 present values (0.218) with blanks treated as missing rather than fabricated dates.",
+      "Enum mappings are closed (passthrough false, default null), so unlisted publisher categories/roles are withheld rather than coerced; observed values (applicant, applicant_agent, applicant, patentee, agent, true/false) all fall inside the declared value sets.",
+      "Date parsing accepts ISO-8601 Z timestamps and plain dates; effective_to_date applies null_if before parse_date so blank open-ended roles are abstentions, not dates.",
+      "Grain is correctly stated as one party-activity record (party in a role on an application), with application-level columns acknowledged as repeating; the party_activity key includes party_id, role_category, role, application_number and ip_right_type, which is consistent with the caution that party_id alone does not identify a unique relationship.",
+      "No legal-form, ABN, ownership, beneficial-interest or enforceability claims are emitted; is_founding is explicitly framed as a party-role flag, not an establishment date or incorporation evidence.",
+      "The cohort is described as a patent-prefix subset with no population accuracy claim, and the quality note correctly disclaims semantic truth."
+    ],
+    "semantic_risks": [
+      "is_founding is a publisher flag whose exact semantics (founding of what, relative to which entity) are not documented in the supplied evidence; the definition is defensible as a party-role attribute but downstream consumers could still misread it as business establishment. The definition's explicit prohibition mitigates but does not eliminate this.",
+      "effective_from_date examples include 2026-04-16, a future-dated value relative to the 2026-11-23 retrieval; this is plausibly a publisher-recorded role start, but it should not be interpreted as an event that has occurred in the business's history.",
+      "party_role_category and party_role are near-duplicates; the finer role (patentee, opponent) is not always derivable from the category (applicant, opposition), so both are retained, but consumers may double-count roles if they treat them as independent facts.",
+      "effective_to_date coverage of 0.218 reflects genuine open-ended roles; absence of an end date must not be read as the role having ended or the business having ceased."
+    ],
+    "checked_reuse": [
+      "ext.licence.category / ext.licence.status — rejected: owned by licence, describes an authorisation, not a party's role on an application.",
+      "ext.licence.start_date / ext.licence.end_date — rejected: owned by licence, not the validity window of a party-role association.",
+      "ext.entity.date_established — rejected: owned by business and a date, whereas is_founding is a boolean party-role flag; reuse would change owner, type and meaning."
+    ],
+    "rationale": "The group's six concepts are semantically defensible: each is owned by party_activity, scoped to the party-role record, and explicitly separated from application-level status/dates and from business establishment or legal form. Held-out validation shows zero error rate of present values across all six fields, with honest partial coverage on effective_to_date (0.218) reflecting genuinely blank open-ended roles rather than fabricated dates. Enum mappings are closed and withhold unlisted values, and date parsing handles the observed ISO-8601 Z format with blank-to-null handling. No legal-form, ABN, ownership or enforceability claims are made, and the cohort is correctly described as a non-population patent-prefix subset. Residual risks (undocumented is_founding semantics, future-dated effective_from_date, category/role near-duplication) are documented as semantic risks rather than blocking defects, since the definitions already bound their meaning. No blocking findings; repair_scope none.",
+    "blocking_findings": [],
+    "repair_scope": "none"
+  }
+}

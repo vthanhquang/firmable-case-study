@@ -1,0 +1,44 @@
+{
+  "request_sha256": "87ae398260546f38a4739cff68d6fd90171873283fa0dfc0bced3b1fd85c679f",
+  "role": "group_architect",
+  "model": "deepseek-v4-flash",
+  "seconds": 7.469,
+  "response": {
+    "concepts": [
+      {
+        "path": "dyn.ip_application.description_type",
+        "type": "enum",
+        "owner": "ip_application",
+        "definition": "Publisher's classification of the kind of description text attached to the IP right application (application_description.description_type), e.g. 'description'. It labels the description record's own category and does not state the application's status, grant or enforceability, nor any business attribute. The observed value list reflects this patent-prefix snapshot and is not asserted to be the publisher's full vocabulary.",
+        "values": [
+          "description"
+        ],
+        "multi": false,
+        "required_qualifiers": [],
+        "source_paths": [
+          "application_description.description_type"
+        ],
+        "why_not_existing": "No shortlisted concept classifies a description record attached to an IP application; ext.licence.category and ext.licence.authorisation are owned by licence and describe an authorisation, so reuse would change owner and meaning.",
+        "personal_data": "never"
+      },
+      {
+        "path": "dyn.ip_application.description_text",
+        "type": "string",
+        "owner": "ip_application",
+        "definition": "The description text published for the IP right application (application_description.description_value), e.g. a title-like or abstract-like statement of the subject matter. At most one description per application in this snapshot. It is the application's own descriptive text, not a business name, trading name or legal name, and it does not state grant, enforceability or ownership.",
+        "values": [],
+        "multi": false,
+        "required_qualifiers": [],
+        "source_paths": [
+          "application_description.description_value"
+        ],
+        "why_not_existing": "No shortlisted concept holds free-text descriptive content of an IP application; entity.legal_name, entity.trading_name and ext.entity.former_name are owned by business and assert name status, so reuse would change owner and meaning.",
+        "personal_data": "never"
+      }
+    ],
+    "reuse": {
+      "application_description.application_number": "dyn.ip_application.application_number",
+      "application_description.ip_right_type": "dyn.ip_application.ip_right_type"
+    }
+  }
+}

@@ -1,0 +1,422 @@
+{
+  "request_sha256": "328eeab9abec62c914a121fd671be83c09e57a963dbbe324361299269c6a57a6",
+  "role": "group_mapper",
+  "model": "deepseek-v4-flash",
+  "seconds": 9.784,
+  "response": {
+    "fields": [
+      {
+        "source_paths": [
+          "ais due date"
+        ],
+        "join_with": " ",
+        "when": null,
+        "target": "dyn.charity.ais_due_date",
+        "valid_from_path": null,
+        "valid_to_path": null,
+        "validity_date_formats": null,
+        "claim_scope": null,
+        "steps": [
+          {
+            "op": "trim",
+            "args": {}
+          },
+          {
+            "op": "parse_date",
+            "args": {
+              "formats": [
+                "%d/%m/%Y"
+              ]
+            }
+          }
+        ],
+        "confidence": 0.95,
+        "rationale": "AIS due date is the ACNC lodgement deadline for the charity's Annual Information Statement; matches dyn.charity.ais_due_date owned by the charity role. Not a licence or registration date.",
+        "entity": "charity",
+        "qualifiers": null,
+        "one_hot": null,
+        "claim_period": null
+      },
+      {
+        "source_paths": [
+          "date ais received"
+        ],
+        "join_with": " ",
+        "when": null,
+        "target": "dyn.charity.ais_received_date",
+        "valid_from_path": null,
+        "valid_to_path": null,
+        "validity_date_formats": null,
+        "claim_scope": null,
+        "steps": [
+          {
+            "op": "trim",
+            "args": {}
+          },
+          {
+            "op": "parse_date",
+            "args": {
+              "formats": [
+                "%d/%m/%Y"
+              ]
+            }
+          }
+        ],
+        "confidence": 0.95,
+        "rationale": "Date the ACNC received the AIS; matches dyn.charity.ais_received_date owned by the charity role. Distinct from establishment/registration dates.",
+        "entity": "charity",
+        "qualifiers": null,
+        "one_hot": null,
+        "claim_period": null
+      },
+      {
+        "source_paths": [
+          "charity size"
+        ],
+        "join_with": " ",
+        "when": null,
+        "target": "dyn.charity.size_band",
+        "valid_from_path": null,
+        "valid_to_path": null,
+        "validity_date_formats": null,
+        "claim_scope": null,
+        "steps": [
+          {
+            "op": "trim",
+            "args": {}
+          },
+          {
+            "op": "map_enum",
+            "args": {
+              "mapping": {
+                "small": "Small",
+                "medium": "Medium",
+                "large": "Large"
+              },
+              "default": null
+            }
+          }
+        ],
+        "confidence": 0.95,
+        "rationale": "ACNC charity size classification (Small/Medium/Large) is a charity-role reporting category, not a business revenue band or legal form; matches dyn.charity.size_band.",
+        "entity": "charity",
+        "qualifiers": null,
+        "one_hot": null,
+        "claim_period": null
+      },
+      {
+        "source_paths": [
+          "fin report from"
+        ],
+        "join_with": " ",
+        "when": null,
+        "target": "dyn.charity.financial_report_period_start",
+        "valid_from_path": null,
+        "valid_to_path": null,
+        "validity_date_formats": null,
+        "claim_scope": null,
+        "steps": [
+          {
+            "op": "trim",
+            "args": {}
+          },
+          {
+            "op": "parse_date",
+            "args": {
+              "formats": [
+                "%d/%m/%Y"
+              ]
+            }
+          }
+        ],
+        "confidence": 0.95,
+        "rationale": "Start of the reporting period covered by the charity's lodged financial report; matches dyn.charity.financial_report_period_start. Not a registration or licence start date.",
+        "entity": "charity",
+        "qualifiers": null,
+        "one_hot": null,
+        "claim_period": null
+      },
+      {
+        "source_paths": [
+          "fin report to"
+        ],
+        "join_with": " ",
+        "when": null,
+        "target": "dyn.charity.financial_report_period_end",
+        "valid_from_path": null,
+        "valid_to_path": null,
+        "validity_date_formats": null,
+        "claim_scope": null,
+        "steps": [
+          {
+            "op": "trim",
+            "args": {}
+          },
+          {
+            "op": "parse_date",
+            "args": {
+              "formats": [
+                "%d/%m/%Y"
+              ]
+            }
+          }
+        ],
+        "confidence": 0.95,
+        "rationale": "End of the reporting period covered by the charity's lodged financial report; matches dyn.charity.financial_report_period_end. Not a recurring financial-year-end attribute or licence end date.",
+        "entity": "charity",
+        "qualifiers": null,
+        "one_hot": null,
+        "claim_period": null
+      },
+      {
+        "source_paths": [
+          "financial report date received"
+        ],
+        "join_with": " ",
+        "when": null,
+        "target": "dyn.charity.financial_report_received_date",
+        "valid_from_path": null,
+        "valid_to_path": null,
+        "validity_date_formats": null,
+        "claim_scope": null,
+        "steps": [
+          {
+            "op": "trim",
+            "args": {}
+          },
+          {
+            "op": "parse_date",
+            "args": {
+              "formats": [
+                "%d/%m/%Y"
+              ]
+            }
+          }
+        ],
+        "confidence": 0.9,
+        "rationale": "Receipt date of the financial report, a document lodgement date distinct from the AIS receipt date; matches dyn.charity.financial_report_received_date.",
+        "entity": "charity",
+        "qualifiers": null,
+        "one_hot": null,
+        "claim_period": null
+      },
+      {
+        "source_paths": [
+          "type of financial statement"
+        ],
+        "join_with": " ",
+        "when": null,
+        "target": "dyn.charity.financial_statement_type",
+        "valid_from_path": null,
+        "valid_to_path": null,
+        "validity_date_formats": null,
+        "claim_scope": null,
+        "steps": [
+          {
+            "op": "trim",
+            "args": {}
+          },
+          {
+            "op": "collapse_whitespace",
+            "args": {}
+          },
+          {
+            "op": "map_enum",
+            "args": {
+              "mapping": {
+                "special purpose financial statements": "Special purpose financial statements",
+                "general purpose financial statements": "General purpose financial statements",
+                "general purpose financial statements simplified disclosure": "General purpose financial statements - simplified disclosure",
+                "general purpose financial statements - simplified disclosure": "General purpose financial statements - simplified disclosure"
+              },
+              "default": null
+            }
+          }
+        ],
+        "confidence": 0.85,
+        "rationale": "Accounting framework of the lodged statement; matches dyn.charity.financial_statement_type. Whitespace variants of the simplified-disclosure label are collapsed before mapping; unlisted values are withheld rather than guessed.",
+        "entity": "charity",
+        "qualifiers": null,
+        "one_hot": null,
+        "claim_period": null
+      },
+      {
+        "source_paths": [
+          "charity report has a modification"
+        ],
+        "join_with": " ",
+        "when": null,
+        "target": "dyn.charity.report_modification_flag",
+        "valid_from_path": null,
+        "valid_to_path": null,
+        "validity_date_formats": null,
+        "claim_scope": null,
+        "steps": [
+          {
+            "op": "trim",
+            "args": {}
+          },
+          {
+            "op": "map_enum",
+            "args": {
+              "mapping": {
+                "y": "y",
+                "n": "n"
+              },
+              "default": null
+            }
+          }
+        ],
+        "confidence": 0.95,
+        "rationale": "y/n flag for whether the lodged financial report carries a modification; matches dyn.charity.report_modification_flag.",
+        "entity": "charity",
+        "qualifiers": null,
+        "one_hot": null,
+        "claim_period": null
+      },
+      {
+        "source_paths": [
+          "type of report modification"
+        ],
+        "join_with": " ",
+        "when": {
+          "source_path": "charity report has a modification",
+          "op": "equals",
+          "values": [
+            "y"
+          ]
+        },
+        "target": "dyn.charity.report_modification_type",
+        "valid_from_path": null,
+        "valid_to_path": null,
+        "validity_date_formats": null,
+        "claim_scope": null,
+        "steps": [
+          {
+            "op": "trim",
+            "args": {}
+          },
+          {
+            "op": "map_enum",
+            "args": {
+              "mapping": {
+                "qualified/qualification": "Qualified/qualification",
+                "disclaimed/disclaimer": "Disclaimed/disclaimer"
+              },
+              "default": null
+            }
+          }
+        ],
+        "confidence": 0.9,
+        "rationale": "Kind of audit/review modification; matches dyn.charity.report_modification_type. Guarded on the modification flag being y, since the type is only meaningful where a modification exists.",
+        "entity": "charity",
+        "qualifiers": null,
+        "one_hot": null,
+        "claim_period": null
+      },
+      {
+        "source_paths": [
+          "report consolidated with more than one entity"
+        ],
+        "join_with": " ",
+        "when": null,
+        "target": "dyn.charity.report_consolidated_flag",
+        "valid_from_path": null,
+        "valid_to_path": null,
+        "validity_date_formats": null,
+        "claim_scope": null,
+        "steps": [
+          {
+            "op": "trim",
+            "args": {}
+          },
+          {
+            "op": "map_enum",
+            "args": {
+              "mapping": {
+                "y": "y",
+                "n": "n"
+              },
+              "default": null
+            }
+          }
+        ],
+        "confidence": 0.95,
+        "rationale": "y/n reporting-scope indicator for consolidation; matches dyn.charity.report_consolidated_flag. Not evidence of group ownership.",
+        "entity": "charity",
+        "qualifiers": null,
+        "one_hot": null,
+        "claim_period": null
+      },
+      {
+        "source_paths": [
+          "coop financial report submitted to regulator"
+        ],
+        "join_with": " ",
+        "when": null,
+        "target": "dyn.charity.coop_financial_report_submitted_flag",
+        "valid_from_path": null,
+        "valid_to_path": null,
+        "validity_date_formats": null,
+        "claim_scope": null,
+        "steps": [
+          {
+            "op": "trim",
+            "args": {}
+          },
+          {
+            "op": "map_enum",
+            "args": {
+              "mapping": {
+                "y": "y",
+                "n": "n"
+              },
+              "default": null
+            }
+          }
+        ],
+        "confidence": 0.9,
+        "rationale": "y/n lodgement-channel indicator for submitting the financial report to a cooperative/state regulator; matches dyn.charity.coop_financial_report_submitted_flag.",
+        "entity": "charity",
+        "qualifiers": null,
+        "one_hot": null,
+        "claim_period": null
+      },
+      {
+        "source_paths": [
+          "cash or accrual"
+        ],
+        "join_with": " ",
+        "when": null,
+        "target": "dyn.charity.accounting_basis",
+        "valid_from_path": null,
+        "valid_to_path": null,
+        "validity_date_formats": null,
+        "claim_scope": null,
+        "steps": [
+          {
+            "op": "trim",
+            "args": {}
+          },
+          {
+            "op": "map_enum",
+            "args": {
+              "mapping": {
+                "cash": "Cash",
+                "accrual": "Accrual"
+              },
+              "default": null
+            }
+          }
+        ],
+        "confidence": 0.95,
+        "rationale": "Accounting basis on which the charity prepared its reported financials; matches dyn.charity.accounting_basis.",
+        "entity": "charity",
+        "qualifiers": null,
+        "one_hot": null,
+        "claim_period": null
+      }
+    ],
+    "unmapped": []
+  }
+}

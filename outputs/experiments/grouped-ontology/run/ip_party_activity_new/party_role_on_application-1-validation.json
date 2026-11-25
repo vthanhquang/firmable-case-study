@@ -1,0 +1,85 @@
+{
+  "quality": {
+    "present_values": 240,
+    "emitted_observations": 240,
+    "withheld_missing_context": 0,
+    "abstention_reasons": {},
+    "malformed_values": 0,
+    "malformed_reasons": {},
+    "eligible_present_values": 240,
+    "malformed_rate": 0.0,
+    "abstention_rate": 0.0,
+    "record_errors": {},
+    "passes_technical_gate": true,
+    "semantic_precision": null,
+    "note": "Missing required context remains withheld. This gate does not establish semantic truth or useful coverage."
+  },
+  "raw_validation": {
+    "records_in": 120,
+    "records_with_output": 120,
+    "record_errors": {},
+    "fields": [
+      {
+        "target": "dyn.party.role_category",
+        "source_paths": [
+          "party_role_category"
+        ],
+        "records": 120,
+        "source_present": 120,
+        "emitted": 120,
+        "coverage_of_records": 1.0,
+        "error_rate_of_present": 0.0,
+        "errors": {},
+        "error_examples": {},
+        "entity": "party"
+      },
+      {
+        "target": "dyn.party.role",
+        "source_paths": [
+          "party_role"
+        ],
+        "records": 120,
+        "source_present": 120,
+        "emitted": 120,
+        "coverage_of_records": 1.0,
+        "error_rate_of_present": 0.0,
+        "errors": {},
+        "error_examples": {},
+        "entity": "party"
+      }
+    ],
+    "relationships": {},
+    "input_records": 120,
+    "refused_records": 0,
+    "observations": 240,
+    "value_errors": 0,
+    "present_values": 240,
+    "error_rate": 0.0
+  },
+  "critic": {
+    "verdict": "accept",
+    "findings": [
+      "Both emitted concepts are owned by party and describe the capacity/role of a party on an IP application; the two dimensions are kept separate as the group purpose requires, so applicant, patentee and agent are not collapsed.",
+      "Enum mapping is defensible: enumerated publisher values map to themselves, and the default 'other' is only reachable when the source value is present (when-guard on present), so 'other' never stands in for a blank. Held-out example ordinal 15708 shows raw 'licensee' -> 'other', consistent with the stated definition.",
+      "Held-out validation shows 120/120 source-present and 120/120 emitted for each field with 0.0 error rate of present; coverage is honestly bounded to the 25,000-record prefix cohort and no population claim is made.",
+      "Grain, identity cautions and unmapped reasons are consistent with the source notes: party_id is not a company number, abn is sparse, party_name is free text, application_number is scoped by ip_right_type, and effective dates are party-activity validity, not incorporation or grant dates.",
+      "The mapping does not assert ownership, enforceability, legal form or incorporation from role, name or ABN; the agent row (ordinal 39) is emitted as role 'agent'/'applicant_agent' without any ownership claim.",
+      "Unmapped entries for address, validity, identity and party_type columns are correctly scoped out of this group rather than coerced into role values.",
+      "The quality note explicitly disclaims semantic truth and useful coverage; the technical gate pass is not presented as human approval or semantic validation."
+    ],
+    "semantic_risks": [
+      "'other' is a lossy bucket: distinct publisher categories (e.g. licensee, mortgagee-adjacent categories) collapse into one value, so downstream consumers cannot distinguish them; this is a coverage/utility limitation, not a semantic error, given the stated definition.",
+      "The 'unknown' enum value is declared but unreachable under the present-guard; this is consistent with declining blanks rather than coercing them, but the value is effectively dead in this mapping and should not be read as evidence that blanks were classified.",
+      "Role category and role are publisher-supplied labels; a party recorded as 'applicant' is not proof of current ownership or enforceability, and any downstream join to right status must not treat these as such.",
+      "Prefix-cohort bias means role distribution frequencies are not representative of the full archive; no frequency or share claims should be derived."
+    ],
+    "checked_reuse": [
+      "ext.contact.* — rejected: different owner (contact channels) and different meaning; reuse would change owner and meaning.",
+      "ext.licence.* / ext.licence.category — rejected: describes a licence authorisation held by a business, a different owner and meaning; would misstate the party-application role fact.",
+      "No existing shortlisted concept describes a party's capacity or specific role on an IP application, so new party-owned concepts are justified."
+    ],
+    "rationale": "The two proposed concepts are party-owned, semantically distinct dimensions (broad role category vs specific role label) that match the group purpose of not collapsing applicant, patentee and agent roles. Enum handling is sound: enumerated values map identically, and the default 'other' is only reachable for present-but-unenumerated source values, with blanks declined rather than coerced. Held-out validation shows full coverage of present values with zero error rate of present, and the group honestly bounds itself to a prefix cohort without population claims. Identity, date and legal-form cautions are respected: no ownership, enforceability, incorporation or legal-form inference is made from role, name or ABN. No blocking semantic, ownership, unit, date or provenance defect was found in the emitted claims; the noted risks are utility/interpretation limitations rather than incorrect assertions.",
+    "blocking_findings": [],
+    "repair_scope": "none"
+  }
+}

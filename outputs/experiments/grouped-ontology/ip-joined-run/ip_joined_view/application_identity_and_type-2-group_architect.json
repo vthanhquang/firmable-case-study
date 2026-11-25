@@ -1,0 +1,76 @@
+{
+  "request_sha256": "226e699537730ce94204ef818a7c68ff0ad96e89a8d6909d8f4a21d18e827516",
+  "role": "group_architect",
+  "model": "deepseek-v4-flash",
+  "seconds": 7.86,
+  "response": {
+    "concepts": [
+      {
+        "path": "dyn.ip_application.application_number",
+        "type": "string",
+        "owner": "ip_application",
+        "definition": "Publisher's identifier for the IP right application (application.application_number, repeated as party_activity.application_number), as published. It identifies the application only in combination with the IP right type; it is not a business registration number, ABN or ACN, and does not identify the party or the business.",
+        "values": [],
+        "multi": false,
+        "required_qualifiers": [],
+        "source_paths": [
+          "application.application_number",
+          "party_activity.application_number"
+        ],
+        "why_not_existing": "No shortlisted concept covers an IP-office application number; ext.licence.number and ext.licence.related_licence_number are owned by licence and identify authorisations, and ext.entity.prior_registration_number is a legacy business registration number, so reuse would change owner and meaning.",
+        "personal_data": "never"
+      },
+      {
+        "path": "dyn.ip_application.ip_right_type",
+        "type": "enum",
+        "owner": "ip_application",
+        "definition": "Publisher's classification of the kind of IP right the application seeks (application.ip_right_type, repeated as party_activity.ip_right_type), e.g. patent. It classifies the application, not the party or the business, and does not state that any right has been granted or is enforceable. The value list reflects the patent-prefix cohort in this snapshot and is not a general IP-right-type vocabulary.",
+        "values": [
+          "patent"
+        ],
+        "multi": false,
+        "required_qualifiers": [],
+        "source_paths": [
+          "application.ip_right_type",
+          "party_activity.ip_right_type"
+        ],
+        "why_not_existing": "No shortlisted concept classifies an IP right application; ext.licence.category and ext.licence.authorisation are owned by licence and describe an authorisation held by a business, so reuse would change owner and meaning.",
+        "personal_data": "never"
+      },
+      {
+        "path": "dyn.ip_application.ip_right_sub_type",
+        "type": "enum",
+        "owner": "ip_application",
+        "definition": "Publisher's sub-classification of the IP right application within its IP right type (application.ip_right_sub_type). For patents the observed vocabulary includes standard_complete, innovation, provisional and petty; the list is not asserted to be exhaustive of the publisher's vocabulary. It describes the application's own category and does not imply grant, enforceability or a business attribute.",
+        "values": [
+          "standard_complete",
+          "innovation",
+          "provisional",
+          "petty"
+        ],
+        "multi": false,
+        "required_qualifiers": [],
+        "source_paths": [
+          "application.ip_right_sub_type"
+        ],
+        "why_not_existing": "No shortlisted concept expresses an application sub-type; ext.licence.category is a licence category owned by licence, so reuse would change owner and meaning.",
+        "personal_data": "never"
+      }
+    ],
+    "reuse": {
+      "dyn.party.party_kind": "party_activity.party_type is a party classification only, matching the shortlisted owner and meaning; not used in this group's columns but retained as-is.",
+      "dyn.party.party_key": "party_activity.party_id is the IP-office party key; unchanged.",
+      "dyn.party.abn_supplied": "party_activity.abn is an unvalidated, often-blank party-record value; unchanged.",
+      "dyn.party.party_name": "party_activity.party_name is a free-text, lower-cased party label; unchanged.",
+      "dyn.party_activity.role": "party_activity.party_role is the specific role on the application; unchanged.",
+      "dyn.party_activity.role_category": "party_activity.party_role_category is the broad role category; unchanged.",
+      "dyn.party.address_postcode": "party_activity.post_code is a raw, mixed-format party address attribute; unchanged.",
+      "dyn.party.address_state": "party_activity.state_code is a raw, lower-cased party address attribute; unchanged.",
+      "dyn.party.address_country": "party_activity.country_code is a raw, often-blank party address attribute; unchanged.",
+      "dyn.party_activity.effective_from_date": "party_activity.effective_from_date is the start of the party-role validity window; unchanged.",
+      "dyn.party_activity.effective_to_date": "party_activity.effective_to_date is the end of the party-role validity window; unchanged.",
+      "dyn.party_activity.is_current": "party_activity.is_current is the party-role currency flag; unchanged.",
+      "dyn.party_activity.is_founding": "party_activity.is_founding is a party-role founding flag, not a business establishment date; unchanged."
+    }
+  }
+}

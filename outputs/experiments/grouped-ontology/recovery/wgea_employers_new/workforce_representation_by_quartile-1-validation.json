@@ -1,0 +1,127 @@
+{
+  "quality": {
+    "present_values": 605,
+    "emitted_observations": 605,
+    "withheld_missing_context": 0,
+    "abstention_reasons": {},
+    "malformed_values": 0,
+    "malformed_reasons": {},
+    "eligible_present_values": 605,
+    "malformed_rate": 0.0,
+    "abstention_rate": 0.0,
+    "record_errors": {},
+    "passes_technical_gate": true,
+    "semantic_precision": null,
+    "note": "Missing required context remains withheld. This gate does not establish semantic truth or useful coverage."
+  },
+  "raw_validation": {
+    "records_in": 121,
+    "records_with_output": 121,
+    "record_errors": {},
+    "fields": [
+      {
+        "target": "dyn.employer_reporting_unit.total_workforce_women_share",
+        "source_paths": [
+          "Total workforce % women"
+        ],
+        "records": 121,
+        "source_present": 121,
+        "emitted": 121,
+        "coverage_of_records": 1.0,
+        "error_rate_of_present": 0.0,
+        "errors": {},
+        "error_examples": {},
+        "entity": "employer"
+      },
+      {
+        "target": "dyn.employer_reporting_unit.lower_quartile_women_share",
+        "source_paths": [
+          "Lower quartile % women"
+        ],
+        "records": 121,
+        "source_present": 121,
+        "emitted": 121,
+        "coverage_of_records": 1.0,
+        "error_rate_of_present": 0.0,
+        "errors": {},
+        "error_examples": {},
+        "entity": "employer"
+      },
+      {
+        "target": "dyn.employer_reporting_unit.lower_middle_quartile_women_share",
+        "source_paths": [
+          "Lower-middle quartile % women"
+        ],
+        "records": 121,
+        "source_present": 121,
+        "emitted": 121,
+        "coverage_of_records": 1.0,
+        "error_rate_of_present": 0.0,
+        "errors": {},
+        "error_examples": {},
+        "entity": "employer"
+      },
+      {
+        "target": "dyn.employer_reporting_unit.upper_middle_quartile_women_share",
+        "source_paths": [
+          "Upper-middle quartile % women"
+        ],
+        "records": 121,
+        "source_present": 121,
+        "emitted": 121,
+        "coverage_of_records": 1.0,
+        "error_rate_of_present": 0.0,
+        "errors": {},
+        "error_examples": {},
+        "entity": "employer"
+      },
+      {
+        "target": "dyn.employer_reporting_unit.upper_quartile_women_share",
+        "source_paths": [
+          "Upper quartile % women"
+        ],
+        "records": 121,
+        "source_present": 121,
+        "emitted": 121,
+        "coverage_of_records": 1.0,
+        "error_rate_of_present": 0.0,
+        "errors": {},
+        "error_examples": {},
+        "entity": "employer"
+      }
+    ],
+    "input_records": 121,
+    "refused_records": 0,
+    "observations": 605,
+    "value_errors": 0,
+    "present_values": 605,
+    "error_rate": 0.0
+  },
+  "critic": {
+    "verdict": "accept",
+    "findings": [
+      "All five emitted concepts are semantically distinct populations (total workforce vs each of four pay quartiles), owned by employer_reporting_unit, and each is defined as a composition share rather than a pay gap; reuse of GPG or revenue-band concepts would have changed meaning, so new concepts are justified.",
+      "Units are handled correctly: values are stored as decimal fractions (e.g. 0.48, 0.39) and the definitions explicitly state the storage convention, so no silent percentage multiplication is claimed.",
+      "The 2024-25 columns (F-I) are mapped and the 2023-24 contextual block (J-M) is excluded; the duplicate-looking header labels are disambiguated by year group, not position, and the held-out rows confirm the mapped columns carry current-year values.",
+      "Identity is bound on Employer ABN plus Employer name, with an explicit caution that ABN is a reporting identifier and not proof of legal form or company-wide scope; no legal-form or group-scope claim is emitted.",
+      "The '2. Employers ' sheet name with trailing space is preserved exactly, skip_rows=3 matches the three title/context rows, and the documentation and corporate-group sheets are excluded from the reader.",
+      "Held-out validation shows 121/121 source-present and 121/121 emitted for every field with zero error rate; the 605 present values and 605 emitted observations are consistent with five fields across the validation rows.",
+      "The required 'period' qualifier is carried as a literal reporting_year value ('2024-25') because no per-row date column exists; this is an honest bounded treatment, not an invented fallback date.",
+      "No repeated-array expansion, no nested singleton bindings, and no edges are declared, so the execution contract's array and edge constraints are not violated."
+    ],
+    "semantic_risks": [
+      "The 'period' qualifier is a literal string rather than a parsed claim_period; downstream consumers must not treat it as a machine-comparable date range.",
+      "Quartile shares are within-quartile composition shares; they must not be aggregated or averaged across employers as if they were population-level measures.",
+      "The grain is described as an employer-year-pair record because of the contextual 2023-24 block; consumers must not merge the 2023-24 GPG columns into the 2024-25 measures.",
+      "Employer name collisions across sheets mean name alone must never be used as a join key; ABN binding is required."
+    ],
+    "checked_reuse": [
+      "ext.financial.revenue_band — rejected: revenue band is not a workforce composition share.",
+      "GPG concepts (average/median total and base salary GPG) — rejected: a pay gap is not a female composition share.",
+      "Total workforce women share vs quartile women shares — kept separate: different populations, reuse would change meaning."
+    ],
+    "rationale": "Held-out validation evidence shows full coverage (121/121) and zero error rate for all five fields, with raw values matching emitted decimals and the 2024-25 columns correctly selected over the 2023-24 contextual block. Concept definitions are semantically defensible: each is a distinct composition share owned by the employer reporting unit, units are decimal fractions with the storage convention stated, and no pay-gap, revenue, legal-form or group-scope meaning is conflated. Identity rests on ABN plus name with explicit cautions, the sheet name and skip_rows match the byte inspection, and the required period qualifier is honestly carried as a literal reporting year rather than an invented date. No blocking findings are identified; the noted semantic risks are consumer-facing cautions, not defects in the emitted claims.",
+    "blocking_findings": [],
+    "repair_scope": "none"
+  }
+}

@@ -1,0 +1,59 @@
+{
+  "concepts": [
+    {
+      "path": "dyn.fundraising_authorisation.number",
+      "type": "string",
+      "owner": "fundraising_authorisation",
+      "definition": "Publisher-assigned fundraising registration or licence number held by a charity for a specific Australian state or territory, taken verbatim from that jurisdiction's fundraising-number column. Formats differ by jurisdiction (e.g. CH2136, CCP2996, C/10450, FR0017060, CFN/26748) and are not normalised across states; a placeholder value such as 00000 is retained as published and is not evidence of a valid registration.",
+      "values": [],
+      "multi": false,
+      "required_qualifiers": [
+        "jurisdiction"
+      ],
+      "source_paths": [
+        "fundraising number - act",
+        "fundraising number - nsw",
+        "fundraising number - qld",
+        "fundraising number - sa",
+        "fundraising number - tas",
+        "fundraising number - vic",
+        "fundraising number - wa"
+      ],
+      "why_not_existing": "ext.licence.number is owned by the licence role and identifies a business-held licence; a state fundraising registration is owned by the fundraising_authorisation role and is jurisdiction-qualified, so reuse would change owner and meaning. dyn.charity.state_association_number is an incorporated-association number, a different registration regime, and is owned by charity.",
+      "personal_data": "never"
+    },
+    {
+      "path": "dyn.fundraising_authorisation.activity_flag",
+      "type": "enum",
+      "owner": "fundraising_authorisation",
+      "definition": "Publisher-recorded y/n flag from the ACNC Annual Information Statement indicating whether the charity reported fundraising activity in a given jurisdiction or online, qualified by the jurisdiction (or 'online' for the national online-fundraising column). A 'y' flag is a self-reported activity indicator and does not by itself prove a registration number exists.",
+      "values": [
+        "y",
+        "n"
+      ],
+      "multi": false,
+      "required_qualifiers": [
+        "jurisdiction"
+      ],
+      "source_paths": [
+        "fundraising - act",
+        "fundraising - nsw",
+        "fundraising - nt",
+        "fundraising - online",
+        "fundraising - qld",
+        "fundraising - sa",
+        "fundraising - tas",
+        "fundraising - vic",
+        "fundraising - wa"
+      ],
+      "why_not_existing": "No shortlisted concept records a charity's per-jurisdiction or online fundraising activity flag; ext.licence.authorisation is licence-owned authorisation text, and address.state is a business address state, so reuse would change owner, meaning and units.",
+      "personal_data": "never"
+    }
+  ],
+  "reuse": {
+    "dyn.charity.state_association_number": "Not reused: association numbers are a different registration regime (incorporated associations) from fundraising registrations, and the concept is owned by charity rather than fundraising_authorisation.",
+    "ext.licence.number": "Not reused: owned by the licence role for business-held licences; state fundraising registration numbers belong to the fundraising_authorisation role and require a jurisdiction qualifier.",
+    "ext.licence.authorisation": "Not reused: holds licence authorisation text, not a y/n fundraising activity flag.",
+    "address.state": "Not reused: describes a business address state, not a fundraising activity indicator or registration jurisdiction."
+  }
+}

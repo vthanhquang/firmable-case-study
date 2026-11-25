@@ -1,0 +1,102 @@
+{
+  "quality": {
+    "present_values": 240,
+    "emitted_observations": 240,
+    "withheld_missing_context": 0,
+    "abstention_reasons": {},
+    "malformed_values": 0,
+    "malformed_reasons": {},
+    "eligible_present_values": 240,
+    "malformed_rate": 0.0,
+    "abstention_rate": 0.0,
+    "record_errors": {},
+    "passes_technical_gate": true,
+    "semantic_precision": null,
+    "note": "Missing required context remains withheld. This gate does not establish semantic truth or useful coverage."
+  },
+  "raw_validation": {
+    "records_in": 120,
+    "records_with_output": 120,
+    "record_errors": {},
+    "fields": [
+      {
+        "target": "dyn.party.role_category",
+        "source_paths": [
+          "party_role_category"
+        ],
+        "records": 120,
+        "source_present": 120,
+        "emitted": 120,
+        "coverage_of_records": 1.0,
+        "error_rate_of_present": 0.0,
+        "errors": {},
+        "error_examples": {},
+        "entity": "party"
+      },
+      {
+        "target": "dyn.party.role",
+        "source_paths": [
+          "party_role"
+        ],
+        "records": 120,
+        "source_present": 120,
+        "emitted": 120,
+        "coverage_of_records": 1.0,
+        "error_rate_of_present": 0.0,
+        "errors": {},
+        "error_examples": {},
+        "entity": "party"
+      }
+    ],
+    "relationships": {},
+    "input_records": 120,
+    "refused_records": 0,
+    "observations": 240,
+    "value_errors": 0,
+    "present_values": 240,
+    "error_rate": 0.0
+  },
+  "critic": {
+    "verdict": "revise",
+    "findings": [
+      "Both emitted fields (dyn.party.role_category, dyn.party.role) show 100% coverage of present values with 0.0 error rate on 120 validation records each; the technical gate passes and no malformed or withheld values are reported.",
+      "The two dimensions are kept separate as the group purpose requires: ordinal 39 emits role_category=applicant_agent and role=agent, so applicant/patentee/agent are not collapsed and the agent row is not presented as ownership.",
+      "Enum mapping is honest about unlisted publisher values: ordinal 15708 raw 'licensee' falls to 'other' rather than being forced into a known role, and the concept definitions state that role is not ownership, not legal form and not enforceability.",
+      "Entity keys are defensible: ip_application keyed on (ip_right_type, application_number) because application_number is scoped by right type, and party keyed on party_id with abn/party_name explicitly excluded as sparse/free-text.",
+      "The PARTY_INVOLVED_IN_APPLICATION edge is declared with role and effective dates as qualifiers rather than as entity-changing attributes, consistent with the row grain.",
+      "Coverage is honestly bounded: the mapping notes the 25,000-record prefix cohort and makes no population-level claim; the quality block reports semantic_precision as null rather than asserting semantic truth.",
+      "The unmapped list covers all 13 non-group columns with an explicit 'outside this group' reason, so no source column is silently dropped."
+    ],
+    "semantic_risks": [
+      "The 'other' default is a lossy catch-all: raw 'licensee' (ordinal 15708) is a meaningful party capacity that becomes indistinguishable from genuinely unknown categories. This is defensible as bounded coverage but reduces the utility of the role_category dimension and should not be read as 'no role'.",
+      "The concept value lists include 'unknown' but the map_enum steps only define a default of 'other'; no path emits 'unknown', so the 'unknown' value is unreachable and could mislead a consumer into expecting a distinct missing-value signal.",
+      "The role_category value list (applicant, applicant_agent, opposition_agent, mortgagee, other, unknown) is narrower than the publisher's apparent vocabulary (e.g. licensee observed in held-out data); the definition's 'e.g.' phrasing correctly signals non-exhaustiveness, but consumers must not treat the list as the full publisher taxonomy.",
+      "The role value list (patentee, applicant, agent, opponent_agent, other, unknown) is likewise a subset; ordinal 39 shows role=agent paired with category=applicant_agent, so the two dimensions are correlated in practice and must not be treated as independent evidence.",
+      "The mapping's observed_at uses a resource_last_modified fallback with no source path; per the execution contract this is observation-at-retrieval, not a publisher-stated update time, and must not be described as a publisher update date.",
+      "The record_id uses a content hash strategy with empty source_paths; this is the experiment's fixed behaviour and is not a claim that the hash is a publisher-issued identifier."
+    ],
+    "checked_reuse": [
+      "dyn.party.role_category: checked against ext.contact.* and ext.licence.* — different owner (contact channel / licence authorisation) and different meaning, so new concept is justified rather than reuse.",
+      "dyn.party.role: checked against ext.licence.category — licence category held by a business is a different owner and meaning, so new concept is justified rather than reuse.",
+      "No reuse entries were proposed, and the why_not_existing rationales for both concepts name the specific shortlisted concepts that were considered and rejected."
+    ],
+    "rationale": "The group's two emitted claims are semantically defensible: role_category and role are kept as distinct dimensions, agent rows are not presented as ownership, unlisted publisher values fall to 'other' rather than being forced, and the entity keys and edge are consistent with the stated grain. Validation evidence shows full coverage of present values with zero rejected values on 120 records per field, and the quality block honestly reports semantic_precision as null and bounds coverage to the prefix cohort. The blocking issues are not semantic misstatements but unreachable/underspecified enum handling: the 'unknown' value is declared but never emitted, and the 'other' default conflates a real publisher category (licensee) with genuinely unclassified values. These are correctable at the mapping/ontology level without inventing data, so the verdict is revise rather than accept or reject.",
+    "blocking_findings": [
+      {
+        "field": "dyn.party.role_category",
+        "actual": "map_enum default is 'other'; the declared value 'unknown' is never produced by any step, and raw 'licensee' (ordinal 15708) is emitted as 'other'.",
+        "expected": "Either remove the unreachable 'unknown' value from the concept, or add an explicit step/rule that emits 'unknown' for genuinely missing/blank source values, and document that 'other' means 'publisher category outside the enumerated subset' (e.g. licensee) rather than 'unknown'.",
+        "evidence": "field_evidence examples_by_field_and_role for dyn.party.role_category@party show ordinal 15708 raw_value 'licensee' -> value 'other'; the mapping steps for party_role_category define only a default of 'other' with no 'unknown' branch, while the concept values list includes 'unknown'.",
+        "correction": "In the mapping for dyn.party.role_category, add a when-condition that routes blank/empty party_role_category to 'unknown' and keep the map_enum default as 'other' for non-empty unlisted values; alternatively drop 'unknown' from the concept values. Update the concept definition to state that 'other' denotes a publisher category outside the enumerated subset (e.g. licensee) and is not a missing-value signal."
+      },
+      {
+        "field": "dyn.party.role",
+        "actual": "map_enum default is 'other'; the declared value 'unknown' is never produced by any step.",
+        "expected": "Either remove the unreachable 'unknown' value from the concept, or add an explicit step/rule that emits 'unknown' for genuinely missing/blank source values, and document that 'other' means 'publisher role label outside the enumerated subset' rather than 'unknown'.",
+        "evidence": "The mapping steps for party_role define only a default of 'other' with no 'unknown' branch, while the concept values list includes 'unknown'; no held-out example shows an 'unknown' emission.",
+        "correction": "In the mapping for dyn.party.role, add a when-condition that routes blank/empty party_role to 'unknown' and keep the map_enum default as 'other' for non-empty unlisted values; alternatively drop 'unknown' from the concept values. Update the concept definition to state that 'other' denotes a publisher role label outside the enumerated subset and is not a missing-value signal."
+      }
+    ],
+    "repair_scope": "both"
+  }
+}

@@ -1,0 +1,24 @@
+{
+  "reader": {
+    "format": "delimited",
+    "archive_member": null,
+    "encoding": "utf-8-sig",
+    "delimiter": ",",
+    "skip_rows": 0,
+    "sheet": null,
+    "record_path": null
+  },
+  "bindings": [],
+  "grain": "One row per (ip_right_type, application_number, party_id, party_role_category, party_role, effective_from_date) party-role episode on a single IP application; the same party_id can appear on many applications and the same application can carry several parties and several roles, so no single column is a key. Rows are a prefix cohort of 25,000 records, not the full party_activity.csv.",
+  "identity_cautions": [
+    "party_id is a party identifier, not a company registration number; abn is sparsely populated (empty in most visible rows) and must not be used to infer legal company status or legal form.",
+    "party_name is free text, lower-cased and unnormalised (e.g. 'rll llc', 'e i dupont de nemours and company'); names are not unique identifiers and should not be used to join or deduplicate parties.",
+    "party_type (organisation/individual) and party_role_category/party_role (applicant, patentee, agent) are distinct dimensions; applicant, patentee and agent roles must not be collapsed, and an agent row is not evidence of ownership.",
+    "application_number is an IP application identifier scoped by ip_right_type; the same numeric string could occur under different right types, so treat the pair as the identifier.",
+    "effective_from_date / effective_to_date are party-activity validity dates, not company incorporation dates and not IP right grant or expiry dates; is_current refers to the party record, not to enforceability of the right.",
+    "is_founding is a party attribute flag as supplied; it is not evidence of company incorporation and should not be read as a legal founding date.",
+    "state_code, post_code and country_code are party address fields with mixed formats (post_code holds values like 't6b 3n9' and '110044'); they are not normalised and country_code is not a statement of the party's legal jurisdiction.",
+    "The cohort is prefix-biased (first 25,000 CSV records, no filtering); no population-level or full-archive claims can be made, and full-member checksum cannot be verified from the partial stream."
+  ],
+  "rationale": "Byte inspection shows a plain UTF-8 (BOM) text file with a consistent 14-comma delimiter count on every line and no tab/pipe/semicolon delimiters, so a single delimited reader with comma delimiter, utf-8-sig encoding and no skipped rows is the correct shared reader; the first line is the header and there is no documentation sheet or archive member to select. The header groups into right/application identity (ip_right_type, application_number), party identity (party_id, abn, party_name, party_type), role (party_role_category, party_role), address (state_code, post_code, country_code) and validity (effective_from_date, effective_to_date, is_current, is_founding). Dates are ISO-8601 timestamps with a Z suffix and should be parsed as datetimes, not as plain years; no percentage-valued columns are visible in this header, so no percentage storage handling is needed. No nested objects are present, so no bindings are proposed."
+}

@@ -1,0 +1,806 @@
+{
+  "mapping_gate": [
+    "Use explicit per-claim validity, not record-wide validity rules",
+    "Use explicit per-claim validity, not record-wide validity rules"
+  ],
+  "previous_mapping": {
+    "source_id": "ip_party_activity_new",
+    "record_grain": "One row per (ip_right_type, application_number, party_id, party_role) party-role involvement record",
+    "grain_rationale": "The header defines 14 columns covering right type, application, party identity (party_id, abn), role (category and role), party type/name, address codes, activity dates and is_current/is_founding flags. The same party_id can appear on multiple applications and in multiple roles, and the same application can carry multiple parties, so no single column is a unique key; the natural grain is one party-role involvement per application.",
+    "reader": {
+      "format": "delimited",
+      "archive_member": null,
+      "encoding": "utf-8-sig",
+      "delimiter": ",",
+      "skip_rows": 0,
+      "sheet": null,
+      "record_path": null
+    },
+    "record_id": {
+      "strategy": "content_hash",
+      "source_paths": [],
+      "rationale": "No single column is unique; the party-role row is identified by a deterministic content hash over the raw record, traceable back to the exact raw row."
+    },
+    "observed_at": {
+      "source_path": null,
+      "steps": [],
+      "fallback": "resource_last_modified"
+    },
+    "fields": [
+      {
+        "source_paths": [
+          "ip_right_type"
+        ],
+        "join_with": " ",
+        "when": null,
+        "target": "dyn.ip_application.right_type",
+        "valid_from_path": null,
+        "valid_to_path": null,
+        "validity_date_formats": null,
+        "claim_scope": null,
+        "steps": [
+          {
+            "op": "trim",
+            "args": {}
+          },
+          {
+            "op": "collapse_whitespace",
+            "args": {}
+          },
+          {
+            "op": "map_enum",
+            "args": {
+              "mapping": {
+                "patent": "patent",
+                "trade mark": "trade_mark",
+                "trade_mark": "trade_mark",
+                "trademark": "trade_mark",
+                "design": "design",
+                "designs": "design",
+                "plant breeder right": "plant_breeder_right",
+                "plant_breeder_right": "plant_breeder_right",
+                "pbr": "plant_breeder_right"
+              },
+              "default": "other",
+              "passthrough": false
+            }
+          }
+        ],
+        "confidence": 0.9,
+        "rationale": "ip_right_type is the published IP right family; mapped to the new ip_application right_type enum, with unlisted families falling to 'other' rather than being guessed.",
+        "entity": "ip_application",
+        "qualifiers": null,
+        "one_hot": null
+      },
+      {
+        "source_paths": [
+          "application_number"
+        ],
+        "join_with": " ",
+        "when": null,
+        "target": "dyn.ip_application.number",
+        "valid_from_path": null,
+        "valid_to_path": null,
+        "validity_date_formats": null,
+        "claim_scope": null,
+        "steps": [
+          {
+            "op": "trim",
+            "args": {}
+          },
+          {
+            "op": "collapse_whitespace",
+            "args": {}
+          }
+        ],
+        "confidence": 0.95,
+        "rationale": "application_number is the IP Australia application identifier; kept as published and qualified by right_type, not treated as a party or company identifier.",
+        "entity": "ip_application",
+        "qualifiers": null,
+        "one_hot": null
+      },
+      {
+        "source_paths": [
+          "party_id"
+        ],
+        "join_with": " ",
+        "when": null,
+        "target": "dyn.ip_party.party_id",
+        "valid_from_path": null,
+        "valid_to_path": null,
+        "validity_date_formats": null,
+        "claim_scope": null,
+        "steps": [
+          {
+            "op": "trim",
+            "args": {}
+          },
+          {
+            "op": "collapse_whitespace",
+            "args": {}
+          }
+        ],
+        "confidence": 0.95,
+        "rationale": "party_id is the IP Australia party identifier; kept as a party attribute and never treated as or converted into an ABN.",
+        "entity": "ip_party",
+        "qualifiers": null,
+        "one_hot": null
+      },
+      {
+        "source_paths": [
+          "party_name"
+        ],
+        "join_with": " ",
+        "when": null,
+        "target": "dyn.ip_party.name",
+        "valid_from_path": null,
+        "valid_to_path": null,
+        "validity_date_formats": null,
+        "claim_scope": null,
+        "steps": [
+          {
+            "op": "trim",
+            "args": {}
+          },
+          {
+            "op": "collapse_whitespace",
+            "args": {}
+          }
+        ],
+        "confidence": 0.85,
+        "rationale": "party_name is the published party name; it may be an organisation, a personal name or a numeric-looking string, so it is kept as a party name and not promoted to a business legal name. Marked personal_data=always because the population mixes individuals.",
+        "entity": "ip_party",
+        "qualifiers": null,
+        "one_hot": null
+      },
+      {
+        "source_paths": [
+          "party_type"
+        ],
+        "join_with": " ",
+        "when": null,
+        "target": "dyn.ip_party.kind",
+        "valid_from_path": null,
+        "valid_to_path": null,
+        "validity_date_formats": null,
+        "claim_scope": null,
+        "steps": [
+          {
+            "op": "trim",
+            "args": {}
+          },
+          {
+            "op": "collapse_whitespace",
+            "args": {}
+          },
+          {
+            "op": "map_enum",
+            "args": {
+              "mapping": {
+                "organisation": "organisation",
+                "organization": "organisation",
+                "individual": "individual"
+              },
+              "default": "unknown",
+              "passthrough": false
+            }
+          }
+        ],
+        "confidence": 0.9,
+        "rationale": "party_type distinguishes organisation and individual parties; mapped to the party kind enum with unknown for unlisted values, and never used to infer sole trader or company legal form.",
+        "entity": "ip_party",
+        "qualifiers": null,
+        "one_hot": null
+      },
+      {
+        "source_paths": [
+          "party_role_category"
+        ],
+        "join_with": " ",
+        "when": null,
+        "target": "dyn.ip_party.role_category",
+        "valid_from_path": null,
+        "valid_to_path": null,
+        "validity_date_formats": null,
+        "claim_scope": null,
+        "steps": [
+          {
+            "op": "trim",
+            "args": {}
+          },
+          {
+            "op": "collapse_whitespace",
+            "args": {}
+          }
+        ],
+        "confidence": 0.9,
+        "rationale": "party_role_category is the coarse published role level; kept distinct from the finer party_role and not collapsed into it.",
+        "entity": "ip_party",
+        "qualifiers": null,
+        "one_hot": null
+      },
+      {
+        "source_paths": [
+          "party_role"
+        ],
+        "join_with": " ",
+        "when": null,
+        "target": "dyn.ip_party.role",
+        "valid_from_path": null,
+        "valid_to_path": null,
+        "validity_date_formats": null,
+        "claim_scope": null,
+        "steps": [
+          {
+            "op": "trim",
+            "args": {}
+          },
+          {
+            "op": "collapse_whitespace",
+            "args": {}
+          }
+        ],
+        "confidence": 0.9,
+        "rationale": "party_role is the finer published role (patentee, applicant, agent, opponent_agent); applicant, patentee and agent roles are not interchangeable and are kept as published.",
+        "entity": "ip_party",
+        "qualifiers": null,
+        "one_hot": null
+      },
+      {
+        "source_paths": [
+          "is_current"
+        ],
+        "join_with": " ",
+        "when": null,
+        "target": "dyn.ip_party.is_current",
+        "valid_from_path": null,
+        "valid_to_path": null,
+        "validity_date_formats": null,
+        "claim_scope": null,
+        "steps": [
+          {
+            "op": "trim",
+            "args": {}
+          },
+          {
+            "op": "map_enum",
+            "args": {
+              "mapping": {
+                "true": "true",
+                "false": "false"
+              },
+              "default": null,
+              "passthrough": false
+            }
+          }
+        ],
+        "confidence": 0.9,
+        "rationale": "is_current is a party-activity currency flag; mapped to the party concept, not to entity.status, because it does not establish company status or IP right enforceability.",
+        "entity": "ip_party",
+        "qualifiers": null,
+        "one_hot": null
+      },
+      {
+        "source_paths": [
+          "is_founding"
+        ],
+        "join_with": " ",
+        "when": null,
+        "target": "dyn.ip_party.is_founding",
+        "valid_from_path": null,
+        "valid_to_path": null,
+        "validity_date_formats": null,
+        "claim_scope": null,
+        "steps": [
+          {
+            "op": "trim",
+            "args": {}
+          },
+          {
+            "op": "map_enum",
+            "args": {
+              "mapping": {
+                "true": "true",
+                "false": "false"
+              },
+              "default": null,
+              "passthrough": false
+            }
+          }
+        ],
+        "confidence": 0.85,
+        "rationale": "is_founding is a supplied party-activity attribute; kept as a party flag and explicitly not read as company founding or incorporation evidence.",
+        "entity": "ip_party",
+        "qualifiers": null,
+        "one_hot": null
+      },
+      {
+        "source_paths": [
+          "abn"
+        ],
+        "join_with": " ",
+        "when": null,
+        "target": "dyn.ip_party.abn",
+        "valid_from_path": null,
+        "valid_to_path": null,
+        "validity_date_formats": null,
+        "claim_scope": null,
+        "steps": [
+          {
+            "op": "null_if",
+            "args": {
+              "values": [
+                "",
+                "null",
+                "n/a"
+              ]
+            }
+          },
+          {
+            "op": "abn",
+            "args": {}
+          }
+        ],
+        "confidence": 0.85,
+        "rationale": "abn is an optional party attribute, blank in most sampled rows; checksum-validated with the abn transform and never derived from party_id or party_name. Owned by ip_party because the party may be an individual or agent, not necessarily the subject business.",
+        "entity": "ip_party",
+        "qualifiers": null,
+        "one_hot": null
+      },
+      {
+        "source_paths": [
+          "state_code"
+        ],
+        "join_with": " ",
+        "when": null,
+        "target": "dyn.ip_party.address_state_code",
+        "valid_from_path": null,
+        "valid_to_path": null,
+        "validity_date_formats": null,
+        "claim_scope": null,
+        "steps": [
+          {
+            "op": "null_if",
+            "args": {
+              "values": [
+                "",
+                "null"
+              ]
+            }
+          },
+          {
+            "op": "trim",
+            "args": {}
+          },
+          {
+            "op": "collapse_whitespace",
+            "args": {}
+          }
+        ],
+        "confidence": 0.8,
+        "rationale": "state_code is the raw state/territory code of the party address; kept as published on the party record rather than normalised into the business address.state enum, since it may be non-Australian or blank and is not a jurisdiction of incorporation.",
+        "entity": "ip_party",
+        "qualifiers": null,
+        "one_hot": null
+      },
+      {
+        "source_paths": [
+          "post_code"
+        ],
+        "join_with": " ",
+        "when": null,
+        "target": "dyn.ip_party.address_post_code",
+        "valid_from_path": null,
+        "valid_to_path": null,
+        "validity_date_formats": null,
+        "claim_scope": null,
+        "steps": [
+          {
+            "op": "null_if",
+            "args": {
+              "values": [
+                "",
+                "null"
+              ]
+            }
+          },
+          {
+            "op": "trim",
+            "args": {}
+          },
+          {
+            "op": "collapse_whitespace",
+            "args": {}
+          }
+        ],
+        "confidence": 0.8,
+        "rationale": "post_code is a heterogeneous party-address field (e.g. 't6b 3n9', '110044'); kept exactly as recorded on the party record and not normalised through the AU postcode transform.",
+        "entity": "ip_party",
+        "qualifiers": null,
+        "one_hot": null
+      },
+      {
+        "source_paths": [
+          "country_code"
+        ],
+        "join_with": " ",
+        "when": null,
+        "target": "dyn.ip_party.address_country_code",
+        "valid_from_path": null,
+        "valid_to_path": null,
+        "validity_date_formats": null,
+        "claim_scope": null,
+        "steps": [
+          {
+            "op": "null_if",
+            "args": {
+              "values": [
+                "",
+                "null"
+              ]
+            }
+          },
+          {
+            "op": "trim",
+            "args": {}
+          },
+          {
+            "op": "collapse_whitespace",
+            "args": {}
+          }
+        ],
+        "confidence": 0.85,
+        "rationale": "country_code is the lower-case country code of the party address; kept as published on the party record and not read as a company jurisdiction of incorporation.",
+        "entity": "ip_party",
+        "qualifiers": null,
+        "one_hot": null
+      },
+      {
+        "source_paths": [
+          "effective_from_date"
+        ],
+        "join_with": " ",
+        "when": null,
+        "target": "observation.valid_from",
+        "valid_from_path": null,
+        "valid_to_path": null,
+        "validity_date_formats": null,
+        "claim_scope": null,
+        "steps": [
+          {
+            "op": "null_if",
+            "args": {
+              "values": [
+                "",
+                "null"
+              ]
+            }
+          },
+          {
+            "op": "parse_date",
+            "args": {
+              "formats": [
+                "%Y-%m-%dT%H:%M:%S.%fZ",
+                "%Y-%m-%dT%H:%M:%SZ",
+                "%Y-%m-%d"
+              ]
+            }
+          }
+        ],
+        "confidence": 0.9,
+        "rationale": "effective_from_date dates when the party-activity claim became true; mapped to the generic observation.valid_from facet, not to a business incorporation or licence start date.",
+        "entity": null,
+        "qualifiers": null,
+        "one_hot": null
+      },
+      {
+        "source_paths": [
+          "effective_to_date"
+        ],
+        "join_with": " ",
+        "when": null,
+        "target": "observation.valid_to",
+        "valid_from_path": null,
+        "valid_to_path": null,
+        "validity_date_formats": null,
+        "claim_scope": null,
+        "steps": [
+          {
+            "op": "null_if",
+            "args": {
+              "values": [
+                "",
+                "null"
+              ]
+            }
+          },
+          {
+            "op": "parse_date",
+            "args": {
+              "formats": [
+                "%Y-%m-%dT%H:%M:%S.%fZ",
+                "%Y-%m-%dT%H:%M:%SZ",
+                "%Y-%m-%d"
+              ]
+            }
+          }
+        ],
+        "confidence": 0.9,
+        "rationale": "effective_to_date dates when the party-activity claim stopped being true; mapped to observation.valid_to, where null means still current as far as this source knows. It is not a licence end or business end date.",
+        "entity": null,
+        "qualifiers": null,
+        "one_hot": null
+      }
+    ],
+    "entities": {
+      "ip_application": {
+        "kind": "ip_application",
+        "key_paths": [
+          "ip_right_type",
+          "application_number"
+        ],
+        "rationale": "An IP application is identified by right type plus application number; the number alone is not unique across right types."
+      },
+      "ip_party": {
+        "kind": "ip_party",
+        "key_paths": [
+          "party_id"
+        ],
+        "rationale": "The party is identified by the IP Australia party_id; it is not necessarily a business or a company."
+      }
+    },
+    "relationships": [
+      {
+        "type": "PARTY_ON_APPLICATION",
+        "from_role": "ip_party",
+        "to_role": "ip_application",
+        "rationale": "Each party-role row records that the party appears on that IP application in the stated role; the edge is emitted only when both roles have emitted claims."
+      }
+    ],
+    "unmapped": [],
+    "notes": "All 15 source columns are consumed: 13 map to new ip_party/ip_application concepts, and effective_from_date/effective_to_date map to the generic observation.valid_from/valid_to facets. Validity is expressed per claim, not as a record-wide rule: effective_from_date and effective_to_date are each mapped as their own field rule onto the observation.valid_from/valid_to facets, so every party-role claim carries its own validity window and no record-wide validity_date_formats or valid_from/valid_to path is declared on any other field. No subject business role is declared because the source does not establish a business subject; party records may be individuals or agents. party_id is never treated as an ABN, and abn is checksum-validated. is_current and is_founding are party-activity flags, not company status or incorporation evidence. Address codes are kept raw on the party record and are not normalised geography or incorporation jurisdiction. This is a 25,000-record prefix cohort, so no population-level uniqueness or coverage claims are made. Confidence values are mapping-policy scores, not calibrated probabilities.",
+    "constants": [],
+    "profile_context": null,
+    "extensions": "dynamic"
+  },
+  "previous_proposal": {
+    "entity_types": [
+      {
+        "name": "ip_application",
+        "definition": "An IP Australia application/registration identified by ip_right_type plus application_number; a right record, not a party and not a company."
+      },
+      {
+        "name": "ip_party",
+        "definition": "A party recorded by IP Australia on an IP application (organisation, individual or agent), identified by party_id. Not necessarily a business and not necessarily a company."
+      }
+    ],
+    "concepts": [
+      {
+        "path": "dyn.ip_application.right_type",
+        "type": "enum",
+        "owner": "ip_application",
+        "definition": "The IP right family the application_number belongs to, as published (e.g. patent). Qualifies the application number, which is not unique across right types.",
+        "values": [
+          "patent",
+          "trade_mark",
+          "design",
+          "plant_breeder_right",
+          "other"
+        ],
+        "multi": false,
+        "required_qualifiers": [],
+        "source_paths": [
+          "ip_right_type"
+        ],
+        "why_not_existing": "No existing concept describes an IP right family; entity.industry_code and licence concepts describe business activity or authorisations, not IP application types.",
+        "personal_data": "never"
+      },
+      {
+        "path": "dyn.ip_application.number",
+        "type": "string",
+        "owner": "ip_application",
+        "definition": "IP Australia application number as published. Identifies the application only together with the right type; it is not a party or company identifier.",
+        "values": [],
+        "multi": false,
+        "required_qualifiers": [],
+        "source_paths": [
+          "application_number"
+        ],
+        "why_not_existing": "Existing identifiers cover businesses (abn, acn, nzbn) and licences (ext.licence.number); none identifies an IP application.",
+        "personal_data": "never"
+      },
+      {
+        "path": "dyn.ip_party.party_id",
+        "type": "string",
+        "owner": "ip_party",
+        "definition": "IP Australia party identifier for a party on an application. Separate from any ABN; must not be treated as or converted into an ABN.",
+        "values": [],
+        "multi": false,
+        "required_qualifiers": [],
+        "source_paths": [
+          "party_id"
+        ],
+        "why_not_existing": "No existing concept holds a publisher party identifier; entity.abn/acn are business numbers with checksums and are not interchangeable with party_id.",
+        "personal_data": "never"
+      },
+      {
+        "path": "dyn.ip_party.name",
+        "type": "string",
+        "owner": "ip_party",
+        "definition": "Party name as published by IP Australia. May be an organisation name, a personal name or a numeric-looking string; it is not evidence of legal form or company status.",
+        "values": [],
+        "multi": false,
+        "required_qualifiers": [],
+        "source_paths": [
+          "party_name"
+        ],
+        "why_not_existing": "entity.legal_name asserts a registered legal name of a business, which this field does not establish; party names include individuals and agents and must not be promoted to legal names.",
+        "personal_data": "always"
+      },
+      {
+        "path": "dyn.ip_party.kind",
+        "type": "enum",
+        "owner": "ip_party",
+        "definition": "Whether IP Australia records the party as an organisation or an individual. Matching evidence only; never implies sole trader or company legal form.",
+        "values": [
+          "organisation",
+          "individual",
+          "unknown"
+        ],
+        "multi": false,
+        "required_qualifiers": [],
+        "source_paths": [
+          "party_type"
+        ],
+        "why_not_existing": "ext.entity.holder_kind is owned by business and describes a licence/registration holder; reusing it would assert a business subject that this party record does not establish.",
+        "personal_data": "never"
+      },
+      {
+        "path": "dyn.ip_party.role_category",
+        "type": "string",
+        "owner": "ip_party",
+        "definition": "Coarse party-role category as published (applicant, applicant_agent, opposition_agent, mortgagee ...). Distinct from the finer party_role and must not be collapsed into it.",
+        "values": [],
+        "multi": false,
+        "required_qualifiers": [],
+        "source_paths": [
+          "party_role_category"
+        ],
+        "why_not_existing": "No existing concept describes a party's role on an IP application; licence concepts describe authorisations held, not procedural roles.",
+        "personal_data": "never"
+      },
+      {
+        "path": "dyn.ip_party.role",
+        "type": "string",
+        "owner": "ip_party",
+        "definition": "Finer party role as published (patentee, applicant, agent, opponent_agent ...). Applicant, patentee and agent roles are not interchangeable.",
+        "values": [],
+        "multi": false,
+        "required_qualifiers": [],
+        "source_paths": [
+          "party_role"
+        ],
+        "why_not_existing": "No existing concept captures procedural party roles on an IP application; ext.licence.grade describes licence kinds, not application roles.",
+        "personal_data": "never"
+      },
+      {
+        "path": "dyn.ip_party.is_current",
+        "type": "enum",
+        "owner": "ip_party",
+        "definition": "Whether the party-activity record is current as published. Does not establish that the IP right is enforceable or that the party still exists.",
+        "values": [
+          "true",
+          "false"
+        ],
+        "multi": false,
+        "required_qualifiers": [],
+        "source_paths": [
+          "is_current"
+        ],
+        "why_not_existing": "entity.status is a business lifecycle status (active, deregistered ...) and would misstate a party-activity flag as company status.",
+        "personal_data": "never"
+      },
+      {
+        "path": "dyn.ip_party.is_founding",
+        "type": "enum",
+        "owner": "ip_party",
+        "definition": "The is_founding flag as supplied on the party-activity record. It is a party-activity attribute and must not be read as company founding or incorporation evidence.",
+        "values": [
+          "true",
+          "false"
+        ],
+        "multi": false,
+        "required_qualifiers": [],
+        "source_paths": [
+          "is_founding"
+        ],
+        "why_not_existing": "ext.entity.date_established records a founding date; no existing concept holds this boolean activity flag, and reusing establishment concepts would imply incorporation evidence.",
+        "personal_data": "never"
+      },
+      {
+        "path": "dyn.ip_party.abn",
+        "type": "string",
+        "owner": "ip_party",
+        "definition": "ABN supplied for the party where present. Blank in most sampled rows; must be checksum-validated and never derived from party_id or party_name.",
+        "values": [],
+        "multi": false,
+        "required_qualifiers": [],
+        "source_paths": [
+          "abn"
+        ],
+        "why_not_existing": "entity.abn is owned by business and asserts the subject business's ABN; here the ABN is an optional attribute of a party that may be an individual or agent, so ownership differs.",
+        "personal_data": "never"
+      },
+      {
+        "path": "dyn.ip_party.address_state_code",
+        "type": "string",
+        "owner": "ip_party",
+        "definition": "State/territory code of the party address as recorded (e.g. vic, qld). Raw publisher value, not normalised geography and not a jurisdiction of incorporation.",
+        "values": [],
+        "multi": false,
+        "required_qualifiers": [],
+        "source_paths": [
+          "state_code"
+        ],
+        "why_not_existing": "address.state is an enum owned by business with a fixed value set and would force normalisation; this raw party-address code belongs to the party record and may be non-Australian or blank.",
+        "personal_data": "never"
+      },
+      {
+        "path": "dyn.ip_party.address_post_code",
+        "type": "string",
+        "owner": "ip_party",
+        "definition": "Post code of the party address exactly as recorded, including non-Australian formats (e.g. 't6b 3n9', '110044'). Not normalised.",
+        "values": [],
+        "multi": false,
+        "required_qualifiers": [],
+        "source_paths": [
+          "post_code"
+        ],
+        "why_not_existing": "address.postcode is owned by business and implies a normalised business address; this value is a heterogeneous party-address field that cannot be normalised without loss.",
+        "personal_data": "never"
+      },
+      {
+        "path": "dyn.ip_party.address_country_code",
+        "type": "string",
+        "owner": "ip_party",
+        "definition": "Lower-case country code of the party address as recorded (e.g. us, hk, in). Describes the party address, not a company jurisdiction of incorporation.",
+        "values": [],
+        "multi": false,
+        "required_qualifiers": [],
+        "source_paths": [
+          "country_code"
+        ],
+        "why_not_existing": "address.country is owned by business and would assert the business's country; this is a raw party-address code that must not be read as incorporation jurisdiction.",
+        "personal_data": "never"
+      }
+    ],
+    "relationships": [
+      {
+        "name": "PARTY_ON_APPLICATION",
+        "from_type": "ip_party",
+        "to_type": "ip_application",
+        "definition": "The party is recorded by IP Australia on this IP application in the role stated on the party-role record."
+      }
+    ],
+    "reuse": {
+      "observation.source_id": "Identifies the IP RAPID party_activity dataset the claim came from.",
+      "observation.source_record_id": "Content-hash record identifier for the party-role row, traceable to the raw record.",
+      "observation.observed_at": "Observation-at-retrieval timestamp from the snapshot metadata.",
+      "observation.ingested_at": "When the cohort was read.",
+      "observation.valid_from": "Per-claim validity start: maps effective_from_date on each party-role claim individually, not as a record-wide rule.",
+      "observation.valid_to": "Per-claim validity end: maps effective_to_date on each party-role claim individually; null means still current as far as this source knows.",
+      "observation.licence": "CC-BY-4.0 from dataset metadata.",
+      "confidence.field_confidence": "Records mapping certainty for the party-role row."
+    },
+    "unmapped": [
+      {
+        "source_path": "effective_from_date",
+        "reason": "Mapped to the generic observation.valid_from as an explicit per-claim validity start on each party-role claim, not a record-wide validity rule and not a business or licence date; no new concept is proposed to avoid duplicating the observation facet."
+      },
+      {
+        "source_path": "effective_to_date",
+        "reason": "Mapped to the generic observation.valid_to as an explicit per-claim validity end on each party-role claim, not a record-wide validity rule and not a licence end or business end."
+      }
+    ]
+  }
+}

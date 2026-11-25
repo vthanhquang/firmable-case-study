@@ -1,0 +1,30 @@
+{
+  "request_sha256": "f2dfb65b22e5c0297c6669c86962c8dbe33bc238e8a29b44ee437f2bda674c3d",
+  "role": "inspector",
+  "model": "deepseek-v4-flash",
+  "seconds": 18.339,
+  "response": {
+    "reader": {
+      "format": "delimited",
+      "archive_member": null,
+      "encoding": "utf-8-sig",
+      "delimiter": ",",
+      "skip_rows": 0,
+      "sheet": null,
+      "record_path": null
+    },
+    "bindings": [],
+    "grain": "One row per (ip_right_type, application_number, party_id, party_role) party-role involvement record; the same party_id can appear on multiple applications and in multiple roles, and the same application can carry multiple parties, so no single column is a unique key.",
+    "identity_cautions": [
+      "party_id is the party identifier; abn is a separate optional business-number field and is blank in most sampled rows. Do not treat party_id as an ABN or derive one from the other.",
+      "party_type distinguishes organisation, individual and (per documentation) agent parties; party_name values include personal names and numeric-looking strings (e.g. '2211930632'), so a name or ABN must not be used to infer legal company form or status.",
+      "party_role_category and party_role are distinct levels (e.g. category 'applicant' with role 'patentee' or 'applicant'); applicant, patentee and agent roles are not interchangeable and must not be collapsed.",
+      "application_number is an IP application identifier, not a company or party identifier; ip_right_type qualifies it, so the same number string should not be assumed unique across right types.",
+      "effective_from_date / effective_to_date are party-activity dates, not company incorporation dates or IP right grant/expiry dates; is_current does not establish that an IP right is enforceable.",
+      "is_founding is a party-activity attribute as supplied; it must not be read as company founding/incorporation evidence.",
+      "state_code, post_code and country_code describe the party address as recorded and are heterogeneous (e.g. post_code holds 't6b 3n9' and '110044'); they are not normalised geography and country_code is not a company jurisdiction of incorporation.",
+      "This file is a 25,000-record prefix cohort of party_activity.csv, not the full archive; no population-level uniqueness or coverage claims can be made from it."
+    ],
+    "rationale": "Byte inspection shows a plain UTF-8 (BOM) text file whose first line is a header and whose comma count is a constant 14 on every line, with zero tab/pipe/semicolon delimiters, so a comma-delimited reader with no skipped rows and no archive member is correct. The file is a flat CSV with no nested arrays or discriminator objects, so no bindings are needed and record_path is not applicable. The header defines 14 columns covering right type, application, party identity (party_id, abn), role (category and role), party type/name, address codes, activity dates and is_current/is_founding flags; the natural grain is therefore one party-role involvement per application, with no single unique key. Identity cautions follow from the observed values (blank ABNs, numeric-looking individual names, mixed post codes) and from the documented distinction between party activity, IP right status and company identity."
+  }
+}

@@ -1,0 +1,39 @@
+{
+  "request_sha256": "abd25c07587b996b65b51ef20acf8a412f3b485b840aec8ec32f14bdc099e776",
+  "role": "group_critic",
+  "model": "deepseek-v4-flash",
+  "seconds": 11.604,
+  "response": {
+    "verdict": "revise",
+    "findings": [
+      "Date concepts (application_date, earliest_filed_date, priority_date, registration_status_date, enforceable_status_date, deemed_retired_date) are correctly owned by ip_application, correctly scoped as application-level (not business/party), and show 0 error rate on present values with honest blank handling.",
+      "The status concept is semantically well-scoped (application administrative state, not business status, not enforceability) and correctly attached to the ip_application role, but its enumerated value set is incomplete relative to the observed publisher vocabulary.",
+      "The unmapped entry for application.enforceable_from_date is an honest, well-justified abstention (column entirely empty); this is not an incorrect emitted value and should not be penalized as a coverage failure.",
+      "Reuse of dyn.ip_application.application_number, ip_right_type, ip_right_sub_type and the party_activity validity/currency concepts is owner- and meaning-consistent; no meaning drift detected.",
+      "The APPLICATION_HAS_DESCRIPTION relationship is self-referential (ip_application to ip_application) and emits no distinct role; it is inert rather than wrong, but adds no value."
+    ],
+    "semantic_risks": [
+      "The status enum is closed at {filed, lapsed, granted, accepted} while the publisher emits additional values (unknown, withdrawn, expired). With passthrough=true these are rejected as INVALID_ENUM_VALUE_INVALID (50 of 110 present, 45.5% error rate), so the concept's definition ('e.g. filed, accepted, granted, lapsed') overstates completeness and the mapping silently drops legitimate publisher states.",
+      "Because the enum is closed, 'unknown' is treated as malformed rather than as a legitimate publisher-stated 'unknown' state; this conflates a real value with a parse failure.",
+      "Dates such as registration_status_date/enforceable_status_date examples include future-dated values (e.g. 2026-04-16) relative to retrieved_at 2026-11-23; these are publisher-stated and not necessarily wrong, but downstream consumers must not read them as realized events without the snapshot caveat."
+    ],
+    "checked_reuse": [
+      "dyn.ip_application.application_number — same owner/meaning, reuse accepted.",
+      "dyn.ip_application.ip_right_type / ip_right_sub_type — same owner/meaning, reuse accepted.",
+      "dyn.party_activity.effective_from_date / effective_to_date / is_current — party-role validity, distinct from application dates, reuse accepted.",
+      "ext.licence.status / ext.licence.start_date / ext.licence.end_date — correctly rejected for reuse (different owner and meaning).",
+      "ext.entity.date_established / prior_registration_state — correctly rejected for reuse (business owner, not application)."
+    ],
+    "rationale": "The date concepts are semantically defensible, correctly owned by ip_application, and honestly bounded (blanks left missing, empty column abstained). The single blocking defect is the status enum: it is closed to four values while the publisher emits at least unknown/withdrawn/expired, producing a 45.5% rejection rate on present status values and silently discarding legitimate publisher states. This is a mapping/ontology mismatch that must be repaired before acceptance. All other findings are non-blocking semantic risks or inert structure.",
+    "blocking_findings": [
+      {
+        "field": "dyn.ip_application.status",
+        "actual": "Enum values limited to [filed, lapsed, granted, accepted]; map_enum with passthrough=true rejects observed publisher values unknown, withdrawn, expired as INVALID_ENUM_VALUE_INVALID (50/110 present, 45.5% error rate).",
+        "expected": "The status concept's value set must cover the publisher's observed status vocabulary (at minimum filed, lapsed, granted, accepted, unknown, withdrawn, expired) so that legitimate publisher-stated states are emitted rather than rejected, with 'unknown' treated as a valid publisher-stated state, not a parse failure.",
+        "evidence": "validation_fields for dyn.ip_application.status: records 110, source_present 110, emitted 60, error_rate_of_present 0.455, errors INVALID_ENUM_VALUE_INVALID 50, error_examples ['unknown','withdrawn','unknown','expired']; heldout ordinal 731 has application.status='unknown'.",
+        "correction": "Extend dyn.ip_application.status.values to include 'unknown','withdrawn','expired' (and any other observed publisher states) and add the corresponding entries to the map_enum mapping in the status field (e.g. {\"filed\":\"filed\",\"lapsed\":\"lapsed\",\"granted\":\"granted\",\"accepted\":\"accepted\",\"unknown\":\"unknown\",\"withdrawn\":\"withdrawn\",\"expired\":\"expired\"}); re-run validation and confirm error_rate_of_present for dyn.ip_application.status drops to ~0."
+      }
+    ],
+    "repair_scope": "both"
+  }
+}

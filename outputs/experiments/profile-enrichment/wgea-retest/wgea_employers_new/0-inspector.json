@@ -1,0 +1,31 @@
+{
+  "request_sha256": "a5e1cccabe4bf3d40c6b092b16379c7025a3e4991946ee4482a09d7365420fff",
+  "role": "inspector",
+  "model": "deepseek-v4-flash",
+  "seconds": 22.334,
+  "response": {
+    "reader": {
+      "format": "xlsx",
+      "archive_member": null,
+      "encoding": "utf-8-sig",
+      "delimiter": null,
+      "skip_rows": 3,
+      "sheet": "2. Employers ",
+      "record_path": null
+    },
+    "bindings": [],
+    "grain": "One row per employer reporting unit in the '2. Employers ' sheet (header on row 4 after 3 skipped title rows), identified by Employer name + Employer ABN; each row carries 2024-25 measures in the first four GPG columns and 2023-24 measures in the following four, so the row is a wide (two-year) employer record, not one row per employer-year.",
+    "identity_cautions": [
+      "Employer ABN is the stable identifier; employer name alone is not unique (e.g. '1Step Communications Pty Ltd' also appears as a corporate group name in sheet '3. Corporate groups ').",
+      "Do not join '2. Employers ' rows to '3. Corporate groups ' or '4. Corporate group info' by name: corporate group results are aggregate measures for the group, not the subsidiary employer's measures, and group membership is a separate many-to-many relation in sheet '4. Corporate group info'.",
+      "Sheet '4. Corporate group info' contains rows with no subsidiary employer ('No relevant subsidiary employers', null ABN) — these are not employer records and must not be treated as such.",
+      "Employer size range ('<250', '250-499') is a band, not an exact headcount; do not convert to a numeric employee count.",
+      "Remuneration columns are average/median remuneration dollars, not revenue or business income.",
+      "GPG percentage columns are gender pay gaps (a derived measure), not pay levels; the 2024-25 and 2023-24 column groups are distinguished only by a merged header row and trailing spaces in the 2023-24 header labels, so column positions must be mapped explicitly rather than by fuzzy header matching.",
+      "Sector values ('Private') are a WGEA sector classification, not a legal form; do not infer company legal form from names or ABN.",
+      "Blank cells in the 2023-24 columns indicate no prior-year value reported, not zero.",
+      "The workbook does not contain all dashboard policy/board indicators; absence of a field here is not evidence of absence of the practice."
+    ],
+    "rationale": "Bytes show a ZIP/OOXML container (magic 504b0304) with multiple sheets; the employer-level data lives in sheet '2. Employers ' where rows 1-3 are title/subtitle/header-band rows and the real header is row 4, so skip_rows=3 with the sheet named explicitly. No nested arrays or discriminator-selected objects exist in this tabular sheet, so no bindings are needed; record_path is not applicable to xlsx. The 2024-25 vs 2023-24 split is expressed as two column groups in one row, which sets the grain as employer (wide, two-year) rather than employer-year. Corporate group sheets are deliberately excluded from this reader because their grain and meaning differ from employer results."
+  }
+}

@@ -1,0 +1,309 @@
+{
+  "request_sha256": "d5073486d4cf05ede8fe021fc736be5eab4fe087c01e2e92a820f22b00af65c0",
+  "role": "group_mapper",
+  "model": "deepseek-v4-flash",
+  "seconds": 8.946,
+  "response": {
+    "fields": [
+      {
+        "source_paths": [
+          "conducted activities"
+        ],
+        "join_with": " ",
+        "when": null,
+        "target": "dyn.charity.conducted_activities",
+        "valid_from_path": null,
+        "valid_to_path": null,
+        "validity_date_formats": null,
+        "claim_scope": null,
+        "steps": [
+          {
+            "op": "trim",
+            "args": {}
+          },
+          {
+            "op": "map_enum",
+            "args": {
+              "mapping": {
+                "y": "y",
+                "n": "n"
+              },
+              "default": null
+            }
+          }
+        ],
+        "confidence": 0.93,
+        "rationale": "ACNC AIS y/n flag stating whether the charity conducted any activities in its reporting period; maps directly to the charity-owned conducted_activities enum. Blank/other values withheld via default null.",
+        "entity": "charity",
+        "qualifiers": null,
+        "one_hot": null,
+        "claim_period": null
+      },
+      {
+        "source_paths": [
+          "why charity did not conduct activities"
+        ],
+        "join_with": " ",
+        "when": {
+          "source_path": "conducted activities",
+          "op": "equals",
+          "values": [
+            "n"
+          ]
+        },
+        "target": "dyn.charity.no_activity_reason",
+        "valid_from_path": null,
+        "valid_to_path": null,
+        "validity_date_formats": null,
+        "claim_scope": null,
+        "steps": [
+          {
+            "op": "trim",
+            "args": {}
+          },
+          {
+            "op": "collapse_whitespace",
+            "args": {}
+          },
+          {
+            "op": "null_if",
+            "args": {
+              "values": [
+                "",
+                " ",
+                "n/a",
+                "N/A"
+              ]
+            }
+          }
+        ],
+        "confidence": 0.9,
+        "rationale": "Free-text self-reported reason for not conducting activities; guarded to rows where the charity answered 'n' to conducted activities so the narrative is not attached to active charities. Wording retained verbatim.",
+        "entity": "charity",
+        "qualifiers": null,
+        "one_hot": null,
+        "claim_period": null
+      },
+      {
+        "source_paths": [
+          "how purposes were pursued"
+        ],
+        "join_with": " ",
+        "when": null,
+        "target": "dyn.charity.purposes_pursued_description",
+        "valid_from_path": null,
+        "valid_to_path": null,
+        "validity_date_formats": null,
+        "claim_scope": null,
+        "steps": [
+          {
+            "op": "trim",
+            "args": {}
+          },
+          {
+            "op": "collapse_whitespace",
+            "args": {}
+          },
+          {
+            "op": "null_if",
+            "args": {
+              "values": [
+                "",
+                " ",
+                "n/a",
+                "N/A"
+              ]
+            }
+          }
+        ],
+        "confidence": 0.9,
+        "rationale": "Self-reported narrative of how the charity pursued its purposes; matches the charity-owned free-text concept. Not converted to sector tags or industry codes because no reviewed crosswalk is supplied.",
+        "entity": "charity",
+        "qualifiers": null,
+        "one_hot": null,
+        "claim_period": null
+      },
+      {
+        "source_paths": [
+          "international activities undertaken - operating overseas including programs"
+        ],
+        "join_with": " ",
+        "when": null,
+        "target": "dyn.charity.international_activity_operating_overseas",
+        "valid_from_path": null,
+        "valid_to_path": null,
+        "validity_date_formats": null,
+        "claim_scope": null,
+        "steps": [
+          {
+            "op": "trim",
+            "args": {}
+          },
+          {
+            "op": "map_enum",
+            "args": {
+              "mapping": {
+                "y": "y",
+                "n": "n"
+              },
+              "default": null
+            }
+          }
+        ],
+        "confidence": 0.93,
+        "rationale": "y/n flag for operating overseas including programs; maps to the dedicated charity-owned international activity flag, not to business operating_region/country.",
+        "entity": "charity",
+        "qualifiers": null,
+        "one_hot": null,
+        "claim_period": null
+      },
+      {
+        "source_paths": [
+          "international activities undertaken - transferring goods or services overseas"
+        ],
+        "join_with": " ",
+        "when": null,
+        "target": "dyn.charity.international_activity_transferring_goods_services",
+        "valid_from_path": null,
+        "valid_to_path": null,
+        "validity_date_formats": null,
+        "claim_scope": null,
+        "steps": [
+          {
+            "op": "trim",
+            "args": {}
+          },
+          {
+            "op": "map_enum",
+            "args": {
+              "mapping": {
+                "y": "y",
+                "n": "n"
+              },
+              "default": null
+            }
+          }
+        ],
+        "confidence": 0.93,
+        "rationale": "y/n flag for transferring goods or services overseas; maps to the dedicated charity-owned flag concept.",
+        "entity": "charity",
+        "qualifiers": null,
+        "one_hot": null,
+        "claim_period": null
+      },
+      {
+        "source_paths": [
+          "other international activities"
+        ],
+        "join_with": " ",
+        "when": null,
+        "target": "dyn.charity.international_activity_other",
+        "valid_from_path": null,
+        "valid_to_path": null,
+        "validity_date_formats": null,
+        "claim_scope": null,
+        "steps": [
+          {
+            "op": "trim",
+            "args": {}
+          },
+          {
+            "op": "map_enum",
+            "args": {
+              "mapping": {
+                "y": "y",
+                "n": "n"
+              },
+              "default": null
+            }
+          }
+        ],
+        "confidence": 0.93,
+        "rationale": "y/n residual international-activity flag; maps to the charity-owned 'other' flag concept.",
+        "entity": "charity",
+        "qualifiers": null,
+        "one_hot": null,
+        "claim_period": null
+      },
+      {
+        "source_paths": [
+          "international activities details"
+        ],
+        "join_with": " ",
+        "when": null,
+        "target": "dyn.charity.international_activity_details",
+        "valid_from_path": null,
+        "valid_to_path": null,
+        "validity_date_formats": null,
+        "claim_scope": null,
+        "steps": [
+          {
+            "op": "trim",
+            "args": {}
+          },
+          {
+            "op": "collapse_whitespace",
+            "args": {}
+          },
+          {
+            "op": "null_if",
+            "args": {
+              "values": [
+                "",
+                " ",
+                "n/a",
+                "N/A"
+              ]
+            }
+          }
+        ],
+        "confidence": 0.88,
+        "rationale": "Free-text description of international activities; kept as charity-owned narrative. Countries mentioned are not extracted as structured operating_country claims because no reviewed extraction is available.",
+        "entity": "charity",
+        "qualifiers": null,
+        "one_hot": null,
+        "claim_period": null
+      },
+      {
+        "source_paths": [
+          "other international activities description"
+        ],
+        "join_with": " ",
+        "when": null,
+        "target": "dyn.charity.other_international_activity_description",
+        "valid_from_path": null,
+        "valid_to_path": null,
+        "validity_date_formats": null,
+        "claim_scope": null,
+        "steps": [
+          {
+            "op": "trim",
+            "args": {}
+          },
+          {
+            "op": "collapse_whitespace",
+            "args": {}
+          },
+          {
+            "op": "null_if",
+            "args": {
+              "values": [
+                "",
+                " ",
+                "n/a",
+                "N/A"
+              ]
+            }
+          }
+        ],
+        "confidence": 0.88,
+        "rationale": "Free-text description of 'other' international activities; maps to the dedicated charity-owned narrative concept.",
+        "entity": "charity",
+        "qualifiers": null,
+        "one_hot": null,
+        "claim_period": null
+      }
+    ],
+    "unmapped": []
+  }
+}

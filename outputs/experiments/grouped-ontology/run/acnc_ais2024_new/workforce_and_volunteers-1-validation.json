@@ -1,0 +1,145 @@
+{
+  "quality": {
+    "present_values": 700,
+    "emitted_observations": 570,
+    "withheld_missing_context": 130,
+    "abstention_reasons": {
+      "QUALIFIER_MISSING_PERIOD": 130
+    },
+    "malformed_values": 0,
+    "malformed_reasons": {},
+    "eligible_present_values": 570,
+    "malformed_rate": 0.0,
+    "abstention_rate": 0.18571428571428572,
+    "record_errors": {},
+    "passes_technical_gate": true,
+    "semantic_precision": null,
+    "note": "Missing required context remains withheld. This gate does not establish semantic truth or useful coverage."
+  },
+  "raw_validation": {
+    "records_in": 140,
+    "records_with_output": 114,
+    "record_errors": {},
+    "fields": [
+      {
+        "target": "dyn.charity.staff_headcount",
+        "source_paths": [
+          "staff - full time"
+        ],
+        "records": 140,
+        "source_present": 140,
+        "emitted": 114,
+        "coverage_of_records": 0.814,
+        "error_rate_of_present": 0.186,
+        "errors": {
+          "QUALIFIER_MISSING_PERIOD": 26
+        },
+        "error_examples": {},
+        "entity": "charity"
+      },
+      {
+        "target": "dyn.charity.staff_headcount",
+        "source_paths": [
+          "staff - part time"
+        ],
+        "records": 140,
+        "source_present": 140,
+        "emitted": 114,
+        "coverage_of_records": 0.814,
+        "error_rate_of_present": 0.186,
+        "errors": {
+          "QUALIFIER_MISSING_PERIOD": 26
+        },
+        "error_examples": {},
+        "entity": "charity"
+      },
+      {
+        "target": "dyn.charity.staff_headcount",
+        "source_paths": [
+          "staff - casual"
+        ],
+        "records": 140,
+        "source_present": 140,
+        "emitted": 114,
+        "coverage_of_records": 0.814,
+        "error_rate_of_present": 0.186,
+        "errors": {
+          "QUALIFIER_MISSING_PERIOD": 26
+        },
+        "error_examples": {},
+        "entity": "charity"
+      },
+      {
+        "target": "dyn.charity.volunteer_count",
+        "source_paths": [
+          "staff - volunteers"
+        ],
+        "records": 140,
+        "source_present": 140,
+        "emitted": 114,
+        "coverage_of_records": 0.814,
+        "error_rate_of_present": 0.186,
+        "errors": {
+          "QUALIFIER_MISSING_PERIOD": 26
+        },
+        "error_examples": {},
+        "entity": "charity"
+      },
+      {
+        "target": "dyn.charity.full_time_equivalent_staff",
+        "source_paths": [
+          "total full time equivalent staff"
+        ],
+        "records": 140,
+        "source_present": 140,
+        "emitted": 114,
+        "coverage_of_records": 0.814,
+        "error_rate_of_present": 0.186,
+        "errors": {
+          "QUALIFIER_MISSING_PERIOD": 26
+        },
+        "error_examples": {},
+        "entity": "charity"
+      }
+    ],
+    "relationships": {},
+    "input_records": 140,
+    "refused_records": 26,
+    "observations": 570,
+    "value_errors": 130,
+    "present_values": 700,
+    "error_rate": 0.18571428571428572
+  },
+  "critic": {
+    "verdict": "accept",
+    "findings": [
+      "All five group columns (staff - full time, staff - part time, staff - casual, staff - volunteers, total full time equivalent staff) are mapped to three proposed charity-owned concepts; no group column is left unmapped and no out-of-group column is claimed as a group target.",
+      "Semantic split is defensible: paid staff headcounts (integer, per employment_category) are separated from volunteer count (unpaid, separate column) and from total FTE (decimal, fractional values such as 0.3 and 1.5 observed in held-out rows 733 and 1018), so units and meaning are not conflated.",
+      "Owner is correct: all three concepts are owned by the charity role, matching the row subject (ABN-keyed charity), not by business or fundraising_authorisation.",
+      "Period qualifier is sourced from the charity's own 'fin report from' column, not from calendar 2024 or AIS due/received dates; held-out row 561 shows period 2024-01-01 with fin report to 16/08/2024, and row 733 shows 2023-07-01, confirming period-specific rather than calendar-year semantics.",
+      "Zero values are retained as published (row 561: full time 0, part time 0, casual 0, FTE 0, volunteers 47), consistent with the stated definition that zero is not evidence of no activity.",
+      "Technical gate passes: 570 emitted observations, 0 malformed values, malformed_rate 0.0; the 130 withheld values are all QUALIFIER_MISSING_PERIOD abstentions, i.e. deliberate abstention on missing required source context, not incorrect emitted values.",
+      "Coverage is honestly bounded and uniform: 114/140 emitted per column (0.814 coverage_of_records), 26 abstentions per column, all attributed to missing period context; no population accuracy claim is made.",
+      "No legal-form, incorporation-date, licence-date or consolidated-accounts claim is made by this group; the group does not touch registration status, incorporated association, or report consolidation columns.",
+      "Reuse reasoning is sound: ext.financial.total_income and employee expenses are monetary and would change units/meaning; no shortlisted concept holds headcount, volunteer count or FTE, so new concepts are justified rather than forced reuse.",
+      "The fundraising_authorisation entity and HOLDS_FUNDRAISING_AUTHORISATION edge are outside this group's five columns and emit nothing for this group; they do not create a false claim about staffing data."
+    ],
+    "semantic_risks": [
+      "The 'period' qualifier is populated from 'fin report from' only (a start date), while valid_from/valid_to use both from and to; a consumer could read the qualifier as a full reporting window rather than a start date. This is a labelling risk, not a wrong value, and the definition says 'for its own reporting period'.",
+      "FTE is typed decimal and parsed with parse_decimal; if any source value were a whole number stored without a decimal point, the decimal type still preserves it, but downstream consumers must not treat FTE as a headcount or sum it with staff_headcount.",
+      "Staff headcounts are people counts per category; summing full-time + part-time + casual gives a headcount but must not be compared to or substituted for total FTE, which is a workload-equivalent measure.",
+      "Small charities are not required to supply detailed financials, so blanks/zeros in staffing columns are not evidence of nil staffing; the definitions state this for zero but coverage gaps remain a reporting artefact.",
+      "The dataset is refreshed weekly and the local snapshot is point-in-time; emitted observations carry observation-at-retrieval provenance, not a publisher-stated update time."
+    ],
+    "checked_reuse": [
+      "ext.financial.total_income — rejected: monetary business-owned measure, different owner and units.",
+      "employee expenses — rejected: money amount, not a people count.",
+      "dyn.charity.staff_headcount — reused across three columns with employment_category qualifier (full_time, part_time, casual); meaning and owner match, only category differs.",
+      "dyn.charity.volunteer_count — new concept justified: volunteers are unpaid and reported in a separate column; folding into staff_headcount would change meaning.",
+      "dyn.charity.full_time_equivalent_staff — new concept justified: fractional FTE (0.3, 1.5 observed) cannot be represented by integer headcount without changing units."
+    ],
+    "rationale": "The group's five columns are all mapped, with correct charity ownership, correct separation of headcount vs volunteer count vs FTE, and period qualifiers sourced from the charity's own reporting period rather than calendar 2024 or lodgement dates. Held-out validation shows 0 malformed values and 130 abstentions all attributable to missing required period context, which is deliberate abstention rather than an incorrect emitted value; coverage is honestly bounded at 0.814 per column with no population accuracy claim. No legal-form, incorporation, licence or consolidated-accounts claim is made. Reuse rejections are semantically justified. No blocking finding is identified; residual risks are labelling and consumer-interpretation risks, not incorrect emitted claims.",
+    "blocking_findings": [],
+    "repair_scope": "none"
+  }
+}

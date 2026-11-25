@@ -1,0 +1,208 @@
+{
+  "request_sha256": "08c8c3fb7a886b7a6232c77ceab353c8e6ffae96cef886a3397d509d67bd7b20",
+  "role": "group_mapper",
+  "model": "deepseek-v4-flash",
+  "seconds": 13.501,
+  "response": {
+    "fields": [
+      {
+        "source_paths": [
+          "Average base salary GPG (%)"
+        ],
+        "join_with": " ",
+        "when": null,
+        "target": "dyn.employer_reporting_unit.average_base_salary_gpg",
+        "valid_from_path": null,
+        "valid_to_path": null,
+        "validity_date_formats": null,
+        "claim_scope": null,
+        "steps": [
+          {
+            "op": "trim",
+            "args": {}
+          },
+          {
+            "op": "null_if",
+            "args": {
+              "values": [
+                "",
+                "-",
+                "n/a",
+                "N/A"
+              ]
+            }
+          },
+          {
+            "op": "parse_decimal",
+            "args": {}
+          }
+        ],
+        "confidence": 0.93,
+        "rationale": "2024-25 average base salary gender pay gap for the employer reporting unit; stored as a decimal fraction per the publisher convention. The 2023-24 comparison column is a separate header and is not consumed here. No date column exists in the source, so the reporting year is carried as a literal period qualifier rather than a claim_period. Explicit trim/null_if/parse_decimal steps make the decimal-fraction strings (including '0') parse as decimals without multiplication or whole-percentage relabelling.",
+        "entity": "employer",
+        "qualifiers": {
+          "period": {
+            "source_path": null,
+            "value": "2024-25",
+            "steps": []
+          }
+        },
+        "one_hot": null,
+        "claim_period": null
+      },
+      {
+        "source_paths": [
+          "Average total remuneration GPG (%)"
+        ],
+        "join_with": " ",
+        "when": null,
+        "target": "dyn.employer_reporting_unit.average_total_remuneration_gpg",
+        "valid_from_path": null,
+        "valid_to_path": null,
+        "validity_date_formats": null,
+        "claim_scope": null,
+        "steps": [
+          {
+            "op": "trim",
+            "args": {}
+          },
+          {
+            "op": "null_if",
+            "args": {
+              "values": [
+                "",
+                "-",
+                "n/a",
+                "N/A"
+              ]
+            }
+          },
+          {
+            "op": "parse_decimal",
+            "args": {}
+          }
+        ],
+        "confidence": 0.93,
+        "rationale": "2024-25 average total remuneration gender pay gap for the employer reporting unit; total remuneration is pay, not business income. The duplicate-labelled 2023-24 column is disambiguated by year group and not consumed. No date column exists, so the year is a literal period qualifier. Explicit trim/null_if/parse_decimal steps accept the publisher's decimal-fraction strings as decimals.",
+        "entity": "employer",
+        "qualifiers": {
+          "period": {
+            "source_path": null,
+            "value": "2024-25",
+            "steps": []
+          }
+        },
+        "one_hot": null,
+        "claim_period": null
+      },
+      {
+        "source_paths": [
+          "Median base salary GPG (%)"
+        ],
+        "join_with": " ",
+        "when": null,
+        "target": "dyn.employer_reporting_unit.median_base_salary_gpg",
+        "valid_from_path": null,
+        "valid_to_path": null,
+        "validity_date_formats": null,
+        "claim_scope": null,
+        "steps": [
+          {
+            "op": "trim",
+            "args": {}
+          },
+          {
+            "op": "null_if",
+            "args": {
+              "values": [
+                "",
+                "-",
+                "n/a",
+                "N/A"
+              ]
+            }
+          },
+          {
+            "op": "parse_decimal",
+            "args": {}
+          }
+        ],
+        "confidence": 0.93,
+        "rationale": "2024-25 median base salary gender pay gap for the employer reporting unit; decimal-fraction storage convention preserved, with '0' treated as a legitimate zero gap rather than missing. No date column exists, so the year is a literal period qualifier. Explicit trim/null_if/parse_decimal steps make the decimal-fraction strings parse as decimals.",
+        "entity": "employer",
+        "qualifiers": {
+          "period": {
+            "source_path": null,
+            "value": "2024-25",
+            "steps": []
+          }
+        },
+        "one_hot": null,
+        "claim_period": null
+      },
+      {
+        "source_paths": [
+          "Median total remuneration GPG (%)"
+        ],
+        "join_with": " ",
+        "when": null,
+        "target": "dyn.employer_reporting_unit.median_total_remuneration_gpg",
+        "valid_from_path": null,
+        "valid_to_path": null,
+        "validity_date_formats": null,
+        "claim_scope": null,
+        "steps": [
+          {
+            "op": "trim",
+            "args": {}
+          },
+          {
+            "op": "null_if",
+            "args": {
+              "values": [
+                "",
+                "-",
+                "n/a",
+                "N/A"
+              ]
+            }
+          },
+          {
+            "op": "parse_decimal",
+            "args": {}
+          }
+        ],
+        "confidence": 0.93,
+        "rationale": "2024-25 median total remuneration gender pay gap for the employer reporting unit; the 2023-24 duplicate-labelled column is not consumed. No date column exists, so the year is a literal period qualifier. Explicit trim/null_if/parse_decimal steps accept the publisher's decimal-fraction strings (including '0') as decimals.",
+        "entity": "employer",
+        "qualifiers": {
+          "period": {
+            "source_path": null,
+            "value": "2024-25",
+            "steps": []
+          }
+        },
+        "one_hot": null,
+        "claim_period": null
+      }
+    ],
+    "unmapped": [
+      {
+        "source_path": "Average base salary GPG (%)_2",
+        "reason": "2023-24 contextual comparison value, not the current reporting year; the group's purpose is 2024-25 measures and merging years would misstate the claim period."
+      },
+      {
+        "source_path": "Average total remuneration GPG (%)_2",
+        "reason": "2023-24 contextual comparison value, not the current reporting year; must not be merged with the 2024-25 measure."
+      },
+      {
+        "source_path": "Median base salary GPG (%)_2",
+        "reason": "2023-24 contextual comparison value, not the current reporting year; must not be merged with the 2024-25 measure."
+      },
+      {
+        "source_path": "Median total remuneration GPG (%)_2",
+        "reason": "2023-24 contextual comparison value, not the current reporting year; must not be merged with the 2024-25 measure."
+      }
+    ]
+  }
+}

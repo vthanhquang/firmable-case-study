@@ -14,6 +14,7 @@ const sections = {
   demo: [0, "Demo"],
   discovery: [1, "Discovery & triage"],
   mapping: [2, "Schema inference & mapping"],
+  onboarding: [0, "Dataset onboarding"],
   identity: [3, "Entity identification"],
   profiles: [4, "Company profiles"],
   "write-up": [5, "Write-up"],

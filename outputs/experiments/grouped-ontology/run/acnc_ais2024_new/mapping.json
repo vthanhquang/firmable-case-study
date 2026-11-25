@@ -1,0 +1,1968 @@
+{
+  "source_id": "acnc_ais2024_new",
+  "record_grain": "One row per charity (identified by ABN) for the 2024 Annual Information Statement reporting year, carrying that charity's registration details, AIS lodgement dates, activity descriptions, staffing/volunteer counts, financial-report classification and reported financial figures for its own reporting period (period start/end dates appear as separate columns, so the financial figures are period-specific rather than calendar-2024).",
+  "grain_rationale": "Model-authored grain and groups; executable envelope compiled deterministically.",
+  "reader": {
+    "format": "delimited",
+    "archive_member": null,
+    "encoding": "utf-8-sig",
+    "delimiter": ",",
+    "skip_rows": 0,
+    "sheet": null,
+    "record_path": null
+  },
+  "record_id": {
+    "strategy": "content_hash",
+    "source_paths": [],
+    "rationale": ""
+  },
+  "observed_at": {
+    "source_path": null,
+    "steps": [],
+    "fallback": "resource_last_modified"
+  },
+  "fields": [
+    {
+      "source_paths": [
+        "abn"
+      ],
+      "join_with": " ",
+      "when": null,
+      "target": "entity.abn",
+      "valid_from_path": null,
+      "valid_to_path": null,
+      "validity_date_formats": null,
+      "claim_scope": null,
+      "steps": [
+        {
+          "op": "trim",
+          "args": {}
+        },
+        {
+          "op": "abn",
+          "args": {}
+        }
+      ],
+      "confidence": 0.95,
+      "rationale": "ABN column is the charity's Australian Business Number; validated by checksum transform. Owned by the business subject.",
+      "entity": null,
+      "qualifiers": null,
+      "one_hot": null
+    },
+    {
+      "source_paths": [
+        "charity name"
+      ],
+      "join_with": " ",
+      "when": null,
+      "target": "entity.legal_name",
+      "valid_from_path": null,
+      "valid_to_path": null,
+      "validity_date_formats": null,
+      "claim_scope": "current_legal_name",
+      "steps": [
+        {
+          "op": "trim",
+          "args": {}
+        },
+        {
+          "op": "collapse_whitespace",
+          "args": {}
+        }
+      ],
+      "confidence": 0.7,
+      "rationale": "Charity name as registered with the ACNC is the registered legal name of the subject; free text, not a join key.",
+      "entity": null,
+      "qualifiers": null,
+      "one_hot": null
+    },
+    {
+      "source_paths": [
+        "charity website"
+      ],
+      "join_with": " ",
+      "when": null,
+      "target": "entity.website",
+      "valid_from_path": null,
+      "valid_to_path": null,
+      "validity_date_formats": null,
+      "claim_scope": null,
+      "steps": [
+        {
+          "op": "trim",
+          "args": {}
+        },
+        {
+          "op": "null_if",
+          "args": {
+            "values": [
+              "",
+              "n/a",
+              "na",
+              "none"
+            ]
+          }
+        },
+        {
+          "op": "website",
+          "args": {}
+        }
+      ],
+      "confidence": 0.8,
+      "rationale": "Charity website is the published website of the subject business.",
+      "entity": null,
+      "qualifiers": null,
+      "one_hot": null
+    },
+    {
+      "source_paths": [
+        "charity website"
+      ],
+      "join_with": " ",
+      "when": null,
+      "target": "ext.contact.website_domain",
+      "valid_from_path": null,
+      "valid_to_path": null,
+      "validity_date_formats": null,
+      "claim_scope": null,
+      "steps": [
+        {
+          "op": "trim",
+          "args": {}
+        },
+        {
+          "op": "null_if",
+          "args": {
+            "values": [
+              "",
+              "n/a",
+              "na",
+              "none"
+            ]
+          }
+        },
+        {
+          "op": "url_domain",
+          "args": {}
+        }
+      ],
+      "confidence": 0.75,
+      "rationale": "Registrable host derived from the published website; multi-valued concept but one value per row.",
+      "entity": null,
+      "qualifiers": null,
+      "one_hot": null
+    },
+    {
+      "source_paths": [
+        "registration status"
+      ],
+      "join_with": " ",
+      "when": null,
+      "target": "dyn.charity.registration_status",
+      "valid_from_path": null,
+      "valid_to_path": null,
+      "validity_date_formats": null,
+      "claim_scope": null,
+      "steps": [
+        {
+          "op": "trim",
+          "args": {}
+        },
+        {
+          "op": "map_enum",
+          "args": {
+            "mapping": {
+              "registered": "Registered",
+              "voluntarily revoked not entitled to be a charity": "Voluntarily Revoked Not Entitled To Be A Charity",
+              "voluntarily revoked no longer operating": "Voluntarily Revoked No Longer Operating",
+              "revoked double defaulter": "Revoked Double Defaulter"
+            },
+            "passthrough": true
+          }
+        }
+      ],
+      "confidence": 0.9,
+      "rationale": "ACNC charity registration status belongs to the charity role, not the coarse company entity.status.",
+      "entity": "charity",
+      "qualifiers": null,
+      "one_hot": null
+    },
+    {
+      "source_paths": [
+        "basic religious charity"
+      ],
+      "join_with": " ",
+      "when": null,
+      "target": "dyn.charity.basic_religious_charity",
+      "valid_from_path": null,
+      "valid_to_path": null,
+      "validity_date_formats": null,
+      "claim_scope": null,
+      "steps": [
+        {
+          "op": "trim",
+          "args": {}
+        },
+        {
+          "op": "upper",
+          "args": {}
+        },
+        {
+          "op": "map_enum",
+          "args": {
+            "mapping": {
+              "Y": "y",
+              "N": "n"
+            },
+            "default": null
+          }
+        }
+      ],
+      "confidence": 0.9,
+      "rationale": "y/n flag for ACNC basic religious charity classification, owned by the charity role.",
+      "entity": "charity",
+      "qualifiers": null,
+      "one_hot": null
+    },
+    {
+      "source_paths": [
+        "incorporated association"
+      ],
+      "join_with": " ",
+      "when": null,
+      "target": "dyn.charity.incorporated_association",
+      "valid_from_path": null,
+      "valid_to_path": null,
+      "validity_date_formats": null,
+      "claim_scope": null,
+      "steps": [
+        {
+          "op": "trim",
+          "args": {}
+        },
+        {
+          "op": "upper",
+          "args": {}
+        },
+        {
+          "op": "map_enum",
+          "args": {
+            "mapping": {
+              "Y": "y",
+              "N": "n"
+            },
+            "default": null
+          }
+        }
+      ],
+      "confidence": 0.9,
+      "rationale": "Self-reported incorporated-association flag; not an inference of legal form from the name.",
+      "entity": "charity",
+      "qualifiers": null,
+      "one_hot": null
+    },
+    {
+      "source_paths": [
+        "association number - act"
+      ],
+      "join_with": " ",
+      "when": null,
+      "target": "dyn.charity.state_association_number",
+      "valid_from_path": null,
+      "valid_to_path": null,
+      "validity_date_formats": null,
+      "claim_scope": null,
+      "steps": [
+        {
+          "op": "trim",
+          "args": {}
+        },
+        {
+          "op": "null_if",
+          "args": {
+            "values": [
+              "",
+              "n/a",
+              "na",
+              "none"
+            ]
+          }
+        }
+      ],
+      "confidence": 0.85,
+      "rationale": "ACT association number held by the charity, qualified by jurisdiction ACT.",
+      "entity": "charity",
+      "qualifiers": {
+        "jurisdiction": {
+          "source_path": null,
+          "value": "ACT",
+          "steps": []
+        }
+      },
+      "one_hot": null
+    },
+    {
+      "source_paths": [
+        "association number - nsw"
+      ],
+      "join_with": " ",
+      "when": null,
+      "target": "dyn.charity.state_association_number",
+      "valid_from_path": null,
+      "valid_to_path": null,
+      "validity_date_formats": null,
+      "claim_scope": null,
+      "steps": [
+        {
+          "op": "trim",
+          "args": {}
+        },
+        {
+          "op": "null_if",
+          "args": {
+            "values": [
+              "",
+              "n/a",
+              "na",
+              "none"
+            ]
+          }
+        }
+      ],
+      "confidence": 0.85,
+      "rationale": "NSW association number held by the charity, qualified by jurisdiction NSW.",
+      "entity": "charity",
+      "qualifiers": {
+        "jurisdiction": {
+          "source_path": null,
+          "value": "NSW",
+          "steps": []
+        }
+      },
+      "one_hot": null
+    },
+    {
+      "source_paths": [
+        "association number - nt"
+      ],
+      "join_with": " ",
+      "when": null,
+      "target": "dyn.charity.state_association_number",
+      "valid_from_path": null,
+      "valid_to_path": null,
+      "validity_date_formats": null,
+      "claim_scope": null,
+      "steps": [
+        {
+          "op": "trim",
+          "args": {}
+        },
+        {
+          "op": "null_if",
+          "args": {
+            "values": [
+              "",
+              "n/a",
+              "na",
+              "none"
+            ]
+          }
+        }
+      ],
+      "confidence": 0.85,
+      "rationale": "NT association number held by the charity, qualified by jurisdiction NT.",
+      "entity": "charity",
+      "qualifiers": {
+        "jurisdiction": {
+          "source_path": null,
+          "value": "NT",
+          "steps": []
+        }
+      },
+      "one_hot": null
+    },
+    {
+      "source_paths": [
+        "association number - qld"
+      ],
+      "join_with": " ",
+      "when": null,
+      "target": "dyn.charity.state_association_number",
+      "valid_from_path": null,
+      "valid_to_path": null,
+      "validity_date_formats": null,
+      "claim_scope": null,
+      "steps": [
+        {
+          "op": "trim",
+          "args": {}
+        },
+        {
+          "op": "null_if",
+          "args": {
+            "values": [
+              "",
+              "n/a",
+              "na",
+              "none"
+            ]
+          }
+        }
+      ],
+      "confidence": 0.85,
+      "rationale": "QLD association number held by the charity, qualified by jurisdiction QLD.",
+      "entity": "charity",
+      "qualifiers": {
+        "jurisdiction": {
+          "source_path": null,
+          "value": "QLD",
+          "steps": []
+        }
+      },
+      "one_hot": null
+    },
+    {
+      "source_paths": [
+        "association number - sa"
+      ],
+      "join_with": " ",
+      "when": null,
+      "target": "dyn.charity.state_association_number",
+      "valid_from_path": null,
+      "valid_to_path": null,
+      "validity_date_formats": null,
+      "claim_scope": null,
+      "steps": [
+        {
+          "op": "trim",
+          "args": {}
+        },
+        {
+          "op": "null_if",
+          "args": {
+            "values": [
+              "",
+              "n/a",
+              "na",
+              "none"
+            ]
+          }
+        }
+      ],
+      "confidence": 0.85,
+      "rationale": "SA association number held by the charity, qualified by jurisdiction SA.",
+      "entity": "charity",
+      "qualifiers": {
+        "jurisdiction": {
+          "source_path": null,
+          "value": "SA",
+          "steps": []
+        }
+      },
+      "one_hot": null
+    },
+    {
+      "source_paths": [
+        "association number - tas"
+      ],
+      "join_with": " ",
+      "when": null,
+      "target": "dyn.charity.state_association_number",
+      "valid_from_path": null,
+      "valid_to_path": null,
+      "validity_date_formats": null,
+      "claim_scope": null,
+      "steps": [
+        {
+          "op": "trim",
+          "args": {}
+        },
+        {
+          "op": "null_if",
+          "args": {
+            "values": [
+              "",
+              "n/a",
+              "na",
+              "none"
+            ]
+          }
+        }
+      ],
+      "confidence": 0.85,
+      "rationale": "TAS association number held by the charity, qualified by jurisdiction TAS.",
+      "entity": "charity",
+      "qualifiers": {
+        "jurisdiction": {
+          "source_path": null,
+          "value": "TAS",
+          "steps": []
+        }
+      },
+      "one_hot": null
+    },
+    {
+      "source_paths": [
+        "association number - vic"
+      ],
+      "join_with": " ",
+      "when": null,
+      "target": "dyn.charity.state_association_number",
+      "valid_from_path": null,
+      "valid_to_path": null,
+      "validity_date_formats": null,
+      "claim_scope": null,
+      "steps": [
+        {
+          "op": "trim",
+          "args": {}
+        },
+        {
+          "op": "null_if",
+          "args": {
+            "values": [
+              "",
+              "n/a",
+              "na",
+              "none"
+            ]
+          }
+        }
+      ],
+      "confidence": 0.85,
+      "rationale": "VIC association number held by the charity, qualified by jurisdiction VIC.",
+      "entity": "charity",
+      "qualifiers": {
+        "jurisdiction": {
+          "source_path": null,
+          "value": "VIC",
+          "steps": []
+        }
+      },
+      "one_hot": null
+    },
+    {
+      "source_paths": [
+        "association number - wa"
+      ],
+      "join_with": " ",
+      "when": null,
+      "target": "dyn.charity.state_association_number",
+      "valid_from_path": null,
+      "valid_to_path": null,
+      "validity_date_formats": null,
+      "claim_scope": null,
+      "steps": [
+        {
+          "op": "trim",
+          "args": {}
+        },
+        {
+          "op": "null_if",
+          "args": {
+            "values": [
+              "",
+              "n/a",
+              "na",
+              "none"
+            ]
+          }
+        }
+      ],
+      "confidence": 0.85,
+      "rationale": "WA association number held by the charity, qualified by jurisdiction WA.",
+      "entity": "charity",
+      "qualifiers": {
+        "jurisdiction": {
+          "source_path": null,
+          "value": "WA",
+          "steps": []
+        }
+      },
+      "one_hot": null
+    },
+    {
+      "source_paths": [
+        "conducted activities"
+      ],
+      "join_with": " ",
+      "when": null,
+      "target": "dyn.charity.conducted_activities",
+      "valid_from_path": null,
+      "valid_to_path": null,
+      "validity_date_formats": null,
+      "claim_scope": null,
+      "steps": [
+        {
+          "op": "trim",
+          "args": {}
+        },
+        {
+          "op": "map_enum",
+          "args": {
+            "mapping": {
+              "y": "y",
+              "n": "n"
+            },
+            "default": null
+          }
+        }
+      ],
+      "confidence": 0.93,
+      "rationale": "ACNC AIS y/n flag stating whether the charity conducted any activities in its reporting period; maps directly to the charity-owned conducted_activities enum. Blank/other values withheld via default null.",
+      "entity": "charity",
+      "qualifiers": null,
+      "one_hot": null
+    },
+    {
+      "source_paths": [
+        "why charity did not conduct activities"
+      ],
+      "join_with": " ",
+      "when": {
+        "source_path": "conducted activities",
+        "op": "equals",
+        "values": [
+          "n"
+        ]
+      },
+      "target": "dyn.charity.no_activity_reason",
+      "valid_from_path": null,
+      "valid_to_path": null,
+      "validity_date_formats": null,
+      "claim_scope": null,
+      "steps": [
+        {
+          "op": "trim",
+          "args": {}
+        },
+        {
+          "op": "collapse_whitespace",
+          "args": {}
+        },
+        {
+          "op": "null_if",
+          "args": {
+            "values": [
+              "",
+              " ",
+              "n/a",
+              "N/A"
+            ]
+          }
+        }
+      ],
+      "confidence": 0.9,
+      "rationale": "Free-text self-reported reason for not conducting activities; guarded to rows where the charity answered 'n' to conducted activities so the narrative is not attached to active charities. Wording retained verbatim.",
+      "entity": "charity",
+      "qualifiers": null,
+      "one_hot": null
+    },
+    {
+      "source_paths": [
+        "how purposes were pursued"
+      ],
+      "join_with": " ",
+      "when": null,
+      "target": "dyn.charity.purposes_pursued_description",
+      "valid_from_path": null,
+      "valid_to_path": null,
+      "validity_date_formats": null,
+      "claim_scope": null,
+      "steps": [
+        {
+          "op": "trim",
+          "args": {}
+        },
+        {
+          "op": "collapse_whitespace",
+          "args": {}
+        },
+        {
+          "op": "null_if",
+          "args": {
+            "values": [
+              "",
+              " ",
+              "n/a",
+              "N/A"
+            ]
+          }
+        }
+      ],
+      "confidence": 0.9,
+      "rationale": "Self-reported narrative of how the charity pursued its purposes; matches the charity-owned free-text concept. Not converted to sector tags or industry codes because no reviewed crosswalk is supplied.",
+      "entity": "charity",
+      "qualifiers": null,
+      "one_hot": null
+    },
+    {
+      "source_paths": [
+        "international activities undertaken - operating overseas including programs"
+      ],
+      "join_with": " ",
+      "when": null,
+      "target": "dyn.charity.international_activity_operating_overseas",
+      "valid_from_path": null,
+      "valid_to_path": null,
+      "validity_date_formats": null,
+      "claim_scope": null,
+      "steps": [
+        {
+          "op": "trim",
+          "args": {}
+        },
+        {
+          "op": "map_enum",
+          "args": {
+            "mapping": {
+              "y": "y",
+              "n": "n"
+            },
+            "default": null
+          }
+        }
+      ],
+      "confidence": 0.93,
+      "rationale": "y/n flag for operating overseas including programs; maps to the dedicated charity-owned international activity flag, not to business operating_region/country.",
+      "entity": "charity",
+      "qualifiers": null,
+      "one_hot": null
+    },
+    {
+      "source_paths": [
+        "international activities undertaken - transferring goods or services overseas"
+      ],
+      "join_with": " ",
+      "when": null,
+      "target": "dyn.charity.international_activity_transferring_goods_services",
+      "valid_from_path": null,
+      "valid_to_path": null,
+      "validity_date_formats": null,
+      "claim_scope": null,
+      "steps": [
+        {
+          "op": "trim",
+          "args": {}
+        },
+        {
+          "op": "map_enum",
+          "args": {
+            "mapping": {
+              "y": "y",
+              "n": "n"
+            },
+            "default": null
+          }
+        }
+      ],
+      "confidence": 0.93,
+      "rationale": "y/n flag for transferring goods or services overseas; maps to the dedicated charity-owned flag concept.",
+      "entity": "charity",
+      "qualifiers": null,
+      "one_hot": null
+    },
+    {
+      "source_paths": [
+        "other international activities"
+      ],
+      "join_with": " ",
+      "when": null,
+      "target": "dyn.charity.international_activity_other",
+      "valid_from_path": null,
+      "valid_to_path": null,
+      "validity_date_formats": null,
+      "claim_scope": null,
+      "steps": [
+        {
+          "op": "trim",
+          "args": {}
+        },
+        {
+          "op": "map_enum",
+          "args": {
+            "mapping": {
+              "y": "y",
+              "n": "n"
+            },
+            "default": null
+          }
+        }
+      ],
+      "confidence": 0.93,
+      "rationale": "y/n residual international-activity flag; maps to the charity-owned 'other' flag concept.",
+      "entity": "charity",
+      "qualifiers": null,
+      "one_hot": null
+    },
+    {
+      "source_paths": [
+        "international activities details"
+      ],
+      "join_with": " ",
+      "when": null,
+      "target": "dyn.charity.international_activity_details",
+      "valid_from_path": null,
+      "valid_to_path": null,
+      "validity_date_formats": null,
+      "claim_scope": null,
+      "steps": [
+        {
+          "op": "trim",
+          "args": {}
+        },
+        {
+          "op": "collapse_whitespace",
+          "args": {}
+        },
+        {
+          "op": "null_if",
+          "args": {
+            "values": [
+              "",
+              " ",
+              "n/a",
+              "N/A"
+            ]
+          }
+        }
+      ],
+      "confidence": 0.88,
+      "rationale": "Free-text description of international activities; kept as charity-owned narrative. Countries mentioned are not extracted as structured operating_country claims because no reviewed extraction is available.",
+      "entity": "charity",
+      "qualifiers": null,
+      "one_hot": null
+    },
+    {
+      "source_paths": [
+        "other international activities description"
+      ],
+      "join_with": " ",
+      "when": null,
+      "target": "dyn.charity.other_international_activity_description",
+      "valid_from_path": null,
+      "valid_to_path": null,
+      "validity_date_formats": null,
+      "claim_scope": null,
+      "steps": [
+        {
+          "op": "trim",
+          "args": {}
+        },
+        {
+          "op": "collapse_whitespace",
+          "args": {}
+        },
+        {
+          "op": "null_if",
+          "args": {
+            "values": [
+              "",
+              " ",
+              "n/a",
+              "N/A"
+            ]
+          }
+        }
+      ],
+      "confidence": 0.88,
+      "rationale": "Free-text description of 'other' international activities; maps to the dedicated charity-owned narrative concept.",
+      "entity": "charity",
+      "qualifiers": null,
+      "one_hot": null
+    },
+    {
+      "source_paths": [
+        "fundraising - act"
+      ],
+      "join_with": " ",
+      "when": null,
+      "target": "dyn.fundraising_authorisation.activity_flag",
+      "valid_from_path": null,
+      "valid_to_path": null,
+      "validity_date_formats": null,
+      "claim_scope": null,
+      "steps": [
+        {
+          "op": "trim",
+          "args": {}
+        },
+        {
+          "op": "map_enum",
+          "args": {
+            "mapping": {
+              "y": "y",
+              "n": "n"
+            },
+            "default": null
+          }
+        }
+      ],
+      "confidence": 0.9,
+      "rationale": "Per-jurisdiction y/n fundraising activity flag owned by the fundraising_authorisation role; jurisdiction qualifier is a constant derived from the column name (ACT).",
+      "entity": "fundraising_authorisation",
+      "qualifiers": {
+        "jurisdiction": {
+          "source_path": null,
+          "value": "ACT",
+          "steps": []
+        }
+      },
+      "one_hot": null
+    },
+    {
+      "source_paths": [
+        "fundraising - nsw"
+      ],
+      "join_with": " ",
+      "when": null,
+      "target": "dyn.fundraising_authorisation.activity_flag",
+      "valid_from_path": null,
+      "valid_to_path": null,
+      "validity_date_formats": null,
+      "claim_scope": null,
+      "steps": [
+        {
+          "op": "trim",
+          "args": {}
+        },
+        {
+          "op": "map_enum",
+          "args": {
+            "mapping": {
+              "y": "y",
+              "n": "n"
+            },
+            "default": null
+          }
+        }
+      ],
+      "confidence": 0.9,
+      "rationale": "Per-jurisdiction y/n fundraising activity flag owned by the fundraising_authorisation role; jurisdiction qualifier is a constant derived from the column name (NSW).",
+      "entity": "fundraising_authorisation",
+      "qualifiers": {
+        "jurisdiction": {
+          "source_path": null,
+          "value": "NSW",
+          "steps": []
+        }
+      },
+      "one_hot": null
+    },
+    {
+      "source_paths": [
+        "fundraising - nt"
+      ],
+      "join_with": " ",
+      "when": null,
+      "target": "dyn.fundraising_authorisation.activity_flag",
+      "valid_from_path": null,
+      "valid_to_path": null,
+      "validity_date_formats": null,
+      "claim_scope": null,
+      "steps": [
+        {
+          "op": "trim",
+          "args": {}
+        },
+        {
+          "op": "map_enum",
+          "args": {
+            "mapping": {
+              "y": "y",
+              "n": "n"
+            },
+            "default": null
+          }
+        }
+      ],
+      "confidence": 0.9,
+      "rationale": "Per-jurisdiction y/n fundraising activity flag owned by the fundraising_authorisation role; jurisdiction qualifier is a constant derived from the column name (NT).",
+      "entity": "fundraising_authorisation",
+      "qualifiers": {
+        "jurisdiction": {
+          "source_path": null,
+          "value": "NT",
+          "steps": []
+        }
+      },
+      "one_hot": null
+    },
+    {
+      "source_paths": [
+        "fundraising - online"
+      ],
+      "join_with": " ",
+      "when": null,
+      "target": "dyn.fundraising_authorisation.activity_flag",
+      "valid_from_path": null,
+      "valid_to_path": null,
+      "validity_date_formats": null,
+      "claim_scope": null,
+      "steps": [
+        {
+          "op": "trim",
+          "args": {}
+        },
+        {
+          "op": "map_enum",
+          "args": {
+            "mapping": {
+              "y": "y",
+              "n": "n"
+            },
+            "default": null
+          }
+        }
+      ],
+      "confidence": 0.9,
+      "rationale": "Online fundraising y/n activity flag; the concept's jurisdiction qualifier is set to the literal 'online' as the concept definition specifies for the national online-fundraising column.",
+      "entity": "fundraising_authorisation",
+      "qualifiers": {
+        "jurisdiction": {
+          "source_path": null,
+          "value": "online",
+          "steps": []
+        }
+      },
+      "one_hot": null
+    },
+    {
+      "source_paths": [
+        "fundraising - qld"
+      ],
+      "join_with": " ",
+      "when": null,
+      "target": "dyn.fundraising_authorisation.activity_flag",
+      "valid_from_path": null,
+      "valid_to_path": null,
+      "validity_date_formats": null,
+      "claim_scope": null,
+      "steps": [
+        {
+          "op": "trim",
+          "args": {}
+        },
+        {
+          "op": "map_enum",
+          "args": {
+            "mapping": {
+              "y": "y",
+              "n": "n"
+            },
+            "default": null
+          }
+        }
+      ],
+      "confidence": 0.9,
+      "rationale": "Per-jurisdiction y/n fundraising activity flag owned by the fundraising_authorisation role; jurisdiction qualifier is a constant derived from the column name (QLD).",
+      "entity": "fundraising_authorisation",
+      "qualifiers": {
+        "jurisdiction": {
+          "source_path": null,
+          "value": "QLD",
+          "steps": []
+        }
+      },
+      "one_hot": null
+    },
+    {
+      "source_paths": [
+        "fundraising - sa"
+      ],
+      "join_with": " ",
+      "when": null,
+      "target": "dyn.fundraising_authorisation.activity_flag",
+      "valid_from_path": null,
+      "valid_to_path": null,
+      "validity_date_formats": null,
+      "claim_scope": null,
+      "steps": [
+        {
+          "op": "trim",
+          "args": {}
+        },
+        {
+          "op": "map_enum",
+          "args": {
+            "mapping": {
+              "y": "y",
+              "n": "n"
+            },
+            "default": null
+          }
+        }
+      ],
+      "confidence": 0.9,
+      "rationale": "Per-jurisdiction y/n fundraising activity flag owned by the fundraising_authorisation role; jurisdiction qualifier is a constant derived from the column name (SA).",
+      "entity": "fundraising_authorisation",
+      "qualifiers": {
+        "jurisdiction": {
+          "source_path": null,
+          "value": "SA",
+          "steps": []
+        }
+      },
+      "one_hot": null
+    },
+    {
+      "source_paths": [
+        "fundraising - tas"
+      ],
+      "join_with": " ",
+      "when": null,
+      "target": "dyn.fundraising_authorisation.activity_flag",
+      "valid_from_path": null,
+      "valid_to_path": null,
+      "validity_date_formats": null,
+      "claim_scope": null,
+      "steps": [
+        {
+          "op": "trim",
+          "args": {}
+        },
+        {
+          "op": "map_enum",
+          "args": {
+            "mapping": {
+              "y": "y",
+              "n": "n"
+            },
+            "default": null
+          }
+        }
+      ],
+      "confidence": 0.9,
+      "rationale": "Per-jurisdiction y/n fundraising activity flag owned by the fundraising_authorisation role; jurisdiction qualifier is a constant derived from the column name (TAS).",
+      "entity": "fundraising_authorisation",
+      "qualifiers": {
+        "jurisdiction": {
+          "source_path": null,
+          "value": "TAS",
+          "steps": []
+        }
+      },
+      "one_hot": null
+    },
+    {
+      "source_paths": [
+        "fundraising - vic"
+      ],
+      "join_with": " ",
+      "when": null,
+      "target": "dyn.fundraising_authorisation.activity_flag",
+      "valid_from_path": null,
+      "valid_to_path": null,
+      "validity_date_formats": null,
+      "claim_scope": null,
+      "steps": [
+        {
+          "op": "trim",
+          "args": {}
+        },
+        {
+          "op": "map_enum",
+          "args": {
+            "mapping": {
+              "y": "y",
+              "n": "n"
+            },
+            "default": null
+          }
+        }
+      ],
+      "confidence": 0.9,
+      "rationale": "Per-jurisdiction y/n fundraising activity flag owned by the fundraising_authorisation role; jurisdiction qualifier is a constant derived from the column name (VIC).",
+      "entity": "fundraising_authorisation",
+      "qualifiers": {
+        "jurisdiction": {
+          "source_path": null,
+          "value": "VIC",
+          "steps": []
+        }
+      },
+      "one_hot": null
+    },
+    {
+      "source_paths": [
+        "fundraising - wa"
+      ],
+      "join_with": " ",
+      "when": null,
+      "target": "dyn.fundraising_authorisation.activity_flag",
+      "valid_from_path": null,
+      "valid_to_path": null,
+      "validity_date_formats": null,
+      "claim_scope": null,
+      "steps": [
+        {
+          "op": "trim",
+          "args": {}
+        },
+        {
+          "op": "map_enum",
+          "args": {
+            "mapping": {
+              "y": "y",
+              "n": "n"
+            },
+            "default": null
+          }
+        }
+      ],
+      "confidence": 0.9,
+      "rationale": "Per-jurisdiction y/n fundraising activity flag owned by the fundraising_authorisation role; jurisdiction qualifier is a constant derived from the column name (WA).",
+      "entity": "fundraising_authorisation",
+      "qualifiers": {
+        "jurisdiction": {
+          "source_path": null,
+          "value": "WA",
+          "steps": []
+        }
+      },
+      "one_hot": null
+    },
+    {
+      "source_paths": [
+        "fundraising number - act"
+      ],
+      "join_with": " ",
+      "when": null,
+      "target": "dyn.fundraising_authorisation.number",
+      "valid_from_path": null,
+      "valid_to_path": null,
+      "validity_date_formats": null,
+      "claim_scope": null,
+      "steps": [
+        {
+          "op": "trim",
+          "args": {}
+        },
+        {
+          "op": "null_if",
+          "args": {
+            "values": [
+              ""
+            ]
+          }
+        }
+      ],
+      "confidence": 0.9,
+      "rationale": "State fundraising registration number taken verbatim from the ACT fundraising-number column; jurisdiction qualifier is a constant derived from the column name. Values are not normalised across states.",
+      "entity": "fundraising_authorisation",
+      "qualifiers": {
+        "jurisdiction": {
+          "source_path": null,
+          "value": "ACT",
+          "steps": []
+        }
+      },
+      "one_hot": null
+    },
+    {
+      "source_paths": [
+        "fundraising number - nsw"
+      ],
+      "join_with": " ",
+      "when": null,
+      "target": "dyn.fundraising_authorisation.number",
+      "valid_from_path": null,
+      "valid_to_path": null,
+      "validity_date_formats": null,
+      "claim_scope": null,
+      "steps": [
+        {
+          "op": "trim",
+          "args": {}
+        },
+        {
+          "op": "null_if",
+          "args": {
+            "values": [
+              ""
+            ]
+          }
+        }
+      ],
+      "confidence": 0.9,
+      "rationale": "State fundraising registration number taken verbatim from the NSW fundraising-number column; jurisdiction qualifier is a constant derived from the column name. Placeholder values such as 00000 are retained as published per the concept definition.",
+      "entity": "fundraising_authorisation",
+      "qualifiers": {
+        "jurisdiction": {
+          "source_path": null,
+          "value": "NSW",
+          "steps": []
+        }
+      },
+      "one_hot": null
+    },
+    {
+      "source_paths": [
+        "fundraising number - qld"
+      ],
+      "join_with": " ",
+      "when": null,
+      "target": "dyn.fundraising_authorisation.number",
+      "valid_from_path": null,
+      "valid_to_path": null,
+      "validity_date_formats": null,
+      "claim_scope": null,
+      "steps": [
+        {
+          "op": "trim",
+          "args": {}
+        },
+        {
+          "op": "null_if",
+          "args": {
+            "values": [
+              ""
+            ]
+          }
+        }
+      ],
+      "confidence": 0.9,
+      "rationale": "State fundraising registration number taken verbatim from the QLD fundraising-number column; jurisdiction qualifier is a constant derived from the column name.",
+      "entity": "fundraising_authorisation",
+      "qualifiers": {
+        "jurisdiction": {
+          "source_path": null,
+          "value": "QLD",
+          "steps": []
+        }
+      },
+      "one_hot": null
+    },
+    {
+      "source_paths": [
+        "fundraising number - sa"
+      ],
+      "join_with": " ",
+      "when": null,
+      "target": "dyn.fundraising_authorisation.number",
+      "valid_from_path": null,
+      "valid_to_path": null,
+      "validity_date_formats": null,
+      "claim_scope": null,
+      "steps": [
+        {
+          "op": "trim",
+          "args": {}
+        },
+        {
+          "op": "null_if",
+          "args": {
+            "values": [
+              ""
+            ]
+          }
+        }
+      ],
+      "confidence": 0.9,
+      "rationale": "State fundraising registration number taken verbatim from the SA fundraising-number column; jurisdiction qualifier is a constant derived from the column name.",
+      "entity": "fundraising_authorisation",
+      "qualifiers": {
+        "jurisdiction": {
+          "source_path": null,
+          "value": "SA",
+          "steps": []
+        }
+      },
+      "one_hot": null
+    },
+    {
+      "source_paths": [
+        "fundraising number - tas"
+      ],
+      "join_with": " ",
+      "when": null,
+      "target": "dyn.fundraising_authorisation.number",
+      "valid_from_path": null,
+      "valid_to_path": null,
+      "validity_date_formats": null,
+      "claim_scope": null,
+      "steps": [
+        {
+          "op": "trim",
+          "args": {}
+        },
+        {
+          "op": "null_if",
+          "args": {
+            "values": [
+              ""
+            ]
+          }
+        }
+      ],
+      "confidence": 0.9,
+      "rationale": "State fundraising registration number taken verbatim from the TAS fundraising-number column; jurisdiction qualifier is a constant derived from the column name.",
+      "entity": "fundraising_authorisation",
+      "qualifiers": {
+        "jurisdiction": {
+          "source_path": null,
+          "value": "TAS",
+          "steps": []
+        }
+      },
+      "one_hot": null
+    },
+    {
+      "source_paths": [
+        "fundraising number - vic"
+      ],
+      "join_with": " ",
+      "when": null,
+      "target": "dyn.fundraising_authorisation.number",
+      "valid_from_path": null,
+      "valid_to_path": null,
+      "validity_date_formats": null,
+      "claim_scope": null,
+      "steps": [
+        {
+          "op": "trim",
+          "args": {}
+        },
+        {
+          "op": "null_if",
+          "args": {
+            "values": [
+              ""
+            ]
+          }
+        }
+      ],
+      "confidence": 0.9,
+      "rationale": "State fundraising registration number taken verbatim from the VIC fundraising-number column; jurisdiction qualifier is a constant derived from the column name.",
+      "entity": "fundraising_authorisation",
+      "qualifiers": {
+        "jurisdiction": {
+          "source_path": null,
+          "value": "VIC",
+          "steps": []
+        }
+      },
+      "one_hot": null
+    },
+    {
+      "source_paths": [
+        "fundraising number - wa"
+      ],
+      "join_with": " ",
+      "when": null,
+      "target": "dyn.fundraising_authorisation.number",
+      "valid_from_path": null,
+      "valid_to_path": null,
+      "validity_date_formats": null,
+      "claim_scope": null,
+      "steps": [
+        {
+          "op": "trim",
+          "args": {}
+        },
+        {
+          "op": "null_if",
+          "args": {
+            "values": [
+              ""
+            ]
+          }
+        }
+      ],
+      "confidence": 0.9,
+      "rationale": "State fundraising registration number taken verbatim from the WA fundraising-number column; jurisdiction qualifier is a constant derived from the column name.",
+      "entity": "fundraising_authorisation",
+      "qualifiers": {
+        "jurisdiction": {
+          "source_path": null,
+          "value": "WA",
+          "steps": []
+        }
+      },
+      "one_hot": null
+    },
+    {
+      "source_paths": [
+        "staff - full time"
+      ],
+      "join_with": " ",
+      "when": null,
+      "target": "dyn.charity.staff_headcount",
+      "valid_from_path": "fin report from",
+      "valid_to_path": "fin report to",
+      "validity_date_formats": [
+        "%d/%m/%Y"
+      ],
+      "claim_scope": null,
+      "steps": [
+        {
+          "op": "trim",
+          "args": {}
+        },
+        {
+          "op": "parse_integer",
+          "args": {}
+        }
+      ],
+      "confidence": 0.85,
+      "rationale": "Charity-reported number of full-time staff; staff_headcount covers full/part/casual with an employment_category qualifier. Counts are plain integers; the reporting window comes from the charity's own fin report from/to dates, not calendar 2024.",
+      "entity": "charity",
+      "qualifiers": {
+        "employment_category": {
+          "source_path": null,
+          "value": "full_time",
+          "steps": []
+        },
+        "period": {
+          "source_path": "fin report from",
+          "value": null,
+          "steps": [
+            {
+              "op": "trim",
+              "args": {}
+            },
+            {
+              "op": "parse_date",
+              "args": {
+                "formats": [
+                  "%d/%m/%Y"
+                ]
+              }
+            }
+          ]
+        }
+      },
+      "one_hot": null
+    },
+    {
+      "source_paths": [
+        "staff - part time"
+      ],
+      "join_with": " ",
+      "when": null,
+      "target": "dyn.charity.staff_headcount",
+      "valid_from_path": "fin report from",
+      "valid_to_path": "fin report to",
+      "validity_date_formats": [
+        "%d/%m/%Y"
+      ],
+      "claim_scope": null,
+      "steps": [
+        {
+          "op": "trim",
+          "args": {}
+        },
+        {
+          "op": "parse_integer",
+          "args": {}
+        }
+      ],
+      "confidence": 0.85,
+      "rationale": "Same headcount concept as full-time staff, distinguished by the part_time employment_category qualifier; period taken from the charity's own reporting period columns.",
+      "entity": "charity",
+      "qualifiers": {
+        "employment_category": {
+          "source_path": null,
+          "value": "part_time",
+          "steps": []
+        },
+        "period": {
+          "source_path": "fin report from",
+          "value": null,
+          "steps": [
+            {
+              "op": "trim",
+              "args": {}
+            },
+            {
+              "op": "parse_date",
+              "args": {
+                "formats": [
+                  "%d/%m/%Y"
+                ]
+              }
+            }
+          ]
+        }
+      },
+      "one_hot": null
+    },
+    {
+      "source_paths": [
+        "staff - casual"
+      ],
+      "join_with": " ",
+      "when": null,
+      "target": "dyn.charity.staff_headcount",
+      "valid_from_path": "fin report from",
+      "valid_to_path": "fin report to",
+      "validity_date_formats": [
+        "%d/%m/%Y"
+      ],
+      "claim_scope": null,
+      "steps": [
+        {
+          "op": "trim",
+          "args": {}
+        },
+        {
+          "op": "parse_integer",
+          "args": {}
+        }
+      ],
+      "confidence": 0.85,
+      "rationale": "Casual staff headcount, same concept with the casual employment_category qualifier; a reported 0 is retained as published rather than treated as missing.",
+      "entity": "charity",
+      "qualifiers": {
+        "employment_category": {
+          "source_path": null,
+          "value": "casual",
+          "steps": []
+        },
+        "period": {
+          "source_path": "fin report from",
+          "value": null,
+          "steps": [
+            {
+              "op": "trim",
+              "args": {}
+            },
+            {
+              "op": "parse_date",
+              "args": {
+                "formats": [
+                  "%d/%m/%Y"
+                ]
+              }
+            }
+          ]
+        }
+      },
+      "one_hot": null
+    },
+    {
+      "source_paths": [
+        "staff - volunteers"
+      ],
+      "join_with": " ",
+      "when": null,
+      "target": "dyn.charity.volunteer_count",
+      "valid_from_path": "fin report from",
+      "valid_to_path": "fin report to",
+      "validity_date_formats": [
+        "%d/%m/%Y"
+      ],
+      "claim_scope": null,
+      "steps": [
+        {
+          "op": "trim",
+          "args": {}
+        },
+        {
+          "op": "parse_integer",
+          "args": {}
+        }
+      ],
+      "confidence": 0.85,
+      "rationale": "Volunteers are unpaid and reported in a separate column, so they map to the dedicated volunteer_count concept rather than staff_headcount; period from the charity's own reporting period.",
+      "entity": "charity",
+      "qualifiers": {
+        "period": {
+          "source_path": "fin report from",
+          "value": null,
+          "steps": [
+            {
+              "op": "trim",
+              "args": {}
+            },
+            {
+              "op": "parse_date",
+              "args": {
+                "formats": [
+                  "%d/%m/%Y"
+                ]
+              }
+            }
+          ]
+        }
+      },
+      "one_hot": null
+    },
+    {
+      "source_paths": [
+        "total full time equivalent staff"
+      ],
+      "join_with": " ",
+      "when": null,
+      "target": "dyn.charity.full_time_equivalent_staff",
+      "valid_from_path": "fin report from",
+      "valid_to_path": "fin report to",
+      "validity_date_formats": [
+        "%d/%m/%Y"
+      ],
+      "claim_scope": null,
+      "steps": [
+        {
+          "op": "trim",
+          "args": {}
+        },
+        {
+          "op": "parse_decimal",
+          "args": {}
+        }
+      ],
+      "confidence": 0.85,
+      "rationale": "Fractional values (e.g. 4.14) show this is an FTE workload measure, not a headcount, so it maps to the decimal full_time_equivalent_staff concept; parsed as decimal to preserve fractions.",
+      "entity": "charity",
+      "qualifiers": {
+        "period": {
+          "source_path": "fin report from",
+          "value": null,
+          "steps": [
+            {
+              "op": "trim",
+              "args": {}
+            },
+            {
+              "op": "parse_date",
+              "args": {
+                "formats": [
+                  "%d/%m/%Y"
+                ]
+              }
+            }
+          ]
+        }
+      },
+      "one_hot": null
+    }
+  ],
+  "entities": {
+    "charity": {
+      "kind": "charity",
+      "key_paths": [
+        "abn"
+      ],
+      "rationale": "ABN is the only stable identifier for the row subject; charity name is free text and must not be used as a key."
+    },
+    "fundraising_authorisation": {
+      "kind": "fundraising_authorisation",
+      "key_paths": [
+        "fundraising number - act",
+        "fundraising number - nsw",
+        "fundraising number - qld",
+        "fundraising number - sa",
+        "fundraising number - tas",
+        "fundraising number - vic",
+        "fundraising number - wa"
+      ],
+      "rationale": "Each populated fundraising number column evidences a jurisdiction-specific fundraising registration held by the charity; the number is the only identifier present."
+    }
+  },
+  "relationships": [
+    {
+      "type": "HOLDS_FUNDRAISING_AUTHORISATION",
+      "from_role": "charity",
+      "to_role": "fundraising_authorisation",
+      "rationale": "Fundraising number columns (act, nsw, qld, sa, tas, vic, wa) are populated only for charities holding that jurisdiction's fundraising registration; the corresponding fundraising flag columns indicate activity, not the authorisation itself."
+    }
+  ],
+  "unmapped": [
+    {
+      "source_path": "Key Management Personnel",
+      "reason": "Outside this group; reconciled in the final source mapping"
+    },
+    {
+      "source_path": "Number of Key Management Personnel",
+      "reason": "Outside this group; reconciled in the final source mapping"
+    },
+    {
+      "source_path": "Other Relevant details",
+      "reason": "Outside this group; reconciled in the final source mapping"
+    },
+    {
+      "source_path": "Other details",
+      "reason": "Outside this group; reconciled in the final source mapping"
+    },
+    {
+      "source_path": "Relevant transactions",
+      "reason": "Outside this group; reconciled in the final source mapping"
+    },
+    {
+      "source_path": "Total paid to Key Management Personnel",
+      "reason": "Outside this group; reconciled in the final source mapping"
+    },
+    {
+      "source_path": "ais due date",
+      "reason": "Outside this group; reconciled in the final source mapping"
+    },
+    {
+      "source_path": "all other expenses",
+      "reason": "Outside this group; reconciled in the final source mapping"
+    },
+    {
+      "source_path": "all other revenue",
+      "reason": "Outside this group; reconciled in the final source mapping"
+    },
+    {
+      "source_path": "assets and liabilities description",
+      "reason": "Outside this group; reconciled in the final source mapping"
+    },
+    {
+      "source_path": "cash or accrual",
+      "reason": "Outside this group; reconciled in the final source mapping"
+    },
+    {
+      "source_path": "charity has reportable related party transactions",
+      "reason": "Outside this group; reconciled in the final source mapping"
+    },
+    {
+      "source_path": "charity report has a modification",
+      "reason": "Outside this group; reconciled in the final source mapping"
+    },
+    {
+      "source_path": "charity size",
+      "reason": "Outside this group; reconciled in the final source mapping"
+    },
+    {
+      "source_path": "coop financial report submitted to regulator",
+      "reason": "Outside this group; reconciled in the final source mapping"
+    },
+    {
+      "source_path": "date ais received",
+      "reason": "Outside this group; reconciled in the final source mapping"
+    },
+    {
+      "source_path": "donations and bequests",
+      "reason": "Outside this group; reconciled in the final source mapping"
+    },
+    {
+      "source_path": "employee expenses",
+      "reason": "Outside this group; reconciled in the final source mapping"
+    },
+    {
+      "source_path": "fin report from",
+      "reason": "Outside this group; reconciled in the final source mapping"
+    },
+    {
+      "source_path": "fin report to",
+      "reason": "Outside this group; reconciled in the final source mapping"
+    },
+    {
+      "source_path": "financial report date received",
+      "reason": "Outside this group; reconciled in the final source mapping"
+    },
+    {
+      "source_path": "grants and donations made for use in Australia",
+      "reason": "Outside this group; reconciled in the final source mapping"
+    },
+    {
+      "source_path": "grants and donations made for use outside Australia",
+      "reason": "Outside this group; reconciled in the final source mapping"
+    },
+    {
+      "source_path": "interest expenses",
+      "reason": "Outside this group; reconciled in the final source mapping"
+    },
+    {
+      "source_path": "net assets/liabilities",
+      "reason": "Outside this group; reconciled in the final source mapping"
+    },
+    {
+      "source_path": "net surplus/deficit",
+      "reason": "Outside this group; reconciled in the final source mapping"
+    },
+    {
+      "source_path": "non-current loans payable",
+      "reason": "Outside this group; reconciled in the final source mapping"
+    },
+    {
+      "source_path": "non-current loans receivable",
+      "reason": "Outside this group; reconciled in the final source mapping"
+    },
+    {
+      "source_path": "other comprehensive income",
+      "reason": "Outside this group; reconciled in the final source mapping"
+    },
+    {
+      "source_path": "other income",
+      "reason": "Outside this group; reconciled in the final source mapping"
+    },
+    {
+      "source_path": "other non-current assets",
+      "reason": "Outside this group; reconciled in the final source mapping"
+    },
+    {
+      "source_path": "other non-current liabilities",
+      "reason": "Outside this group; reconciled in the final source mapping"
+    },
+    {
+      "source_path": "report consolidated with more than one entity",
+      "reason": "Outside this group; reconciled in the final source mapping"
+    },
+    {
+      "source_path": "revenue from goods and services",
+      "reason": "Outside this group; reconciled in the final source mapping"
+    },
+    {
+      "source_path": "revenue from government",
+      "reason": "Outside this group; reconciled in the final source mapping"
+    },
+    {
+      "source_path": "revenue from investments",
+      "reason": "Outside this group; reconciled in the final source mapping"
+    },
+    {
+      "source_path": "total assets",
+      "reason": "Outside this group; reconciled in the final source mapping"
+    },
+    {
+      "source_path": "total comprehensive income",
+      "reason": "Outside this group; reconciled in the final source mapping"
+    },
+    {
+      "source_path": "total current assets",
+      "reason": "Outside this group; reconciled in the final source mapping"
+    },
+    {
+      "source_path": "total current liabilities",
+      "reason": "Outside this group; reconciled in the final source mapping"
+    },
+    {
+      "source_path": "total expenses",
+      "reason": "Outside this group; reconciled in the final source mapping"
+    },
+    {
+      "source_path": "total gross income",
+      "reason": "Outside this group; reconciled in the final source mapping"
+    },
+    {
+      "source_path": "total liabilities",
+      "reason": "Outside this group; reconciled in the final source mapping"
+    },
+    {
+      "source_path": "total non-current assets",
+      "reason": "Outside this group; reconciled in the final source mapping"
+    },
+    {
+      "source_path": "total non-current liabilities",
+      "reason": "Outside this group; reconciled in the final source mapping"
+    },
+    {
+      "source_path": "total revenue",
+      "reason": "Outside this group; reconciled in the final source mapping"
+    },
+    {
+      "source_path": "type of financial statement",
+      "reason": "Outside this group; reconciled in the final source mapping"
+    },
+    {
+      "source_path": "type of report modification",
+      "reason": "Outside this group; reconciled in the final source mapping"
+    }
+  ],
+  "notes": "Grouped semantic intents; no manually authored mapping rules.",
+  "constants": [],
+  "profile_context": null,
+  "extensions": "dynamic"
+}

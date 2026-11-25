@@ -1,0 +1,705 @@
+{
+  "source_id": "ip_joined_view",
+  "status": "PARTIAL_REVIEW_REQUIRED",
+  "ontology_version": "24500f52edbcdf7672cf805cae55ca5e34b4b044a92c4b40771c1e0f3e5d1449",
+  "parent_version": "db7f01dab23e6f042a75c6df261be2b61dfa1ceba7daff6afe5eab3543256f1b",
+  "snapshot_sha256": "10ce770880944510df491b5e15d7928b84064e6c4ec8fe530c0b838f1549f511",
+  "mapping_digest": "f11c01893be7dc0bccb74ec2a9bb3c4cad0429a721a62db79b0117c1237fe19b",
+  "groups": [
+    {
+      "group": "party_identity",
+      "columns": [
+        "party_activity.party_id",
+        "party_activity.party_name",
+        "party_activity.party_type",
+        "party_activity.abn"
+      ],
+      "status": "AGENT_VALIDATED",
+      "attempts": 1,
+      "feedback": null
+    },
+    {
+      "group": "party_role_on_application",
+      "columns": [
+        "party_activity.party_role_category",
+        "party_activity.party_role",
+        "party_activity.is_founding",
+        "party_activity.is_current",
+        "party_activity.effective_from_date",
+        "party_activity.effective_to_date"
+      ],
+      "status": "AGENT_VALIDATED",
+      "attempts": 1,
+      "feedback": null
+    },
+    {
+      "group": "party_address",
+      "columns": [
+        "party_activity.country_code",
+        "party_activity.state_code",
+        "party_activity.post_code"
+      ],
+      "status": "AGENT_VALIDATED",
+      "attempts": 1,
+      "feedback": null
+    },
+    {
+      "group": "application_identity_and_type",
+      "columns": [
+        "application.application_number",
+        "application.ip_right_type",
+        "application.ip_right_sub_type",
+        "party_activity.application_number",
+        "party_activity.ip_right_type"
+      ],
+      "status": "AGENT_VALIDATED",
+      "attempts": 3,
+      "feedback": null
+    },
+    {
+      "group": "application_status_and_dates",
+      "columns": [
+        "application.status",
+        "application.application_date",
+        "application.earliest_filed_date",
+        "application.priority_date",
+        "application.gained_registration_status_date",
+        "application.gained_enforceable_status_date",
+        "application.enforceable_from_date",
+        "application.deemed_retired_date"
+      ],
+      "status": "NEEDS_REVIEW",
+      "attempts": 2,
+      "feedback": {
+        "stop_reason": "SOURCE_BUDGET",
+        "error": "Per-source request reservation exhausted; other sources retain their allowances"
+      }
+    },
+    {
+      "group": "application_description",
+      "columns": [
+        "application_description.application_number",
+        "application_description.ip_right_type",
+        "application_description.description_type",
+        "application_description.description_value"
+      ],
+      "status": "NEEDS_REVIEW",
+      "attempts": 2,
+      "feedback": {
+        "stop_reason": "SOURCE_BUDGET",
+        "error": "Per-source request reservation exhausted; other sources retain their allowances"
+      }
+    }
+  ],
+  "new_concepts": 16,
+  "mapping_rules": 16,
+  "unmapped_columns": [
+    {
+      "source_path": "party_activity.application_number",
+      "reason": "Redundant repetition of application.application_number on the same application row; joining the two produced duplicated identifiers, so only the application-level column is used as the value."
+    },
+    {
+      "source_path": "party_activity.ip_right_type",
+      "reason": "Redundant repetition of application.ip_right_type on the same application row; joining the two produced 'patent patent' and failed the enum map, so only the application-level column is used as the value."
+    },
+    {
+      "source_path": "application.application_date",
+      "reason": "Outside this group; reconciled in the final source mapping"
+    },
+    {
+      "source_path": "application.deemed_retired_date",
+      "reason": "Outside this group; reconciled in the final source mapping"
+    },
+    {
+      "source_path": "application.earliest_filed_date",
+      "reason": "Outside this group; reconciled in the final source mapping"
+    },
+    {
+      "source_path": "application.enforceable_from_date",
+      "reason": "Outside this group; reconciled in the final source mapping"
+    },
+    {
+      "source_path": "application.gained_enforceable_status_date",
+      "reason": "Outside this group; reconciled in the final source mapping"
+    },
+    {
+      "source_path": "application.gained_registration_status_date",
+      "reason": "Outside this group; reconciled in the final source mapping"
+    },
+    {
+      "source_path": "application.priority_date",
+      "reason": "Outside this group; reconciled in the final source mapping"
+    },
+    {
+      "source_path": "application.status",
+      "reason": "Outside this group; reconciled in the final source mapping"
+    },
+    {
+      "source_path": "application_description.application_number",
+      "reason": "Outside this group; reconciled in the final source mapping"
+    },
+    {
+      "source_path": "application_description.description_type",
+      "reason": "Outside this group; reconciled in the final source mapping"
+    },
+    {
+      "source_path": "application_description.description_value",
+      "reason": "Outside this group; reconciled in the final source mapping"
+    },
+    {
+      "source_path": "application_description.ip_right_type",
+      "reason": "Outside this group; reconciled in the final source mapping"
+    }
+  ],
+  "quality": {
+    "present_values": 8251,
+    "emitted_observations": 8244,
+    "withheld_missing_context": 0,
+    "abstention_reasons": {},
+    "malformed_values": 7,
+    "malformed_reasons": {
+      "ENUM_UNMAPPED": 7
+    },
+    "eligible_present_values": 8251,
+    "malformed_rate": 0.0008483820143012969,
+    "abstention_rate": 0.0,
+    "record_errors": {},
+    "passes_technical_gate": true,
+    "semantic_precision": null,
+    "note": "Missing required context remains withheld. This gate does not establish semantic truth or useful coverage."
+  },
+  "raw_extraction": {
+    "records_in": 600,
+    "records_with_output": 600,
+    "record_errors": {},
+    "fields": [
+      {
+        "target": "dyn.party.party_key",
+        "source_paths": [
+          "party_activity.party_id"
+        ],
+        "records": 600,
+        "source_present": 600,
+        "emitted": 600,
+        "coverage_of_records": 1.0,
+        "error_rate_of_present": 0.0,
+        "errors": {},
+        "error_examples": {},
+        "entity": "party"
+      },
+      {
+        "target": "dyn.party.party_name",
+        "source_paths": [
+          "party_activity.party_name"
+        ],
+        "records": 600,
+        "source_present": 600,
+        "emitted": 600,
+        "coverage_of_records": 1.0,
+        "error_rate_of_present": 0.0,
+        "errors": {},
+        "error_examples": {},
+        "entity": "party"
+      },
+      {
+        "target": "dyn.party.party_kind",
+        "source_paths": [
+          "party_activity.party_type"
+        ],
+        "records": 600,
+        "source_present": 600,
+        "emitted": 600,
+        "coverage_of_records": 1.0,
+        "error_rate_of_present": 0.0,
+        "errors": {},
+        "error_examples": {},
+        "entity": "party"
+      },
+      {
+        "target": "dyn.party.abn_supplied",
+        "source_paths": [
+          "party_activity.abn"
+        ],
+        "records": 600,
+        "source_present": 279,
+        "emitted": 279,
+        "coverage_of_records": 0.465,
+        "error_rate_of_present": 0.0,
+        "errors": {},
+        "error_examples": {},
+        "entity": "party"
+      },
+      {
+        "target": "dyn.party_activity.role_category",
+        "source_paths": [
+          "party_activity.party_role_category"
+        ],
+        "records": 600,
+        "source_present": 600,
+        "emitted": 597,
+        "coverage_of_records": 0.995,
+        "error_rate_of_present": 0.005,
+        "errors": {
+          "ENUM_UNMAPPED": 3
+        },
+        "error_examples": {
+          "ENUM_UNMAPPED": [
+            "licensee",
+            "other_agent",
+            "licensee"
+          ]
+        },
+        "entity": "party_activity"
+      },
+      {
+        "target": "dyn.party_activity.role",
+        "source_paths": [
+          "party_activity.party_role"
+        ],
+        "records": 600,
+        "source_present": 600,
+        "emitted": 596,
+        "coverage_of_records": 0.993,
+        "error_rate_of_present": 0.007,
+        "errors": {
+          "ENUM_UNMAPPED": 4
+        },
+        "error_examples": {
+          "ENUM_UNMAPPED": [
+            "mortgagee",
+            "exclusive_licensee",
+            "exclusive_licensee_agent",
+            "exclusive_licensee"
+          ]
+        },
+        "entity": "party_activity"
+      },
+      {
+        "target": "dyn.party_activity.is_founding",
+        "source_paths": [
+          "party_activity.is_founding"
+        ],
+        "records": 600,
+        "source_present": 600,
+        "emitted": 600,
+        "coverage_of_records": 1.0,
+        "error_rate_of_present": 0.0,
+        "errors": {},
+        "error_examples": {},
+        "entity": "party_activity"
+      },
+      {
+        "target": "dyn.party_activity.is_current",
+        "source_paths": [
+          "party_activity.is_current"
+        ],
+        "records": 600,
+        "source_present": 600,
+        "emitted": 600,
+        "coverage_of_records": 1.0,
+        "error_rate_of_present": 0.0,
+        "errors": {},
+        "error_examples": {},
+        "entity": "party_activity"
+      },
+      {
+        "target": "dyn.party_activity.effective_from_date",
+        "source_paths": [
+          "party_activity.effective_from_date"
+        ],
+        "records": 600,
+        "source_present": 600,
+        "emitted": 600,
+        "coverage_of_records": 1.0,
+        "error_rate_of_present": 0.0,
+        "errors": {},
+        "error_examples": {},
+        "entity": "party_activity"
+      },
+      {
+        "target": "dyn.party_activity.effective_to_date",
+        "source_paths": [
+          "party_activity.effective_to_date"
+        ],
+        "records": 600,
+        "source_present": 109,
+        "emitted": 109,
+        "coverage_of_records": 0.182,
+        "error_rate_of_present": 0.0,
+        "errors": {},
+        "error_examples": {},
+        "entity": "party_activity"
+      },
+      {
+        "target": "dyn.party.address_country",
+        "source_paths": [
+          "party_activity.country_code"
+        ],
+        "records": 600,
+        "source_present": 533,
+        "emitted": 533,
+        "coverage_of_records": 0.888,
+        "error_rate_of_present": 0.0,
+        "errors": {},
+        "error_examples": {},
+        "entity": "party"
+      },
+      {
+        "target": "dyn.party.address_state",
+        "source_paths": [
+          "party_activity.state_code"
+        ],
+        "records": 600,
+        "source_present": 300,
+        "emitted": 300,
+        "coverage_of_records": 0.5,
+        "error_rate_of_present": 0.0,
+        "errors": {},
+        "error_examples": {},
+        "entity": "party"
+      },
+      {
+        "target": "dyn.party.address_postcode",
+        "source_paths": [
+          "party_activity.post_code"
+        ],
+        "records": 600,
+        "source_present": 430,
+        "emitted": 430,
+        "coverage_of_records": 0.717,
+        "error_rate_of_present": 0.0,
+        "errors": {},
+        "error_examples": {},
+        "entity": "party"
+      },
+      {
+        "target": "dyn.ip_application.application_number",
+        "source_paths": [
+          "application.application_number"
+        ],
+        "records": 600,
+        "source_present": 600,
+        "emitted": 600,
+        "coverage_of_records": 1.0,
+        "error_rate_of_present": 0.0,
+        "errors": {},
+        "error_examples": {},
+        "entity": "ip_application"
+      },
+      {
+        "target": "dyn.ip_application.ip_right_type",
+        "source_paths": [
+          "application.ip_right_type"
+        ],
+        "records": 600,
+        "source_present": 600,
+        "emitted": 600,
+        "coverage_of_records": 1.0,
+        "error_rate_of_present": 0.0,
+        "errors": {},
+        "error_examples": {},
+        "entity": "ip_application"
+      },
+      {
+        "target": "dyn.ip_application.ip_right_sub_type",
+        "source_paths": [
+          "application.ip_right_sub_type"
+        ],
+        "records": 600,
+        "source_present": 600,
+        "emitted": 600,
+        "coverage_of_records": 1.0,
+        "error_rate_of_present": 0.0,
+        "errors": {},
+        "error_examples": {},
+        "entity": "ip_application"
+      }
+    ],
+    "relationships": {
+      "PARTY_ACTIVITY_RECORDS_PARTY": 600,
+      "PARTY_ACTIVITY_CONCERNS_APPLICATION": 600,
+      "PARTY_ACTS_ON_APPLICATION": 600,
+      "APPLICATION_HAS_DESCRIPTION": 600
+    },
+    "input_records": 600,
+    "refused_records": 0,
+    "observations": 8244,
+    "value_errors": 7,
+    "present_values": 8251,
+    "error_rate": 0.0008483820143012969
+  },
+  "test_quality": {
+    "present_values": 1493,
+    "emitted_observations": 1491,
+    "withheld_missing_context": 0,
+    "abstention_reasons": {},
+    "malformed_values": 2,
+    "malformed_reasons": {
+      "ENUM_UNMAPPED": 2
+    },
+    "eligible_present_values": 1493,
+    "malformed_rate": 0.0013395847287340924,
+    "abstention_rate": 0.0,
+    "record_errors": {},
+    "passes_technical_gate": true,
+    "semantic_precision": null,
+    "note": "Missing required context remains withheld. This gate does not establish semantic truth or useful coverage."
+  },
+  "test": {
+    "records_in": 109,
+    "records_with_output": 109,
+    "record_errors": {},
+    "fields": [
+      {
+        "target": "dyn.party.party_key",
+        "source_paths": [
+          "party_activity.party_id"
+        ],
+        "records": 109,
+        "source_present": 109,
+        "emitted": 109,
+        "coverage_of_records": 1.0,
+        "error_rate_of_present": 0.0,
+        "errors": {},
+        "error_examples": {},
+        "entity": "party"
+      },
+      {
+        "target": "dyn.party.party_name",
+        "source_paths": [
+          "party_activity.party_name"
+        ],
+        "records": 109,
+        "source_present": 109,
+        "emitted": 109,
+        "coverage_of_records": 1.0,
+        "error_rate_of_present": 0.0,
+        "errors": {},
+        "error_examples": {},
+        "entity": "party"
+      },
+      {
+        "target": "dyn.party.party_kind",
+        "source_paths": [
+          "party_activity.party_type"
+        ],
+        "records": 109,
+        "source_present": 109,
+        "emitted": 109,
+        "coverage_of_records": 1.0,
+        "error_rate_of_present": 0.0,
+        "errors": {},
+        "error_examples": {},
+        "entity": "party"
+      },
+      {
+        "target": "dyn.party.abn_supplied",
+        "source_paths": [
+          "party_activity.abn"
+        ],
+        "records": 109,
+        "source_present": 51,
+        "emitted": 51,
+        "coverage_of_records": 0.468,
+        "error_rate_of_present": 0.0,
+        "errors": {},
+        "error_examples": {},
+        "entity": "party"
+      },
+      {
+        "target": "dyn.party_activity.role_category",
+        "source_paths": [
+          "party_activity.party_role_category"
+        ],
+        "records": 109,
+        "source_present": 109,
+        "emitted": 108,
+        "coverage_of_records": 0.991,
+        "error_rate_of_present": 0.009,
+        "errors": {
+          "ENUM_UNMAPPED": 1
+        },
+        "error_examples": {
+          "ENUM_UNMAPPED": [
+            "other_agent"
+          ]
+        },
+        "entity": "party_activity"
+      },
+      {
+        "target": "dyn.party_activity.role",
+        "source_paths": [
+          "party_activity.party_role"
+        ],
+        "records": 109,
+        "source_present": 109,
+        "emitted": 108,
+        "coverage_of_records": 0.991,
+        "error_rate_of_present": 0.009,
+        "errors": {
+          "ENUM_UNMAPPED": 1
+        },
+        "error_examples": {
+          "ENUM_UNMAPPED": [
+            "exclusive_licensee_agent"
+          ]
+        },
+        "entity": "party_activity"
+      },
+      {
+        "target": "dyn.party_activity.is_founding",
+        "source_paths": [
+          "party_activity.is_founding"
+        ],
+        "records": 109,
+        "source_present": 109,
+        "emitted": 109,
+        "coverage_of_records": 1.0,
+        "error_rate_of_present": 0.0,
+        "errors": {},
+        "error_examples": {},
+        "entity": "party_activity"
+      },
+      {
+        "target": "dyn.party_activity.is_current",
+        "source_paths": [
+          "party_activity.is_current"
+        ],
+        "records": 109,
+        "source_present": 109,
+        "emitted": 109,
+        "coverage_of_records": 1.0,
+        "error_rate_of_present": 0.0,
+        "errors": {},
+        "error_examples": {},
+        "entity": "party_activity"
+      },
+      {
+        "target": "dyn.party_activity.effective_from_date",
+        "source_paths": [
+          "party_activity.effective_from_date"
+        ],
+        "records": 109,
+        "source_present": 109,
+        "emitted": 109,
+        "coverage_of_records": 1.0,
+        "error_rate_of_present": 0.0,
+        "errors": {},
+        "error_examples": {},
+        "entity": "party_activity"
+      },
+      {
+        "target": "dyn.party_activity.effective_to_date",
+        "source_paths": [
+          "party_activity.effective_to_date"
+        ],
+        "records": 109,
+        "source_present": 14,
+        "emitted": 14,
+        "coverage_of_records": 0.128,
+        "error_rate_of_present": 0.0,
+        "errors": {},
+        "error_examples": {},
+        "entity": "party_activity"
+      },
+      {
+        "target": "dyn.party.address_country",
+        "source_paths": [
+          "party_activity.country_code"
+        ],
+        "records": 109,
+        "source_present": 93,
+        "emitted": 93,
+        "coverage_of_records": 0.853,
+        "error_rate_of_present": 0.0,
+        "errors": {},
+        "error_examples": {},
+        "entity": "party"
+      },
+      {
+        "target": "dyn.party.address_state",
+        "source_paths": [
+          "party_activity.state_code"
+        ],
+        "records": 109,
+        "source_present": 60,
+        "emitted": 60,
+        "coverage_of_records": 0.55,
+        "error_rate_of_present": 0.0,
+        "errors": {},
+        "error_examples": {},
+        "entity": "party"
+      },
+      {
+        "target": "dyn.party.address_postcode",
+        "source_paths": [
+          "party_activity.post_code"
+        ],
+        "records": 109,
+        "source_present": 76,
+        "emitted": 76,
+        "coverage_of_records": 0.697,
+        "error_rate_of_present": 0.0,
+        "errors": {},
+        "error_examples": {},
+        "entity": "party"
+      },
+      {
+        "target": "dyn.ip_application.application_number",
+        "source_paths": [
+          "application.application_number"
+        ],
+        "records": 109,
+        "source_present": 109,
+        "emitted": 109,
+        "coverage_of_records": 1.0,
+        "error_rate_of_present": 0.0,
+        "errors": {},
+        "error_examples": {},
+        "entity": "ip_application"
+      },
+      {
+        "target": "dyn.ip_application.ip_right_type",
+        "source_paths": [
+          "application.ip_right_type"
+        ],
+        "records": 109,
+        "source_present": 109,
+        "emitted": 109,
+        "coverage_of_records": 1.0,
+        "error_rate_of_present": 0.0,
+        "errors": {},
+        "error_examples": {},
+        "entity": "ip_application"
+      },
+      {
+        "target": "dyn.ip_application.ip_right_sub_type",
+        "source_paths": [
+          "application.ip_right_sub_type"
+        ],
+        "records": 109,
+        "source_present": 109,
+        "emitted": 109,
+        "coverage_of_records": 1.0,
+        "error_rate_of_present": 0.0,
+        "errors": {},
+        "error_examples": {},
+        "entity": "ip_application"
+      }
+    ],
+    "relationships": {
+      "PARTY_ACTIVITY_RECORDS_PARTY": 109,
+      "PARTY_ACTIVITY_CONCERNS_APPLICATION": 109,
+      "PARTY_ACTS_ON_APPLICATION": 109,
+      "APPLICATION_HAS_DESCRIPTION": 109
+    },
+    "input_records": 109,
+    "refused_records": 0,
+    "observations": 1491,
+    "value_errors": 2,
+    "present_values": 1493,
+    "error_rate": 0.0013395847287340924
+  },
+  "human_review": "pending",
+  "production_promoted": false
+}

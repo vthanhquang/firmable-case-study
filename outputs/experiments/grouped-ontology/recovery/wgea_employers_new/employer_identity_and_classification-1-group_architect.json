@@ -1,0 +1,63 @@
+{
+  "request_sha256": "ee2171d95a65cb06c58dfb20d0c4f97de76f57eb802724c6324dbd0e7e2444c7",
+  "role": "group_architect",
+  "model": "deepseek-v4-flash",
+  "seconds": 7.33,
+  "response": {
+    "concepts": [
+      {
+        "path": "dyn.employer_reporting_unit.size_band",
+        "type": "enum",
+        "owner": "employer_reporting_unit",
+        "definition": "The employer size range band reported for the WGEA submission, expressed as an employee-count band such as '<250', '250-499' or '5000+'. The band set is publisher-defined and open-ended at the top; it is a band, not an exact headcount.",
+        "values": [
+          "<250",
+          "250-499",
+          "500-999",
+          "1000-4999",
+          "5000+"
+        ],
+        "multi": false,
+        "required_qualifiers": [],
+        "source_paths": [
+          "Employer size range (# employees)"
+        ],
+        "why_not_existing": "No shortlisted concept represents an employer headcount band; ext.financial.revenue_band is a revenue band under a named scheme and is not an employee-count band, so reuse would change meaning.",
+        "personal_data": "never"
+      },
+      {
+        "path": "dyn.employer_reporting_unit.anzsic_division",
+        "type": "string",
+        "owner": "employer_reporting_unit",
+        "definition": "The ANZSIC division name the employer reporting unit reported for its WGEA submission, e.g. 'Transport, Postal and Warehousing'. It is the publisher's division label, not a coded ANZSIC value.",
+        "values": [],
+        "multi": false,
+        "required_qualifiers": [],
+        "source_paths": [
+          "Industry (ANZSIC Division)"
+        ],
+        "why_not_existing": "ext.entity.industry_code expects a coded ANZSIC value (division letter, subdivision, group or class) and is owned by business; entity.industry_code likewise expects a coded ANZSIC value for the business. This column holds a division name label for the reporting unit, so type, meaning and owner differ from both.",
+        "personal_data": "never"
+      },
+      {
+        "path": "dyn.employer_reporting_unit.anzsic_class",
+        "type": "string",
+        "owner": "employer_reporting_unit",
+        "definition": "The ANZSIC class name the employer reporting unit reported for its WGEA submission, e.g. 'Computer System Design and Related Services'. It is the publisher's class label, not a coded ANZSIC class number.",
+        "values": [],
+        "multi": false,
+        "required_qualifiers": [],
+        "source_paths": [
+          "Industry (ANZSIC Class)"
+        ],
+        "why_not_existing": "ext.entity.industry_code expects a coded ANZSIC value and is owned by business; entity.industry_code likewise expects a coded ANZSIC value for the business. This column holds a class name label for the reporting unit, so type, meaning and owner differ from both.",
+        "personal_data": "never"
+      }
+    ],
+    "reuse": {
+      "dyn.employer_reporting_unit.reporting_name": "unchanged prior draft: WGEA reporting-unit label, not a verified legal or trading name; owner employer_reporting_unit.",
+      "dyn.employer_reporting_unit.reporting_abn": "unchanged prior draft: reporting-unit submission identifier, not asserted as the business legal person's ABN.",
+      "dyn.employer_reporting_unit.sector": "unchanged prior draft: WGEA private/public reporting classification of the reporting unit, not a legal form or scheme-tagged activity."
+    }
+  }
+}

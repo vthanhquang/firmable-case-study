@@ -1,0 +1,171 @@
+{
+  "request_sha256": "e913b4d6ac93a9a84c6a6d400c199a915df10f6d819fce7b7932974f43508053",
+  "role": "group_mapper",
+  "model": "deepseek-v4-flash",
+  "seconds": 18.402,
+  "response": {
+    "fields": [
+      {
+        "source_paths": [
+          "Average base salary GPG (%)_2"
+        ],
+        "join_with": " ",
+        "when": null,
+        "target": "dyn.gender_pay_gap.average_base_salary_gpg",
+        "valid_from_path": null,
+        "valid_to_path": null,
+        "validity_date_formats": null,
+        "claim_scope": null,
+        "steps": [
+          {
+            "op": "parse_decimal",
+            "args": {}
+          }
+        ],
+        "confidence": 0.9,
+        "rationale": "2023-24 comparison block average base salary GPG for the employer reporting unit; stored as a decimal fraction, so parse_decimal without rescaling. Blank means no prior-year comparison, not zero. No date column exists in the sheet, so the reporting year is carried as a literal period qualifier rather than a claim_period.",
+        "entity": "employer_reporting_unit",
+        "qualifiers": {
+          "period": {
+            "source_path": null,
+            "value": "2023-24",
+            "steps": []
+          },
+          "measure_basis": {
+            "source_path": null,
+            "value": "average_base_salary",
+            "steps": []
+          },
+          "storage_convention": {
+            "source_path": null,
+            "value": "decimal_fraction",
+            "steps": []
+          }
+        },
+        "one_hot": null,
+        "claim_period": null
+      },
+      {
+        "source_paths": [
+          "Average total remuneration GPG (%)_2"
+        ],
+        "join_with": " ",
+        "when": null,
+        "target": "dyn.gender_pay_gap.average_total_remuneration_gpg",
+        "valid_from_path": null,
+        "valid_to_path": null,
+        "validity_date_formats": null,
+        "claim_scope": null,
+        "steps": [
+          {
+            "op": "parse_decimal",
+            "args": {}
+          }
+        ],
+        "confidence": 0.9,
+        "rationale": "2023-24 comparison block average total remuneration GPG for the employer reporting unit; decimal fraction retained as stored. Remuneration is pay, not business income. Reporting year supplied as a literal period qualifier because no date column is available.",
+        "entity": "employer_reporting_unit",
+        "qualifiers": {
+          "period": {
+            "source_path": null,
+            "value": "2023-24",
+            "steps": []
+          },
+          "measure_basis": {
+            "source_path": null,
+            "value": "average_total_remuneration",
+            "steps": []
+          },
+          "storage_convention": {
+            "source_path": null,
+            "value": "decimal_fraction",
+            "steps": []
+          }
+        },
+        "one_hot": null,
+        "claim_period": null
+      },
+      {
+        "source_paths": [
+          "Median base salary GPG (%)_2"
+        ],
+        "join_with": " ",
+        "when": null,
+        "target": "dyn.gender_pay_gap.median_base_salary_gpg",
+        "valid_from_path": null,
+        "valid_to_path": null,
+        "validity_date_formats": null,
+        "claim_scope": null,
+        "steps": [
+          {
+            "op": "parse_decimal",
+            "args": {}
+          }
+        ],
+        "confidence": 0.9,
+        "rationale": "2023-24 comparison block median base salary GPG; negative values indicate a gap in favour of women and are preserved by parse_decimal. Reporting year carried as a literal period qualifier since the sheet has no date columns.",
+        "entity": "employer_reporting_unit",
+        "qualifiers": {
+          "period": {
+            "source_path": null,
+            "value": "2023-24",
+            "steps": []
+          },
+          "measure_basis": {
+            "source_path": null,
+            "value": "median_base_salary",
+            "steps": []
+          },
+          "storage_convention": {
+            "source_path": null,
+            "value": "decimal_fraction",
+            "steps": []
+          }
+        },
+        "one_hot": null,
+        "claim_period": null
+      },
+      {
+        "source_paths": [
+          "Median total remuneration GPG (%)_2"
+        ],
+        "join_with": " ",
+        "when": null,
+        "target": "dyn.gender_pay_gap.median_total_remuneration_gpg",
+        "valid_from_path": null,
+        "valid_to_path": null,
+        "validity_date_formats": null,
+        "claim_scope": null,
+        "steps": [
+          {
+            "op": "parse_decimal",
+            "args": {}
+          }
+        ],
+        "confidence": 0.9,
+        "rationale": "2023-24 comparison block median total remuneration GPG for the employer reporting unit; decimal fraction kept as stored, not multiplied to a whole percentage. Reporting year carried as a literal period qualifier because no date column exists.",
+        "entity": "employer_reporting_unit",
+        "qualifiers": {
+          "period": {
+            "source_path": null,
+            "value": "2023-24",
+            "steps": []
+          },
+          "measure_basis": {
+            "source_path": null,
+            "value": "median_total_remuneration",
+            "steps": []
+          },
+          "storage_convention": {
+            "source_path": null,
+            "value": "decimal_fraction",
+            "steps": []
+          }
+        },
+        "one_hot": null,
+        "claim_period": null
+      }
+    ],
+    "unmapped": []
+  }
+}

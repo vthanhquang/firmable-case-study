@@ -1,0 +1,378 @@
+{
+  "concepts": {
+    "dyn.charity.state_association_number": {
+      "path": "dyn.charity.state_association_number",
+      "type": "string",
+      "owner": "charity",
+      "definition": "State or territory incorporated-association registration number held by the charity, qualified by the jurisdiction whose association-number column supplied it. Values are publisher-formatted strings (e.g. INC9886754, A0005374L) and are not normalised across states.",
+      "values": [],
+      "multi": true,
+      "required_qualifiers": [
+        "jurisdiction"
+      ],
+      "source_paths": [
+        "association number - act",
+        "association number - nsw",
+        "association number - nt",
+        "association number - qld",
+        "association number - sa",
+        "association number - tas",
+        "association number - vic",
+        "association number - wa"
+      ],
+      "why_not_existing": "ext.entity.prior_registration_number is a single legacy state registration number with no jurisdiction qualifier and no multi-value scope; the ACNC file holds up to eight jurisdiction-specific association numbers per charity, so reuse would lose the jurisdiction and multiplicity. ext.entity.prior_registration_state is a state name, not a number.",
+      "personal_data": "never"
+    },
+    "ext.entity.prior_registration_number": {
+      "path": "ext.entity.prior_registration_number",
+      "type": "string",
+      "owner": "business",
+      "definition": "Legacy state registration number.",
+      "values": [],
+      "multi": false,
+      "required_qualifiers": [],
+      "personal_data": "never",
+      "pattern": null
+    },
+    "dyn.charity.registration_status": {
+      "path": "dyn.charity.registration_status",
+      "type": "enum",
+      "owner": "charity",
+      "definition": "The ACNC registration status of the charity as published in the Annual Information Statement, including revocation reasons such as voluntary revocation or double defaulter. This is a charity-regulator status, not a company legal status or a licence status.",
+      "values": [
+        "Registered",
+        "Voluntarily Revoked Not Entitled To Be A Charity",
+        "Voluntarily Revoked No Longer Operating",
+        "Revoked Double Defaulter"
+      ],
+      "multi": false,
+      "required_qualifiers": [],
+      "source_paths": [
+        "registration status"
+      ],
+      "why_not_existing": "entity.status is a coarse company-lifecycle enum (active/deregistered/in_liquidation/suspended/unknown) owned by business; ACNC charity registration states carry regulator-specific revocation reasons and belong to the charity role, so reuse would change meaning and owner. ext.licence.status is a licence status, not charity registration.",
+      "personal_data": "never"
+    },
+    "ext.licence.number": {
+      "path": "ext.licence.number",
+      "type": "string",
+      "owner": "licence",
+      "definition": "Publisher-assigned licence number. Identifies the licence across snapshots.",
+      "values": [],
+      "multi": false,
+      "required_qualifiers": [],
+      "personal_data": "never",
+      "pattern": null
+    },
+    "dyn.charity.international_activity_operating_overseas": {
+      "path": "dyn.charity.international_activity_operating_overseas",
+      "type": "enum",
+      "owner": "charity",
+      "definition": "Flag published in the ACNC Annual Information Statement indicating whether the charity undertook international activities by operating overseas including programs during the reporting period, recorded as y/n.",
+      "values": [
+        "y",
+        "n"
+      ],
+      "multi": false,
+      "required_qualifiers": [],
+      "source_paths": [
+        "international activities undertaken - operating overseas including programs"
+      ],
+      "why_not_existing": "ext.entity.operating_region and ext.entity.operating_country describe where a business says it operates, not a charity's self-reported international-activity flag; reuse would change owner, meaning and units (region/country values versus y/n).",
+      "personal_data": "never"
+    },
+    "dyn.charity.international_activity_transferring_goods_services": {
+      "path": "dyn.charity.international_activity_transferring_goods_services",
+      "type": "enum",
+      "owner": "charity",
+      "definition": "Flag published in the ACNC Annual Information Statement indicating whether the charity undertook international activities by transferring goods or services overseas during the reporting period, recorded as y/n.",
+      "values": [
+        "y",
+        "n"
+      ],
+      "multi": false,
+      "required_qualifiers": [],
+      "source_paths": [
+        "international activities undertaken - transferring goods or services overseas"
+      ],
+      "why_not_existing": "No shortlisted concept captures a charity's self-reported goods/services transfer overseas flag; ext.entity.operating_country is a country value owned by business, so reuse would change meaning, owner and units.",
+      "personal_data": "never"
+    },
+    "dyn.charity.other_international_activity_description": {
+      "path": "dyn.charity.other_international_activity_description",
+      "type": "string",
+      "owner": "charity",
+      "definition": "Free-text description supplied by the charity in its ACNC Annual Information Statement of the 'other' international activities it undertook during the reporting period. Self-reported narrative retained verbatim.",
+      "values": [],
+      "multi": false,
+      "required_qualifiers": [],
+      "source_paths": [
+        "other international activities description"
+      ],
+      "why_not_existing": "No shortlisted concept holds charity-owned free-text describing residual international activities; ext.entity.operating_country is a structured business-owned country value, so reuse would change meaning, owner and units.",
+      "personal_data": "never"
+    },
+    "ext.entity.prior_registration_state": {
+      "path": "ext.entity.prior_registration_state",
+      "type": "string",
+      "owner": "business",
+      "definition": "State of original incorporation before national registration. Not an address.",
+      "values": [],
+      "multi": false,
+      "required_qualifiers": [],
+      "personal_data": "never",
+      "pattern": null
+    },
+    "ext.licence.authorisation": {
+      "path": "ext.licence.authorisation",
+      "type": "string",
+      "owner": "licence",
+      "definition": "One authorised activity per observation (split the publisher's list).",
+      "values": [],
+      "multi": true,
+      "required_qualifiers": [],
+      "personal_data": "never",
+      "pattern": null
+    },
+    "ext.licence.start_date": {
+      "path": "ext.licence.start_date",
+      "type": "date",
+      "owner": "licence",
+      "definition": "Publisher-stated commencement of the licence, not the business establishment or registration date.",
+      "values": [],
+      "multi": false,
+      "required_qualifiers": [],
+      "personal_data": "never",
+      "pattern": null
+    },
+    "dyn.charity.international_activity_other": {
+      "path": "dyn.charity.international_activity_other",
+      "type": "enum",
+      "owner": "charity",
+      "definition": "Flag published in the ACNC Annual Information Statement indicating whether the charity undertook other international activities not covered by the operating-overseas or goods/services-transfer categories during the reporting period, recorded as y/n.",
+      "values": [
+        "y",
+        "n"
+      ],
+      "multi": false,
+      "required_qualifiers": [],
+      "source_paths": [
+        "other international activities"
+      ],
+      "why_not_existing": "No shortlisted concept covers a residual 'other international activities' flag for a charity; the existing operating-region/country concepts are business-owned location values, not y/n activity flags.",
+      "personal_data": "never"
+    },
+    "dyn.charity.international_activity_details": {
+      "path": "dyn.charity.international_activity_details",
+      "type": "string",
+      "owner": "charity",
+      "definition": "Free-text description supplied by the charity in its ACNC Annual Information Statement of the international activities it undertook during the reporting period. Self-reported narrative retained verbatim; it does not by itself establish a country of operation.",
+      "values": [],
+      "multi": false,
+      "required_qualifiers": [],
+      "source_paths": [
+        "international activities details"
+      ],
+      "why_not_existing": "ext.entity.operating_country is a single country value owned by business; this is charity-owned free-text narrative that may mention several places without being a structured country claim, so reuse would change meaning, owner and units.",
+      "personal_data": "never"
+    },
+    "ext.entity.tax_concession": {
+      "path": "ext.entity.tax_concession",
+      "type": "enum",
+      "owner": "business",
+      "definition": "Tax-concession status stated by the regulator (Public Benevolent Institution, Health Promotion Charity).",
+      "values": [
+        "PBI",
+        "HPC",
+        "DGR"
+      ],
+      "multi": true,
+      "required_qualifiers": [],
+      "personal_data": "never",
+      "pattern": null
+    },
+    "ext.licence.related_licence_number": {
+      "path": "ext.licence.related_licence_number",
+      "type": "string",
+      "owner": "licence",
+      "definition": "Number of another licence the same holder holds (e.g. an AFS licence number). 0 / blank = none.",
+      "values": [],
+      "multi": false,
+      "required_qualifiers": [],
+      "personal_data": "never",
+      "pattern": null
+    },
+    "dyn.charity.no_activity_reason": {
+      "path": "dyn.charity.no_activity_reason",
+      "type": "string",
+      "owner": "charity",
+      "definition": "Free-text explanation supplied by the charity in its ACNC Annual Information Statement for why it did not conduct activities during the reporting period. Publisher wording is retained verbatim; it is self-reported narrative, not a regulator finding.",
+      "values": [],
+      "multi": false,
+      "required_qualifiers": [],
+      "source_paths": [
+        "why charity did not conduct activities"
+      ],
+      "why_not_existing": "No shortlisted concept holds charity self-reported narrative reasons for inactivity; ext.licence.authorisation_text is licence authorisation text owned by the licence role, so reuse would change meaning and owner.",
+      "personal_data": "never"
+    },
+    "dyn.charity.purposes_pursued_description": {
+      "path": "dyn.charity.purposes_pursued_description",
+      "type": "string",
+      "owner": "charity",
+      "definition": "Free-text description supplied by the charity in its ACNC Annual Information Statement of how it pursued its charitable purposes during the reporting period. Self-reported narrative retained verbatim, not a regulator classification or an ANZSIC activity code.",
+      "values": [],
+      "multi": false,
+      "required_qualifiers": [],
+      "source_paths": [
+        "how purposes were pursued"
+      ],
+      "why_not_existing": "ext.entity.sector_tag is a short source-stated tag with a scheme qualifier, not a full narrative description of how purposes were pursued; ext.entity.industry_code is a reviewed crosswalk code. Reuse would change meaning and granularity.",
+      "personal_data": "never"
+    },
+    "dyn.charity.basic_religious_charity": {
+      "path": "dyn.charity.basic_religious_charity",
+      "type": "enum",
+      "owner": "charity",
+      "definition": "Flag published by the ACNC indicating whether the charity is a basic religious charity for the reporting year, recorded as y/n in the source.",
+      "values": [
+        "y",
+        "n"
+      ],
+      "multi": false,
+      "required_qualifiers": [],
+      "source_paths": [
+        "basic religious charity"
+      ],
+      "why_not_existing": "No shortlisted concept covers ACNC basic religious charity classification; ext.entity.tax_concession covers PBI/HPC/DGR concessions, a different regulatory attribute.",
+      "personal_data": "never"
+    },
+    "dyn.charity.incorporated_association": {
+      "path": "dyn.charity.incorporated_association",
+      "type": "enum",
+      "owner": "charity",
+      "definition": "Flag published by the ACNC indicating whether the charity is an incorporated association, recorded as y/n. This is a self-reported association attribute, not an inference of legal form from the charity name.",
+      "values": [
+        "y",
+        "n"
+      ],
+      "multi": false,
+      "required_qualifiers": [],
+      "source_paths": [
+        "incorporated association"
+      ],
+      "why_not_existing": "No shortlisted concept records incorporated-association status; entity legal form is not otherwise modelled and must not be inferred from names.",
+      "personal_data": "never"
+    },
+    "ext.contact.phone": {
+      "path": "ext.contact.phone",
+      "type": "phone",
+      "owner": "any",
+      "definition": "Phone number normalised to E.164 (+61...). Numbers shorter than 8 digits or without an area code are rejected. Mobiles are personal data unless published as a business line.",
+      "values": [],
+      "multi": true,
+      "required_qualifiers": [],
+      "personal_data": "mobile_numbers",
+      "pattern": null
+    },
+    "address.state": {
+      "path": "address.state",
+      "type": "enum",
+      "owner": "business",
+      "definition": "",
+      "values": [
+        "NSW",
+        "VIC",
+        "QLD",
+        "WA",
+        "SA",
+        "TAS",
+        "ACT",
+        "NT",
+        "NZ",
+        "OTHER"
+      ],
+      "multi": false,
+      "required_qualifiers": [],
+      "personal_data": "never",
+      "pattern": null
+    },
+    "ext.entity.industry_code": {
+      "path": "ext.entity.industry_code",
+      "type": "string",
+      "owner": "business",
+      "definition": "ANZSIC 2006 division letter, subdivision, group or class, produced only through a reviewed crosswalk table from a source-stated activity (trade class, licence category, purpose). The raw source value is kept in raw_value. scheme = anzsic2006.",
+      "values": [],
+      "multi": true,
+      "required_qualifiers": [
+        "scheme"
+      ],
+      "personal_data": "never",
+      "pattern": "^(?:[A-S]|[0-9]{2,4})$"
+    },
+    "dyn.charity.conducted_activities": {
+      "path": "dyn.charity.conducted_activities",
+      "type": "enum",
+      "owner": "charity",
+      "definition": "Flag published in the ACNC Annual Information Statement indicating whether the charity conducted any activities during its reporting period, recorded as y/n. A 'n' answer is accompanied by a free-text reason in a separate field and is not evidence the charity is inactive or deregistered.",
+      "values": [
+        "y",
+        "n"
+      ],
+      "multi": false,
+      "required_qualifiers": [],
+      "source_paths": [
+        "conducted activities"
+      ],
+      "why_not_existing": "No shortlisted concept records whether a charity conducted activities in its reporting period; dyn.charity.registration_status is a regulator status and ext.entity.sector_tag is an activity tag, so reuse would change meaning and owner.",
+      "personal_data": "never"
+    },
+    "ext.licence.issuer": {
+      "path": "ext.licence.issuer",
+      "type": "string",
+      "owner": "licence",
+      "definition": "Licensing body.",
+      "values": [],
+      "multi": false,
+      "required_qualifiers": [],
+      "personal_data": "never",
+      "pattern": null
+    },
+    "ext.licence.category": {
+      "path": "ext.licence.category",
+      "type": "string",
+      "owner": "licence",
+      "definition": "Licence category in the publisher's wording.",
+      "values": [],
+      "multi": false,
+      "required_qualifiers": [],
+      "personal_data": "never",
+      "pattern": null
+    }
+  },
+  "entity_types": {
+    "business": "The source's business/legal-person subject; legal form remains unknown unless stated.",
+    "licence": "An authorisation held by a business.",
+    "establishment": "A physical operating facility, separate from its operator.",
+    "charity": "A registered charity lodging an Annual Information Statement with the ACNC, identified by its ABN; its legal form is not inferred from its name.",
+    "fundraising_authorisation": "A state or territory fundraising registration/licence number held by a charity, evidenced by a fundraising number column for that jurisdiction."
+  },
+  "relationships": {
+    "HOLDS_LICENCE": {
+      "from_type": "business",
+      "to_type": "licence",
+      "definition": "Business holds this licence."
+    },
+    "OPERATES_ESTABLISHMENT": {
+      "from_type": "business",
+      "to_type": "establishment",
+      "definition": "Business operates this facility."
+    },
+    "HOLDS_FUNDRAISING_AUTHORISATION": {
+      "from_type": "charity",
+      "to_type": "fundraising_authorisation",
+      "definition": "Charity holds a state or territory fundraising registration evidenced by a fundraising number column for that jurisdiction."
+    }
+  },
+  "retrieval": "Lexical shortlist only; reuse requires identical meaning, owner, units and scope. Missing candidates can be requested with a narrower task."
+}

@@ -63,6 +63,7 @@ export function demoView(data, root, ui) {
   const paths = [
     ["discovery", "Discovery", "See the ranked shortlist and inspect a publisher sample."],
     ["mapping", "Mapping", "Open a source to follow its rules, validation and review history.", { source: "vic_liquor" }],
+    ["onboarding", "Dataset onboarding", "Replay a new source through ontology changes, agent revisions and the human review queue."],
     ["identity", "Identity", "Inspect the 50 audited links, review verdicts and supporting evidence.", { view: "audit" }],
     ["profiles", "Profiles", "Explore establishment records, licence details and financial history."],
     ["write-up", "Write-up", "Review costs, trade-offs and open decisions."],

@@ -1,0 +1,135 @@
+{
+  "request_sha256": "1482294f9947e52e01debd29fbbf84b762d2aab1ca97d0336feaf7d54669ce85",
+  "role": "group_architect",
+  "model": "deepseek-v4-flash",
+  "seconds": 11.903,
+  "response": {
+    "concepts": [
+      {
+        "path": "dyn.charity.total_expenses",
+        "type": "decimal",
+        "owner": "charity",
+        "definition": "Total expenses the charity reports in its ACNC Annual Information Statement for its own financial reporting period, in Australian dollars. A period-specific expense total, not a current attribute and not a revenue or income measure.",
+        "values": [],
+        "multi": false,
+        "required_qualifiers": [
+          "currency",
+          "period"
+        ],
+        "source_paths": [
+          "total expenses"
+        ],
+        "why_not_existing": "ext.financial.total_income is a business-owned income measure; no shortlisted concept holds a charity-owned expense total, so reuse would change meaning, owner and sign convention.",
+        "personal_data": "never"
+      },
+      {
+        "path": "dyn.charity.employee_expenses",
+        "type": "decimal",
+        "owner": "charity",
+        "definition": "Employee expenses the charity reports in its ACNC Annual Information Statement for its own financial reporting period, in Australian dollars. A period-specific expense line covering staff costs, not a headcount or FTE measure.",
+        "values": [],
+        "multi": false,
+        "required_qualifiers": [
+          "currency",
+          "period"
+        ],
+        "source_paths": [
+          "employee expenses"
+        ],
+        "why_not_existing": "dyn.charity.staff_headcount and dyn.charity.full_time_equivalent_staff count people, not money; ext.financial.total_income is business-owned income. No shortlisted concept holds a charity employee-cost amount.",
+        "personal_data": "never"
+      },
+      {
+        "path": "dyn.charity.interest_expenses",
+        "type": "decimal",
+        "owner": "charity",
+        "definition": "Interest expenses the charity reports in its ACNC Annual Information Statement for its own financial reporting period, in Australian dollars. A period-specific expense line; a reported zero is retained as published.",
+        "values": [],
+        "multi": false,
+        "required_qualifiers": [
+          "currency",
+          "period"
+        ],
+        "source_paths": [
+          "interest expenses"
+        ],
+        "why_not_existing": "No shortlisted concept holds a charity interest-cost amount; ext.financial.total_income is business-owned income and dyn.charity.total_expenses is the aggregate, so reuse would change meaning and granularity.",
+        "personal_data": "never"
+      },
+      {
+        "path": "dyn.charity.other_expenses",
+        "type": "decimal",
+        "owner": "charity",
+        "definition": "All other expenses (expenses not reported as employee or interest expenses) the charity reports in its ACNC Annual Information Statement for its own financial reporting period, in Australian dollars. A residual period-specific expense line, not a total.",
+        "values": [],
+        "multi": false,
+        "required_qualifiers": [
+          "currency",
+          "period"
+        ],
+        "source_paths": [
+          "all other expenses"
+        ],
+        "why_not_existing": "No shortlisted concept holds a residual charity expense line; dyn.charity.total_expenses is the aggregate and ext.financial.total_income is business-owned income, so reuse would change meaning and granularity.",
+        "personal_data": "never"
+      },
+      {
+        "path": "dyn.charity.grants_donations_made_in_australia",
+        "type": "decimal",
+        "owner": "charity",
+        "definition": "Grants and donations the charity reports in its ACNC Annual Information Statement as made for use in Australia during its own financial reporting period, in Australian dollars. An outbound transfer amount, not the charity's own income or revenue.",
+        "values": [],
+        "multi": false,
+        "required_qualifiers": [
+          "currency",
+          "period"
+        ],
+        "source_paths": [
+          "grants and donations made for use in Australia"
+        ],
+        "why_not_existing": "ext.financial.total_income is business-owned income; no shortlisted concept holds outbound grants/donations made by a charity, and the in-Australia versus outside-Australia split is a distinct geographic scope, so reuse would change meaning, owner and direction.",
+        "personal_data": "never"
+      },
+      {
+        "path": "dyn.charity.grants_donations_made_outside_australia",
+        "type": "decimal",
+        "owner": "charity",
+        "definition": "Grants and donations the charity reports in its ACNC Annual Information Statement as made for use outside Australia during its own financial reporting period, in Australian dollars. An outbound transfer amount with overseas use scope, not the charity's own income and not evidence of a specific recipient country.",
+        "values": [],
+        "multi": false,
+        "required_qualifiers": [
+          "currency",
+          "period"
+        ],
+        "source_paths": [
+          "grants and donations made for use outside Australia"
+        ],
+        "why_not_existing": "No shortlisted concept holds outbound grants/donations made by a charity; ext.entity.operating_country is a business-owned location value, and the in-Australia variant has a different geographic scope, so reuse would change meaning, owner and units.",
+        "personal_data": "never"
+      },
+      {
+        "path": "dyn.charity.net_surplus_deficit",
+        "type": "decimal",
+        "owner": "charity",
+        "definition": "Net surplus or deficit (revenue less expenses) the charity reports in its ACNC Annual Information Statement for its own financial reporting period, in Australian dollars. A signed period result where negative values denote a deficit; not a cash balance or net assets figure.",
+        "values": [],
+        "multi": false,
+        "required_qualifiers": [
+          "currency",
+          "period"
+        ],
+        "source_paths": [
+          "net surplus/deficit"
+        ],
+        "why_not_existing": "ext.financial.total_income is a business-owned income measure and dyn.charity.total_expenses is an expense total; no shortlisted concept holds a signed charity period result, so reuse would change meaning, owner and sign semantics.",
+        "personal_data": "never"
+      }
+    ],
+    "reuse": {
+      "dyn.charity.financial_report_period_start": "Reused as the period qualifier for all seven expense/grants/result concepts: the source's 'fin report from' column defines the charity's own reporting period, matching owner (charity) and temporal scope.",
+      "dyn.charity.financial_report_period_end": "Reused as the period qualifier for all seven expense/grants/result concepts: the source's 'fin report to' column defines the charity's own reporting period, matching owner (charity) and temporal scope.",
+      "dyn.charity.accounting_basis": "Reused as context for interpreting the expense figures (cash versus accrual basis), same charity owner and reporting period.",
+      "dyn.charity.size_band": "Reused as context: small charities are not required to supply detailed financials, so blanks/zeros in these expense lines must be read against the size classification."
+    }
+  }
+}

@@ -1,0 +1,26 @@
+{
+  "reader": {
+    "format": "xlsx",
+    "archive_member": null,
+    "encoding": "utf-8-sig",
+    "delimiter": null,
+    "skip_rows": 3,
+    "sheet": "2. Employers ",
+    "record_path": null
+  },
+  "bindings": [],
+  "grain": "One row per employer reporting unit for the 2024-25 WGEA Gender Equality Reporting, identified by employer name plus Employer ABN; the sheet also carries a second, contextual 2023-24 comparison block of four GPG columns per row, so a row is an employer-year-pair record rather than a single-year measure.",
+  "identity_cautions": [
+    "Employer name is not a unique key: names repeat across sheets and can collide across entities; bind identity on Employer ABN, which is a reporting identifier, not proof of legal form or company-wide scope.",
+    "The '2. Employers ' sheet name has a trailing space and must be preserved exactly; do not trim it.",
+    "Rows 1-3 are title/context rows (title, 'Results based on 2024-25 WGEA Gender Equality Reporting', and a year-group header row); the real header is row 4, hence skip_rows=3.",
+    "The header has two year groups: columns F-I are 2024-25 (unlabelled suffix) and columns J-M are 2023-24 (headers carry a trailing space). The 2023-24 columns are contextual comparison values, not the current reporting year, and must not be merged with the 2024-25 measures.",
+    "Duplicate-looking header labels ('Average total remuneration GPG (%)' etc.) appear twice; disambiguate by year group, not by position alone.",
+    "GPG and % women values are stored as decimal fractions (e.g. 0.244 = 24.4%), not as whole percentages; do not multiply or relabel without noting the storage convention.",
+    "Blank cells in the 2023-24 block mean the employer had no prior-year comparison, not zero gap.",
+    "Employer size range ('<250', '250-499') is a band, not an exact headcount; remuneration figures are pay, not revenue or business income.",
+    "This sheet is employer-level results; the '3. Corporate groups ' and '4. Corporate group info' sheets are separate grains (group measures and group-to-employer membership) and must not be joined as if employer rows were group rows.",
+    "The 'How to use the GPG Spreadsheet' sheet is documentation and must not be used as a data reader."
+  ],
+  "rationale": "Byte inspection shows a valid XLSX (magic 504b0304) with five sheets. The '2. Employers ' sheet is the employer-level results table: rows 1-3 are title and year-group context, row 4 is the header, and data begins at row 5, so skip_rows=3 with the exact sheet name (including trailing space). The header spans two year groups (2024-25 in F-I, 2023-24 in J-M), which is why the grain is described as employer with a contextual prior-year block. No nested singleton objects are present in this tabular sheet, so no bindings are proposed. Identity rests on Employer ABN rather than name, and percentage columns are decimal fractions. Documentation and corporate-group sheets are excluded from this reader."
+}

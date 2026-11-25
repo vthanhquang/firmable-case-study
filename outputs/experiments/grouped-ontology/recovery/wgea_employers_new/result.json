@@ -1,0 +1,715 @@
+{
+  "source_id": "wgea_employers_new",
+  "status": "PARTIAL_REVIEW_REQUIRED",
+  "ontology_version": "05e796744ab14e877eca39080fa0c912ee806cb15e5a4da49330be5343d56599",
+  "parent_version": "db7f01dab23e6f042a75c6df261be2b61dfa1ceba7daff6afe5eab3543256f1b",
+  "snapshot_sha256": "8631e5b67f968f034e79f39a3a513e2bb32d6ccb2b0644dfbd664815b09d5d05",
+  "mapping_digest": "7816611be2ceede035a960df75a4a90d62a33fb01be9d2046e348cacb98ea060",
+  "groups": [
+    {
+      "group": "employer_identity_and_classification",
+      "columns": [
+        "Employer name",
+        "Employer ABN",
+        "Sector",
+        "Employer size range (# employees)",
+        "Industry (ANZSIC Division)",
+        "Industry (ANZSIC Class)"
+      ],
+      "status": "AGENT_VALIDATED",
+      "attempts": 2,
+      "feedback": null
+    },
+    {
+      "group": "workforce_representation_by_quartile",
+      "columns": [
+        "Total workforce % women",
+        "Lower quartile % women",
+        "Lower-middle quartile % women",
+        "Upper-middle quartile % women",
+        "Upper quartile % women"
+      ],
+      "status": "AGENT_VALIDATED",
+      "attempts": 2,
+      "feedback": null
+    },
+    {
+      "group": "remuneration_by_quartile",
+      "columns": [
+        "Total workforce - average total remuneration ($)*",
+        "Lower quartile - average total remuneration ($)",
+        "Lower-middle quartile - average total remuneration ($)",
+        "Upper-middle quartile - average total remuneration ($)",
+        "Upper quartile - average total remuneration ($)"
+      ],
+      "status": "AGENT_VALIDATED",
+      "attempts": 1,
+      "feedback": null
+    },
+    {
+      "group": "current_year_gender_pay_gaps",
+      "columns": [
+        "Average base salary GPG (%)",
+        "Average total remuneration GPG (%)",
+        "Median base salary GPG (%)",
+        "Median total remuneration GPG (%)"
+      ],
+      "status": "AGENT_VALIDATED",
+      "attempts": 2,
+      "feedback": null
+    },
+    {
+      "group": "prior_year_gender_pay_gaps_comparison",
+      "columns": [
+        "Average base salary GPG (%)_2",
+        "Average total remuneration GPG (%)_2",
+        "Median base salary GPG (%)_2",
+        "Median total remuneration GPG (%)_2"
+      ],
+      "status": "NEEDS_REVIEW",
+      "attempts": 2,
+      "feedback": {
+        "stop_reason": "SOURCE_BUDGET",
+        "error": "Per-source request reservation exhausted; other sources retain their allowances"
+      }
+    }
+  ],
+  "new_concepts": 20,
+  "mapping_rules": 20,
+  "unmapped_columns": [
+    {
+      "source_path": "Average base salary GPG (%)_2",
+      "reason": "2023-24 contextual comparison value, not the current reporting year; the group's purpose is 2024-25 measures and merging years would misstate the claim period."
+    },
+    {
+      "source_path": "Average total remuneration GPG (%)_2",
+      "reason": "2023-24 contextual comparison value, not the current reporting year; must not be merged with the 2024-25 measure."
+    },
+    {
+      "source_path": "Median base salary GPG (%)_2",
+      "reason": "2023-24 contextual comparison value, not the current reporting year; must not be merged with the 2024-25 measure."
+    },
+    {
+      "source_path": "Median total remuneration GPG (%)_2",
+      "reason": "2023-24 contextual comparison value, not the current reporting year; must not be merged with the 2024-25 measure."
+    }
+  ],
+  "quality": {
+    "present_values": 11996,
+    "emitted_observations": 11996,
+    "withheld_missing_context": 0,
+    "abstention_reasons": {},
+    "malformed_values": 0,
+    "malformed_reasons": {},
+    "eligible_present_values": 11996,
+    "malformed_rate": 0.0,
+    "abstention_rate": 0.0,
+    "record_errors": {},
+    "passes_technical_gate": true,
+    "semantic_precision": null,
+    "note": "Missing required context remains withheld. This gate does not establish semantic truth or useful coverage."
+  },
+  "raw_extraction": {
+    "records_in": 600,
+    "records_with_output": 600,
+    "record_errors": {},
+    "fields": [
+      {
+        "target": "dyn.employer_reporting_unit.reporting_name",
+        "source_paths": [
+          "Employer name"
+        ],
+        "records": 600,
+        "source_present": 600,
+        "emitted": 600,
+        "coverage_of_records": 1.0,
+        "error_rate_of_present": 0.0,
+        "errors": {},
+        "error_examples": {},
+        "entity": "employer"
+      },
+      {
+        "target": "dyn.employer_reporting_unit.reporting_abn",
+        "source_paths": [
+          "Employer ABN"
+        ],
+        "records": 600,
+        "source_present": 600,
+        "emitted": 600,
+        "coverage_of_records": 1.0,
+        "error_rate_of_present": 0.0,
+        "errors": {},
+        "error_examples": {},
+        "entity": "employer"
+      },
+      {
+        "target": "dyn.employer_reporting_unit.sector",
+        "source_paths": [
+          "Sector"
+        ],
+        "records": 600,
+        "source_present": 600,
+        "emitted": 600,
+        "coverage_of_records": 1.0,
+        "error_rate_of_present": 0.0,
+        "errors": {},
+        "error_examples": {},
+        "entity": "employer"
+      },
+      {
+        "target": "dyn.employer_reporting_unit.size_band",
+        "source_paths": [
+          "Employer size range (# employees)"
+        ],
+        "records": 600,
+        "source_present": 600,
+        "emitted": 600,
+        "coverage_of_records": 1.0,
+        "error_rate_of_present": 0.0,
+        "errors": {},
+        "error_examples": {},
+        "entity": "employer"
+      },
+      {
+        "target": "dyn.employer_reporting_unit.anzsic_division",
+        "source_paths": [
+          "Industry (ANZSIC Division)"
+        ],
+        "records": 600,
+        "source_present": 600,
+        "emitted": 600,
+        "coverage_of_records": 1.0,
+        "error_rate_of_present": 0.0,
+        "errors": {},
+        "error_examples": {},
+        "entity": "employer"
+      },
+      {
+        "target": "dyn.employer_reporting_unit.anzsic_class",
+        "source_paths": [
+          "Industry (ANZSIC Class)"
+        ],
+        "records": 600,
+        "source_present": 600,
+        "emitted": 600,
+        "coverage_of_records": 1.0,
+        "error_rate_of_present": 0.0,
+        "errors": {},
+        "error_examples": {},
+        "entity": "employer"
+      },
+      {
+        "target": "dyn.employer_reporting_unit.total_workforce_women_share",
+        "source_paths": [
+          "Total workforce % women"
+        ],
+        "records": 600,
+        "source_present": 600,
+        "emitted": 600,
+        "coverage_of_records": 1.0,
+        "error_rate_of_present": 0.0,
+        "errors": {},
+        "error_examples": {},
+        "entity": "employer"
+      },
+      {
+        "target": "dyn.employer_reporting_unit.lower_quartile_women_share",
+        "source_paths": [
+          "Lower quartile % women"
+        ],
+        "records": 600,
+        "source_present": 600,
+        "emitted": 600,
+        "coverage_of_records": 1.0,
+        "error_rate_of_present": 0.0,
+        "errors": {},
+        "error_examples": {},
+        "entity": "employer"
+      },
+      {
+        "target": "dyn.employer_reporting_unit.lower_middle_quartile_women_share",
+        "source_paths": [
+          "Lower-middle quartile % women"
+        ],
+        "records": 600,
+        "source_present": 600,
+        "emitted": 600,
+        "coverage_of_records": 1.0,
+        "error_rate_of_present": 0.0,
+        "errors": {},
+        "error_examples": {},
+        "entity": "employer"
+      },
+      {
+        "target": "dyn.employer_reporting_unit.upper_middle_quartile_women_share",
+        "source_paths": [
+          "Upper-middle quartile % women"
+        ],
+        "records": 600,
+        "source_present": 600,
+        "emitted": 600,
+        "coverage_of_records": 1.0,
+        "error_rate_of_present": 0.0,
+        "errors": {},
+        "error_examples": {},
+        "entity": "employer"
+      },
+      {
+        "target": "dyn.employer_reporting_unit.upper_quartile_women_share",
+        "source_paths": [
+          "Upper quartile % women"
+        ],
+        "records": 600,
+        "source_present": 600,
+        "emitted": 600,
+        "coverage_of_records": 1.0,
+        "error_rate_of_present": 0.0,
+        "errors": {},
+        "error_examples": {},
+        "entity": "employer"
+      },
+      {
+        "target": "dyn.employer_reporting_unit.total_workforce_average_total_remuneration",
+        "source_paths": [
+          "Total workforce - average total remuneration ($)*"
+        ],
+        "records": 600,
+        "source_present": 600,
+        "emitted": 600,
+        "coverage_of_records": 1.0,
+        "error_rate_of_present": 0.0,
+        "errors": {},
+        "error_examples": {},
+        "entity": "employer"
+      },
+      {
+        "target": "dyn.employer_reporting_unit.lower_quartile_average_total_remuneration",
+        "source_paths": [
+          "Lower quartile - average total remuneration ($)"
+        ],
+        "records": 600,
+        "source_present": 600,
+        "emitted": 600,
+        "coverage_of_records": 1.0,
+        "error_rate_of_present": 0.0,
+        "errors": {},
+        "error_examples": {},
+        "entity": "employer"
+      },
+      {
+        "target": "dyn.employer_reporting_unit.lower_middle_quartile_average_total_remuneration",
+        "source_paths": [
+          "Lower-middle quartile - average total remuneration ($)"
+        ],
+        "records": 600,
+        "source_present": 600,
+        "emitted": 600,
+        "coverage_of_records": 1.0,
+        "error_rate_of_present": 0.0,
+        "errors": {},
+        "error_examples": {},
+        "entity": "employer"
+      },
+      {
+        "target": "dyn.employer_reporting_unit.upper_middle_quartile_average_total_remuneration",
+        "source_paths": [
+          "Upper-middle quartile - average total remuneration ($)"
+        ],
+        "records": 600,
+        "source_present": 600,
+        "emitted": 600,
+        "coverage_of_records": 1.0,
+        "error_rate_of_present": 0.0,
+        "errors": {},
+        "error_examples": {},
+        "entity": "employer"
+      },
+      {
+        "target": "dyn.employer_reporting_unit.upper_quartile_average_total_remuneration",
+        "source_paths": [
+          "Upper quartile - average total remuneration ($)"
+        ],
+        "records": 600,
+        "source_present": 600,
+        "emitted": 600,
+        "coverage_of_records": 1.0,
+        "error_rate_of_present": 0.0,
+        "errors": {},
+        "error_examples": {},
+        "entity": "employer"
+      },
+      {
+        "target": "dyn.employer_reporting_unit.average_base_salary_gpg",
+        "source_paths": [
+          "Average base salary GPG (%)"
+        ],
+        "records": 600,
+        "source_present": 599,
+        "emitted": 599,
+        "coverage_of_records": 0.998,
+        "error_rate_of_present": 0.0,
+        "errors": {},
+        "error_examples": {},
+        "entity": "employer"
+      },
+      {
+        "target": "dyn.employer_reporting_unit.average_total_remuneration_gpg",
+        "source_paths": [
+          "Average total remuneration GPG (%)"
+        ],
+        "records": 600,
+        "source_present": 599,
+        "emitted": 599,
+        "coverage_of_records": 0.998,
+        "error_rate_of_present": 0.0,
+        "errors": {},
+        "error_examples": {},
+        "entity": "employer"
+      },
+      {
+        "target": "dyn.employer_reporting_unit.median_base_salary_gpg",
+        "source_paths": [
+          "Median base salary GPG (%)"
+        ],
+        "records": 600,
+        "source_present": 599,
+        "emitted": 599,
+        "coverage_of_records": 0.998,
+        "error_rate_of_present": 0.0,
+        "errors": {},
+        "error_examples": {},
+        "entity": "employer"
+      },
+      {
+        "target": "dyn.employer_reporting_unit.median_total_remuneration_gpg",
+        "source_paths": [
+          "Median total remuneration GPG (%)"
+        ],
+        "records": 600,
+        "source_present": 599,
+        "emitted": 599,
+        "coverage_of_records": 0.998,
+        "error_rate_of_present": 0.0,
+        "errors": {},
+        "error_examples": {},
+        "entity": "employer"
+      }
+    ],
+    "input_records": 600,
+    "refused_records": 0,
+    "observations": 11996,
+    "value_errors": 0,
+    "present_values": 11996,
+    "error_rate": 0.0
+  },
+  "test_quality": {
+    "present_values": 2180,
+    "emitted_observations": 2180,
+    "withheld_missing_context": 0,
+    "abstention_reasons": {},
+    "malformed_values": 0,
+    "malformed_reasons": {},
+    "eligible_present_values": 2180,
+    "malformed_rate": 0.0,
+    "abstention_rate": 0.0,
+    "record_errors": {},
+    "passes_technical_gate": true,
+    "semantic_precision": null,
+    "note": "Missing required context remains withheld. This gate does not establish semantic truth or useful coverage."
+  },
+  "test": {
+    "records_in": 109,
+    "records_with_output": 109,
+    "record_errors": {},
+    "fields": [
+      {
+        "target": "dyn.employer_reporting_unit.reporting_name",
+        "source_paths": [
+          "Employer name"
+        ],
+        "records": 109,
+        "source_present": 109,
+        "emitted": 109,
+        "coverage_of_records": 1.0,
+        "error_rate_of_present": 0.0,
+        "errors": {},
+        "error_examples": {},
+        "entity": "employer"
+      },
+      {
+        "target": "dyn.employer_reporting_unit.reporting_abn",
+        "source_paths": [
+          "Employer ABN"
+        ],
+        "records": 109,
+        "source_present": 109,
+        "emitted": 109,
+        "coverage_of_records": 1.0,
+        "error_rate_of_present": 0.0,
+        "errors": {},
+        "error_examples": {},
+        "entity": "employer"
+      },
+      {
+        "target": "dyn.employer_reporting_unit.sector",
+        "source_paths": [
+          "Sector"
+        ],
+        "records": 109,
+        "source_present": 109,
+        "emitted": 109,
+        "coverage_of_records": 1.0,
+        "error_rate_of_present": 0.0,
+        "errors": {},
+        "error_examples": {},
+        "entity": "employer"
+      },
+      {
+        "target": "dyn.employer_reporting_unit.size_band",
+        "source_paths": [
+          "Employer size range (# employees)"
+        ],
+        "records": 109,
+        "source_present": 109,
+        "emitted": 109,
+        "coverage_of_records": 1.0,
+        "error_rate_of_present": 0.0,
+        "errors": {},
+        "error_examples": {},
+        "entity": "employer"
+      },
+      {
+        "target": "dyn.employer_reporting_unit.anzsic_division",
+        "source_paths": [
+          "Industry (ANZSIC Division)"
+        ],
+        "records": 109,
+        "source_present": 109,
+        "emitted": 109,
+        "coverage_of_records": 1.0,
+        "error_rate_of_present": 0.0,
+        "errors": {},
+        "error_examples": {},
+        "entity": "employer"
+      },
+      {
+        "target": "dyn.employer_reporting_unit.anzsic_class",
+        "source_paths": [
+          "Industry (ANZSIC Class)"
+        ],
+        "records": 109,
+        "source_present": 109,
+        "emitted": 109,
+        "coverage_of_records": 1.0,
+        "error_rate_of_present": 0.0,
+        "errors": {},
+        "error_examples": {},
+        "entity": "employer"
+      },
+      {
+        "target": "dyn.employer_reporting_unit.total_workforce_women_share",
+        "source_paths": [
+          "Total workforce % women"
+        ],
+        "records": 109,
+        "source_present": 109,
+        "emitted": 109,
+        "coverage_of_records": 1.0,
+        "error_rate_of_present": 0.0,
+        "errors": {},
+        "error_examples": {},
+        "entity": "employer"
+      },
+      {
+        "target": "dyn.employer_reporting_unit.lower_quartile_women_share",
+        "source_paths": [
+          "Lower quartile % women"
+        ],
+        "records": 109,
+        "source_present": 109,
+        "emitted": 109,
+        "coverage_of_records": 1.0,
+        "error_rate_of_present": 0.0,
+        "errors": {},
+        "error_examples": {},
+        "entity": "employer"
+      },
+      {
+        "target": "dyn.employer_reporting_unit.lower_middle_quartile_women_share",
+        "source_paths": [
+          "Lower-middle quartile % women"
+        ],
+        "records": 109,
+        "source_present": 109,
+        "emitted": 109,
+        "coverage_of_records": 1.0,
+        "error_rate_of_present": 0.0,
+        "errors": {},
+        "error_examples": {},
+        "entity": "employer"
+      },
+      {
+        "target": "dyn.employer_reporting_unit.upper_middle_quartile_women_share",
+        "source_paths": [
+          "Upper-middle quartile % women"
+        ],
+        "records": 109,
+        "source_present": 109,
+        "emitted": 109,
+        "coverage_of_records": 1.0,
+        "error_rate_of_present": 0.0,
+        "errors": {},
+        "error_examples": {},
+        "entity": "employer"
+      },
+      {
+        "target": "dyn.employer_reporting_unit.upper_quartile_women_share",
+        "source_paths": [
+          "Upper quartile % women"
+        ],
+        "records": 109,
+        "source_present": 109,
+        "emitted": 109,
+        "coverage_of_records": 1.0,
+        "error_rate_of_present": 0.0,
+        "errors": {},
+        "error_examples": {},
+        "entity": "employer"
+      },
+      {
+        "target": "dyn.employer_reporting_unit.total_workforce_average_total_remuneration",
+        "source_paths": [
+          "Total workforce - average total remuneration ($)*"
+        ],
+        "records": 109,
+        "source_present": 109,
+        "emitted": 109,
+        "coverage_of_records": 1.0,
+        "error_rate_of_present": 0.0,
+        "errors": {},
+        "error_examples": {},
+        "entity": "employer"
+      },
+      {
+        "target": "dyn.employer_reporting_unit.lower_quartile_average_total_remuneration",
+        "source_paths": [
+          "Lower quartile - average total remuneration ($)"
+        ],
+        "records": 109,
+        "source_present": 109,
+        "emitted": 109,
+        "coverage_of_records": 1.0,
+        "error_rate_of_present": 0.0,
+        "errors": {},
+        "error_examples": {},
+        "entity": "employer"
+      },
+      {
+        "target": "dyn.employer_reporting_unit.lower_middle_quartile_average_total_remuneration",
+        "source_paths": [
+          "Lower-middle quartile - average total remuneration ($)"
+        ],
+        "records": 109,
+        "source_present": 109,
+        "emitted": 109,
+        "coverage_of_records": 1.0,
+        "error_rate_of_present": 0.0,
+        "errors": {},
+        "error_examples": {},
+        "entity": "employer"
+      },
+      {
+        "target": "dyn.employer_reporting_unit.upper_middle_quartile_average_total_remuneration",
+        "source_paths": [
+          "Upper-middle quartile - average total remuneration ($)"
+        ],
+        "records": 109,
+        "source_present": 109,
+        "emitted": 109,
+        "coverage_of_records": 1.0,
+        "error_rate_of_present": 0.0,
+        "errors": {},
+        "error_examples": {},
+        "entity": "employer"
+      },
+      {
+        "target": "dyn.employer_reporting_unit.upper_quartile_average_total_remuneration",
+        "source_paths": [
+          "Upper quartile - average total remuneration ($)"
+        ],
+        "records": 109,
+        "source_present": 109,
+        "emitted": 109,
+        "coverage_of_records": 1.0,
+        "error_rate_of_present": 0.0,
+        "errors": {},
+        "error_examples": {},
+        "entity": "employer"
+      },
+      {
+        "target": "dyn.employer_reporting_unit.average_base_salary_gpg",
+        "source_paths": [
+          "Average base salary GPG (%)"
+        ],
+        "records": 109,
+        "source_present": 109,
+        "emitted": 109,
+        "coverage_of_records": 1.0,
+        "error_rate_of_present": 0.0,
+        "errors": {},
+        "error_examples": {},
+        "entity": "employer"
+      },
+      {
+        "target": "dyn.employer_reporting_unit.average_total_remuneration_gpg",
+        "source_paths": [
+          "Average total remuneration GPG (%)"
+        ],
+        "records": 109,
+        "source_present": 109,
+        "emitted": 109,
+        "coverage_of_records": 1.0,
+        "error_rate_of_present": 0.0,
+        "errors": {},
+        "error_examples": {},
+        "entity": "employer"
+      },
+      {
+        "target": "dyn.employer_reporting_unit.median_base_salary_gpg",
+        "source_paths": [
+          "Median base salary GPG (%)"
+        ],
+        "records": 109,
+        "source_present": 109,
+        "emitted": 109,
+        "coverage_of_records": 1.0,
+        "error_rate_of_present": 0.0,
+        "errors": {},
+        "error_examples": {},
+        "entity": "employer"
+      },
+      {
+        "target": "dyn.employer_reporting_unit.median_total_remuneration_gpg",
+        "source_paths": [
+          "Median total remuneration GPG (%)"
+        ],
+        "records": 109,
+        "source_present": 109,
+        "emitted": 109,
+        "coverage_of_records": 1.0,
+        "error_rate_of_present": 0.0,
+        "errors": {},
+        "error_examples": {},
+        "entity": "employer"
+      }
+    ],
+    "input_records": 109,
+    "refused_records": 0,
+    "observations": 2180,
+    "value_errors": 0,
+    "present_values": 2180,
+    "error_rate": 0.0
+  },
+  "human_review": "pending",
+  "production_promoted": false
+}

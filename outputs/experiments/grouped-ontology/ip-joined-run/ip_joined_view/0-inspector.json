@@ -1,0 +1,31 @@
+{
+  "request_sha256": "9d5880f076592bc60a840856acdb80699d0b56db043035c921514835b9502377",
+  "role": "inspector",
+  "model": "deepseek-v4-flash",
+  "seconds": 15.84,
+  "response": {
+    "reader": {
+      "format": "delimited",
+      "archive_member": null,
+      "encoding": "utf-8-sig",
+      "delimiter": ",",
+      "skip_rows": 0,
+      "sheet": null,
+      "record_path": null
+    },
+    "bindings": [],
+    "grain": "One row per party-activity record: a single party (party_activity.party_id, with party_activity.abn where supplied) in a single role (party_activity.party_role_category / party_activity.party_role) on a single IP right application (party_activity.ip_right_type + party_activity.application_number). The application-level columns (patent.application_number, patent.standard_complete, patent.status, patent.filing_date, patent.earliest_priority_date, patent.grant_date, patent.termination_date, patent.description) repeat for every party row on the same application, so a row is not one application and not one party; the same party can appear on many applications and the same application on many rows. The description table contributes at most one description per application, so it does not multiply rows.",
+    "identity_cautions": [
+      "party_activity.abn is frequently blank (e.g. foreign organisations, individuals, agents); absence of an ABN must not be read as absence of a business or as a non-Australian entity.",
+      "party_activity.party_name is free text and lower-cased; the same organisation may appear under name variants, and a personal name must not be used to infer a company legal form or an ABN.",
+      "party_activity.party_id is the party key, but party_role_category/party_role distinguish applicant, patentee, agent, opponent etc.; the same party_id can hold different roles across rows, so party_id alone does not identify a unique business relationship.",
+      "party_activity.party_type (organisation/individual) is a party classification, not a company legal form or beneficial-ownership statement.",
+      "party_activity.state_code, post_code and country_code are party address attributes; post_code values are not uniformly formatted (e.g. 'gu14 0lx' vs '2106') and country_code is not always present.",
+      "patent.status, patent.filing_date, patent.earliest_priority_date, patent.grant_date, patent.termination_date and patent.description describe the application, not the party or the business; a grant date is not a business incorporation date and a status is not a business fact.",
+      "party_activity.effective_from_date / effective_to_date / is_current describe the party-role record's validity, not the application's or the business's lifecycle.",
+      "The cohort is a patent-prefix subset, not a population sample; no population-level accuracy or completeness claim can be made.",
+      "Model-proposed joins were checked on full right tables and missing/ambiguous matches are null, so blank application-level fields may reflect an unmatched join rather than a true absence of data."
+    ],
+    "rationale": "The bytes are plain UTF-8 (BOM present, hence utf-8-sig) text with a consistent 29 commas per line across the sampled lines, so a comma-delimited reader with no skipped rows is the correct shared reader; the first line is the header. The header is a flat, prefixed set of column groups: party_activity.* (party identity, role, address, validity), patent.* (application identity, type, status, dates, description), and further prefixed groups visible in the truncated header. Sheet names are not applicable because this is a CSV, not a workbook, so no documentation sheet is involved. No nested singleton objects are present in this flat delimited file, so no bindings are proposed. Dates are ISO-8601 timestamps with a Z suffix and are contextual to the application or party-role record as noted; no percentage-encoded columns are visible in the sampled header or rows, so no percentage-storage note applies."
+  }
+}

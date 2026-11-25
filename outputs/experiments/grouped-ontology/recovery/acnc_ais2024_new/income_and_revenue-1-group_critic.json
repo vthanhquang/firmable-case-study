@@ -1,0 +1,48 @@
+{
+  "request_sha256": "03879e0d0d643be0e4fbd8c6309279caa98447f896ea46455383fa8053ea3998",
+  "role": "group_critic",
+  "model": "deepseek-v4-flash",
+  "seconds": 15.573,
+  "response": {
+    "verdict": "revise",
+    "findings": [
+      "Semantic meanings of the ten income/revenue concepts are defensible: each maps 1:1 to a distinct AIS column, owner is the charity role, and the definitions correctly separate revenue from other income and from other comprehensive income.",
+      "Reuse decision is sound: ext.financial.total_income is business-owned and does not distinguish revenue from other income, so declining reuse is correct rather than a coverage failure.",
+      "Coverage is honestly bounded: 114/140 validation rows emitted per field, with 26 abstentions per field all attributed to QUALIFIER_MISSING_PERIOD; no malformed values and no record errors. This is deliberate abstention, not an incorrect emitted value.",
+      "The period qualifier is populated from 'fin report from' only, so the emitted period is a start date, not a period. The concept requires a 'period' qualifier and the grain explicitly states figures are period-specific (start/end). A start date alone does not identify the reporting period and is semantically weaker than the declared qualifier.",
+      "The mapping declares valid_from_path and valid_to_path from 'fin report from'/'fin report to' with %d/%m/%Y, but the qualifier block only carries 'period' sourced from 'fin report from'. The end date is not represented in any qualifier, so the emitted claim cannot be reconstructed to a bounded period.",
+      "Held-out row 561 shows 'fin report from' 01/01/2024 and 'fin report to' 16/08/2024 — a non-standard, sub-annual period. Emitting only the start date would make this indistinguishable from a full calendar-year charity, which is a real semantic risk given the grain caution about non-common reporting years.",
+      "The 'period' qualifier value is null in the mapping while examples show a date string; the qualifier is populated at runtime from source_path, which is acceptable, but the concept's required_qualifiers list 'period' without specifying that it must be a bounded interval. This is a definitional gap, not a runtime error.",
+      "No legal-form, incorporation, licence or grant-amount claims are made; the concepts correctly avoid inferring company legal form from ABN or name. No population accuracy claim is made.",
+      "The fundraising_authorisation entity and HOLDS_FUNDRAISING_AUTHORISATION edge are outside this group's income scope and are not exercised by any income field; they are not a blocking issue for this group but should be reviewed by the owning group.",
+      "record_id uses content_hash with empty source_paths and empty rationale; this is an envelope concern, not a semantic income claim, and does not block this group.",
+      "observed_at uses fallback resource_last_modified; the execution contract says fallback uses retrieved_at if source modification metadata is absent. This is an envelope-level inconsistency, not a blocking semantic finding for income fields."
+    ],
+    "semantic_risks": [
+      "Emitting only the reporting-period start date as the 'period' qualifier conflates a point date with a period; a consumer comparing amounts across charities could treat a 7.5-month period (row 561) as equivalent to a 12-month period.",
+      "The 'period' qualifier is required by the concept but its definition does not state it must be a closed interval (start and end); this invites future mappings to emit a single date and still pass the qualifier check.",
+      "Zero values are emitted as reported (e.g. revenue_from_government=0, other_income=0). The concept definitions correctly warn that zero is not evidence of nil activity, but downstream consumers may still misread zeros for small charities not required to report detailed financials.",
+      "total_comprehensive_income may be negative and parse_decimal retains signs; the definition notes this, but no example in the held-out set shows a negative total_comprehensive_income, so sign handling is asserted rather than demonstrated.",
+      "The 'period' qualifier source is 'fin report from' while valid_from/valid_to are declared separately; if the runtime only populates the qualifier from the start date, the end date is lost from the emitted claim even though the mapping declares it."
+    ],
+    "checked_reuse": [
+      "ext.financial.total_income — correctly not reused: business owner, aggregate that does not separate revenue from other income, and no charity reporting period.",
+      "ext.financial.taxable_income — correctly not reused: tax concept, not gross income.",
+      "dyn.charity.other_revenue vs dyn.charity.other_income — correctly kept distinct: separate AIS columns ('all other revenue' vs 'other income').",
+      "dyn.charity.other_income vs dyn.charity.other_comprehensive_income — correctly kept distinct: different AIS lines and different accounting meaning.",
+      "dyn.charity.total_gross_income vs dyn.charity.total_revenue — correctly kept distinct: gross income includes other income, revenue does not.",
+      "dyn.charity.donations_and_bequests_revenue vs outbound 'grants and donations made' — correctly separated by direction; no reuse of an outflow concept for an inflow."
+    ],
+    "rationale": "The group's ten income/revenue concepts are semantically well-differentiated, correctly owned by the charity role, and correctly decline reuse of business-owned ext.financial.total_income. Coverage is honestly bounded (114/140 per field, 26 abstentions per field all QUALIFIER_MISSING_PERIOD) and no malformed values or record errors are reported, so the abstentions are deliberate and not incorrect emissions. The blocking issue is the period qualifier: the concept requires a 'period' qualifier, the grain states figures are period-specific with separate start/end columns, and held-out row 561 shows a non-standard 01/01/2024–16/08/2024 period. The mapping populates 'period' only from 'fin report from' (a start date) while declaring valid_from/valid_to separately, so the emitted claim does not carry a bounded period and a sub-annual period is indistinguishable from a full year. This is a mapping/ontology definitional gap that must be corrected before acceptance; the repair is to make 'period' a closed interval sourced from both 'fin report from' and 'fin report to' (or to add an explicit period_end qualifier) and to state in the concept definition that period is a bounded interval. Envelope-level issues (content_hash record_id with empty rationale, observed_at fallback naming) are noted but not blocking for this group's semantic claims. No human approval is implied by this critique.",
+    "blocking_findings": [
+      {
+        "field": "dyn.charity.total_gross_income (and all nine sibling income fields) — qualifiers.period",
+        "actual": "period qualifier sourced only from 'fin report from' (a start date), with valid_to_path 'fin report to' declared but not represented in any qualifier; concept required_qualifiers lists 'period' without defining it as a bounded interval.",
+        "expected": "period qualifier is a closed interval carrying both 'fin report from' and 'fin report to' (or an explicit period_end qualifier), and the concept definition states period is a bounded reporting interval, so a sub-annual period such as 01/01/2024–16/08/2024 is distinguishable from a full year.",
+        "evidence": "Held-out row 561 has 'fin report from' 01/01/2024 and 'fin report to' 16/08/2024 (a ~7.5-month period) while the emitted example shows qualifiers.period='01/01/2024' only; row 733 shows 01/07/2023–30/06/2024. The grain explicitly states figures are period-specific with separate start/end columns, and the concept requires a 'period' qualifier.",
+        "correction": "In the mapping, change the period qualifier to source both 'fin report from' and 'fin report to' (e.g. period_start from 'fin report from' and period_end from 'fin report to', or a single period interval value built from both), and in the ontology update dyn.charity.* income concept definitions to state that 'period' is a bounded reporting interval (start and end) rather than a single date. Re-run validation to confirm the 26 QUALIFIER_MISSING_PERIOD abstentions are re-evaluated against the bounded-interval requirement."
+      }
+    ],
+    "repair_scope": "both"
+  }
+}

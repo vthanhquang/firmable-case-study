@@ -1,0 +1,152 @@
+{
+  "request_sha256": "4336ad49cbf3512dbc7dbd0bffc0c154f3b711697acde6fd4b2eddf807e45f0d",
+  "role": "group_mapper",
+  "model": "deepseek-v4-flash",
+  "seconds": 8.769,
+  "response": {
+    "fields": [
+      {
+        "source_paths": [
+          "party_role_category"
+        ],
+        "join_with": " ",
+        "when": {
+          "source_path": "party_role_category",
+          "op": "present",
+          "values": []
+        },
+        "target": "dyn.party.role_category",
+        "valid_from_path": null,
+        "valid_to_path": null,
+        "validity_date_formats": null,
+        "claim_scope": null,
+        "steps": [
+          {
+            "op": "trim",
+            "args": {}
+          },
+          {
+            "op": "collapse_whitespace",
+            "args": {}
+          },
+          {
+            "op": "map_enum",
+            "args": {
+              "mapping": {
+                "applicant": "applicant",
+                "applicant_agent": "applicant_agent",
+                "opposition_agent": "opposition_agent",
+                "mortgagee": "mortgagee"
+              },
+              "default": "other"
+            }
+          }
+        ],
+        "confidence": 0.9,
+        "rationale": "party_role_category is the publisher's broad capacity of the party on the application; mapped to the party-owned role_category concept. The when-guard restricts emission to non-blank source values so that 'other' means a publisher category outside the enumerated subset (e.g. licensee), never a missing value; blank categories are declined rather than coerced to 'unknown'.",
+        "entity": "party",
+        "qualifiers": null,
+        "one_hot": null,
+        "claim_period": null
+      },
+      {
+        "source_paths": [
+          "party_role"
+        ],
+        "join_with": " ",
+        "when": {
+          "source_path": "party_role",
+          "op": "present",
+          "values": []
+        },
+        "target": "dyn.party.role",
+        "valid_from_path": null,
+        "valid_to_path": null,
+        "validity_date_formats": null,
+        "claim_scope": null,
+        "steps": [
+          {
+            "op": "trim",
+            "args": {}
+          },
+          {
+            "op": "collapse_whitespace",
+            "args": {}
+          },
+          {
+            "op": "map_enum",
+            "args": {
+              "mapping": {
+                "patentee": "patentee",
+                "applicant": "applicant",
+                "agent": "agent",
+                "opponent_agent": "opponent_agent"
+              },
+              "default": "other"
+            }
+          }
+        ],
+        "confidence": 0.9,
+        "rationale": "party_role is the specific role label, a distinct dimension from party_role_category; kept separate so applicant/patentee/agent are not collapsed and an agent row is not read as ownership. The when-guard restricts emission to non-blank source values so 'other' denotes a publisher role label outside the enumerated subset, not a missing value; blank roles are declined rather than coerced to 'unknown'.",
+        "entity": "party",
+        "qualifiers": null,
+        "one_hot": null,
+        "claim_period": null
+      }
+    ],
+    "unmapped": [
+      {
+        "source_path": "abn",
+        "reason": "Outside this group (party identity/identifier columns); not owned by the party_role_on_application group and not needed as a qualifier for role claims."
+      },
+      {
+        "source_path": "application_number",
+        "reason": "Outside this group (IP application identity); used only as key context for the ip_application role, not a value of this group."
+      },
+      {
+        "source_path": "country_code",
+        "reason": "Outside this group (party address); not a role value and not a qualifier of the role claim."
+      },
+      {
+        "source_path": "effective_from_date",
+        "reason": "Outside this group (party-activity validity); not consumed here because the role claim is not dated by this group's mapping."
+      },
+      {
+        "source_path": "effective_to_date",
+        "reason": "Outside this group (party-activity validity); not consumed here because the role claim is not dated by this group's mapping."
+      },
+      {
+        "source_path": "ip_right_type",
+        "reason": "Outside this group (IP application identity/right type); used only as key context for the ip_application role, not a role value."
+      },
+      {
+        "source_path": "is_current",
+        "reason": "Outside this group (party record currency flag); refers to the party record, not to the role claim, so not used as a guard here."
+      },
+      {
+        "source_path": "is_founding",
+        "reason": "Outside this group (party attribute flag); not evidence of incorporation and not a role value."
+      },
+      {
+        "source_path": "party_id",
+        "reason": "Outside this group (party identity key); used only as key context for the party role, not a role value."
+      },
+      {
+        "source_path": "party_name",
+        "reason": "Outside this group (party label); not a role value and not a qualifier of the role claim."
+      },
+      {
+        "source_path": "party_type",
+        "reason": "Outside this group (party kind classification); not a role value and not a qualifier of the role claim."
+      },
+      {
+        "source_path": "post_code",
+        "reason": "Outside this group (party address); not a role value and not a qualifier of the role claim."
+      },
+      {
+        "source_path": "state_code",
+        "reason": "Outside this group (party address); not a role value and not a qualifier of the role claim."
+      }
+    ]
+  }
+}

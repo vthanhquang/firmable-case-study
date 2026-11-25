@@ -1,0 +1,105 @@
+{
+  "concepts": [
+    {
+      "path": "dyn.party_activity.role_category",
+      "type": "enum",
+      "owner": "party_activity",
+      "definition": "Publisher's broad category of the role the party holds on the IP right application record (party_activity.party_role_category), e.g. applicant, applicant_agent, opposition, mortgagee. Describes the party-role record only; it does not imply ownership, beneficial interest or enforceability of the application.",
+      "values": [
+        "applicant",
+        "applicant_agent",
+        "opposition",
+        "mortgagee"
+      ],
+      "multi": false,
+      "required_qualifiers": [],
+      "source_paths": [
+        "party_activity.party_role_category"
+      ],
+      "why_not_existing": "No shortlisted concept covers an IP-office party-role category; ext.licence.category and ext.licence.status are owned by licence and describe an authorisation, not a party's role on an application, so reuse would change owner and meaning.",
+      "personal_data": "never"
+    },
+    {
+      "path": "dyn.party_activity.role",
+      "type": "enum",
+      "owner": "party_activity",
+      "definition": "Publisher's specific role the party holds on the IP right application record (party_activity.party_role), e.g. applicant, patentee, agent, opponent. A finer-grained companion to the role category; it describes the party-role record, not the application or the business lifecycle.",
+      "values": [
+        "applicant",
+        "patentee",
+        "agent",
+        "opponent"
+      ],
+      "multi": false,
+      "required_qualifiers": [],
+      "source_paths": [
+        "party_activity.party_role"
+      ],
+      "why_not_existing": "No shortlisted concept expresses a party's specific role on an IP application; ext.licence.category is a licence category owned by licence, so reuse would change owner and meaning.",
+      "personal_data": "never"
+    },
+    {
+      "path": "dyn.party_activity.is_founding",
+      "type": "enum",
+      "owner": "party_activity",
+      "definition": "Publisher's flag on the party-role record stating whether the party is recorded as founding (party_activity.is_founding, true/false). It is a party-role attribute and must not be read as a business establishment date or as evidence of incorporation.",
+      "values": [
+        "true",
+        "false"
+      ],
+      "multi": false,
+      "required_qualifiers": [],
+      "source_paths": [
+        "party_activity.is_founding"
+      ],
+      "why_not_existing": "ext.entity.date_established is a business establishment date owned by business; a boolean founding flag on a party-role record has a different owner, type and meaning, so reuse would change meaning.",
+      "personal_data": "never"
+    },
+    {
+      "path": "dyn.party_activity.is_current",
+      "type": "enum",
+      "owner": "party_activity",
+      "definition": "Publisher's flag stating whether the party-role record is currently valid (party_activity.is_current, true/false). It describes the validity of the party-role association, not the application's status or the business's lifecycle.",
+      "values": [
+        "true",
+        "false"
+      ],
+      "multi": false,
+      "required_qualifiers": [],
+      "source_paths": [
+        "party_activity.is_current"
+      ],
+      "why_not_existing": "ext.licence.status is a licence status owned by licence; a boolean currency flag on a party-role record has a different owner, type and meaning, so reuse would change meaning.",
+      "personal_data": "never"
+    },
+    {
+      "path": "dyn.party_activity.effective_from_date",
+      "type": "date",
+      "owner": "party_activity",
+      "definition": "Publisher-stated start of the validity window of the party-role record (party_activity.effective_from_date). It is the commencement of the party's role association on the application, not the application filing/priority date and not the business establishment date.",
+      "values": [],
+      "multi": false,
+      "required_qualifiers": [],
+      "source_paths": [
+        "party_activity.effective_from_date"
+      ],
+      "why_not_existing": "ext.licence.start_date is owned by licence and ext.entity.date_established is owned by business; neither covers the validity start of a party-role association, so reuse would change owner and meaning.",
+      "personal_data": "never"
+    },
+    {
+      "path": "dyn.party_activity.effective_to_date",
+      "type": "date",
+      "owner": "party_activity",
+      "definition": "Publisher-stated end of the validity window of the party-role record (party_activity.effective_to_date), frequently blank when the role is open-ended. It is the end of the party's role association on the application, not the application termination date and not the end of the business.",
+      "values": [],
+      "multi": false,
+      "required_qualifiers": [],
+      "source_paths": [
+        "party_activity.effective_to_date"
+      ],
+      "why_not_existing": "ext.licence.end_date is owned by licence and describes a licence's end; the end of a party-role association has a different owner and meaning, so reuse would change meaning.",
+      "personal_data": "never"
+    }
+  ],
+  "reuse": {}
+}

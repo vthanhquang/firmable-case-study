@@ -1,0 +1,31 @@
+{
+  "request_sha256": "c83eed221b3ce9896471768917ddba0fe2eb673b072247ca919cbbe50c3e5c0f",
+  "role": "group_critic",
+  "model": "deepseek-v4-flash",
+  "seconds": 14.586,
+  "response": {
+    "verdict": "accept",
+    "findings": [
+      "All three emitted concepts are party-owned address fields with raw, unnormalised values; the mapping applies only trim and null_if, so emitted values match the source strings in the held-out examples (e.g. 'wa'/'6014'/'au' at ordinal 39, '94065'/'us' at ordinal 375).",
+      "Validation shows 0.0 error rate of present values for all three fields (37/37, 70/70, 102/102), with coverage of records 0.308, 0.583 and 0.85 respectively; the low state_code coverage reflects genuine source sparsity, not a mapping defect.",
+      "The proposal correctly declines to reuse business-subject address.state/postcode/country, because owner (party vs business) and value domain (unnormalised mixed-format party address vs normalised business address) both differ; the why_not_existing rationales are accurate.",
+      "Definitions explicitly disclaim legal-jurisdiction, incorporation-place, nationality and legal-form readings of country_code/state_code, consistent with the source notes and identity cautions.",
+      "The 12 unmapped source paths are all outside this group's scope and are marked as reconciled in the final source mapping; this is honest partial coverage, not a missing-value defect.",
+      "The quality gate reports 0 malformed values and 0 abstentions, with 209 emitted observations; the technical gate passes and no semantic error is evidenced in the held-out examples."
+    ],
+    "semantic_risks": [
+      "post_code values include non-Australian and alphanumeric formats (e.g. '91320-1799', 't6b 3n9'); consumers must not parse these as Australian postcodes or use them for geographic joins without normalisation.",
+      "country_code is an address field only; downstream use must not treat it as the party's legal jurisdiction, nationality or legal form, and must not infer company status from it.",
+      "state_code is sparse (0.308 coverage of records) and lower-cased; absence of a state code must not be read as absence of an address or as a non-Australian party.",
+      "The cohort is a 25,000-record prefix, so no population-level or full-archive claims about party address distributions are supported."
+    ],
+    "checked_reuse": [
+      "dyn.party.address_state_code vs business address.state: rejected reuse — different owner and normalised enum vs raw unnormalised code.",
+      "dyn.party.address_post_code vs business address.postcode: rejected reuse — different owner and mixed-format raw text vs normalised business postcode.",
+      "dyn.party.address_country_code vs business address.country: rejected reuse — different owner and party address code vs business's own address country."
+    ],
+    "rationale": "The group's three emitted concepts are semantically defensible: they are party-owned, raw, unnormalised address fields, correctly distinguished from the business subject's normalised address concepts, and their definitions explicitly disclaim legal-jurisdiction and legal-form readings. Held-out validation shows zero errors of present values across all three fields, and the observed coverage gaps are explained by genuine source sparsity rather than mapping defects. The unmapped paths are honestly scoped out to the final source mapping. No blocking semantic or provenance defect is evidenced, so the group is accepted with the noted semantic risks for downstream consumers.",
+    "blocking_findings": [],
+    "repair_scope": "none"
+  }
+}

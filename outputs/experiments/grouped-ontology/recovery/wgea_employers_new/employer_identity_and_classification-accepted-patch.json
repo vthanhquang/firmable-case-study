@@ -1,0 +1,98 @@
+{
+  "concepts": [
+    {
+      "path": "dyn.employer_reporting_unit.size_band",
+      "type": "enum",
+      "owner": "employer_reporting_unit",
+      "definition": "The employer size range band reported for the WGEA submission, expressed as an employee-count band such as '<250', '250-499' or '5000+'. The band set is publisher-defined and open-ended at the top; it is a band, not an exact headcount.",
+      "values": [
+        "<250",
+        "250-499",
+        "500-999",
+        "1000-4999",
+        "5000+"
+      ],
+      "multi": false,
+      "required_qualifiers": [],
+      "source_paths": [
+        "Employer size range (# employees)"
+      ],
+      "why_not_existing": "No shortlisted concept represents an employer headcount band; ext.financial.revenue_band is a revenue band under a named scheme and is not an employee-count band, so reuse would change meaning.",
+      "personal_data": "never"
+    },
+    {
+      "path": "dyn.employer_reporting_unit.anzsic_division",
+      "type": "string",
+      "owner": "employer_reporting_unit",
+      "definition": "The ANZSIC division name the employer reporting unit reported for its WGEA submission, e.g. 'Transport, Postal and Warehousing'. It is the publisher's division label, not a coded ANZSIC value.",
+      "values": [],
+      "multi": false,
+      "required_qualifiers": [],
+      "source_paths": [
+        "Industry (ANZSIC Division)"
+      ],
+      "why_not_existing": "ext.entity.industry_code expects a coded ANZSIC value (division letter, subdivision, group or class) and is owned by business; entity.industry_code likewise expects a coded ANZSIC value for the business. This column holds a division name label for the reporting unit, so type, meaning and owner differ from both.",
+      "personal_data": "never"
+    },
+    {
+      "path": "dyn.employer_reporting_unit.anzsic_class",
+      "type": "string",
+      "owner": "employer_reporting_unit",
+      "definition": "The ANZSIC class name the employer reporting unit reported for its WGEA submission, e.g. 'Computer System Design and Related Services'. It is the publisher's class label, not a coded ANZSIC class number.",
+      "values": [],
+      "multi": false,
+      "required_qualifiers": [],
+      "source_paths": [
+        "Industry (ANZSIC Class)"
+      ],
+      "why_not_existing": "ext.entity.industry_code expects a coded ANZSIC value and is owned by business; entity.industry_code likewise expects a coded ANZSIC value for the business. This column holds a class name label for the reporting unit, so type, meaning and owner differ from both.",
+      "personal_data": "never"
+    },
+    {
+      "path": "dyn.employer_reporting_unit.reporting_name",
+      "type": "string",
+      "owner": "employer_reporting_unit",
+      "definition": "The employer name as stated by the employer reporting unit in its WGEA Gender Equality Reporting submission for the reporting year. This is the reporting label, not a verified legal name or trading name, and is not a unique identifier.",
+      "values": [],
+      "multi": false,
+      "required_qualifiers": [],
+      "source_paths": [
+        "Employer name"
+      ],
+      "why_not_existing": "entity.legal_name and entity.trading_name are owned by business and assert a legal/trading status this source does not establish; the value here is a reporting-unit label for a WGEA submission, so owner and meaning differ.",
+      "personal_data": "never"
+    },
+    {
+      "path": "dyn.employer_reporting_unit.reporting_abn",
+      "type": "string",
+      "owner": "employer_reporting_unit",
+      "definition": "The ABN the employer reporting unit used to identify itself in its WGEA Gender Equality Reporting submission. It is a reporting identifier for the reporting unit and does not by itself establish legal form or company-wide scope.",
+      "values": [],
+      "multi": false,
+      "required_qualifiers": [],
+      "source_paths": [
+        "Employer ABN"
+      ],
+      "why_not_existing": "entity.abn is owned by business and asserts the ABN of the business legal person; here the ABN is the reporting unit's submission identifier, so owner and scope differ even though the value format is the same.",
+      "personal_data": "never"
+    },
+    {
+      "path": "dyn.employer_reporting_unit.sector",
+      "type": "enum",
+      "owner": "employer_reporting_unit",
+      "definition": "The sector classification the employer reporting unit reported for its WGEA submission, distinguishing private from public sector employers. It is a reporting classification, not a legal form.",
+      "values": [
+        "Private",
+        "Public"
+      ],
+      "multi": false,
+      "required_qualifiers": [],
+      "source_paths": [
+        "Sector"
+      ],
+      "why_not_existing": "ext.entity.sector_tag is a source-stated activity/beneficiary tag requiring a scheme qualifier and is owned by business; this is a WGEA private/public sector classification of the reporting unit, so meaning and owner differ.",
+      "personal_data": "never"
+    }
+  ],
+  "reuse": {}
+}

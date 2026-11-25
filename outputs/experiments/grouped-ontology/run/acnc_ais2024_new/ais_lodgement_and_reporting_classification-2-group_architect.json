@@ -1,0 +1,40 @@
+{
+  "request_sha256": "80cd0df0ae54164bcf43fbafbc5c335d1f1bac4792baf53dd220a2155c658d61",
+  "role": "group_architect",
+  "model": "deepseek-v4-flash",
+  "seconds": 5.98,
+  "response": {
+    "concepts": [
+      {
+        "path": "dyn.charity.report_modification_type",
+        "type": "enum",
+        "owner": "charity",
+        "definition": "The type of audit or review modification recorded against the charity's lodged financial report for the reporting period, such as a qualified opinion or a disclaimer of opinion. Only populated where a modification is flagged.",
+        "values": [
+          "Qualified/qualification",
+          "Disclaimed/disclaimer"
+        ],
+        "multi": false,
+        "required_qualifiers": [],
+        "source_paths": [
+          "type of report modification"
+        ],
+        "why_not_existing": "No shortlisted concept describes report modification types; it is a charity-owned regulatory reporting attribute distinct from registration status, financial statement type and the y/n modification flag. Values are limited to those evidenced in the column examples.",
+        "personal_data": "never"
+      }
+    ],
+    "reuse": {
+      "dyn.charity.ais_due_date": "Reused: ACNC-published AIS lodgement deadline, charity-owned, date type, no qualifiers needed; distinct from licence and business registration dates.",
+      "dyn.charity.ais_received_date": "Reused: AIS receipt date is a distinct regulatory lodgement event from financial report receipt and business registration.",
+      "dyn.charity.size_band": "Reused: ACNC Small/Medium/Large reporting classification owned by charity; not ext.financial.revenue_band (business-owned revenue band).",
+      "dyn.charity.financial_report_period_start": "Reused: start of the charity's own reporting period; not ext.entity.financial_year_end (dd-Mon cycle marker).",
+      "dyn.charity.financial_report_period_end": "Reused: end of the charity's own reporting period; not ext.entity.financial_year_end.",
+      "dyn.charity.financial_report_received_date": "Reused: financial report receipt date, distinct from AIS receipt date.",
+      "dyn.charity.financial_statement_type": "Reused: accounting framework of the lodged statement; not legal form or entity type.",
+      "dyn.charity.report_modified": "Reused: y/n modification flag, a different ACNC attribute from registration status and basic religious charity.",
+      "dyn.charity.report_consolidated": "Reused: report consolidation scope flag; must not be read as a group-structure or control claim.",
+      "dyn.charity.coop_financial_report_submitted": "Reused: submission flag to a cooperative regulator; not evidence of cooperative legal form.",
+      "dyn.charity.accounting_basis": "Reused: Cash/Accrual reporting basis; distinct from financial statement type."
+    }
+  }
+}

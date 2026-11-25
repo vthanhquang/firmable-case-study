@@ -1,0 +1,58 @@
+{
+  "concepts": [
+    {
+      "path": "dyn.party.address_country",
+      "type": "string",
+      "owner": "party",
+      "definition": "Country component of the address recorded for the party on the IP right application record (party_activity.country_code), as published and lower-cased (e.g. 'au', 'us', 'cn'). It is frequently blank, and a blank must not be read as an Australian address or as absence of a country. It is a party-record address attribute, not a statement of the party's place of incorporation or of the business's registered office.",
+      "values": [],
+      "multi": false,
+      "required_qualifiers": [],
+      "source_paths": [
+        "party_activity.country_code"
+      ],
+      "why_not_existing": "address.country is owned by business and describes the business's own stated address; this value is an unverified, often-missing address attribute of an IP-office party record, so reuse would change owner and meaning.",
+      "personal_data": "never"
+    },
+    {
+      "path": "dyn.party.address_state",
+      "type": "string",
+      "owner": "party",
+      "definition": "State or province component of the address recorded for the party on the IP right application record (party_activity.state_code), as published and lower-cased (e.g. 'nsw', 'vic'). Values are not restricted to Australian states and are frequently blank; it is a party-record address attribute, not a business operating region or a statement of incorporation.",
+      "values": [],
+      "multi": false,
+      "required_qualifiers": [],
+      "source_paths": [
+        "party_activity.state_code"
+      ],
+      "why_not_existing": "address.state is owned by business, is an enum of Australian/NZ/OTHER codes and describes the business's own address; this raw, lower-cased, non-Australian-only party-record value has a different owner and scope, so reuse would change meaning.",
+      "personal_data": "never"
+    },
+    {
+      "path": "dyn.party.address_postcode",
+      "type": "string",
+      "owner": "party",
+      "definition": "Post code component of the address recorded for the party on the IP right application record (party_activity.post_code), kept as the raw published string because formats are not uniform (e.g. '2106' vs 'gu14 0lx'). It is a party-record address attribute and is not normalised to an Australian postcode.",
+      "values": [],
+      "multi": false,
+      "required_qualifiers": [],
+      "source_paths": [
+        "party_activity.post_code"
+      ],
+      "why_not_existing": "address.postcode is owned by business and describes the business's own address; this unnormalised, mixed-format party-record value has a different owner and no guaranteed Australian scope, so reuse would change meaning.",
+      "personal_data": "never"
+    }
+  ],
+  "reuse": {
+    "dyn.party.party_key": "Party key on the same party-role record; unchanged.",
+    "dyn.party.party_name": "Party name on the same party-role record; unchanged.",
+    "dyn.party.party_kind": "Party organisation/individual classification; unchanged.",
+    "dyn.party.abn_supplied": "ABN as supplied on the party record; unchanged.",
+    "dyn.party_activity.role": "Specific party role; unchanged.",
+    "dyn.party_activity.role_category": "Broad party role category; unchanged.",
+    "dyn.party_activity.effective_from_date": "Party-role validity start; unchanged.",
+    "dyn.party_activity.effective_to_date": "Party-role validity end; unchanged.",
+    "dyn.party_activity.is_current": "Party-role currency flag; unchanged.",
+    "dyn.party_activity.is_founding": "Party-role founding flag; unchanged."
+  }
+}

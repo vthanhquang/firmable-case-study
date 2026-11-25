@@ -1,0 +1,36 @@
+{
+  "request_sha256": "1d219d21d9da01243f1e2aad56c0ebae0170f0caf49d1b9cb867585c44279356",
+  "role": "group_critic",
+  "model": "deepseek-v4-flash",
+  "seconds": 12.613,
+  "response": {
+    "verdict": "accept",
+    "findings": [
+      "Both emitted concepts are owned by ip_application, which matches the group's purpose (identifying the IP application a party-role episode attaches to); neither concept is attributed to the business subject or the party.",
+      "dyn.ip_application.right_type is correctly scoped to the application and explicitly disclaims being a statement about the party or company; the enum values are a reasonable closed set with an 'unknown' fallback for unlisted publisher values rather than a guess.",
+      "dyn.ip_application.number carries the required right_type qualifier sourced from ip_right_type, matching the stated identity caution that application_number is only unique within a right type; the qualifier value is produced by the same trim+map_enum pipeline as the right_type field, so the qualifier and the field stay consistent.",
+      "The number concept is explicitly not mapped to entity.acn or ext.licence.number, and the definition states it is not a company registration number; this respects the caution against inferring legal form or registration from application numbers.",
+      "Held-out validation evidence shows 120/120 source-present and 120/120 emitted for both fields with 0.0 error rate of present and no malformed values; the two held-out examples (ordinal 39 patent/2015358292, ordinal 375 patent/2025201245) are consistent with the emitted values and qualifiers.",
+      "The entity key for ip_application is the pair (ip_right_type, application_number), which matches the group's stated grain and the caution that neither column alone is a key; the party key uses party_id only, correctly avoiding abn and party_name as keys.",
+      "The PARTY_INVOLVED_IN_APPLICATION edge is declared between party and ip_application roles, both of which are declared in entities; the role and effective dates are described as qualifiers of the involvement rather than as changing the entities, which is consistent with the execution contract.",
+      "The unmapped list covers all 13 non-group source columns with an explicit 'outside this group' reason, which is honest bounded partial coverage for a group whose purpose is application identity only; this is not a missing-context abstention and does not require invented fallback values.",
+      "The grain and identity_cautions correctly state the cohort is a 25,000-record prefix, not the full archive, and make no population-level claims; the quality note also disclaims semantic truth and useful coverage.",
+      "The observed_at fallback to resource_last_modified is described in the execution contract as observation-at-retrieval rather than a publisher-stated update, which is consistent with the contract's time semantics."
+    ],
+    "semantic_risks": [
+      "The map_enum mapping includes 'trade mark', 'trade_mark', 'trademark', 'designs', 'plant breeder right', 'plant_breeder_right' and 'pbr' as aliases; if the publisher uses a different spelling or a value not in the alias set, it will silently fall to 'unknown'. This is a defensible conservative fallback but reduces the informativeness of right_type for unlisted values.",
+      "The right_type enum includes 'other' but no mapping rule produces it; only 'unknown' is reachable via the default. This is a minor ontology/mapping mismatch that does not affect emitted correctness but could mislead a reader into expecting an 'other' bucket.",
+      "The number field's null_if treats 'n/a' and 'na' as null; if a legitimate application number could ever be the literal string 'na' this would be a false null, but application numbers are numeric strings in the held-out examples, so the risk is low.",
+      "The record_id strategy is content_hash with empty source_paths and empty rationale; the execution contract states the experiment uses a content hash regardless of the proposed strategy, so this is not a blocking defect, but the empty rationale is a documentation gap.",
+      "The party role is declared with key_paths ['party_id'] only; if party_id is ever empty in a row, the party role would have an empty key and the edge would not emit, which is consistent with the contract's 'edges emit only if both roles have emitted claims' but means some party involvements may be silently dropped rather than flagged."
+    ],
+    "checked_reuse": [
+      "dyn.ip_application.right_type: checked against ext.licence.* (licence held by a business, not an application's right type) and entity.entity_type (business subject, not application) — no reuse, new concept justified.",
+      "dyn.ip_application.number: checked against ext.licence.number (licence identifier, not IP application identifier) and entity.acn (company registration, explicitly disclaimed) — no reuse, new concept justified.",
+      "No reuse entries were proposed, and the shortlist appears to contain no concept owned by ip_application, so the absence of reuse is consistent with the stated why_not_existing rationales."
+    ],
+    "rationale": "The group's two emitted concepts are semantically correct for their stated purpose: both are owned by ip_application, right_type is scoped to the application and disclaims party/company meaning, and number carries the required right_type qualifier that matches the publisher's scoping rule. Held-out validation shows full coverage of present values with zero error rate and examples consistent with the emitted values and qualifiers. The entity keys match the stated grain, the edge is declared between declared roles, and the unmapped list honestly bounds coverage to this group's scope without inventing fallback dates or legal claims. The remaining issues are minor documentation and enum-alias risks (unreachable 'other' value, empty record_id rationale, possible silent 'unknown' fallback for unlisted right types) that do not rise to blocking semantic errors. No blocking findings are raised, so the verdict is accept with repair_scope none.",
+    "blocking_findings": [],
+    "repair_scope": "none"
+  }
+}

@@ -1,0 +1,194 @@
+{
+  "quality": {
+    "present_values": 610,
+    "emitted_observations": 560,
+    "withheld_missing_context": 0,
+    "abstention_reasons": {},
+    "malformed_values": 50,
+    "malformed_reasons": {
+      "INVALID_ENUM_VALUE_INVALID": 50
+    },
+    "eligible_present_values": 610,
+    "malformed_rate": 0.08196721311475409,
+    "abstention_rate": 0.0,
+    "record_errors": {},
+    "passes_technical_gate": false,
+    "semantic_precision": null,
+    "note": "Missing required context remains withheld. This gate does not establish semantic truth or useful coverage."
+  },
+  "raw_validation": {
+    "records_in": 110,
+    "records_with_output": 109,
+    "record_errors": {},
+    "fields": [
+      {
+        "target": "dyn.ip_application.status",
+        "source_paths": [
+          "application.status"
+        ],
+        "records": 110,
+        "source_present": 110,
+        "emitted": 60,
+        "coverage_of_records": 0.545,
+        "error_rate_of_present": 0.455,
+        "errors": {
+          "INVALID_ENUM_VALUE_INVALID": 50
+        },
+        "error_examples": {
+          "INVALID_ENUM_VALUE_INVALID": [
+            "unknown",
+            "withdrawn",
+            "unknown",
+            "expired"
+          ]
+        },
+        "entity": "ip_application"
+      },
+      {
+        "target": "dyn.ip_application.application_date",
+        "source_paths": [
+          "application.application_date"
+        ],
+        "records": 110,
+        "source_present": 109,
+        "emitted": 109,
+        "coverage_of_records": 0.991,
+        "error_rate_of_present": 0.0,
+        "errors": {},
+        "error_examples": {},
+        "entity": "ip_application"
+      },
+      {
+        "target": "dyn.ip_application.earliest_filed_date",
+        "source_paths": [
+          "application.earliest_filed_date"
+        ],
+        "records": 110,
+        "source_present": 109,
+        "emitted": 109,
+        "coverage_of_records": 0.991,
+        "error_rate_of_present": 0.0,
+        "errors": {},
+        "error_examples": {},
+        "entity": "ip_application"
+      },
+      {
+        "target": "dyn.ip_application.priority_date",
+        "source_paths": [
+          "application.priority_date"
+        ],
+        "records": 110,
+        "source_present": 109,
+        "emitted": 109,
+        "coverage_of_records": 0.991,
+        "error_rate_of_present": 0.0,
+        "errors": {},
+        "error_examples": {},
+        "entity": "ip_application"
+      },
+      {
+        "target": "dyn.ip_application.registration_status_date",
+        "source_paths": [
+          "application.gained_registration_status_date"
+        ],
+        "records": 110,
+        "source_present": 55,
+        "emitted": 55,
+        "coverage_of_records": 0.5,
+        "error_rate_of_present": 0.0,
+        "errors": {},
+        "error_examples": {},
+        "entity": "ip_application"
+      },
+      {
+        "target": "dyn.ip_application.enforceable_status_date",
+        "source_paths": [
+          "application.gained_enforceable_status_date"
+        ],
+        "records": 110,
+        "source_present": 53,
+        "emitted": 53,
+        "coverage_of_records": 0.482,
+        "error_rate_of_present": 0.0,
+        "errors": {},
+        "error_examples": {},
+        "entity": "ip_application"
+      },
+      {
+        "target": "dyn.ip_application.enforceable_from_date",
+        "source_paths": [
+          "application.enforceable_from_date"
+        ],
+        "records": 110,
+        "source_present": 0,
+        "emitted": 0,
+        "coverage_of_records": 0.0,
+        "error_rate_of_present": 0.0,
+        "errors": {},
+        "error_examples": {},
+        "entity": "ip_application"
+      },
+      {
+        "target": "dyn.ip_application.deemed_retired_date",
+        "source_paths": [
+          "application.deemed_retired_date"
+        ],
+        "records": 110,
+        "source_present": 65,
+        "emitted": 65,
+        "coverage_of_records": 0.591,
+        "error_rate_of_present": 0.0,
+        "errors": {},
+        "error_examples": {},
+        "entity": "ip_application"
+      }
+    ],
+    "relationships": {
+      "APPLICATION_HAS_DESCRIPTION": 109
+    },
+    "input_records": 110,
+    "refused_records": 1,
+    "observations": 560,
+    "value_errors": 50,
+    "present_values": 610,
+    "error_rate": 0.08196721311475409
+  },
+  "critic": {
+    "verdict": "revise",
+    "findings": [
+      "Application-level dates (application_date, earliest_filed_date, priority_date, registration_status_date, enforceable_status_date, deemed_retired_date) map cleanly to ip_application-owned concepts with 0.0 error rate on present values; meanings are correctly scoped to the application, not the party or business.",
+      "enforceable_from_date is entirely empty in the snapshot (0 of 110 present); the concept is defined for schema completeness only and no value is asserted, which is honest abstention rather than an incorrect emission.",
+      "registration_status_date and enforceable_status_date are frequently blank (55 and 53 of 110 present) and the definitions correctly note that blanks may reflect non-occurrence or an unmatched join; no fallback dates are invented.",
+      "The status enum is the only failing field: 50 of 110 present values are rejected as INVALID_ENUM_VALUE_INVALID with examples 'unknown', 'withdrawn', 'expired'. The mapping uses map_enum with passthrough=true, but the concept declares a closed four-value enum (filed, accepted, granted, lapsed), so passthrough values outside the enum are rejected by the technical gate.",
+      "The concept definition itself acknowledges the value list is not the publisher's complete vocabulary, yet the enum is closed; this is an internal inconsistency between the declared enum and the passthrough mapping.",
+      "The technical gate fails (passes_technical_gate=false, malformed_rate 0.082) solely because of the status enum; all other fields pass.",
+      "Grain is correctly stated as one row per party-activity record with application-level columns repeating; the mapping does not claim a row is one application or one party.",
+      "No population accuracy or completeness claim is made; the cohort is correctly described as a patent-prefix subset."
+    ],
+    "semantic_risks": [
+      "If the status enum is widened to include 'unknown', 'withdrawn', 'expired' and other observed values, the concept must not imply these are the publisher's complete vocabulary; the definition should state the list is cohort-observed and open-ended.",
+      "A 'withdrawn' or 'expired' status is an application lifecycle state, not a business or licence state; the definition already guards this, but the enum values must not be reused for ext.licence.status.",
+      "registration_status_date and enforceable_status_date are application milestones; they must not be read as business registration or current enforceability, which the definitions correctly exclude.",
+      "deemed_retired_date is an application date, not the end of a business, licence or party-role association; the definition correctly excludes these."
+    ],
+    "checked_reuse": [
+      "dyn.ip_application.status vs ext.licence.status: different owner (ip_application vs licence) and meaning (application lifecycle vs authorisation held by a business); new concept justified.",
+      "dyn.ip_application.application_date vs ext.licence.start_date and ext.entity.date_established: different owner and meaning; new concept justified.",
+      "dyn.ip_application.earliest_filed_date, priority_date, enforceable_status_date, enforceable_from_date: no shortlisted concept covers these application-level dates; new concepts justified.",
+      "dyn.ip_application.registration_status_date vs ext.entity.date_established and ext.entity.prior_registration_state: business-owned registration history differs from application registration milestone; new concept justified.",
+      "dyn.ip_application.deemed_retired_date vs ext.licence.end_date and dyn.party_activity.effective_to_date: different owner and meaning; new concept justified.",
+      "Reuse of dyn.ip_application.application_number, ip_right_type, ip_right_sub_type: same owner and meaning; reuse accepted."
+    ],
+    "rationale": "The group's application-level date concepts are semantically defensible: each is owned by ip_application, explicitly excludes business/party/licence meaning, and the date mappings show 0.0 error rate on present values. Blank fields are honestly withheld rather than filled with invented fallback dates, and the entirely empty enforceable_from_date is declared for schema completeness only. The single blocking defect is the status field: the concept declares a closed four-value enum while the mapping passes through unlisted publisher values, causing 50 of 110 present values to be rejected and the technical gate to fail. This is a mapping/ontology mismatch that must be corrected before acceptance. Because a blocking finding exists, the verdict is revise, not accept.",
+    "blocking_findings": [
+      {
+        "field": "dyn.ip_application.status",
+        "actual": "Closed enum with values [filed, accepted, granted, lapsed] and map_enum passthrough=true; 50 of 110 present values rejected as INVALID_ENUM_VALUE_INVALID (examples: 'unknown', 'withdrawn', 'expired').",
+        "expected": "Status concept and mapping that accept the publisher's observed status values without rejecting them, with the definition stating the value list is cohort-observed and not the publisher's complete vocabulary.",
+        "evidence": "validation_fields for dyn.ip_application.status: source_present 110, emitted 60, error_rate_of_present 0.455, errors INVALID_ENUM_VALUE_INVALID 50, error_examples ['unknown','withdrawn','unknown','expired']; quality.passes_technical_gate=false, malformed_rate 0.082.",
+        "correction": "Either (a) widen dyn.ip_application.status values to include the observed publisher values (at minimum 'unknown', 'withdrawn', 'expired', plus any other observed statuses) and keep passthrough=true, updating the definition to state the list is cohort-observed and open-ended; or (b) change the concept type from closed enum to a string/status code with the observed values documented as examples, so passthrough values are not rejected. Re-run validation and confirm error_rate_of_present for dyn.ip_application.status is 0.0 and passes_technical_gate is true."
+      }
+    ],
+    "repair_scope": "both"
+  }
+}

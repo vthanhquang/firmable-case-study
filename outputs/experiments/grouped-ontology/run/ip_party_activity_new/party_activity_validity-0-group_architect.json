@@ -1,0 +1,94 @@
+{
+  "request_sha256": "b797be3c661c0dc86f73901ca56155724bf05cd996e526d9d344b28f3e71254e",
+  "role": "group_architect",
+  "model": "deepseek-v4-flash",
+  "seconds": 8.795,
+  "response": {
+    "concepts": [
+      {
+        "path": "dyn.party.activity_effective_from",
+        "type": "datetime",
+        "owner": "party",
+        "definition": "Start of the validity period of a party's recorded role episode on a specific IP application, as published (ISO-8601 timestamp with Z suffix). It is a party-activity validity date only: it is not a company incorporation or founding date, not an IP right grant or expiry date, and not evidence that the right is enforceable. It must be read with the party, application and role it qualifies.",
+        "values": [],
+        "multi": false,
+        "required_qualifiers": [
+          "party_id",
+          "ip_right_type",
+          "application_number",
+          "party_role"
+        ],
+        "source_paths": [
+          "effective_from_date"
+        ],
+        "why_not_existing": "ext.entity.date_established is a business founding date owned by the business subject; ext.licence.start_date is a licence commencement owned by a licence. Neither is owned by an IP-application party nor scoped to a party-role episode, so reuse would change owner, meaning and temporal scope.",
+        "personal_data": "never"
+      },
+      {
+        "path": "dyn.party.activity_effective_to",
+        "type": "datetime",
+        "owner": "party",
+        "definition": "End of the validity period of a party's recorded role episode on a specific IP application, as published (ISO-8601 timestamp with Z suffix); blank where the episode is open-ended. It is a party-activity validity date only: it is not a company dissolution date, not an IP right expiry date, and not evidence that the right is no longer enforceable.",
+        "values": [],
+        "multi": false,
+        "required_qualifiers": [
+          "party_id",
+          "ip_right_type",
+          "application_number",
+          "party_role"
+        ],
+        "source_paths": [
+          "effective_to_date"
+        ],
+        "why_not_existing": "ext.licence.end_date is the publisher-stated end of a licence owned by the licence entity; this value ends a party-role episode on an IP application, so owner, meaning and temporal scope all differ.",
+        "personal_data": "never"
+      },
+      {
+        "path": "dyn.party.activity_is_current",
+        "type": "enum",
+        "owner": "party",
+        "definition": "Publisher flag stating whether the party's recorded role episode on the IP application is current in the source extract. It refers to the party record only; it is not a statement that the IP right is in force, enforceable or granted, and it is not a company status.",
+        "values": [
+          "true",
+          "false",
+          "unknown"
+        ],
+        "multi": false,
+        "required_qualifiers": [
+          "party_id",
+          "ip_right_type",
+          "application_number",
+          "party_role"
+        ],
+        "source_paths": [
+          "is_current"
+        ],
+        "why_not_existing": "ext.licence.status is a licence status owned by the licence entity; no shortlisted concept describes currency of a party-role episode on an IP application, and reusing a licence or business status would misstate the fact.",
+        "personal_data": "never"
+      },
+      {
+        "path": "dyn.party.is_founding_party_flag",
+        "type": "enum",
+        "owner": "party",
+        "definition": "Publisher-supplied flag indicating whether the party is recorded as a founding party on the IP application record. It is a supplied party attribute flag only: it is not evidence of company incorporation, not a founding date, and not a statement of legal form or company status.",
+        "values": [
+          "true",
+          "false",
+          "unknown"
+        ],
+        "multi": false,
+        "required_qualifiers": [
+          "party_id",
+          "ip_right_type",
+          "application_number"
+        ],
+        "source_paths": [
+          "is_founding"
+        ],
+        "why_not_existing": "ext.entity.date_established is a business founding date owned by the business subject; this is a boolean party attribute flag on an IP application record, so owner, type and meaning differ and reuse would assert incorporation evidence that the source does not provide.",
+        "personal_data": "never"
+      }
+    ],
+    "reuse": {}
+  }
+}

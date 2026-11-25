@@ -1,0 +1,34 @@
+{
+  "wgea": {
+    "source_column_count": 24,
+    "parsed_column_count": 20,
+    "duplicate_cleaned_headers": [
+      "Average total remuneration GPG (%)",
+      "Average base salary GPG (%)",
+      "Median total remuneration GPG (%)",
+      "Median base salary GPG (%)"
+    ],
+    "example": {
+      "employer": "101Warehousing Pty Ltd",
+      "current_year_raw": {
+        "Average total remuneration GPG (%)": 0.244,
+        "Average base salary GPG (%)": 0.244,
+        "Median total remuneration GPG (%)": 0.069,
+        "Median base salary GPG (%)": 0.069
+      },
+      "prior_year_raw": {
+        "Average total remuneration GPG (%) ": "",
+        "Average base salary GPG (%) ": "",
+        "Median total remuneration GPG (%) ": "",
+        "Median base salary GPG (%) ": ""
+      },
+      "parsed_pay_gap_values": {
+        "Average total remuneration GPG (%)": "",
+        "Average base salary GPG (%)": "",
+        "Median total remuneration GPG (%)": "",
+        "Median base salary GPG (%)": ""
+      }
+    },
+    "finding": "The current XLSX reader silently overwrites same-named columns from different reporting years after whitespace cleanup. This is a reader failure, irrespective of agent verdict."
+  }
+}

@@ -1,0 +1,913 @@
+{
+  "request_sha256": "b71acfde75a0da0f8c785f99117a1cdbc1230027b613083257c940d1bfdae5b5",
+  "role": "mapper",
+  "model": "deepseek-v4-flash",
+  "seconds": 40.72,
+  "response": {
+    "source_id": "wgea_employers_new",
+    "record_grain": "One employer reporting unit row in sheet '2. Employers ' (wide, two-year: 2024-25 measures in the first four GPG columns, 2023-24 measures in the following four).",
+    "grain_rationale": "The inspector states one row per employer reporting unit identified by Employer name + Employer ABN, with two column groups for 2024-25 and 2023-24 in the same row. The row is therefore an employer record, not an employer-year record; the two periods are carried as qualifiers on the period-specific claims rather than as separate rows.",
+    "reader": {
+      "format": "xlsx",
+      "archive_member": null,
+      "encoding": "utf-8-sig",
+      "delimiter": null,
+      "skip_rows": 3,
+      "sheet": "2. Employers ",
+      "record_path": null
+    },
+    "record_id": {
+      "strategy": "content_hash",
+      "source_paths": [],
+      "rationale": "Per the execution contract this experiment uses a content hash for source_record_id regardless of the proposed strategy. The employer ABN is the stable business identifier and is mapped separately to entity.abn; the hash keeps the record traceable to the exact raw row without claiming a composite key."
+    },
+    "observed_at": {
+      "source_path": null,
+      "steps": [],
+      "fallback": "resource_last_modified"
+    },
+    "fields": [
+      {
+        "source_paths": [
+          "Employer name"
+        ],
+        "join_with": " ",
+        "when": null,
+        "target": "dyn.workforce.employer_name",
+        "valid_from_path": null,
+        "valid_to_path": null,
+        "validity_date_formats": null,
+        "claim_scope": null,
+        "steps": [
+          {
+            "op": "trim",
+            "args": {}
+          },
+          {
+            "op": "collapse_whitespace",
+            "args": {}
+          }
+        ],
+        "confidence": 0.9,
+        "rationale": "Employer name is the WGEA reporting-unit employer name, not a registrar-stated legal name; the inspector warns it is not unique and can coincide with a corporate group name. Mapped to the publisher-reported employer-name concept rather than entity.legal_name, and no legal form is inferred from the name or ABN.",
+        "entity": null,
+        "qualifiers": null,
+        "one_hot": null
+      },
+      {
+        "source_paths": [
+          "Employer ABN"
+        ],
+        "join_with": " ",
+        "when": null,
+        "target": "entity.abn",
+        "valid_from_path": null,
+        "valid_to_path": null,
+        "validity_date_formats": null,
+        "claim_scope": null,
+        "steps": [
+          {
+            "op": "abn",
+            "args": {}
+          }
+        ],
+        "confidence": 0.95,
+        "rationale": "Employer ABN is the stable employer identifier and matches the existing ABN concept; the abn transform enforces the 11-digit checksum rather than a length check.",
+        "entity": null,
+        "qualifiers": null,
+        "one_hot": null
+      },
+      {
+        "source_paths": [
+          "Employer size range (# employees)"
+        ],
+        "join_with": " ",
+        "when": null,
+        "target": "dyn.workforce.employer_size_band",
+        "valid_from_path": null,
+        "valid_to_path": null,
+        "validity_date_formats": null,
+        "claim_scope": null,
+        "steps": [
+          {
+            "op": "trim",
+            "args": {}
+          },
+          {
+            "op": "collapse_whitespace",
+            "args": {}
+          }
+        ],
+        "confidence": 0.9,
+        "rationale": "Publisher's employer size band, kept as the band label; not converted to an exact headcount.",
+        "entity": null,
+        "qualifiers": {
+          "scheme": {
+            "source_path": null,
+            "value": "wgea_employer_size_band",
+            "steps": []
+          }
+        },
+        "one_hot": null
+      },
+      {
+        "source_paths": [
+          "Sector"
+        ],
+        "join_with": " ",
+        "when": null,
+        "target": "dyn.workforce.sector_classification",
+        "valid_from_path": null,
+        "valid_to_path": null,
+        "validity_date_formats": null,
+        "claim_scope": null,
+        "steps": [
+          {
+            "op": "trim",
+            "args": {}
+          },
+          {
+            "op": "collapse_whitespace",
+            "args": {}
+          }
+        ],
+        "confidence": 0.9,
+        "rationale": "WGEA sector classification (Private/Public) kept as the publisher's wording; not a legal form and not an ANZSIC industry.",
+        "entity": null,
+        "qualifiers": {
+          "scheme": {
+            "source_path": null,
+            "value": "wgea_sector",
+            "steps": []
+          }
+        },
+        "one_hot": null
+      },
+      {
+        "source_paths": [
+          "Industry (ANZSIC Division)"
+        ],
+        "join_with": " ",
+        "when": null,
+        "target": "dyn.workforce.anzsic_division",
+        "valid_from_path": null,
+        "valid_to_path": null,
+        "validity_date_formats": null,
+        "claim_scope": null,
+        "steps": [
+          {
+            "op": "trim",
+            "args": {}
+          },
+          {
+            "op": "collapse_whitespace",
+            "args": {}
+          }
+        ],
+        "confidence": 0.85,
+        "rationale": "Publisher states the ANZSIC Division name, not a code; kept as a name-valued claim with scheme=anzsic2006 rather than forcing a code into ext.entity.industry_code. Same ANZSIC 2006 scheme as dyn.workforce.anzsic_class at the coarser division level.",
+        "entity": null,
+        "qualifiers": {
+          "scheme": {
+            "source_path": null,
+            "value": "anzsic2006",
+            "steps": []
+          }
+        },
+        "one_hot": null
+      },
+      {
+        "source_paths": [
+          "Industry (ANZSIC Class)"
+        ],
+        "join_with": " ",
+        "when": null,
+        "target": "dyn.workforce.anzsic_class",
+        "valid_from_path": null,
+        "valid_to_path": null,
+        "validity_date_formats": null,
+        "claim_scope": null,
+        "steps": [
+          {
+            "op": "trim",
+            "args": {}
+          },
+          {
+            "op": "collapse_whitespace",
+            "args": {}
+          }
+        ],
+        "confidence": 0.85,
+        "rationale": "Publisher states the ANZSIC Class name, not a code; kept as a name-valued claim with scheme=anzsic2006 rather than inventing a class code. Same ANZSIC 2006 scheme as dyn.workforce.anzsic_division at the finer class level.",
+        "entity": null,
+        "qualifiers": {
+          "scheme": {
+            "source_path": null,
+            "value": "anzsic2006",
+            "steps": []
+          }
+        },
+        "one_hot": null
+      },
+      {
+        "source_paths": [
+          "Total workforce % women"
+        ],
+        "join_with": " ",
+        "when": null,
+        "target": "dyn.workforce.total_workforce_women_share",
+        "valid_from_path": null,
+        "valid_to_path": null,
+        "validity_date_formats": null,
+        "claim_scope": null,
+        "steps": [
+          {
+            "op": "parse_decimal",
+            "args": {}
+          }
+        ],
+        "confidence": 0.9,
+        "rationale": "Share of women in the total workforce as a proportion; period qualifier records the 2024-25 reporting year.",
+        "entity": null,
+        "qualifiers": {
+          "period": {
+            "source_path": null,
+            "value": "2024-25",
+            "steps": []
+          }
+        },
+        "one_hot": null
+      },
+      {
+        "source_paths": [
+          "Lower quartile % women"
+        ],
+        "join_with": " ",
+        "when": null,
+        "target": "dyn.workforce.quartile_women_share",
+        "valid_from_path": null,
+        "valid_to_path": null,
+        "validity_date_formats": null,
+        "claim_scope": null,
+        "steps": [
+          {
+            "op": "parse_decimal",
+            "args": {}
+          }
+        ],
+        "confidence": 0.9,
+        "rationale": "Share of women in the lower pay quartile; quartile and period carried as qualifiers.",
+        "entity": null,
+        "qualifiers": {
+          "quartile": {
+            "source_path": null,
+            "value": "lower",
+            "steps": []
+          },
+          "period": {
+            "source_path": null,
+            "value": "2024-25",
+            "steps": []
+          }
+        },
+        "one_hot": null
+      },
+      {
+        "source_paths": [
+          "Lower-middle quartile % women"
+        ],
+        "join_with": " ",
+        "when": null,
+        "target": "dyn.workforce.quartile_women_share",
+        "valid_from_path": null,
+        "valid_to_path": null,
+        "validity_date_formats": null,
+        "claim_scope": null,
+        "steps": [
+          {
+            "op": "parse_decimal",
+            "args": {}
+          }
+        ],
+        "confidence": 0.9,
+        "rationale": "Share of women in the lower-middle pay quartile; quartile and period carried as qualifiers.",
+        "entity": null,
+        "qualifiers": {
+          "quartile": {
+            "source_path": null,
+            "value": "lower_middle",
+            "steps": []
+          },
+          "period": {
+            "source_path": null,
+            "value": "2024-25",
+            "steps": []
+          }
+        },
+        "one_hot": null
+      },
+      {
+        "source_paths": [
+          "Upper-middle quartile % women"
+        ],
+        "join_with": " ",
+        "when": null,
+        "target": "dyn.workforce.quartile_women_share",
+        "valid_from_path": null,
+        "valid_to_path": null,
+        "validity_date_formats": null,
+        "claim_scope": null,
+        "steps": [
+          {
+            "op": "parse_decimal",
+            "args": {}
+          }
+        ],
+        "confidence": 0.9,
+        "rationale": "Share of women in the upper-middle pay quartile; quartile and period carried as qualifiers.",
+        "entity": null,
+        "qualifiers": {
+          "quartile": {
+            "source_path": null,
+            "value": "upper_middle",
+            "steps": []
+          },
+          "period": {
+            "source_path": null,
+            "value": "2024-25",
+            "steps": []
+          }
+        },
+        "one_hot": null
+      },
+      {
+        "source_paths": [
+          "Upper quartile % women"
+        ],
+        "join_with": " ",
+        "when": null,
+        "target": "dyn.workforce.quartile_women_share",
+        "valid_from_path": null,
+        "valid_to_path": null,
+        "validity_date_formats": null,
+        "claim_scope": null,
+        "steps": [
+          {
+            "op": "parse_decimal",
+            "args": {}
+          }
+        ],
+        "confidence": 0.9,
+        "rationale": "Share of women in the upper pay quartile; quartile and period carried as qualifiers.",
+        "entity": null,
+        "qualifiers": {
+          "quartile": {
+            "source_path": null,
+            "value": "upper",
+            "steps": []
+          },
+          "period": {
+            "source_path": null,
+            "value": "2024-25",
+            "steps": []
+          }
+        },
+        "one_hot": null
+      },
+      {
+        "source_paths": [
+          "Lower quartile - average total remuneration ($)"
+        ],
+        "join_with": " ",
+        "when": null,
+        "target": "dyn.workforce.quartile_average_total_remuneration",
+        "valid_from_path": null,
+        "valid_to_path": null,
+        "validity_date_formats": null,
+        "claim_scope": null,
+        "steps": [
+          {
+            "op": "parse_decimal",
+            "args": {}
+          }
+        ],
+        "confidence": 0.9,
+        "rationale": "Average total remuneration for the lower quartile in dollars; remuneration, not revenue or business income. Currency AUD is inferred from the Australian federal publisher (header states only '($)'), recorded via currency_basis=inferred; period carried as a qualifier.",
+        "entity": null,
+        "qualifiers": {
+          "quartile": {
+            "source_path": null,
+            "value": "lower",
+            "steps": []
+          },
+          "currency": {
+            "source_path": null,
+            "value": "AUD",
+            "steps": []
+          },
+          "currency_basis": {
+            "source_path": null,
+            "value": "inferred",
+            "steps": []
+          },
+          "period": {
+            "source_path": null,
+            "value": "2024-25",
+            "steps": []
+          }
+        },
+        "one_hot": null
+      },
+      {
+        "source_paths": [
+          "Lower-middle quartile - average total remuneration ($)"
+        ],
+        "join_with": " ",
+        "when": null,
+        "target": "dyn.workforce.quartile_average_total_remuneration",
+        "valid_from_path": null,
+        "valid_to_path": null,
+        "validity_date_formats": null,
+        "claim_scope": null,
+        "steps": [
+          {
+            "op": "parse_decimal",
+            "args": {}
+          }
+        ],
+        "confidence": 0.9,
+        "rationale": "Average total remuneration for the lower-middle quartile in dollars; remuneration, not revenue. Currency AUD inferred from the Australian federal publisher (header states only '($)'), recorded via currency_basis=inferred; period carried as a qualifier.",
+        "entity": null,
+        "qualifiers": {
+          "quartile": {
+            "source_path": null,
+            "value": "lower_middle",
+            "steps": []
+          },
+          "currency": {
+            "source_path": null,
+            "value": "AUD",
+            "steps": []
+          },
+          "currency_basis": {
+            "source_path": null,
+            "value": "inferred",
+            "steps": []
+          },
+          "period": {
+            "source_path": null,
+            "value": "2024-25",
+            "steps": []
+          }
+        },
+        "one_hot": null
+      },
+      {
+        "source_paths": [
+          "Upper-middle quartile - average total remuneration ($)"
+        ],
+        "join_with": " ",
+        "when": null,
+        "target": "dyn.workforce.quartile_average_total_remuneration",
+        "valid_from_path": null,
+        "valid_to_path": null,
+        "validity_date_formats": null,
+        "claim_scope": null,
+        "steps": [
+          {
+            "op": "parse_decimal",
+            "args": {}
+          }
+        ],
+        "confidence": 0.9,
+        "rationale": "Average total remuneration for the upper-middle quartile in dollars; remuneration, not revenue. Currency AUD inferred from the Australian federal publisher (header states only '($)'), recorded via currency_basis=inferred; period carried as a qualifier.",
+        "entity": null,
+        "qualifiers": {
+          "quartile": {
+            "source_path": null,
+            "value": "upper_middle",
+            "steps": []
+          },
+          "currency": {
+            "source_path": null,
+            "value": "AUD",
+            "steps": []
+          },
+          "currency_basis": {
+            "source_path": null,
+            "value": "inferred",
+            "steps": []
+          },
+          "period": {
+            "source_path": null,
+            "value": "2024-25",
+            "steps": []
+          }
+        },
+        "one_hot": null
+      },
+      {
+        "source_paths": [
+          "Upper quartile - average total remuneration ($)"
+        ],
+        "join_with": " ",
+        "when": null,
+        "target": "dyn.workforce.quartile_average_total_remuneration",
+        "valid_from_path": null,
+        "valid_to_path": null,
+        "validity_date_formats": null,
+        "claim_scope": null,
+        "steps": [
+          {
+            "op": "parse_decimal",
+            "args": {}
+          }
+        ],
+        "confidence": 0.9,
+        "rationale": "Average total remuneration for the upper quartile in dollars; remuneration, not revenue. Currency AUD inferred from the Australian federal publisher (header states only '($)'), recorded via currency_basis=inferred; period carried as a qualifier.",
+        "entity": null,
+        "qualifiers": {
+          "quartile": {
+            "source_path": null,
+            "value": "upper",
+            "steps": []
+          },
+          "currency": {
+            "source_path": null,
+            "value": "AUD",
+            "steps": []
+          },
+          "currency_basis": {
+            "source_path": null,
+            "value": "inferred",
+            "steps": []
+          },
+          "period": {
+            "source_path": null,
+            "value": "2024-25",
+            "steps": []
+          }
+        },
+        "one_hot": null
+      },
+      {
+        "source_paths": [
+          "Total workforce - average total remuneration ($)*"
+        ],
+        "join_with": " ",
+        "when": null,
+        "target": "dyn.workforce.total_workforce_average_total_remuneration",
+        "valid_from_path": null,
+        "valid_to_path": null,
+        "validity_date_formats": null,
+        "claim_scope": null,
+        "steps": [
+          {
+            "op": "parse_decimal",
+            "args": {}
+          }
+        ],
+        "confidence": 0.9,
+        "rationale": "Average total remuneration across the total workforce in dollars; remuneration, not revenue or business income. Currency AUD inferred from the Australian federal publisher (header states only '($)'), recorded via currency_basis=inferred; period carried as a qualifier.",
+        "entity": null,
+        "qualifiers": {
+          "currency": {
+            "source_path": null,
+            "value": "AUD",
+            "steps": []
+          },
+          "currency_basis": {
+            "source_path": null,
+            "value": "inferred",
+            "steps": []
+          },
+          "period": {
+            "source_path": null,
+            "value": "2024-25",
+            "steps": []
+          }
+        },
+        "one_hot": null
+      },
+      {
+        "source_paths": [
+          "Average base salary GPG (%)"
+        ],
+        "join_with": " ",
+        "when": null,
+        "target": "dyn.workforce.gender_pay_gap",
+        "valid_from_path": null,
+        "valid_to_path": null,
+        "validity_date_formats": null,
+        "claim_scope": null,
+        "steps": [
+          {
+            "op": "parse_decimal",
+            "args": {}
+          }
+        ],
+        "confidence": 0.9,
+        "rationale": "Average base salary gender pay gap for 2024-25; a derived gap measure, not a pay level. The publisher already expresses the gap as a proportion despite the '(%)' header (observed values like 0.044, 0.221), so parse_decimal without a percent-to-proportion step is correct for the observed data; a future percent-formatted value would need a percent-to-proportion step. Basis, statistic and period carried as qualifiers.",
+        "entity": null,
+        "qualifiers": {
+          "remuneration_basis": {
+            "source_path": null,
+            "value": "base_salary",
+            "steps": []
+          },
+          "statistic": {
+            "source_path": null,
+            "value": "average",
+            "steps": []
+          },
+          "period": {
+            "source_path": null,
+            "value": "2024-25",
+            "steps": []
+          }
+        },
+        "one_hot": null
+      },
+      {
+        "source_paths": [
+          "Average total remuneration GPG (%)"
+        ],
+        "join_with": " ",
+        "when": null,
+        "target": "dyn.workforce.gender_pay_gap",
+        "valid_from_path": null,
+        "valid_to_path": null,
+        "validity_date_formats": null,
+        "claim_scope": null,
+        "steps": [
+          {
+            "op": "parse_decimal",
+            "args": {}
+          }
+        ],
+        "confidence": 0.9,
+        "rationale": "Average total remuneration gender pay gap for 2024-25; a derived gap measure, not a pay level. The publisher already expresses the gap as a proportion despite the '(%)' header; parse_decimal without a percent-to-proportion step matches the observed data. Basis, statistic and period carried as qualifiers.",
+        "entity": null,
+        "qualifiers": {
+          "remuneration_basis": {
+            "source_path": null,
+            "value": "total_remuneration",
+            "steps": []
+          },
+          "statistic": {
+            "source_path": null,
+            "value": "average",
+            "steps": []
+          },
+          "period": {
+            "source_path": null,
+            "value": "2024-25",
+            "steps": []
+          }
+        },
+        "one_hot": null
+      },
+      {
+        "source_paths": [
+          "Median base salary GPG (%)"
+        ],
+        "join_with": " ",
+        "when": null,
+        "target": "dyn.workforce.gender_pay_gap",
+        "valid_from_path": null,
+        "valid_to_path": null,
+        "validity_date_formats": null,
+        "claim_scope": null,
+        "steps": [
+          {
+            "op": "parse_decimal",
+            "args": {}
+          }
+        ],
+        "confidence": 0.9,
+        "rationale": "Median base salary gender pay gap for 2024-25; a derived gap measure, not a pay level. The publisher already expresses the gap as a proportion despite the '(%)' header; parse_decimal without a percent-to-proportion step matches the observed data. Basis, statistic and period carried as qualifiers.",
+        "entity": null,
+        "qualifiers": {
+          "remuneration_basis": {
+            "source_path": null,
+            "value": "base_salary",
+            "steps": []
+          },
+          "statistic": {
+            "source_path": null,
+            "value": "median",
+            "steps": []
+          },
+          "period": {
+            "source_path": null,
+            "value": "2024-25",
+            "steps": []
+          }
+        },
+        "one_hot": null
+      },
+      {
+        "source_paths": [
+          "Median total remuneration GPG (%)"
+        ],
+        "join_with": " ",
+        "when": null,
+        "target": "dyn.workforce.gender_pay_gap",
+        "valid_from_path": null,
+        "valid_to_path": null,
+        "validity_date_formats": null,
+        "claim_scope": null,
+        "steps": [
+          {
+            "op": "parse_decimal",
+            "args": {}
+          }
+        ],
+        "confidence": 0.9,
+        "rationale": "Median total remuneration gender pay gap for 2024-25; a derived gap measure, not a pay level. The publisher already expresses the gap as a proportion despite the '(%)' header; parse_decimal without a percent-to-proportion step matches the observed data. Basis, statistic and period carried as qualifiers.",
+        "entity": null,
+        "qualifiers": {
+          "remuneration_basis": {
+            "source_path": null,
+            "value": "total_remuneration",
+            "steps": []
+          },
+          "statistic": {
+            "source_path": null,
+            "value": "median",
+            "steps": []
+          },
+          "period": {
+            "source_path": null,
+            "value": "2024-25",
+            "steps": []
+          }
+        },
+        "one_hot": null
+      },
+      {
+        "source_paths": [
+          "Average base salary GPG (%)_2"
+        ],
+        "join_with": " ",
+        "when": null,
+        "target": "dyn.workforce.gender_pay_gap",
+        "valid_from_path": null,
+        "valid_to_path": null,
+        "validity_date_formats": null,
+        "claim_scope": null,
+        "steps": [
+          {
+            "op": "parse_decimal",
+            "args": {}
+          }
+        ],
+        "confidence": 0.8,
+        "rationale": "2023-24 column mapped by POSITION, not by header text: the trailing _2 suffix is a wide-layout artefact and the 2023-24 header labels differ from 2024-25 only by a merged header row and trailing spaces, so the period label is positional and would be wrong if the workbook reordered columns. Average base salary gender pay gap for 2023-24; the publisher already expresses the gap as a proportion despite the '(%)' header. Blank means no prior-year value reported, not zero.",
+        "entity": null,
+        "qualifiers": {
+          "remuneration_basis": {
+            "source_path": null,
+            "value": "base_salary",
+            "steps": []
+          },
+          "statistic": {
+            "source_path": null,
+            "value": "average",
+            "steps": []
+          },
+          "period": {
+            "source_path": null,
+            "value": "2023-24",
+            "steps": []
+          }
+        },
+        "one_hot": null
+      },
+      {
+        "source_paths": [
+          "Average total remuneration GPG (%)_2"
+        ],
+        "join_with": " ",
+        "when": null,
+        "target": "dyn.workforce.gender_pay_gap",
+        "valid_from_path": null,
+        "valid_to_path": null,
+        "validity_date_formats": null,
+        "claim_scope": null,
+        "steps": [
+          {
+            "op": "parse_decimal",
+            "args": {}
+          }
+        ],
+        "confidence": 0.8,
+        "rationale": "2023-24 column mapped by POSITION, not by header text (trailing _2 is a wide-layout artefact; the 2023-24 header labels differ only by a merged header row and trailing spaces), so the period label is positional. Average total remuneration gender pay gap for 2023-24; the publisher already expresses the gap as a proportion despite the '(%)' header. Blank means no prior-year value reported, not zero.",
+        "entity": null,
+        "qualifiers": {
+          "remuneration_basis": {
+            "source_path": null,
+            "value": "total_remuneration",
+            "steps": []
+          },
+          "statistic": {
+            "source_path": null,
+            "value": "average",
+            "steps": []
+          },
+          "period": {
+            "source_path": null,
+            "value": "2023-24",
+            "steps": []
+          }
+        },
+        "one_hot": null
+      },
+      {
+        "source_paths": [
+          "Median base salary GPG (%)_2"
+        ],
+        "join_with": " ",
+        "when": null,
+        "target": "dyn.workforce.gender_pay_gap",
+        "valid_from_path": null,
+        "valid_to_path": null,
+        "validity_date_formats": null,
+        "claim_scope": null,
+        "steps": [
+          {
+            "op": "parse_decimal",
+            "args": {}
+          }
+        ],
+        "confidence": 0.8,
+        "rationale": "2023-24 column mapped by POSITION, not by header text (trailing _2 is a wide-layout artefact; the 2023-24 header labels differ only by a merged header row and trailing spaces), so the period label is positional. Median base salary gender pay gap for 2023-24; the publisher already expresses the gap as a proportion despite the '(%)' header. Blank means no prior-year value reported, not zero.",
+        "entity": null,
+        "qualifiers": {
+          "remuneration_basis": {
+            "source_path": null,
+            "value": "base_salary",
+            "steps": []
+          },
+          "statistic": {
+            "source_path": null,
+            "value": "median",
+            "steps": []
+          },
+          "period": {
+            "source_path": null,
+            "value": "2023-24",
+            "steps": []
+          }
+        },
+        "one_hot": null
+      },
+      {
+        "source_paths": [
+          "Median total remuneration GPG (%)_2"
+        ],
+        "join_with": " ",
+        "when": null,
+        "target": "dyn.workforce.gender_pay_gap",
+        "valid_from_path": null,
+        "valid_to_path": null,
+        "validity_date_formats": null,
+        "claim_scope": null,
+        "steps": [
+          {
+            "op": "parse_decimal",
+            "args": {}
+          }
+        ],
+        "confidence": 0.8,
+        "rationale": "2023-24 column mapped by POSITION, not by header text (trailing _2 is a wide-layout artefact; the 2023-24 header labels differ only by a merged header row and trailing spaces), so the period label is positional. Median total remuneration gender pay gap for 2023-24; the publisher already expresses the gap as a proportion despite the '(%)' header. Blank means no prior-year value reported, not zero.",
+        "entity": null,
+        "qualifiers": {
+          "remuneration_basis": {
+            "source_path": null,
+            "value": "total_remuneration",
+            "steps": []
+          },
+          "statistic": {
+            "source_path": null,
+            "value": "median",
+            "steps": []
+          },
+          "period": {
+            "source_path": null,
+            "value": "2023-24",
+            "steps": []
+          }
+        },
+        "one_hot": null
+      }
+    ],
+    "entities": {},
+    "relationships": [],
+    "unmapped": [],
+    "notes": "All 24 available source paths are consumed by the fields above; the four '_2' columns are mapped by position to the 2023-24 period rather than left unmapped, because their business meaning is the same measure for the prior year. 'Employer name' is mapped to dyn.workforce.employer_name (publisher-reported reporting-unit name), not entity.legal_name, because the source does not state a registrar legal name. Remuneration currency AUD is inferred from the Australian federal publisher (headers state only '($)') and is recorded with currency_basis=inferred. GPG values are already proportions despite the '(%)' header. No establishment, licence or address facts exist in this sheet, so no non-subject roles or edges are declared. Sector is a WGEA classification, not a legal form; size range is a band, not a headcount; remuneration is not revenue; GPG is a derived measure. Corporate group sheets are out of scope for this reader.",
+    "constants": [],
+    "profile_context": null,
+    "extensions": "dynamic"
+  }
+}

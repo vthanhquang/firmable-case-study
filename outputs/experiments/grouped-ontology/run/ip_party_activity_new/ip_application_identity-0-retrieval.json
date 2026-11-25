@@ -1,0 +1,191 @@
+{
+  "concepts": {
+    "ext.licence.number": {
+      "path": "ext.licence.number",
+      "type": "string",
+      "owner": "licence",
+      "definition": "Publisher-assigned licence number. Identifies the licence across snapshots.",
+      "values": [],
+      "multi": false,
+      "required_qualifiers": [],
+      "personal_data": "never",
+      "pattern": null
+    },
+    "ext.establishment.source_key": {
+      "path": "ext.establishment.source_key",
+      "type": "string",
+      "owner": "establishment",
+      "definition": "Publisher's site code. Identifies the site across snapshots.",
+      "values": [],
+      "multi": false,
+      "required_qualifiers": [],
+      "personal_data": "never",
+      "pattern": null
+    },
+    "ext.entity.prior_registration_number": {
+      "path": "ext.entity.prior_registration_number",
+      "type": "string",
+      "owner": "business",
+      "definition": "Legacy state registration number.",
+      "values": [],
+      "multi": false,
+      "required_qualifiers": [],
+      "personal_data": "never",
+      "pattern": null
+    },
+    "entity.entity_type": {
+      "path": "entity.entity_type",
+      "type": "enum",
+      "owner": "business",
+      "definition": "Default to unknown. Guessing here causes downstream harm.",
+      "values": [
+        "company",
+        "sole_trader",
+        "partnership",
+        "trust",
+        "incorporated_association",
+        "government",
+        "other",
+        "unknown"
+      ],
+      "multi": false,
+      "required_qualifiers": [],
+      "personal_data": "never",
+      "pattern": null
+    },
+    "ext.entity.responsible_persons": {
+      "path": "ext.entity.responsible_persons",
+      "type": "integer",
+      "owner": "business",
+      "definition": "Number of responsible persons (board size) the regulator reports.",
+      "values": [],
+      "multi": false,
+      "required_qualifiers": [],
+      "personal_data": "never",
+      "pattern": null
+    },
+    "entity.nzbn": {
+      "path": "entity.nzbn",
+      "type": "string",
+      "owner": "business",
+      "definition": "New Zealand Business Number, if you happen to hit an NZ source.",
+      "values": [],
+      "multi": false,
+      "required_qualifiers": [],
+      "personal_data": "never",
+      "pattern": "^\\d{13}$"
+    },
+    "entity.abn": {
+      "path": "entity.abn",
+      "type": "string",
+      "owner": "business",
+      "definition": "Australian Business Number. Has a checksum — validate it, do not just length-check.",
+      "values": [],
+      "multi": false,
+      "required_qualifiers": [],
+      "personal_data": "never",
+      "pattern": "^\\d{11}$"
+    },
+    "ext.contact.role_email": {
+      "path": "ext.contact.role_email",
+      "type": "email",
+      "owner": "any",
+      "definition": "A role mailbox (info@, enquiries@, admin@ ...). Personal mailboxes are dropped by the transform.",
+      "values": [],
+      "multi": true,
+      "required_qualifiers": [],
+      "personal_data": "never",
+      "pattern": null
+    },
+    "ext.entity.legal_form": {
+      "path": "ext.entity.legal_form",
+      "type": "enum",
+      "owner": "business",
+      "definition": "Registrar's company type, decoded through a crosswalk table. Unknown codes -> unknown.",
+      "values": [
+        "proprietary_company",
+        "public_company",
+        "listed_public_company",
+        "foreign_company",
+        "registered_body",
+        "incorporated_association",
+        "cooperative",
+        "other",
+        "unknown"
+      ],
+      "multi": false,
+      "required_qualifiers": [],
+      "personal_data": "never",
+      "pattern": null
+    },
+    "ext.licence.related_licence_number": {
+      "path": "ext.licence.related_licence_number",
+      "type": "string",
+      "owner": "licence",
+      "definition": "Number of another licence the same holder holds (e.g. an AFS licence number). 0 / blank = none.",
+      "values": [],
+      "multi": false,
+      "required_qualifiers": [],
+      "personal_data": "never",
+      "pattern": null
+    },
+    "entity.acn": {
+      "path": "entity.acn",
+      "type": "string",
+      "owner": "business",
+      "definition": "Australian Company Number. Also checksummed. The last 9 digits of an ABN are often the ACN, but not always.",
+      "values": [],
+      "multi": false,
+      "required_qualifiers": [],
+      "personal_data": "never",
+      "pattern": "^\\d{9}$"
+    },
+    "ext.entity.address_point": {
+      "path": "ext.entity.address_point",
+      "type": "point",
+      "owner": "business",
+      "definition": "lat,lon of the business's OWN stated address (e.g. a licensee's business address). A premises or site location is ext.establishment.geo on an establishment role instead.",
+      "values": [],
+      "multi": false,
+      "required_qualifiers": [],
+      "personal_data": "never",
+      "pattern": null
+    },
+    "ext.contact.phone": {
+      "path": "ext.contact.phone",
+      "type": "phone",
+      "owner": "any",
+      "definition": "Phone number normalised to E.164 (+61...). Numbers shorter than 8 digits or without an area code are rejected. Mobiles are personal data unless published as a business line.",
+      "values": [],
+      "multi": true,
+      "required_qualifiers": [],
+      "personal_data": "mobile_numbers",
+      "pattern": null
+    }
+  },
+  "entity_types": {
+    "business": "The source's business/legal-person subject; legal form remains unknown unless stated.",
+    "licence": "An authorisation held by a business.",
+    "establishment": "A physical operating facility, separate from its operator.",
+    "ip_application": "An IP application identified by the pair (ip_right_type, application_number); the right type scopes the application number.",
+    "party": "An organisation or individual recorded as a party on an IP application, identified by party_id; party_type distinguishes organisation from individual. Not a statement of legal form or company status."
+  },
+  "relationships": {
+    "HOLDS_LICENCE": {
+      "from_type": "business",
+      "to_type": "licence",
+      "definition": "Business holds this licence."
+    },
+    "OPERATES_ESTABLISHMENT": {
+      "from_type": "business",
+      "to_type": "establishment",
+      "definition": "Business operates this facility."
+    },
+    "PARTY_INVOLVED_IN_APPLICATION": {
+      "from_type": "party",
+      "to_type": "ip_application",
+      "definition": "A party is recorded on an IP application in a specific party role (applicant, patentee, agent or other), for a party-activity validity period."
+    }
+  },
+  "retrieval": "Lexical shortlist only; reuse requires identical meaning, owner, units and scope. Missing candidates can be requested with a narrower task."
+}

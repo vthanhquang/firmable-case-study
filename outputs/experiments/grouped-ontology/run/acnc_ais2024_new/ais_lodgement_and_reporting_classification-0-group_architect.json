@@ -1,0 +1,202 @@
+{
+  "request_sha256": "4d43087311e27f426a11eb5bb75e816af2bb138643bc2d82e1f8627c68fbb752",
+  "role": "group_architect",
+  "model": "deepseek-v4-flash",
+  "seconds": 13.984,
+  "response": {
+    "concepts": [
+      {
+        "path": "dyn.charity.ais_due_date",
+        "type": "date",
+        "owner": "charity",
+        "definition": "The date by which the charity's Annual Information Statement for the reporting year is due to be lodged with the ACNC, as published in the AIS dataset. This is a regulatory lodgement deadline, not a licence date or a business registration date.",
+        "values": [],
+        "multi": false,
+        "required_qualifiers": [],
+        "source_paths": [
+          "ais due date"
+        ],
+        "why_not_existing": "No shortlisted concept covers an AIS lodgement deadline; ext.licence.start_date/end_date are licence-scoped and entity.date_registered is a business registration date, so reuse would change meaning and owner.",
+        "personal_data": "never"
+      },
+      {
+        "path": "dyn.charity.ais_received_date",
+        "type": "date",
+        "owner": "charity",
+        "definition": "The date on which the ACNC received the charity's Annual Information Statement for the reporting year. This is a regulatory lodgement event date, not a business incorporation or licence date.",
+        "values": [],
+        "multi": false,
+        "required_qualifiers": [],
+        "source_paths": [
+          "date ais received"
+        ],
+        "why_not_existing": "No shortlisted concept records an AIS lodgement receipt date; entity.date_registered and ext.licence dates belong to different owners and meanings.",
+        "personal_data": "never"
+      },
+      {
+        "path": "dyn.charity.size_band",
+        "type": "enum",
+        "owner": "charity",
+        "definition": "The ACNC charity size classification (Small, Medium or Large) reported for the charity for the AIS reporting year. This is a regulator reporting classification, not a measure of company scale, revenue band or legal form.",
+        "values": [
+          "Small",
+          "Medium",
+          "Large"
+        ],
+        "multi": false,
+        "required_qualifiers": [],
+        "source_paths": [
+          "charity size"
+        ],
+        "why_not_existing": "ext.financial.revenue_band is a revenue/turnover band from a named scheme owned by business; the ACNC size classification is a charity-owned reporting category with its own labels, so reuse would change meaning and owner.",
+        "personal_data": "never"
+      },
+      {
+        "path": "dyn.charity.financial_report_period_start",
+        "type": "date",
+        "owner": "charity",
+        "definition": "The start date of the reporting period covered by the charity's financial report as lodged with the ACNC. Financial figures in the same row relate to this period, which may not be a 1 July to 30 June year.",
+        "values": [],
+        "multi": false,
+        "required_qualifiers": [],
+        "source_paths": [
+          "fin report from"
+        ],
+        "why_not_existing": "No shortlisted concept expresses the start of a charity's own financial reporting period; ext.entity.financial_year_end is a business-owned dd-Mon cycle marker, not a period start date.",
+        "personal_data": "never"
+      },
+      {
+        "path": "dyn.charity.financial_report_period_end",
+        "type": "date",
+        "owner": "charity",
+        "definition": "The end date of the reporting period covered by the charity's financial report as lodged with the ACNC. Financial figures in the same row relate to this period, which may not be a 1 July to 30 June year.",
+        "values": [],
+        "multi": false,
+        "required_qualifiers": [],
+        "source_paths": [
+          "fin report to"
+        ],
+        "why_not_existing": "ext.entity.financial_year_end is a business-owned dd-Mon reporting-cycle marker, not a full period end date for a charity's lodged financial report.",
+        "personal_data": "never"
+      },
+      {
+        "path": "dyn.charity.financial_report_received_date",
+        "type": "date",
+        "owner": "charity",
+        "definition": "The date on which the ACNC received the charity's financial report for the reporting period. This is a regulatory lodgement event date, distinct from the AIS receipt date and from the period the report covers.",
+        "values": [],
+        "multi": false,
+        "required_qualifiers": [],
+        "source_paths": [
+          "financial report date received"
+        ],
+        "why_not_existing": "No shortlisted concept records receipt of a financial report; the AIS receipt date is a different lodgement event and licence dates belong to a different owner.",
+        "personal_data": "never"
+      },
+      {
+        "path": "dyn.charity.financial_statement_type",
+        "type": "enum",
+        "owner": "charity",
+        "definition": "The type of financial statement the charity lodged with the ACNC for the reporting period, e.g. special purpose or general purpose financial statements, including simplified disclosure variants. This is a reporting framework classification, not a legal form.",
+        "values": [
+          "Special purpose financial statements",
+          "General purpose financial statements",
+          "General purpose financial statements - simplified disclosure"
+        ],
+        "multi": false,
+        "required_qualifiers": [],
+        "source_paths": [
+          "type of financial statement"
+        ],
+        "why_not_existing": "No shortlisted concept covers the accounting framework of a lodged financial statement; ext.entity.legal_form and entity.entity_type describe legal structure, not reporting basis.",
+        "personal_data": "never"
+      },
+      {
+        "path": "dyn.charity.report_modified",
+        "type": "enum",
+        "owner": "charity",
+        "definition": "Flag published by the ACNC indicating whether the charity's report for the reporting year carries a modification (y/n). This is a regulatory reporting attribute, not a legal status.",
+        "values": [
+          "y",
+          "n"
+        ],
+        "multi": false,
+        "required_qualifiers": [],
+        "source_paths": [
+          "charity report has a modification"
+        ],
+        "why_not_existing": "No shortlisted concept records whether a charity's lodged report is modified; dyn.charity.basic_religious_charity and dyn.charity.registration_status are different ACNC attributes.",
+        "personal_data": "never"
+      },
+      {
+        "path": "dyn.charity.report_modification_type",
+        "type": "enum",
+        "owner": "charity",
+        "definition": "The type of modification recorded against the charity's report for the reporting year, such as a qualified opinion or a disclaimer. Only populated where a modification is flagged.",
+        "values": [
+          "Qualified/qualification",
+          "Disclaimed/disclaimer"
+        ],
+        "multi": false,
+        "required_qualifiers": [],
+        "source_paths": [
+          "type of report modification"
+        ],
+        "why_not_existing": "No shortlisted concept describes report modification types; this is a charity-owned regulatory reporting attribute distinct from registration status and financial statement type.",
+        "personal_data": "never"
+      },
+      {
+        "path": "dyn.charity.report_consolidated",
+        "type": "enum",
+        "owner": "charity",
+        "definition": "Flag published by the ACNC indicating whether the charity's report is consolidated with more than one entity (y/n). This describes the scope of the lodged report, not the number of entities the charity controls.",
+        "values": [
+          "y",
+          "n"
+        ],
+        "multi": false,
+        "required_qualifiers": [],
+        "source_paths": [
+          "report consolidated with more than one entity"
+        ],
+        "why_not_existing": "No shortlisted concept records whether a charity's report is consolidated; it is a reporting-scope attribute owned by the charity role.",
+        "personal_data": "never"
+      },
+      {
+        "path": "dyn.charity.coop_financial_report_submitted",
+        "type": "enum",
+        "owner": "charity",
+        "definition": "Flag published by the ACNC indicating whether the charity submitted a financial report to a cooperative regulator (y/n). This is a regulatory submission attribute, not evidence of cooperative legal form.",
+        "values": [
+          "y",
+          "n"
+        ],
+        "multi": false,
+        "required_qualifiers": [],
+        "source_paths": [
+          "coop financial report submitted to regulator"
+        ],
+        "why_not_existing": "No shortlisted concept covers submission of a financial report to a cooperative regulator; ext.entity.legal_form is a registrar company type and must not be inferred from this flag.",
+        "personal_data": "never"
+      },
+      {
+        "path": "dyn.charity.accounting_basis",
+        "type": "enum",
+        "owner": "charity",
+        "definition": "The accounting basis (Cash or Accrual) on which the charity's reported financial information for the reporting period is prepared, as published in the AIS. This is a reporting-basis attribute, not a financial measure.",
+        "values": [
+          "Cash",
+          "Accrual"
+        ],
+        "multi": false,
+        "required_qualifiers": [],
+        "source_paths": [
+          "cash or accrual"
+        ],
+        "why_not_existing": "No shortlisted concept records the accounting basis of reported financials; it is a charity-owned reporting attribute distinct from financial statement type.",
+        "personal_data": "never"
+      }
+    ],
+    "reuse": {}
+  }
+}

@@ -1,0 +1,353 @@
+{
+  "concepts": {
+    "dyn.charity.registration_status": {
+      "path": "dyn.charity.registration_status",
+      "type": "enum",
+      "owner": "charity",
+      "definition": "The ACNC registration status of the charity as published in the Annual Information Statement, including revocation reasons such as voluntary revocation or double defaulter. This is a charity-regulator status, not a company legal status or a licence status.",
+      "values": [
+        "Registered",
+        "Voluntarily Revoked Not Entitled To Be A Charity",
+        "Voluntarily Revoked No Longer Operating",
+        "Revoked Double Defaulter"
+      ],
+      "multi": false,
+      "required_qualifiers": [],
+      "source_paths": [
+        "registration status"
+      ],
+      "why_not_existing": "entity.status is a coarse company-lifecycle enum (active/deregistered/in_liquidation/suspended/unknown) owned by business; ACNC charity registration states carry regulator-specific revocation reasons and belong to the charity role, so reuse would change meaning and owner. ext.licence.status is a licence status, not charity registration.",
+      "personal_data": "never"
+    },
+    "dyn.charity.incorporated_association": {
+      "path": "dyn.charity.incorporated_association",
+      "type": "enum",
+      "owner": "charity",
+      "definition": "Flag published by the ACNC indicating whether the charity is an incorporated association, recorded as y/n. This is a self-reported association attribute, not an inference of legal form from the charity name.",
+      "values": [
+        "y",
+        "n"
+      ],
+      "multi": false,
+      "required_qualifiers": [],
+      "source_paths": [
+        "incorporated association"
+      ],
+      "why_not_existing": "No shortlisted concept records incorporated-association status; entity legal form is not otherwise modelled and must not be inferred from names.",
+      "personal_data": "never"
+    },
+    "dyn.charity.basic_religious_charity": {
+      "path": "dyn.charity.basic_religious_charity",
+      "type": "enum",
+      "owner": "charity",
+      "definition": "Flag published by the ACNC indicating whether the charity is a basic religious charity for the reporting year, recorded as y/n in the source.",
+      "values": [
+        "y",
+        "n"
+      ],
+      "multi": false,
+      "required_qualifiers": [],
+      "source_paths": [
+        "basic religious charity"
+      ],
+      "why_not_existing": "No shortlisted concept covers ACNC basic religious charity classification; ext.entity.tax_concession covers PBI/HPC/DGR concessions, a different regulatory attribute.",
+      "personal_data": "never"
+    },
+    "ext.financial.taxable_income": {
+      "path": "ext.financial.taxable_income",
+      "type": "decimal",
+      "owner": "business",
+      "definition": "Taxable income for the period. Missing is not zero.",
+      "values": [],
+      "multi": false,
+      "required_qualifiers": [
+        "currency",
+        "period"
+      ],
+      "personal_data": "never",
+      "pattern": null
+    },
+    "dyn.charity.state_association_number": {
+      "path": "dyn.charity.state_association_number",
+      "type": "string",
+      "owner": "charity",
+      "definition": "State or territory incorporated-association registration number held by the charity, qualified by the jurisdiction whose association-number column supplied it. Values are publisher-formatted strings (e.g. INC9886754, A0005374L) and are not normalised across states.",
+      "values": [],
+      "multi": true,
+      "required_qualifiers": [
+        "jurisdiction"
+      ],
+      "source_paths": [
+        "association number - act",
+        "association number - nsw",
+        "association number - nt",
+        "association number - qld",
+        "association number - sa",
+        "association number - tas",
+        "association number - vic",
+        "association number - wa"
+      ],
+      "why_not_existing": "ext.entity.prior_registration_number is a single legacy state registration number with no jurisdiction qualifier and no multi-value scope; the ACNC file holds up to eight jurisdiction-specific association numbers per charity, so reuse would lose the jurisdiction and multiplicity. ext.entity.prior_registration_state is a state name, not a number.",
+      "personal_data": "never"
+    },
+    "ext.financial.total_income": {
+      "path": "ext.financial.total_income",
+      "type": "decimal",
+      "owner": "business",
+      "definition": "Total income as published for a stated reporting period. A fact for a period, not a current attribute.",
+      "values": [],
+      "multi": false,
+      "required_qualifiers": [
+        "currency",
+        "period"
+      ],
+      "personal_data": "never",
+      "pattern": null
+    },
+    "ext.licence.end_date": {
+      "path": "ext.licence.end_date",
+      "type": "date",
+      "owner": "licence",
+      "definition": "Publisher-stated end of the licence, not the end of the business or all its claims.",
+      "values": [],
+      "multi": false,
+      "required_qualifiers": [],
+      "personal_data": "never",
+      "pattern": null
+    },
+    "ext.licence.start_date": {
+      "path": "ext.licence.start_date",
+      "type": "date",
+      "owner": "licence",
+      "definition": "Publisher-stated commencement of the licence, not the business establishment or registration date.",
+      "values": [],
+      "multi": false,
+      "required_qualifiers": [],
+      "personal_data": "never",
+      "pattern": null
+    },
+    "ext.entity.operating_region": {
+      "path": "ext.entity.operating_region",
+      "type": "enum",
+      "owner": "business",
+      "definition": "Where the business says it operates (service footprint), not where it is registered.",
+      "values": [
+        "ACT",
+        "NSW",
+        "NT",
+        "QLD",
+        "SA",
+        "TAS",
+        "VIC",
+        "WA",
+        "NATIONAL",
+        "OVERSEAS"
+      ],
+      "multi": true,
+      "required_qualifiers": [],
+      "personal_data": "never",
+      "pattern": null
+    },
+    "ext.licence.authorisation_text": {
+      "path": "ext.licence.authorisation_text",
+      "type": "string",
+      "owner": "licence",
+      "definition": "Complete publisher authorisation text, including headings and conditions. Unparsed source evidence, not independent permission claims.",
+      "values": [],
+      "multi": false,
+      "required_qualifiers": [],
+      "personal_data": "never",
+      "pattern": null
+    },
+    "ext.entity.sector_tag": {
+      "path": "ext.entity.sector_tag",
+      "type": "string",
+      "owner": "business",
+      "definition": "A source-stated activity or beneficiary tag, e.g. scheme acnc_purpose or acnc_beneficiary. Keep the publisher's wording.",
+      "values": [],
+      "multi": true,
+      "required_qualifiers": [
+        "scheme"
+      ],
+      "personal_data": "never",
+      "pattern": null
+    },
+    "ext.entity.holder_kind": {
+      "path": "ext.entity.holder_kind",
+      "type": "enum",
+      "owner": "business",
+      "definition": "Whether the source says the record's holder is a natural person or an organisation. This is matching evidence. It never implies sole_trader.",
+      "values": [
+        "individual",
+        "organisation",
+        "unknown"
+      ],
+      "multi": false,
+      "required_qualifiers": [],
+      "personal_data": "never",
+      "pattern": null
+    },
+    "ext.entity.industry_code": {
+      "path": "ext.entity.industry_code",
+      "type": "string",
+      "owner": "business",
+      "definition": "ANZSIC 2006 division letter, subdivision, group or class, produced only through a reviewed crosswalk table from a source-stated activity (trade class, licence category, purpose). The raw source value is kept in raw_value. scheme = anzsic2006.",
+      "values": [],
+      "multi": true,
+      "required_qualifiers": [
+        "scheme"
+      ],
+      "personal_data": "never",
+      "pattern": "^(?:[A-S]|[0-9]{2,4})$"
+    },
+    "ext.financial.tax_payable": {
+      "path": "ext.financial.tax_payable",
+      "type": "decimal",
+      "owner": "business",
+      "definition": "Tax payable for the period.",
+      "values": [],
+      "multi": false,
+      "required_qualifiers": [
+        "currency",
+        "period"
+      ],
+      "personal_data": "never",
+      "pattern": null
+    },
+    "entity.legal_name": {
+      "path": "entity.legal_name",
+      "type": "string",
+      "owner": "business",
+      "definition": "As registered. Not the trading name.",
+      "values": [],
+      "multi": false,
+      "required_qualifiers": [],
+      "personal_data": "never",
+      "pattern": null
+    },
+    "ext.establishment.name": {
+      "path": "ext.establishment.name",
+      "type": "string",
+      "owner": "establishment",
+      "definition": "Site or premises name.",
+      "values": [],
+      "multi": false,
+      "required_qualifiers": [],
+      "personal_data": "never",
+      "pattern": null
+    },
+    "ext.licence.status": {
+      "path": "ext.licence.status",
+      "type": "string",
+      "owner": "licence",
+      "definition": "Licence status as published (licence status, not company status).",
+      "values": [],
+      "multi": false,
+      "required_qualifiers": [],
+      "personal_data": "never",
+      "pattern": null
+    },
+    "ext.entity.date_established": {
+      "path": "ext.entity.date_established",
+      "type": "date",
+      "owner": "business",
+      "definition": "Founding / establishment date. Not a registration date.",
+      "values": [],
+      "multi": false,
+      "required_qualifiers": [],
+      "personal_data": "never",
+      "pattern": null
+    },
+    "ext.establishment.capacity": {
+      "path": "ext.establishment.capacity",
+      "type": "integer",
+      "owner": "establishment",
+      "definition": "Published maximum patron count or similar capacity.",
+      "values": [],
+      "multi": false,
+      "required_qualifiers": [],
+      "personal_data": "never",
+      "pattern": null
+    },
+    "ext.establishment.region": {
+      "path": "ext.establishment.region",
+      "type": "string",
+      "owner": "establishment",
+      "definition": "Publisher's region (licensing region, metro/regional, employment services area).",
+      "values": [],
+      "multi": true,
+      "required_qualifiers": [],
+      "personal_data": "never",
+      "pattern": null
+    },
+    "ext.entity.prior_registration_state": {
+      "path": "ext.entity.prior_registration_state",
+      "type": "string",
+      "owner": "business",
+      "definition": "State of original incorporation before national registration. Not an address.",
+      "values": [],
+      "multi": false,
+      "required_qualifiers": [],
+      "personal_data": "never",
+      "pattern": null
+    },
+    "ext.establishment.program": {
+      "path": "ext.establishment.program",
+      "type": "string",
+      "owner": "establishment",
+      "definition": "Government programme or contract code delivered at this site.",
+      "values": [],
+      "multi": true,
+      "required_qualifiers": [],
+      "personal_data": "never",
+      "pattern": null
+    },
+    "ext.licence.authorisation": {
+      "path": "ext.licence.authorisation",
+      "type": "string",
+      "owner": "licence",
+      "definition": "One authorised activity per observation (split the publisher's list).",
+      "values": [],
+      "multi": true,
+      "required_qualifiers": [],
+      "personal_data": "never",
+      "pattern": null
+    },
+    "ext.entity.operating_country": {
+      "path": "ext.entity.operating_country",
+      "type": "string",
+      "owner": "business",
+      "definition": "Country the business says it operates in, as the source writes it (one per observation).",
+      "values": [],
+      "multi": true,
+      "required_qualifiers": [],
+      "personal_data": "never",
+      "pattern": null
+    }
+  },
+  "entity_types": {
+    "business": "The source's business/legal-person subject; legal form remains unknown unless stated.",
+    "licence": "An authorisation held by a business.",
+    "establishment": "A physical operating facility, separate from its operator.",
+    "charity": "A registered charity lodging an Annual Information Statement with the ACNC, identified by its ABN; its legal form is not inferred from its name.",
+    "fundraising_authorisation": "A state or territory fundraising registration/licence number held by a charity, evidenced by a fundraising number column for that jurisdiction."
+  },
+  "relationships": {
+    "HOLDS_LICENCE": {
+      "from_type": "business",
+      "to_type": "licence",
+      "definition": "Business holds this licence."
+    },
+    "OPERATES_ESTABLISHMENT": {
+      "from_type": "business",
+      "to_type": "establishment",
+      "definition": "Business operates this facility."
+    },
+    "HOLDS_FUNDRAISING_AUTHORISATION": {
+      "from_type": "charity",
+      "to_type": "fundraising_authorisation",
+      "definition": "Charity holds a state or territory fundraising registration evidenced by a fundraising number column for that jurisdiction."
+    }
+  },
+  "retrieval": "Lexical shortlist only; reuse requires identical meaning, owner, units and scope. Missing candidates can be requested with a narrower task."
+}

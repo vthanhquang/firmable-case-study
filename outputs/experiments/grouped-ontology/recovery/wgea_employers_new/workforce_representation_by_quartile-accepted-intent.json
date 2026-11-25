@@ -1,0 +1,230 @@
+{
+  "fields": [
+    {
+      "source_paths": [
+        "Total workforce % women"
+      ],
+      "join_with": " ",
+      "when": null,
+      "target": "dyn.employer_reporting_unit.total_workforce_women_share",
+      "valid_from_path": null,
+      "valid_to_path": null,
+      "validity_date_formats": null,
+      "claim_scope": null,
+      "steps": [
+        {
+          "op": "trim",
+          "args": {}
+        },
+        {
+          "op": "null_if",
+          "args": {
+            "values": [
+              "",
+              "NA",
+              "N/A",
+              "-"
+            ]
+          }
+        },
+        {
+          "op": "parse_decimal",
+          "args": {}
+        }
+      ],
+      "confidence": 0.82,
+      "rationale": "2024-25 total-workforce female share for the employer reporting unit, stored as a decimal fraction (0.6 = 60%), not a whole percentage and not a pay gap. The reporting year appears only in the sheet header, not in a per-row date column, so no claim_period is attached; the required 'period' qualifier is carried as a literal reporting_year value.",
+      "entity": "employer",
+      "qualifiers": {
+        "period": {
+          "source_path": null,
+          "value": "2024-25",
+          "steps": []
+        }
+      },
+      "one_hot": null,
+      "claim_period": null
+    },
+    {
+      "source_paths": [
+        "Lower quartile % women"
+      ],
+      "join_with": " ",
+      "when": null,
+      "target": "dyn.employer_reporting_unit.lower_quartile_women_share",
+      "valid_from_path": null,
+      "valid_to_path": null,
+      "validity_date_formats": null,
+      "claim_scope": null,
+      "steps": [
+        {
+          "op": "trim",
+          "args": {}
+        },
+        {
+          "op": "null_if",
+          "args": {
+            "values": [
+              "",
+              "NA",
+              "N/A",
+              "-"
+            ]
+          }
+        },
+        {
+          "op": "parse_decimal",
+          "args": {}
+        }
+      ],
+      "confidence": 0.82,
+      "rationale": "Lower pay quartile female share for the 2024-25 reporting year; decimal fraction, a distinct population from the total-workforce share and not a pay gap. No per-row date column exists, so the required 'period' qualifier is a literal reporting_year value rather than a claim_period.",
+      "entity": "employer",
+      "qualifiers": {
+        "period": {
+          "source_path": null,
+          "value": "2024-25",
+          "steps": []
+        }
+      },
+      "one_hot": null,
+      "claim_period": null
+    },
+    {
+      "source_paths": [
+        "Lower-middle quartile % women"
+      ],
+      "join_with": " ",
+      "when": null,
+      "target": "dyn.employer_reporting_unit.lower_middle_quartile_women_share",
+      "valid_from_path": null,
+      "valid_to_path": null,
+      "validity_date_formats": null,
+      "claim_scope": null,
+      "steps": [
+        {
+          "op": "trim",
+          "args": {}
+        },
+        {
+          "op": "null_if",
+          "args": {
+            "values": [
+              "",
+              "NA",
+              "N/A",
+              "-"
+            ]
+          }
+        },
+        {
+          "op": "parse_decimal",
+          "args": {}
+        }
+      ],
+      "confidence": 0.82,
+      "rationale": "Lower-middle pay quartile female share for the 2024-25 reporting year; decimal fraction, a distinct population from the total-workforce share and not a pay gap. No per-row date column exists, so the required 'period' qualifier is a literal reporting_year value rather than a claim_period.",
+      "entity": "employer",
+      "qualifiers": {
+        "period": {
+          "source_path": null,
+          "value": "2024-25",
+          "steps": []
+        }
+      },
+      "one_hot": null,
+      "claim_period": null
+    },
+    {
+      "source_paths": [
+        "Upper-middle quartile % women"
+      ],
+      "join_with": " ",
+      "when": null,
+      "target": "dyn.employer_reporting_unit.upper_middle_quartile_women_share",
+      "valid_from_path": null,
+      "valid_to_path": null,
+      "validity_date_formats": null,
+      "claim_scope": null,
+      "steps": [
+        {
+          "op": "trim",
+          "args": {}
+        },
+        {
+          "op": "null_if",
+          "args": {
+            "values": [
+              "",
+              "NA",
+              "N/A",
+              "-"
+            ]
+          }
+        },
+        {
+          "op": "parse_decimal",
+          "args": {}
+        }
+      ],
+      "confidence": 0.82,
+      "rationale": "Upper-middle pay quartile female share for the 2024-25 reporting year; decimal fraction, a distinct population from the total-workforce share and not a pay gap. No per-row date column exists, so the required 'period' qualifier is a literal reporting_year value rather than a claim_period.",
+      "entity": "employer",
+      "qualifiers": {
+        "period": {
+          "source_path": null,
+          "value": "2024-25",
+          "steps": []
+        }
+      },
+      "one_hot": null,
+      "claim_period": null
+    },
+    {
+      "source_paths": [
+        "Upper quartile % women"
+      ],
+      "join_with": " ",
+      "when": null,
+      "target": "dyn.employer_reporting_unit.upper_quartile_women_share",
+      "valid_from_path": null,
+      "valid_to_path": null,
+      "validity_date_formats": null,
+      "claim_scope": null,
+      "steps": [
+        {
+          "op": "trim",
+          "args": {}
+        },
+        {
+          "op": "null_if",
+          "args": {
+            "values": [
+              "",
+              "NA",
+              "N/A",
+              "-"
+            ]
+          }
+        },
+        {
+          "op": "parse_decimal",
+          "args": {}
+        }
+      ],
+      "confidence": 0.82,
+      "rationale": "Upper pay quartile female share for the 2024-25 reporting year; decimal fraction, a distinct population from the total-workforce share and not a pay gap. No per-row date column exists, so the required 'period' qualifier is a literal reporting_year value rather than a claim_period.",
+      "entity": "employer",
+      "qualifiers": {
+        "period": {
+          "source_path": null,
+          "value": "2024-25",
+          "steps": []
+        }
+      },
+      "one_hot": null,
+      "claim_period": null
+    }
+  ],
+  "unmapped": []
+}

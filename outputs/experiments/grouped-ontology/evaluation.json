@@ -1,0 +1,1328 @@
+{
+  "scope": "Known-case engineering comparison; one stochastic run per condition, with documented interventions. No population accuracy claim.",
+  "conflicting_contract_keys": {},
+  "controller_only_ablation": {
+    "source_id": "acnc_ais2024_new",
+    "mapping_digest": "5ebf939405925bce8bc40a94f9906eb6b18e8866dcebe88cad3df65dcb6f1d86",
+    "model_calls": 0,
+    "original_gate_error_rate": 0.08207440811724916,
+    "revised_validation_quality": {
+      "present_values": 8870,
+      "emitted_observations": 8158,
+      "withheld_missing_context": 728,
+      "abstention_reasons": {
+        "QUALIFIER_MISSING_PERIOD": 728
+      },
+      "malformed_values": 0,
+      "malformed_reasons": {},
+      "eligible_present_values": 8142,
+      "malformed_rate": 0.0,
+      "abstention_rate": 0.08207440811724916,
+      "record_errors": {},
+      "passes_technical_gate": true,
+      "semantic_precision": null,
+      "note": "Missing required context remains withheld. This gate does not establish semantic truth or useful coverage."
+    },
+    "revised_test_quality": {
+      "present_values": 7420,
+      "emitted_observations": 6699,
+      "withheld_missing_context": 728,
+      "abstention_reasons": {
+        "QUALIFIER_MISSING_PERIOD": 728
+      },
+      "malformed_values": 0,
+      "malformed_reasons": {},
+      "eligible_present_values": 6692,
+      "malformed_rate": 0.0,
+      "abstention_rate": 0.09811320754716982,
+      "record_errors": {},
+      "passes_technical_gate": true,
+      "semantic_precision": null,
+      "note": "Missing required context remains withheld. This gate does not establish semantic truth or useful coverage."
+    },
+    "all_records_quality": {
+      "present_values": 38053,
+      "emitted_observations": 35344,
+      "withheld_missing_context": 2744,
+      "abstention_reasons": {
+        "QUALIFIER_MISSING_PERIOD": 2744
+      },
+      "malformed_values": 3,
+      "malformed_reasons": {
+        "ABN_CHECKSUM": 1,
+        "DOMAIN_INVALID": 2
+      },
+      "eligible_present_values": 35309,
+      "malformed_rate": 8.496417344019939e-05,
+      "abstention_rate": 0.0721099519091793,
+      "record_errors": {},
+      "passes_technical_gate": true,
+      "semantic_precision": null,
+      "note": "Missing required context remains withheld. This gate does not establish semantic truth or useful coverage."
+    },
+    "rules": 91,
+    "recorded_critic_verdict": "accept",
+    "questions": [
+      {
+        "question": "Reported gross income and assets, with currency, period and consolidation context?",
+        "key": "charity_financials",
+        "input_records": 600,
+        "rows_with_requested_values": 502,
+        "rows_meeting_evidence_contract": 0,
+        "rows_connected_to_business": 0,
+        "violations_by_row": {
+          "missing_period": 502,
+          "missing_scope_context": 352
+        },
+        "status": "PARTIAL",
+        "examples": [],
+        "scope": "Structural evidence check on this sample; not measured semantic accuracy or a production profile merge."
+      },
+      {
+        "question": "Reported employee and volunteer counts?",
+        "key": "charity_workforce",
+        "input_records": 600,
+        "rows_with_requested_values": 600,
+        "rows_meeting_evidence_contract": 600,
+        "rows_connected_to_business": 600,
+        "violations_by_row": {},
+        "status": "SUPPORTED_IN_CANDIDATE",
+        "examples": [
+          {
+            "record_id": "434af5919e09287e66034f95d405c4dc2c2146ebde5313ba064e5c125d8ed86f",
+            "claims": [
+              {
+                "observation_id": "693d4e399e850702150e027a",
+                "field": "dyn.charity.staff_full_time_equivalent",
+                "value": 55,
+                "qualifiers": null,
+                "entity_kind": "business",
+                "entity_role": "subject",
+                "source_fields": [
+                  "total full time equivalent staff"
+                ],
+                "source_row_ordinal": 1,
+                "valid_from": null,
+                "valid_to": null
+              },
+              {
+                "observation_id": "027257c3cddb284254e42432",
+                "field": "dyn.charity.staff_volunteers",
+                "value": 1,
+                "qualifiers": null,
+                "entity_kind": "business",
+                "entity_role": "subject",
+                "source_fields": [
+                  "staff - volunteers"
+                ],
+                "source_row_ordinal": 1,
+                "valid_from": null,
+                "valid_to": null
+              }
+            ]
+          },
+          {
+            "record_id": "08b9ff5aebba961c61dfdffe7ea5a949ca30caab1a60aad6788c169b3d36d5b7",
+            "claims": [
+              {
+                "observation_id": "ef60651d2414f67008758514",
+                "field": "dyn.charity.staff_full_time_equivalent",
+                "value": 153.4,
+                "qualifiers": null,
+                "entity_kind": "business",
+                "entity_role": "subject",
+                "source_fields": [
+                  "total full time equivalent staff"
+                ],
+                "source_row_ordinal": 2,
+                "valid_from": null,
+                "valid_to": null
+              },
+              {
+                "observation_id": "f321637c4f6313253ab8bd36",
+                "field": "dyn.charity.staff_volunteers",
+                "value": 6,
+                "qualifiers": null,
+                "entity_kind": "business",
+                "entity_role": "subject",
+                "source_fields": [
+                  "staff - volunteers"
+                ],
+                "source_row_ordinal": 2,
+                "valid_from": null,
+                "valid_to": null
+              }
+            ]
+          },
+          {
+            "record_id": "b258007aa3c6bf69602c11b551bdbe5c35bfc5b0d1bab8b70a6055ddfe1f65d7",
+            "claims": [
+              {
+                "observation_id": "df4f1b5b9498ce24294a176a",
+                "field": "dyn.charity.staff_full_time_equivalent",
+                "value": 4.14,
+                "qualifiers": null,
+                "entity_kind": "business",
+                "entity_role": "subject",
+                "source_fields": [
+                  "total full time equivalent staff"
+                ],
+                "source_row_ordinal": 3,
+                "valid_from": null,
+                "valid_to": null
+              },
+              {
+                "observation_id": "de4d6661f468f15f885cda77",
+                "field": "dyn.charity.staff_volunteers",
+                "value": 2,
+                "qualifiers": null,
+                "entity_kind": "business",
+                "entity_role": "subject",
+                "source_fields": [
+                  "staff - volunteers"
+                ],
+                "source_row_ordinal": 3,
+                "valid_from": null,
+                "valid_to": null
+              }
+            ]
+          }
+        ],
+        "scope": "Structural evidence check on this sample; not measured semantic accuracy or a production profile merge."
+      }
+    ],
+    "status": "POSTHOC_TECHNICAL_ABLATION_NOT_PROMOTED",
+    "scope": "Same saved proposal/mapping and rows. Changes accounting only, not values or semantic definitions. Not a new autonomous ingestion or human approval."
+  },
+  "paired_sources": [
+    {
+      "name": "ACNC",
+      "same_records_and_partitions": true,
+      "baseline": {
+        "source": "ACNC AIS",
+        "source_id": "acnc_ais2024_new",
+        "run": "run",
+        "status": "INGESTION_FAILED_REVIEW_REQUIRED",
+        "sample_records": 600,
+        "partitions": {
+          "discovery": 342,
+          "test": 118,
+          "validation": 140
+        },
+        "architect_attempts": 5,
+        "mapper_attempts": 4,
+        "unique_mapping_responses": 4,
+        "executed_evaluations": 4,
+        "critic_verdicts": [
+          "revise",
+          "accept",
+          "revise",
+          "accept"
+        ],
+        "latest_validation_observations": 8158,
+        "latest_validation_present_values": 8870,
+        "latest_validation_rejection_reasons": {
+          "QUALIFIER_MISSING_PERIOD": 728
+        },
+        "new_concepts": 63,
+        "reuse_decisions": 9,
+        "new_entity_types": 0,
+        "new_relationship_types": 0,
+        "mapping_rules": 91,
+        "mapped_source_columns": 91,
+        "unmapped_declarations": 0,
+        "accepted_observations": 0,
+        "sealed_test": {
+          "input_records": null,
+          "present_values": null,
+          "value_errors": null
+        },
+        "model_calls": 14,
+        "failed_requests": 0,
+        "input_tokens": 954928,
+        "output_tokens": 121165,
+        "cumulative_request_seconds": 652.2,
+        "proposal_file": "outputs/experiments/profile-enrichment/run/acnc_ais2024_new/4-architect.json",
+        "mapping_file": "outputs/experiments/profile-enrichment/run/acnc_ais2024_new/3-mapper.json"
+      },
+      "first_grouped": {
+        "run": "outputs\\experiments\\grouped-ontology\\run",
+        "source_id": "acnc_ais2024_new",
+        "status": "PARTIAL_REVIEW_REQUIRED",
+        "groups": 9,
+        "accepted_groups": 4,
+        "reused_groups": 0,
+        "rules": 44,
+        "value_columns": 43,
+        "concepts": 17,
+        "observations": 15125,
+        "profile_visible_observations": 15125,
+        "business_connected_observations": 2021,
+        "self_edges": 0,
+        "test_quality": {
+          "present_values": 3063,
+          "emitted_observations": 2932,
+          "withheld_missing_context": 130,
+          "abstention_reasons": {
+            "QUALIFIER_MISSING_PERIOD": 130
+          },
+          "malformed_values": 1,
+          "malformed_reasons": {
+            "INVALID_ENUM_VALUE_INVALID": 1
+          },
+          "eligible_present_values": 2933,
+          "malformed_rate": 0.00034094783498124785,
+          "abstention_rate": 0.042442050277505715,
+          "record_errors": {},
+          "passes_technical_gate": true,
+          "semantic_precision": null,
+          "note": "Missing required context remains withheld. This gate does not establish semantic truth or useful coverage."
+        },
+        "quality": {
+          "present_values": 15621,
+          "emitted_observations": 15125,
+          "withheld_missing_context": 490,
+          "abstention_reasons": {
+            "QUALIFIER_MISSING_PERIOD": 490
+          },
+          "malformed_values": 6,
+          "malformed_reasons": {
+            "ABN_CHECKSUM": 1,
+            "WEBSITE_INVALID": 2,
+            "DOMAIN_INVALID": 2,
+            "INVALID_ENUM_VALUE_INVALID": 1
+          },
+          "eligible_present_values": 15131,
+          "malformed_rate": 0.0003965369109774635,
+          "abstention_rate": 0.031368030215735226,
+          "record_errors": {},
+          "passes_technical_gate": true,
+          "semantic_precision": null,
+          "note": "Missing required context remains withheld. This gate does not establish semantic truth or useful coverage."
+        },
+        "calls": 23,
+        "input_tokens": 282391,
+        "output_tokens": 26565,
+        "failed_requests": 0
+      },
+      "recovery": {
+        "run": "outputs\\experiments\\grouped-ontology\\recovery",
+        "source_id": "acnc_ais2024_new",
+        "status": "PARTIAL_REVIEW_REQUIRED",
+        "groups": 9,
+        "accepted_groups": 5,
+        "reused_groups": 4,
+        "rules": 56,
+        "value_columns": 55,
+        "concepts": 29,
+        "observations": 20193,
+        "profile_visible_observations": 20193,
+        "business_connected_observations": 2021,
+        "self_edges": 0,
+        "test_quality": {
+          "present_values": 4030,
+          "emitted_observations": 3899,
+          "withheld_missing_context": 130,
+          "abstention_reasons": {
+            "QUALIFIER_MISSING_PERIOD": 130
+          },
+          "malformed_values": 1,
+          "malformed_reasons": {
+            "INVALID_ENUM_VALUE_INVALID": 1
+          },
+          "eligible_present_values": 3900,
+          "malformed_rate": 0.0002564102564102564,
+          "abstention_rate": 0.03225806451612903,
+          "record_errors": {},
+          "passes_technical_gate": true,
+          "semantic_precision": null,
+          "note": "Missing required context remains withheld. This gate does not establish semantic truth or useful coverage."
+        },
+        "quality": {
+          "present_values": 20689,
+          "emitted_observations": 20193,
+          "withheld_missing_context": 490,
+          "abstention_reasons": {
+            "QUALIFIER_MISSING_PERIOD": 490
+          },
+          "malformed_values": 6,
+          "malformed_reasons": {
+            "ABN_CHECKSUM": 1,
+            "WEBSITE_INVALID": 2,
+            "DOMAIN_INVALID": 2,
+            "INVALID_ENUM_VALUE_INVALID": 1
+          },
+          "eligible_present_values": 20199,
+          "malformed_rate": 0.0002970444081390168,
+          "abstention_rate": 0.02368408332930543,
+          "record_errors": {},
+          "passes_technical_gate": true,
+          "semantic_precision": null,
+          "note": "Missing required context remains withheld. This gate does not establish semantic truth or useful coverage."
+        },
+        "calls": 17,
+        "input_tokens": 273233,
+        "output_tokens": 30368,
+        "failed_requests": 0,
+        "cumulative_input_tokens": 555624,
+        "cumulative_output_tokens": 56933
+      }
+    },
+    {
+      "name": "WGEA",
+      "same_records_and_partitions": true,
+      "baseline": {
+        "source": "WGEA",
+        "source_id": "wgea_employers_new",
+        "run": "wgea-retest",
+        "status": "AGENT_VALIDATED_CANDIDATE",
+        "sample_records": 600,
+        "partitions": {
+          "discovery": 370,
+          "validation": 121,
+          "test": 109
+        },
+        "architect_attempts": 2,
+        "mapper_attempts": 2,
+        "unique_mapping_responses": 2,
+        "executed_evaluations": 2,
+        "critic_verdicts": [
+          "revise",
+          "accept"
+        ],
+        "latest_validation_observations": 2828,
+        "latest_validation_present_values": 2828,
+        "latest_validation_rejection_reasons": {},
+        "new_concepts": 10,
+        "reuse_decisions": 6,
+        "new_entity_types": 0,
+        "new_relationship_types": 0,
+        "mapping_rules": 24,
+        "mapped_source_columns": 24,
+        "unmapped_declarations": 0,
+        "accepted_observations": 13948,
+        "sealed_test": {
+          "input_records": 109,
+          "present_values": 2556,
+          "value_errors": 0
+        },
+        "model_calls": 7,
+        "failed_requests": 0,
+        "input_tokens": 161932,
+        "output_tokens": 17927,
+        "cumulative_request_seconds": 194.5,
+        "proposal_file": "outputs/experiments/profile-enrichment/wgea-retest/wgea_employers_new/1-architect.json",
+        "mapping_file": "outputs/experiments/profile-enrichment/wgea-retest/wgea_employers_new/1-mapper.json"
+      },
+      "first_grouped": {
+        "run": "outputs\\experiments\\grouped-ontology\\run",
+        "source_id": "wgea_employers_new",
+        "status": "NEEDS_REVIEW",
+        "groups": 5,
+        "accepted_groups": 0,
+        "reused_groups": 0,
+        "rules": 0,
+        "value_columns": 0,
+        "concepts": 0,
+        "observations": 0,
+        "profile_visible_observations": 0,
+        "business_connected_observations": 0,
+        "self_edges": 0,
+        "test_quality": null,
+        "quality": null,
+        "calls": 23,
+        "input_tokens": 217698,
+        "output_tokens": 22173,
+        "failed_requests": 0
+      },
+      "recovery": {
+        "run": "outputs\\experiments\\grouped-ontology\\recovery",
+        "source_id": "wgea_employers_new",
+        "status": "PARTIAL_REVIEW_REQUIRED",
+        "groups": 5,
+        "accepted_groups": 4,
+        "reused_groups": 0,
+        "rules": 20,
+        "value_columns": 20,
+        "concepts": 20,
+        "observations": 11996,
+        "profile_visible_observations": 11996,
+        "business_connected_observations": 0,
+        "self_edges": 0,
+        "test_quality": {
+          "present_values": 2180,
+          "emitted_observations": 2180,
+          "withheld_missing_context": 0,
+          "abstention_reasons": {},
+          "malformed_values": 0,
+          "malformed_reasons": {},
+          "eligible_present_values": 2180,
+          "malformed_rate": 0.0,
+          "abstention_rate": 0.0,
+          "record_errors": {},
+          "passes_technical_gate": true,
+          "semantic_precision": null,
+          "note": "Missing required context remains withheld. This gate does not establish semantic truth or useful coverage."
+        },
+        "quality": {
+          "present_values": 11996,
+          "emitted_observations": 11996,
+          "withheld_missing_context": 0,
+          "abstention_reasons": {},
+          "malformed_values": 0,
+          "malformed_reasons": {},
+          "eligible_present_values": 11996,
+          "malformed_rate": 0.0,
+          "abstention_rate": 0.0,
+          "record_errors": {},
+          "passes_technical_gate": true,
+          "semantic_precision": null,
+          "note": "Missing required context remains withheld. This gate does not establish semantic truth or useful coverage."
+        },
+        "calls": 24,
+        "input_tokens": 272976,
+        "output_tokens": 25375,
+        "failed_requests": 0,
+        "cumulative_input_tokens": 490674,
+        "cumulative_output_tokens": 47548
+      }
+    },
+    {
+      "name": "IP party",
+      "same_records_and_partitions": true,
+      "baseline": {
+        "source": "IP Australia",
+        "source_id": "ip_party_activity_new",
+        "run": "ip-pilot",
+        "status": "NEEDS_REVIEW",
+        "sample_records": 600,
+        "partitions": {
+          "discovery": 357,
+          "validation": 120,
+          "test": 123
+        },
+        "architect_attempts": 5,
+        "mapper_attempts": 5,
+        "unique_mapping_responses": 2,
+        "executed_evaluations": 0,
+        "critic_verdicts": [],
+        "latest_validation_observations": null,
+        "latest_validation_present_values": null,
+        "latest_validation_rejection_reasons": {},
+        "new_concepts": 13,
+        "reuse_decisions": 8,
+        "new_entity_types": 2,
+        "new_relationship_types": 1,
+        "mapping_rules": 15,
+        "mapped_source_columns": 15,
+        "unmapped_declarations": 0,
+        "accepted_observations": 0,
+        "sealed_test": {
+          "input_records": null,
+          "present_values": null,
+          "value_errors": null
+        },
+        "model_calls": 11,
+        "failed_requests": 0,
+        "input_tokens": 228057,
+        "output_tokens": 28634,
+        "cumulative_request_seconds": 214.2,
+        "proposal_file": "outputs/experiments/profile-enrichment/ip-pilot/ip_party_activity_new/4-architect.json",
+        "mapping_file": "outputs/experiments/profile-enrichment/ip-pilot/ip_party_activity_new/4-mapper.json"
+      },
+      "first_grouped": {
+        "run": "outputs\\experiments\\grouped-ontology\\run",
+        "source_id": "ip_party_activity_new",
+        "status": "RECONCILIATION_FAILED",
+        "groups": 5,
+        "accepted_groups": 5,
+        "reused_groups": 0,
+        "rules": 0,
+        "value_columns": 0,
+        "concepts": 0,
+        "observations": 0,
+        "profile_visible_observations": 0,
+        "business_connected_observations": 0,
+        "self_edges": 0,
+        "test_quality": null,
+        "quality": null,
+        "calls": 26,
+        "input_tokens": 248061,
+        "output_tokens": 24029,
+        "failed_requests": 0
+      },
+      "recovery": {
+        "run": "outputs\\experiments\\grouped-ontology\\recovery",
+        "source_id": "ip_party_activity_new",
+        "status": "AGENT_VALIDATED_CANDIDATE",
+        "groups": 5,
+        "accepted_groups": 5,
+        "reused_groups": 5,
+        "rules": 15,
+        "value_columns": 15,
+        "concepts": 15,
+        "observations": 7397,
+        "profile_visible_observations": 6797,
+        "business_connected_observations": 0,
+        "self_edges": 0,
+        "test_quality": {
+          "present_values": 1533,
+          "emitted_observations": 1533,
+          "withheld_missing_context": 0,
+          "abstention_reasons": {},
+          "malformed_values": 0,
+          "malformed_reasons": {},
+          "eligible_present_values": 1533,
+          "malformed_rate": 0.0,
+          "abstention_rate": 0.0,
+          "record_errors": {},
+          "passes_technical_gate": true,
+          "semantic_precision": null,
+          "note": "Missing required context remains withheld. This gate does not establish semantic truth or useful coverage."
+        },
+        "quality": {
+          "present_values": 7397,
+          "emitted_observations": 7397,
+          "withheld_missing_context": 0,
+          "abstention_reasons": {},
+          "malformed_values": 0,
+          "malformed_reasons": {},
+          "eligible_present_values": 7397,
+          "malformed_rate": 0.0,
+          "abstention_rate": 0.0,
+          "record_errors": {},
+          "passes_technical_gate": true,
+          "semantic_precision": null,
+          "note": "Missing required context remains withheld. This gate does not establish semantic truth or useful coverage."
+        },
+        "calls": 0,
+        "input_tokens": 0,
+        "output_tokens": 0,
+        "failed_requests": 0,
+        "cumulative_input_tokens": 248061,
+        "cumulative_output_tokens": 24029
+      }
+    }
+  ],
+  "joined_source": {
+    "run": "outputs\\experiments\\grouped-ontology\\ip-joined-recovery",
+    "source_id": "ip_joined_view",
+    "status": "PARTIAL_REVIEW_REQUIRED",
+    "groups": 6,
+    "accepted_groups": 5,
+    "reused_groups": 4,
+    "rules": 23,
+    "value_columns": 23,
+    "concepts": 24,
+    "observations": 11592,
+    "profile_visible_observations": 10992,
+    "business_connected_observations": 0,
+    "self_edges": 600,
+    "test_quality": {
+      "present_values": 2092,
+      "emitted_observations": 2088,
+      "withheld_missing_context": 0,
+      "abstention_reasons": {},
+      "malformed_values": 4,
+      "malformed_reasons": {
+        "ENUM_UNMAPPED": 4
+      },
+      "eligible_present_values": 2092,
+      "malformed_rate": 0.0019120458891013384,
+      "abstention_rate": 0.0,
+      "record_errors": {},
+      "passes_technical_gate": true,
+      "semantic_precision": null,
+      "note": "Missing required context remains withheld. This gate does not establish semantic truth or useful coverage."
+    },
+    "quality": {
+      "present_values": 11601,
+      "emitted_observations": 11592,
+      "withheld_missing_context": 0,
+      "abstention_reasons": {},
+      "malformed_values": 9,
+      "malformed_reasons": {
+        "ENUM_UNMAPPED": 9
+      },
+      "eligible_present_values": 11601,
+      "malformed_rate": 0.0007757951900698216,
+      "abstention_rate": 0.0,
+      "record_errors": {},
+      "passes_technical_gate": true,
+      "semantic_precision": null,
+      "note": "Missing required context remains withheld. This gate does not establish semantic truth or useful coverage."
+    },
+    "calls": 10,
+    "input_tokens": 145419,
+    "output_tokens": 13105,
+    "failed_requests": 0,
+    "first_pass": {
+      "run": "outputs\\experiments\\grouped-ontology\\ip-joined-run",
+      "source_id": "ip_joined_view",
+      "status": "PARTIAL_REVIEW_REQUIRED",
+      "groups": 6,
+      "accepted_groups": 4,
+      "reused_groups": 0,
+      "rules": 16,
+      "value_columns": 16,
+      "concepts": 16,
+      "observations": 8244,
+      "profile_visible_observations": 7644,
+      "business_connected_observations": 0,
+      "self_edges": 600,
+      "test_quality": {
+        "present_values": 1493,
+        "emitted_observations": 1491,
+        "withheld_missing_context": 0,
+        "abstention_reasons": {},
+        "malformed_values": 2,
+        "malformed_reasons": {
+          "ENUM_UNMAPPED": 2
+        },
+        "eligible_present_values": 1493,
+        "malformed_rate": 0.0013395847287340924,
+        "abstention_rate": 0.0,
+        "record_errors": {},
+        "passes_technical_gate": true,
+        "semantic_precision": null,
+        "note": "Missing required context remains withheld. This gate does not establish semantic truth or useful coverage."
+      },
+      "quality": {
+        "present_values": 8251,
+        "emitted_observations": 8244,
+        "withheld_missing_context": 0,
+        "abstention_reasons": {},
+        "malformed_values": 7,
+        "malformed_reasons": {
+          "ENUM_UNMAPPED": 7
+        },
+        "eligible_present_values": 8251,
+        "malformed_rate": 0.0008483820143012969,
+        "abstention_rate": 0.0,
+        "record_errors": {},
+        "passes_technical_gate": true,
+        "semantic_precision": null,
+        "note": "Missing required context remains withheld. This gate does not establish semantic truth or useful coverage."
+      },
+      "calls": 26,
+      "input_tokens": 286750,
+      "output_tokens": 25267,
+      "failed_requests": 0
+    },
+    "cumulative_input_tokens": 432169,
+    "cumulative_output_tokens": 38372
+  },
+  "joins": {
+    "source_fingerprints": {
+      "party_activity": "9ad75e5c603a756acb738ead9afdef6c2f3035d6caf59ef1972f2d965638b3e7",
+      "application": "56e7e3c0685a58c1b9fb41cc5c0807cee32404e4cad30e8c67e3b94493b39d1a",
+      "application_description": "5783d35579c7ab3b8ff6b38ae57dd616174d253a3a651c5ffbaaf4cb62a6e31d"
+    },
+    "etag": "\"1795394111.646-1351218010-3514699609\"",
+    "anchor_rows": 25000,
+    "view_rows": 25000,
+    "steps": [
+      {
+        "step": {
+          "left_table": "party_activity",
+          "right_table": "application",
+          "left_columns": [
+            "ip_right_type",
+            "application_number"
+          ],
+          "right_columns": [
+            "ip_right_type",
+            "application_number"
+          ],
+          "cardinality": "many_to_one",
+          "meaning": "Each reported party role row on a right is matched to the single application record for the same right type and application number, so analysts can attach source-stated status and dates to each party role.",
+          "cautions": [
+            "Composite key required because application numbers are scoped by ip_right_type; joining on application_number alone could match a different right type.",
+            "Assumes application is unique per (ip_right_type, application_number); duplicates in the full right table will cause the join to be refused rather than silently deduplicated.",
+            "Party role presence does not imply ownership, entitlement, or current enforceability of the right.",
+            "Status and dates are source-stated values, not derived legal conclusions."
+          ]
+        },
+        "measurement": {
+          "left_rows": 25000,
+          "right_rows_scanned": 4383361,
+          "matched_left_rows": 25000,
+          "match_rate": 1.0,
+          "unique_left_keys": 24113,
+          "right_duplicate_keys_in_cohort": 0,
+          "left_duplicate_keys_in_cohort": 868,
+          "refusal_reasons": {},
+          "refusals": [],
+          "would_be_inner_join_rows_without_guard": 25000,
+          "materialized_rows_per_left_max": 1,
+          "semantic_equivalence_established": false,
+          "passes_cardinality_gate": true,
+          "scope": "Key/cardinality checks cover the supplied anchor cohort, not all business identities."
+        }
+      },
+      {
+        "step": {
+          "left_table": "party_activity",
+          "right_table": "application_description",
+          "left_columns": [
+            "ip_right_type",
+            "application_number"
+          ],
+          "right_columns": [
+            "ip_right_type",
+            "application_number"
+          ],
+          "cardinality": "many_to_one",
+          "meaning": "Each party role row is matched to the description record for the same right type and application number, giving a human-readable description of the right alongside the party role.",
+          "cautions": [
+            "Only valid as many_to_one if application_description holds at most one row per (ip_right_type, application_number); the schema includes description_type, so multiple description types per application would break this and the join must be refused.",
+            "If multiple description types exist, a description_type filter (e.g. 'description') would be needed, which is a selection not a star join.",
+            "Description text is source-stated and may be truncated or absent; it is not a legal scope of the right."
+          ]
+        },
+        "measurement": {
+          "left_rows": 25000,
+          "right_rows_scanned": 7485828,
+          "matched_left_rows": 25000,
+          "match_rate": 1.0,
+          "unique_left_keys": 24113,
+          "right_duplicate_keys_in_cohort": 0,
+          "left_duplicate_keys_in_cohort": 868,
+          "refusal_reasons": {},
+          "refusals": [],
+          "would_be_inner_join_rows_without_guard": 25000,
+          "materialized_rows_per_left_max": 1,
+          "semantic_equivalence_established": false,
+          "passes_cardinality_gate": true,
+          "scope": "Key/cardinality checks cover the supplied anchor cohort, not all business identities."
+        }
+      }
+    ],
+    "view_path": "data\\profile-enrichment\\ip-join-new\\joined_view.csv",
+    "view_sha256": "10ce770880944510df491b5e15d7928b84064e6c4ec8fe530c0b838f1549f511",
+    "semantic_precision": null,
+    "human_review": "pending"
+  },
+  "join_planning_usage": {
+    "calls": 1,
+    "input_tokens": 5841,
+    "output_tokens": 533,
+    "failed_requests": 0
+  },
+  "questions": [
+    {
+      "source_id": "acnc_ais2024_new",
+      "question": "Reported gross income and assets, with currency, period and consolidation context?",
+      "key": "charity_financials",
+      "input_records": 600,
+      "rows_with_requested_values": 0,
+      "rows_meeting_evidence_contract": 0,
+      "rows_connected_to_business": 0,
+      "violations_by_row": {},
+      "status": "UNSUPPORTED",
+      "examples": [],
+      "scope": "Structural evidence check on this sample; not measured semantic accuracy or a production profile merge."
+    },
+    {
+      "source_id": "acnc_ais2024_new",
+      "question": "Reported employee and volunteer counts?",
+      "key": "charity_workforce",
+      "input_records": 600,
+      "rows_with_requested_values": 502,
+      "rows_meeting_evidence_contract": 502,
+      "rows_connected_to_business": 0,
+      "violations_by_row": {},
+      "status": "PARTIAL",
+      "examples": [
+        {
+          "record_id": "434af5919e09287e66034f95d405c4dc2c2146ebde5313ba064e5c125d8ed86f",
+          "claims": [
+            {
+              "observation_id": "cdd00d9270b301ef5ab133b2",
+              "field": "dyn.charity.full_time_equivalent_staff",
+              "value": 55,
+              "qualifiers": {
+                "period": "2024-01-01"
+              },
+              "entity_kind": "charity",
+              "entity_role": "charity",
+              "source_fields": [
+                "total full time equivalent staff"
+              ],
+              "source_row_ordinal": 1,
+              "valid_from": "2024-01-01",
+              "valid_to": "2024-12-31"
+            },
+            {
+              "observation_id": "6c75062f9403eb6274883910",
+              "field": "dyn.charity.volunteer_count",
+              "value": 1,
+              "qualifiers": {
+                "period": "2024-01-01"
+              },
+              "entity_kind": "charity",
+              "entity_role": "charity",
+              "source_fields": [
+                "staff - volunteers"
+              ],
+              "source_row_ordinal": 1,
+              "valid_from": "2024-01-01",
+              "valid_to": "2024-12-31"
+            }
+          ]
+        },
+        {
+          "record_id": "08b9ff5aebba961c61dfdffe7ea5a949ca30caab1a60aad6788c169b3d36d5b7",
+          "claims": [
+            {
+              "observation_id": "99cc1e3c8cdae036bca4bc5e",
+              "field": "dyn.charity.full_time_equivalent_staff",
+              "value": 153.4,
+              "qualifiers": {
+                "period": "2023-07-01"
+              },
+              "entity_kind": "charity",
+              "entity_role": "charity",
+              "source_fields": [
+                "total full time equivalent staff"
+              ],
+              "source_row_ordinal": 2,
+              "valid_from": "2023-07-01",
+              "valid_to": "2024-06-30"
+            },
+            {
+              "observation_id": "385ae8038bca39956ed36c7e",
+              "field": "dyn.charity.volunteer_count",
+              "value": 6,
+              "qualifiers": {
+                "period": "2023-07-01"
+              },
+              "entity_kind": "charity",
+              "entity_role": "charity",
+              "source_fields": [
+                "staff - volunteers"
+              ],
+              "source_row_ordinal": 2,
+              "valid_from": "2023-07-01",
+              "valid_to": "2024-06-30"
+            }
+          ]
+        },
+        {
+          "record_id": "b258007aa3c6bf69602c11b551bdbe5c35bfc5b0d1bab8b70a6055ddfe1f65d7",
+          "claims": [
+            {
+              "observation_id": "3eaf3c3f058063e2af1bf90f",
+              "field": "dyn.charity.full_time_equivalent_staff",
+              "value": 4.14,
+              "qualifiers": {
+                "period": "2024-01-01"
+              },
+              "entity_kind": "charity",
+              "entity_role": "charity",
+              "source_fields": [
+                "total full time equivalent staff"
+              ],
+              "source_row_ordinal": 3,
+              "valid_from": "2024-01-01",
+              "valid_to": "2024-12-31"
+            },
+            {
+              "observation_id": "bc73c145486b5b5d4c7e8194",
+              "field": "dyn.charity.volunteer_count",
+              "value": 2,
+              "qualifiers": {
+                "period": "2024-01-01"
+              },
+              "entity_kind": "charity",
+              "entity_role": "charity",
+              "source_fields": [
+                "staff - volunteers"
+              ],
+              "source_row_ordinal": 3,
+              "valid_from": "2024-01-01",
+              "valid_to": "2024-12-31"
+            }
+          ]
+        }
+      ],
+      "scope": "Structural evidence check on this sample; not measured semantic accuracy or a production profile merge."
+    },
+    {
+      "source_id": "wgea_employers_new",
+      "question": "What employee size band and reporting period are supplied?",
+      "key": "workforce_band",
+      "input_records": 600,
+      "rows_with_requested_values": 600,
+      "rows_meeting_evidence_contract": 0,
+      "rows_connected_to_business": 0,
+      "violations_by_row": {
+        "missing_period": 600
+      },
+      "status": "PARTIAL",
+      "examples": [],
+      "scope": "Structural evidence check on this sample; not measured semantic accuracy or a production profile merge."
+    },
+    {
+      "source_id": "wgea_employers_new",
+      "question": "What is the exact employee headcount?",
+      "key": "workforce_exact",
+      "input_records": 600,
+      "rows_with_requested_values": 0,
+      "rows_meeting_evidence_contract": 0,
+      "rows_connected_to_business": 0,
+      "violations_by_row": {},
+      "status": "UNSUPPORTED",
+      "examples": [],
+      "scope": "Structural evidence check on this sample; not measured semantic accuracy or a production profile merge."
+    },
+    {
+      "source_id": "ip_party_activity_new",
+      "question": "What party role and role-validity dates are recorded?",
+      "key": "ip_role",
+      "input_records": 600,
+      "rows_with_requested_values": 600,
+      "rows_meeting_evidence_contract": 0,
+      "rows_connected_to_business": 0,
+      "violations_by_row": {
+        "missing_period": 600
+      },
+      "status": "PARTIAL",
+      "examples": [],
+      "scope": "Structural evidence check on this sample; not measured semantic accuracy or a production profile merge."
+    },
+    {
+      "source_id": "ip_party_activity_new",
+      "question": "What application status and description are linked to the party record?",
+      "key": "ip_status_description",
+      "input_records": 600,
+      "rows_with_requested_values": 0,
+      "rows_meeting_evidence_contract": 0,
+      "rows_connected_to_business": 0,
+      "violations_by_row": {},
+      "status": "UNSUPPORTED",
+      "examples": [],
+      "scope": "Structural evidence check on this sample; not measured semantic accuracy or a production profile merge."
+    },
+    {
+      "source_id": "ip_party_activity_new",
+      "question": "What source-stated application status is available?",
+      "key": "ip_status",
+      "input_records": 600,
+      "rows_with_requested_values": 0,
+      "rows_meeting_evidence_contract": 0,
+      "rows_connected_to_business": 0,
+      "violations_by_row": {},
+      "status": "UNSUPPORTED",
+      "examples": [],
+      "scope": "Structural evidence check on this sample; not measured semantic accuracy or a production profile merge."
+    },
+    {
+      "source_id": "ip_party_activity_new",
+      "question": "Who is the verified ultimate beneficial owner of the IP?",
+      "key": "ip_ownership",
+      "input_records": 600,
+      "rows_with_requested_values": 0,
+      "rows_meeting_evidence_contract": 0,
+      "rows_connected_to_business": 0,
+      "violations_by_row": {},
+      "status": "UNSUPPORTED",
+      "examples": [],
+      "scope": "Structural evidence check on this sample; not measured semantic accuracy or a production profile merge."
+    },
+    {
+      "source_id": "ip_joined_view",
+      "question": "What party role and role-validity dates are recorded?",
+      "key": "ip_role",
+      "input_records": 600,
+      "rows_with_requested_values": 596,
+      "rows_meeting_evidence_contract": 0,
+      "rows_connected_to_business": 0,
+      "violations_by_row": {
+        "missing_period": 596
+      },
+      "status": "PARTIAL",
+      "examples": [],
+      "scope": "Structural evidence check on this sample; not measured semantic accuracy or a production profile merge."
+    },
+    {
+      "source_id": "ip_joined_view",
+      "question": "What application status and description are linked to the party record?",
+      "key": "ip_status_description",
+      "input_records": 600,
+      "rows_with_requested_values": 0,
+      "rows_meeting_evidence_contract": 0,
+      "rows_connected_to_business": 0,
+      "violations_by_row": {},
+      "status": "UNSUPPORTED",
+      "examples": [],
+      "scope": "Structural evidence check on this sample; not measured semantic accuracy or a production profile merge."
+    },
+    {
+      "source_id": "ip_joined_view",
+      "question": "What source-stated application status is available?",
+      "key": "ip_status",
+      "input_records": 600,
+      "rows_with_requested_values": 598,
+      "rows_meeting_evidence_contract": 598,
+      "rows_connected_to_business": 0,
+      "violations_by_row": {},
+      "status": "PARTIAL",
+      "examples": [
+        {
+          "record_id": "51ce26f78f53bb7b155b4e46bcef737514937d2dbf0128fb623dc773a696795d",
+          "claims": [
+            {
+              "observation_id": "e4300c9b9a03bae1a71a2403",
+              "field": "dyn.ip_application.status",
+              "value": "filed",
+              "qualifiers": null,
+              "entity_kind": "ip_application",
+              "entity_role": "ip_application",
+              "source_fields": [
+                "application.status"
+              ],
+              "source_row_ordinal": 1,
+              "valid_from": null,
+              "valid_to": null
+            }
+          ]
+        },
+        {
+          "record_id": "eb99c7317e5670901c006a54a1246b3cc0a6228ff26ebfa72673da43edd26d53",
+          "claims": [
+            {
+              "observation_id": "01aebbd8f5439c946e10dd86",
+              "field": "dyn.ip_application.status",
+              "value": "lapsed",
+              "qualifiers": null,
+              "entity_kind": "ip_application",
+              "entity_role": "ip_application",
+              "source_fields": [
+                "application.status"
+              ],
+              "source_row_ordinal": 2,
+              "valid_from": null,
+              "valid_to": null
+            }
+          ]
+        },
+        {
+          "record_id": "d2682a58790d2ad41cd9efc868100fa6ad329c3ebdf440342c8426dce768e17e",
+          "claims": [
+            {
+              "observation_id": "9ddee43917a73f68c97cdd09",
+              "field": "dyn.ip_application.status",
+              "value": "granted",
+              "qualifiers": null,
+              "entity_kind": "ip_application",
+              "entity_role": "ip_application",
+              "source_fields": [
+                "application.status"
+              ],
+              "source_row_ordinal": 3,
+              "valid_from": null,
+              "valid_to": null
+            }
+          ]
+        }
+      ],
+      "scope": "Structural evidence check on this sample; not measured semantic accuracy or a production profile merge."
+    },
+    {
+      "source_id": "ip_joined_view",
+      "question": "Who is the verified ultimate beneficial owner of the IP?",
+      "key": "ip_ownership",
+      "input_records": 600,
+      "rows_with_requested_values": 0,
+      "rows_meeting_evidence_contract": 0,
+      "rows_connected_to_business": 0,
+      "violations_by_row": {},
+      "status": "UNSUPPORTED",
+      "examples": [],
+      "scope": "Structural evidence check on this sample; not measured semantic accuracy or a production profile merge."
+    }
+  ],
+  "review_counts": {
+    "concept": 91,
+    "binding": 114,
+    "relationship": 6
+  },
+  "blocked_groups": [
+    {
+      "source_id": "acnc_ais2024_new",
+      "group": "income_and_revenue",
+      "columns": [
+        "total gross income",
+        "total revenue",
+        "revenue from government",
+        "revenue from goods and services",
+        "revenue from investments",
+        "donations and bequests",
+        "all other revenue",
+        "other income",
+        "other comprehensive income",
+        "total comprehensive income"
+      ],
+      "status": "NEEDS_REVIEW",
+      "attempts": 3,
+      "feedback": {
+        "stop_reason": "SOURCE_BUDGET",
+        "error": "Per-source request reservation exhausted; other sources retain their allowances"
+      }
+    },
+    {
+      "source_id": "acnc_ais2024_new",
+      "group": "expenses_and_grants_made",
+      "columns": [
+        "total expenses",
+        "employee expenses",
+        "interest expenses",
+        "all other expenses",
+        "grants and donations made for use in Australia",
+        "grants and donations made for use outside Australia",
+        "net surplus/deficit"
+      ],
+      "status": "NEEDS_REVIEW",
+      "attempts": 1,
+      "feedback": {
+        "stop_reason": "SOURCE_BUDGET",
+        "error": "Per-source request reservation exhausted; other sources retain their allowances"
+      }
+    },
+    {
+      "source_id": "acnc_ais2024_new",
+      "group": "assets_and_liabilities",
+      "columns": [
+        "total assets",
+        "total current assets",
+        "total non-current assets",
+        "other non-current assets",
+        "total liabilities",
+        "total current liabilities",
+        "total non-current liabilities",
+        "other non-current liabilities",
+        "non-current loans payable",
+        "non-current loans receivable",
+        "net assets/liabilities",
+        "assets and liabilities description"
+      ],
+      "status": "NEEDS_REVIEW",
+      "attempts": 1,
+      "feedback": {
+        "stop_reason": "SOURCE_BUDGET",
+        "error": "Per-source request reservation exhausted; other sources retain their allowances"
+      }
+    },
+    {
+      "source_id": "acnc_ais2024_new",
+      "group": "key_management_and_related_parties",
+      "columns": [
+        "charity has reportable related party transactions",
+        "Relevant transactions",
+        "Key Management Personnel",
+        "Number of Key Management Personnel",
+        "Total paid to Key Management Personnel",
+        "Other Relevant details",
+        "Other details"
+      ],
+      "status": "NEEDS_REVIEW",
+      "attempts": 1,
+      "feedback": {
+        "stop_reason": "SOURCE_BUDGET",
+        "error": "Per-source request reservation exhausted; other sources retain their allowances"
+      }
+    },
+    {
+      "source_id": "wgea_employers_new",
+      "group": "prior_year_gender_pay_gaps_comparison",
+      "columns": [
+        "Average base salary GPG (%)_2",
+        "Average total remuneration GPG (%)_2",
+        "Median base salary GPG (%)_2",
+        "Median total remuneration GPG (%)_2"
+      ],
+      "status": "NEEDS_REVIEW",
+      "attempts": 2,
+      "feedback": {
+        "stop_reason": "SOURCE_BUDGET",
+        "error": "Per-source request reservation exhausted; other sources retain their allowances"
+      }
+    },
+    {
+      "source_id": "ip_joined_view",
+      "group": "application_description",
+      "columns": [
+        "application_description.application_number",
+        "application_description.ip_right_type",
+        "application_description.description_type",
+        "application_description.description_value"
+      ],
+      "status": "NEEDS_REVIEW",
+      "attempts": 2,
+      "feedback": {
+        "stop_reason": "SOURCE_BUDGET",
+        "error": "Per-source request reservation exhausted; other sources retain their allowances"
+      }
+    }
+  ],
+  "review_simulation": {
+    "synthetic_only": true,
+    "items": 211,
+    "excluded_conflicting_key_variants": 0,
+    "unchanged_repeat": {
+      "approved_unchanged": 211
+    },
+    "one_changed_binding": {
+      "approved_unchanged": 210,
+      "changed_requires_review": 1
+    },
+    "real_approvals_from_synthetic_ledger": 0,
+    "measured_human_time_saved": null
+  },
+  "offline_replay": {
+    "outputs\\experiments\\grouped-ontology\\run": {
+      "acnc_ais2024_new": {
+        "status": "PARTIAL_REVIEW_REQUIRED",
+        "observations": 15125
+      },
+      "wgea_employers_new": {
+        "status": "NEEDS_REVIEW",
+        "observations": 0
+      },
+      "ip_party_activity_new": {
+        "status": "RECONCILIATION_FAILED",
+        "observations": 0
+      }
+    },
+    "outputs\\experiments\\grouped-ontology\\recovery": {
+      "acnc_ais2024_new": {
+        "status": "PARTIAL_REVIEW_REQUIRED",
+        "observations": 20193
+      },
+      "wgea_employers_new": {
+        "status": "PARTIAL_REVIEW_REQUIRED",
+        "observations": 11996
+      },
+      "ip_party_activity_new": {
+        "status": "AGENT_VALIDATED_CANDIDATE",
+        "observations": 7397
+      }
+    },
+    "outputs\\experiments\\grouped-ontology\\ip-joined-run": {
+      "ip_joined_view": {
+        "status": "PARTIAL_REVIEW_REQUIRED",
+        "observations": 8244
+      }
+    },
+    "outputs\\experiments\\grouped-ontology\\ip-joined-recovery": {
+      "ip_joined_view": {
+        "status": "PARTIAL_REVIEW_REQUIRED",
+        "observations": 11592
+      }
+    }
+  },
+  "human_semantic_precision": null,
+  "measured_human_review_minutes": null,
+  "production_promoted": false
+}

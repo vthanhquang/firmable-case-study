@@ -1,0 +1,167 @@
+{
+  "quality": {
+    "present_values": 610,
+    "emitted_observations": 610,
+    "withheld_missing_context": 0,
+    "abstention_reasons": {},
+    "malformed_values": 0,
+    "malformed_reasons": {},
+    "eligible_present_values": 610,
+    "malformed_rate": 0.0,
+    "abstention_rate": 0.0,
+    "record_errors": {},
+    "passes_technical_gate": true,
+    "semantic_precision": null,
+    "note": "Missing required context remains withheld. This gate does not establish semantic truth or useful coverage."
+  },
+  "raw_validation": {
+    "records_in": 110,
+    "records_with_output": 110,
+    "record_errors": {},
+    "fields": [
+      {
+        "target": "dyn.ip_application.status",
+        "source_paths": [
+          "application.status"
+        ],
+        "records": 110,
+        "source_present": 110,
+        "emitted": 110,
+        "coverage_of_records": 1.0,
+        "error_rate_of_present": 0.0,
+        "errors": {},
+        "error_examples": {},
+        "entity": "ip_application"
+      },
+      {
+        "target": "dyn.ip_application.application_date",
+        "source_paths": [
+          "application.application_date"
+        ],
+        "records": 110,
+        "source_present": 109,
+        "emitted": 109,
+        "coverage_of_records": 0.991,
+        "error_rate_of_present": 0.0,
+        "errors": {},
+        "error_examples": {},
+        "entity": "ip_application"
+      },
+      {
+        "target": "dyn.ip_application.earliest_filed_date",
+        "source_paths": [
+          "application.earliest_filed_date"
+        ],
+        "records": 110,
+        "source_present": 109,
+        "emitted": 109,
+        "coverage_of_records": 0.991,
+        "error_rate_of_present": 0.0,
+        "errors": {},
+        "error_examples": {},
+        "entity": "ip_application"
+      },
+      {
+        "target": "dyn.ip_application.priority_date",
+        "source_paths": [
+          "application.priority_date"
+        ],
+        "records": 110,
+        "source_present": 109,
+        "emitted": 109,
+        "coverage_of_records": 0.991,
+        "error_rate_of_present": 0.0,
+        "errors": {},
+        "error_examples": {},
+        "entity": "ip_application"
+      },
+      {
+        "target": "dyn.ip_application.registration_status_date",
+        "source_paths": [
+          "application.gained_registration_status_date"
+        ],
+        "records": 110,
+        "source_present": 55,
+        "emitted": 55,
+        "coverage_of_records": 0.5,
+        "error_rate_of_present": 0.0,
+        "errors": {},
+        "error_examples": {},
+        "entity": "ip_application"
+      },
+      {
+        "target": "dyn.ip_application.enforceable_status_date",
+        "source_paths": [
+          "application.gained_enforceable_status_date"
+        ],
+        "records": 110,
+        "source_present": 53,
+        "emitted": 53,
+        "coverage_of_records": 0.482,
+        "error_rate_of_present": 0.0,
+        "errors": {},
+        "error_examples": {},
+        "entity": "ip_application"
+      },
+      {
+        "target": "dyn.ip_application.deemed_retired_date",
+        "source_paths": [
+          "application.deemed_retired_date"
+        ],
+        "records": 110,
+        "source_present": 65,
+        "emitted": 65,
+        "coverage_of_records": 0.591,
+        "error_rate_of_present": 0.0,
+        "errors": {},
+        "error_examples": {},
+        "entity": "ip_application"
+      }
+    ],
+    "relationships": {
+      "APPLICATION_HAS_DESCRIPTION": 110
+    },
+    "input_records": 110,
+    "refused_records": 0,
+    "observations": 610,
+    "value_errors": 0,
+    "present_values": 610,
+    "error_rate": 0.0
+  },
+  "critic": {
+    "verdict": "accept",
+    "findings": [
+      "Grain is correctly stated: one row per party-activity record, with application-level columns repeating across party rows; the group does not claim one row per application or per party.",
+      "All eight proposed concepts are owned by ip_application and their definitions consistently separate application lifecycle from party-role validity (dyn.party_activity.effective_from_date/effective_to_date/is_current) and from business facts (ext.entity.date_established, ext.licence.*).",
+      "Status enum covers the observed publisher vocabulary (filed, accepted, granted, lapsed, withdrawn, expired, ceased, unknown) with passthrough disabled, so unlisted values are withheld rather than coerced; 'ceased' and 'unknown' are explicitly flagged as application-level states, not business cessation or parse failure.",
+      "Date parsing formats (%Y-%m-%dT%H:%M:%S.%fZ, %Y-%m-%dT%H:%M:%SZ, %Y-%m-%d) match the observed ISO-8601 Z-suffixed raw values; held-out examples (e.g. 2001-07-06T00:00:00.000Z -> 2001-07-06) confirm correct date extraction.",
+      "Held-out validation shows 0 error rate of present values across all seven mapped fields, with coverage 1.0 for status and 0.48-0.99 for dates; the lower date coverage reflects genuinely blank source cells (e.g. ordinal 543 has blank registration/enforceable dates), not dropped values.",
+      "application.enforceable_from_date is honestly unmapped with an explicit reason (column entirely empty, 0 nonempty of 381) rather than mapped to emit nothing or imply enforceability; the concept is retained for schema completeness only, which is a defensible abstention.",
+      "Blank-handling caveats are stated in definitions for registration_status_date, enforceable_status_date and deemed_retired_date (blank != never registered / not enforceable / still active), and the join-null caution is carried in identity_cautions.",
+      "Reuse of dyn.ip_application.application_number, ip_right_type, ip_right_sub_type and dyn.party_activity.effective_from_date/effective_to_date/is_current is semantically correct: same owner and meaning, and the party-role validity fields are explicitly distinguished from application dates.",
+      "The APPLICATION_HAS_DESCRIPTION relationship is self-role (ip_application to ip_application) and the description table contributes at most one description per application, so it does not multiply rows; this is consistent with the stated grain.",
+      "No population accuracy or completeness claim is made; the cohort is described as a patent-prefix subset, and the quality note correctly disclaims semantic truth."
+    ],
+    "semantic_risks": [
+      "The ip_application key is (application.application_number, application.ip_right_type); if the same application_number ever appears under two ip_right_type values, two distinct application entities would be created. No evidence of collision is shown, but the key is composite and should be treated as such.",
+      "Application-level columns repeat across party rows, so downstream aggregation must deduplicate by application key before counting applications; the group states this but the mapping does not enforce it.",
+      "Dates such as 2026-04-16 (registration/enforceable status) and 2025-11-13 (deemed retired) are later than the retrieved_at of 2026-11-23? No — they precede it, but future-dated milestones relative to typical publication should be sanity-checked against the snapshot; they are publisher-stated values and are emitted as such, not as business facts.",
+      "The 'unknown' status is a legitimate publisher state, but consumers may misread it as a data-quality failure; the definition guards this, though downstream presentation should preserve the distinction.",
+      "The record_id strategy is content_hash with empty source_paths and empty rationale; this is an experiment-level envelope choice, not a semantic claim, but it means record identity is not tied to the application key."
+    ],
+    "checked_reuse": [
+      "dyn.ip_application.application_number — reused, same owner/meaning/source path.",
+      "dyn.ip_application.ip_right_type — reused, same owner/meaning.",
+      "dyn.ip_application.ip_right_sub_type — reused, same owner/meaning.",
+      "dyn.party_activity.effective_from_date — reused, party-role validity start, distinct from application dates.",
+      "dyn.party_activity.effective_to_date — reused, party-role validity end, distinct from application.deemed_retired_date.",
+      "dyn.party_activity.is_current — reused, party-role currency flag, not an application status.",
+      "ext.licence.status — correctly not reused (different owner/subject: authorisation held by a business vs IP-office application state).",
+      "ext.licence.start_date / ext.licence.end_date — correctly not reused for application filing/retirement dates (different owner and meaning).",
+      "ext.entity.date_established / ext.entity.prior_registration_state — correctly not reused for application registration milestones (business establishment vs application milestone)."
+    ],
+    "rationale": "The group's emitted claims are semantically defensible and match held-out evidence: all seven mapped fields show 0 error rate of present values, status coverage is complete, and date coverage tracks genuine source blanks rather than dropped values. Ownership is consistently ip_application, and the definitions repeatedly and correctly separate application lifecycle from party-role validity and from business facts (no grant-as-incorporation, no status-as-business-status, no enforceability assertion). The empty enforceable_from_date column is honestly unmapped with an explicit reason rather than mapped to emit nothing. Reuse decisions are correct and the non-reuse of licence/entity concepts is justified. Remaining risks (composite key, repeated application columns requiring deduplication, future-dated milestones, content-hash record identity) are coverage/operational cautions, not incorrect emitted meanings, and do not warrant blocking findings. No blocking issues identified; repair_scope is none.",
+    "blocking_findings": [],
+    "repair_scope": "none"
+  }
+}

@@ -1,0 +1,119 @@
+{
+  "quality": {
+    "present_values": 377,
+    "emitted_observations": 377,
+    "withheld_missing_context": 0,
+    "abstention_reasons": {},
+    "malformed_values": 0,
+    "malformed_reasons": {},
+    "eligible_present_values": 377,
+    "malformed_rate": 0.0,
+    "abstention_rate": 0.0,
+    "record_errors": {},
+    "passes_technical_gate": true,
+    "semantic_precision": null,
+    "note": "Missing required context remains withheld. This gate does not establish semantic truth or useful coverage."
+  },
+  "raw_validation": {
+    "records_in": 110,
+    "records_with_output": 110,
+    "record_errors": {},
+    "fields": [
+      {
+        "target": "dyn.party.party_key",
+        "source_paths": [
+          "party_activity.party_id"
+        ],
+        "records": 110,
+        "source_present": 110,
+        "emitted": 110,
+        "coverage_of_records": 1.0,
+        "error_rate_of_present": 0.0,
+        "errors": {},
+        "error_examples": {},
+        "entity": "party"
+      },
+      {
+        "target": "dyn.party.party_name",
+        "source_paths": [
+          "party_activity.party_name"
+        ],
+        "records": 110,
+        "source_present": 110,
+        "emitted": 110,
+        "coverage_of_records": 1.0,
+        "error_rate_of_present": 0.0,
+        "errors": {},
+        "error_examples": {},
+        "entity": "party"
+      },
+      {
+        "target": "dyn.party.party_kind",
+        "source_paths": [
+          "party_activity.party_type"
+        ],
+        "records": 110,
+        "source_present": 110,
+        "emitted": 110,
+        "coverage_of_records": 1.0,
+        "error_rate_of_present": 0.0,
+        "errors": {},
+        "error_examples": {},
+        "entity": "party"
+      },
+      {
+        "target": "dyn.party.abn_supplied",
+        "source_paths": [
+          "party_activity.abn"
+        ],
+        "records": 110,
+        "source_present": 47,
+        "emitted": 47,
+        "coverage_of_records": 0.427,
+        "error_rate_of_present": 0.0,
+        "errors": {},
+        "error_examples": {},
+        "entity": "party"
+      }
+    ],
+    "relationships": {},
+    "input_records": 110,
+    "refused_records": 0,
+    "observations": 377,
+    "value_errors": 0,
+    "present_values": 377,
+    "error_rate": 0.0
+  },
+  "critic": {
+    "verdict": "accept",
+    "findings": [
+      "Held-out validation shows 110/110 records emitted for party_key, party_name and party_kind with 0 rejected values, and 47/110 for abn_supplied with 0 rejected values; the 63 blanks are deliberate abstention on a frequently-missing source attribute, not incorrect emissions.",
+      "Semantic separation is defensible: party_key is explicitly not an ABN/ACN or legal-entity assertion; party_name is explicitly not a registered legal or trading name; party_kind is explicitly a party classification with no legal-form, sole-trader or beneficial-ownership implication; abn_supplied is explicitly unvalidated and its absence is explicitly not evidence of no business or no Australian presence.",
+      "Owner separation is correct: all four concepts are owned by the party role, not by business, so entity.abn, entity.acn, entity.legal_name, entity.trading_name, entity.entity_type, ext.entity.legal_form and ext.entity.holder_kind are not reused where reuse would change meaning or owner.",
+      "Grain and identity cautions are consistent with the inspection: party_id alone does not identify a unique business relationship (roles vary across rows), and application-level status/dates/description are correctly excluded from this group's columns.",
+      "Enum mapping is bounded: only 'organisation' and 'individual' map, with unlisted values becoming missing rather than guessed; held-out examples confirm both values pass through unchanged.",
+      "Privacy handling is honest: party_name is marked personal_data=always and the mapping rationale states it is suppressed from profile views for the mixed person/organisation population, with the lost utility acknowledged rather than hidden.",
+      "No population-accuracy or completeness claim is made; the cohort is described as a patent-prefix subset and the quality gate note states it does not establish semantic truth or useful coverage.",
+      "No invented fallback dates or hypothetical guards are required; observed_at uses resource_last_modified fallback, which is observation-at-retrieval and is not described as a publisher-stated update."
+    ],
+    "semantic_risks": [
+      "party_name values in held-out examples include digit strings (e.g. '2611463834', '9010020818') classified as individual parties; these are party labels as published, not names, and downstream consumers must not treat them as person names or as identifiers.",
+      "abn_supplied is stored as a string without checksum validation; a non-11-digit or malformed supplied value would pass through unchanged, so consumers must not treat it as a validated ABN.",
+      "party_kind is a party classification only; a value of 'organisation' must not be read as a company legal form, and 'individual' must not be read as sole-trader status.",
+      "party_key is a publisher party identifier; the same organisation may appear under multiple party_ids and the same party_id may hold different roles across rows, so it must not be used as a business entity key.",
+      "The 42.7% coverage on abn_supplied reflects source blanks, not a mapping defect; any downstream completeness metric must not interpret the blanks as absence of an Australian business."
+    ],
+    "checked_reuse": [
+      "entity.abn — rejected: validated business-owned identifier; abn_supplied is unvalidated, often-missing party-record attribute whose absence is not evidence.",
+      "entity.acn — rejected: checksummed company registration with different owner and meaning than an IP-office party key.",
+      "entity.legal_name — rejected: asserts registered legal name; party_name is an unverified, lower-cased IP-office party label.",
+      "entity.trading_name — rejected: asserts trading status; party_name makes no such assertion.",
+      "entity.entity_type — rejected: asserts business legal structure; party_kind is a party-level organisation/individual flag with no legal-form implication.",
+      "ext.entity.legal_form — rejected: asserts business legal form; party_kind explicitly does not.",
+      "ext.entity.holder_kind — rejected: business-owned matching evidence about a licence/registration holder, a different meaning and owner than a party classification on an IP application record."
+    ],
+    "rationale": "The group's four concepts are semantically defensible, correctly owned by the party role, and explicitly bounded against legal-form, legal-identity, validation and population claims. Held-out validation shows full coverage with zero rejected values on the three fully-present fields and honest partial coverage (47/110) on the frequently-blank ABN field, with blanks treated as deliberate abstention rather than incorrect emissions. Reuse checks confirm that business-owned identifiers and legal-form concepts were not inappropriately reused. No blocking semantic, owner, unit, date, legal-claim or provenance defect was found in the emitted claims; the remaining risks are consumer-interpretation cautions, not mapping or ontology errors. This is an automated critique, not human approval.",
+    "blocking_findings": [],
+    "repair_scope": "none"
+  }
+}

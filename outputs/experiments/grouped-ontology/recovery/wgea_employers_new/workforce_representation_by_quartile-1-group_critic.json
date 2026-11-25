@@ -1,0 +1,33 @@
+{
+  "request_sha256": "61721bc176deac1e4a166b4ffeecd365872abc7b0a75d60c636860282b93c060",
+  "role": "group_critic",
+  "model": "deepseek-v4-flash",
+  "seconds": 9.791,
+  "response": {
+    "verdict": "accept",
+    "findings": [
+      "All five emitted concepts are semantically distinct populations (total workforce vs each of four pay quartiles), owned by employer_reporting_unit, and each is defined as a composition share rather than a pay gap; reuse of GPG or revenue-band concepts would have changed meaning, so new concepts are justified.",
+      "Units are handled correctly: values are stored as decimal fractions (e.g. 0.48, 0.39) and the definitions explicitly state the storage convention, so no silent percentage multiplication is claimed.",
+      "The 2024-25 columns (F-I) are mapped and the 2023-24 contextual block (J-M) is excluded; the duplicate-looking header labels are disambiguated by year group, not position, and the held-out rows confirm the mapped columns carry current-year values.",
+      "Identity is bound on Employer ABN plus Employer name, with an explicit caution that ABN is a reporting identifier and not proof of legal form or company-wide scope; no legal-form or group-scope claim is emitted.",
+      "The '2. Employers ' sheet name with trailing space is preserved exactly, skip_rows=3 matches the three title/context rows, and the documentation and corporate-group sheets are excluded from the reader.",
+      "Held-out validation shows 121/121 source-present and 121/121 emitted for every field with zero error rate; the 605 present values and 605 emitted observations are consistent with five fields across the validation rows.",
+      "The required 'period' qualifier is carried as a literal reporting_year value ('2024-25') because no per-row date column exists; this is an honest bounded treatment, not an invented fallback date.",
+      "No repeated-array expansion, no nested singleton bindings, and no edges are declared, so the execution contract's array and edge constraints are not violated."
+    ],
+    "semantic_risks": [
+      "The 'period' qualifier is a literal string rather than a parsed claim_period; downstream consumers must not treat it as a machine-comparable date range.",
+      "Quartile shares are within-quartile composition shares; they must not be aggregated or averaged across employers as if they were population-level measures.",
+      "The grain is described as an employer-year-pair record because of the contextual 2023-24 block; consumers must not merge the 2023-24 GPG columns into the 2024-25 measures.",
+      "Employer name collisions across sheets mean name alone must never be used as a join key; ABN binding is required."
+    ],
+    "checked_reuse": [
+      "ext.financial.revenue_band — rejected: revenue band is not a workforce composition share.",
+      "GPG concepts (average/median total and base salary GPG) — rejected: a pay gap is not a female composition share.",
+      "Total workforce women share vs quartile women shares — kept separate: different populations, reuse would change meaning."
+    ],
+    "rationale": "Held-out validation evidence shows full coverage (121/121) and zero error rate for all five fields, with raw values matching emitted decimals and the 2024-25 columns correctly selected over the 2023-24 contextual block. Concept definitions are semantically defensible: each is a distinct composition share owned by the employer reporting unit, units are decimal fractions with the storage convention stated, and no pay-gap, revenue, legal-form or group-scope meaning is conflated. Identity rests on ABN plus name with explicit cautions, the sheet name and skip_rows match the byte inspection, and the required period qualifier is honestly carried as a literal reporting year rather than an invented date. No blocking findings are identified; the noted semantic risks are consumer-facing cautions, not defects in the emitted claims.",
+    "blocking_findings": [],
+    "repair_scope": "none"
+  }
+}

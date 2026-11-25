@@ -1,0 +1,579 @@
+{
+  "fields": [
+    {
+      "source_paths": [
+        "abn"
+      ],
+      "join_with": " ",
+      "when": null,
+      "target": "entity.abn",
+      "valid_from_path": null,
+      "valid_to_path": null,
+      "validity_date_formats": null,
+      "claim_scope": null,
+      "steps": [
+        {
+          "op": "trim",
+          "args": {}
+        },
+        {
+          "op": "abn",
+          "args": {}
+        }
+      ],
+      "confidence": 0.95,
+      "rationale": "ABN column is the charity's Australian Business Number; validated by checksum transform. Owned by the business subject.",
+      "entity": null,
+      "qualifiers": null,
+      "one_hot": null,
+      "claim_period": null
+    },
+    {
+      "source_paths": [
+        "charity name"
+      ],
+      "join_with": " ",
+      "when": null,
+      "target": "entity.legal_name",
+      "valid_from_path": null,
+      "valid_to_path": null,
+      "validity_date_formats": null,
+      "claim_scope": "current_legal_name",
+      "steps": [
+        {
+          "op": "trim",
+          "args": {}
+        },
+        {
+          "op": "collapse_whitespace",
+          "args": {}
+        }
+      ],
+      "confidence": 0.7,
+      "rationale": "Charity name as registered with the ACNC is the registered legal name of the subject; free text, not a join key.",
+      "entity": null,
+      "qualifiers": null,
+      "one_hot": null,
+      "claim_period": null
+    },
+    {
+      "source_paths": [
+        "charity website"
+      ],
+      "join_with": " ",
+      "when": null,
+      "target": "entity.website",
+      "valid_from_path": null,
+      "valid_to_path": null,
+      "validity_date_formats": null,
+      "claim_scope": null,
+      "steps": [
+        {
+          "op": "trim",
+          "args": {}
+        },
+        {
+          "op": "null_if",
+          "args": {
+            "values": [
+              "",
+              "n/a",
+              "na",
+              "none"
+            ]
+          }
+        },
+        {
+          "op": "website",
+          "args": {}
+        }
+      ],
+      "confidence": 0.8,
+      "rationale": "Charity website is the published website of the subject business.",
+      "entity": null,
+      "qualifiers": null,
+      "one_hot": null,
+      "claim_period": null
+    },
+    {
+      "source_paths": [
+        "charity website"
+      ],
+      "join_with": " ",
+      "when": null,
+      "target": "ext.contact.website_domain",
+      "valid_from_path": null,
+      "valid_to_path": null,
+      "validity_date_formats": null,
+      "claim_scope": null,
+      "steps": [
+        {
+          "op": "trim",
+          "args": {}
+        },
+        {
+          "op": "null_if",
+          "args": {
+            "values": [
+              "",
+              "n/a",
+              "na",
+              "none"
+            ]
+          }
+        },
+        {
+          "op": "url_domain",
+          "args": {}
+        }
+      ],
+      "confidence": 0.75,
+      "rationale": "Registrable host derived from the published website; multi-valued concept but one value per row.",
+      "entity": null,
+      "qualifiers": null,
+      "one_hot": null,
+      "claim_period": null
+    },
+    {
+      "source_paths": [
+        "registration status"
+      ],
+      "join_with": " ",
+      "when": null,
+      "target": "dyn.charity.registration_status",
+      "valid_from_path": null,
+      "valid_to_path": null,
+      "validity_date_formats": null,
+      "claim_scope": null,
+      "steps": [
+        {
+          "op": "trim",
+          "args": {}
+        },
+        {
+          "op": "map_enum",
+          "args": {
+            "mapping": {
+              "registered": "Registered",
+              "voluntarily revoked not entitled to be a charity": "Voluntarily Revoked Not Entitled To Be A Charity",
+              "voluntarily revoked no longer operating": "Voluntarily Revoked No Longer Operating",
+              "revoked double defaulter": "Revoked Double Defaulter"
+            },
+            "passthrough": true
+          }
+        }
+      ],
+      "confidence": 0.9,
+      "rationale": "ACNC charity registration status belongs to the charity role, not the coarse company entity.status.",
+      "entity": "charity",
+      "qualifiers": null,
+      "one_hot": null,
+      "claim_period": null
+    },
+    {
+      "source_paths": [
+        "basic religious charity"
+      ],
+      "join_with": " ",
+      "when": null,
+      "target": "dyn.charity.basic_religious_charity",
+      "valid_from_path": null,
+      "valid_to_path": null,
+      "validity_date_formats": null,
+      "claim_scope": null,
+      "steps": [
+        {
+          "op": "trim",
+          "args": {}
+        },
+        {
+          "op": "upper",
+          "args": {}
+        },
+        {
+          "op": "map_enum",
+          "args": {
+            "mapping": {
+              "Y": "y",
+              "N": "n"
+            },
+            "default": null
+          }
+        }
+      ],
+      "confidence": 0.9,
+      "rationale": "y/n flag for ACNC basic religious charity classification, owned by the charity role.",
+      "entity": "charity",
+      "qualifiers": null,
+      "one_hot": null,
+      "claim_period": null
+    },
+    {
+      "source_paths": [
+        "incorporated association"
+      ],
+      "join_with": " ",
+      "when": null,
+      "target": "dyn.charity.incorporated_association",
+      "valid_from_path": null,
+      "valid_to_path": null,
+      "validity_date_formats": null,
+      "claim_scope": null,
+      "steps": [
+        {
+          "op": "trim",
+          "args": {}
+        },
+        {
+          "op": "upper",
+          "args": {}
+        },
+        {
+          "op": "map_enum",
+          "args": {
+            "mapping": {
+              "Y": "y",
+              "N": "n"
+            },
+            "default": null
+          }
+        }
+      ],
+      "confidence": 0.9,
+      "rationale": "Self-reported incorporated-association flag; not an inference of legal form from the name.",
+      "entity": "charity",
+      "qualifiers": null,
+      "one_hot": null,
+      "claim_period": null
+    },
+    {
+      "source_paths": [
+        "association number - act"
+      ],
+      "join_with": " ",
+      "when": null,
+      "target": "dyn.charity.state_association_number",
+      "valid_from_path": null,
+      "valid_to_path": null,
+      "validity_date_formats": null,
+      "claim_scope": null,
+      "steps": [
+        {
+          "op": "trim",
+          "args": {}
+        },
+        {
+          "op": "null_if",
+          "args": {
+            "values": [
+              "",
+              "n/a",
+              "na",
+              "none"
+            ]
+          }
+        }
+      ],
+      "confidence": 0.85,
+      "rationale": "ACT association number held by the charity, qualified by jurisdiction ACT.",
+      "entity": "charity",
+      "qualifiers": {
+        "jurisdiction": {
+          "source_path": null,
+          "value": "ACT",
+          "steps": []
+        }
+      },
+      "one_hot": null,
+      "claim_period": null
+    },
+    {
+      "source_paths": [
+        "association number - nsw"
+      ],
+      "join_with": " ",
+      "when": null,
+      "target": "dyn.charity.state_association_number",
+      "valid_from_path": null,
+      "valid_to_path": null,
+      "validity_date_formats": null,
+      "claim_scope": null,
+      "steps": [
+        {
+          "op": "trim",
+          "args": {}
+        },
+        {
+          "op": "null_if",
+          "args": {
+            "values": [
+              "",
+              "n/a",
+              "na",
+              "none"
+            ]
+          }
+        }
+      ],
+      "confidence": 0.85,
+      "rationale": "NSW association number held by the charity, qualified by jurisdiction NSW.",
+      "entity": "charity",
+      "qualifiers": {
+        "jurisdiction": {
+          "source_path": null,
+          "value": "NSW",
+          "steps": []
+        }
+      },
+      "one_hot": null,
+      "claim_period": null
+    },
+    {
+      "source_paths": [
+        "association number - nt"
+      ],
+      "join_with": " ",
+      "when": null,
+      "target": "dyn.charity.state_association_number",
+      "valid_from_path": null,
+      "valid_to_path": null,
+      "validity_date_formats": null,
+      "claim_scope": null,
+      "steps": [
+        {
+          "op": "trim",
+          "args": {}
+        },
+        {
+          "op": "null_if",
+          "args": {
+            "values": [
+              "",
+              "n/a",
+              "na",
+              "none"
+            ]
+          }
+        }
+      ],
+      "confidence": 0.85,
+      "rationale": "NT association number held by the charity, qualified by jurisdiction NT.",
+      "entity": "charity",
+      "qualifiers": {
+        "jurisdiction": {
+          "source_path": null,
+          "value": "NT",
+          "steps": []
+        }
+      },
+      "one_hot": null,
+      "claim_period": null
+    },
+    {
+      "source_paths": [
+        "association number - qld"
+      ],
+      "join_with": " ",
+      "when": null,
+      "target": "dyn.charity.state_association_number",
+      "valid_from_path": null,
+      "valid_to_path": null,
+      "validity_date_formats": null,
+      "claim_scope": null,
+      "steps": [
+        {
+          "op": "trim",
+          "args": {}
+        },
+        {
+          "op": "null_if",
+          "args": {
+            "values": [
+              "",
+              "n/a",
+              "na",
+              "none"
+            ]
+          }
+        }
+      ],
+      "confidence": 0.85,
+      "rationale": "QLD association number held by the charity, qualified by jurisdiction QLD.",
+      "entity": "charity",
+      "qualifiers": {
+        "jurisdiction": {
+          "source_path": null,
+          "value": "QLD",
+          "steps": []
+        }
+      },
+      "one_hot": null,
+      "claim_period": null
+    },
+    {
+      "source_paths": [
+        "association number - sa"
+      ],
+      "join_with": " ",
+      "when": null,
+      "target": "dyn.charity.state_association_number",
+      "valid_from_path": null,
+      "valid_to_path": null,
+      "validity_date_formats": null,
+      "claim_scope": null,
+      "steps": [
+        {
+          "op": "trim",
+          "args": {}
+        },
+        {
+          "op": "null_if",
+          "args": {
+            "values": [
+              "",
+              "n/a",
+              "na",
+              "none"
+            ]
+          }
+        }
+      ],
+      "confidence": 0.85,
+      "rationale": "SA association number held by the charity, qualified by jurisdiction SA.",
+      "entity": "charity",
+      "qualifiers": {
+        "jurisdiction": {
+          "source_path": null,
+          "value": "SA",
+          "steps": []
+        }
+      },
+      "one_hot": null,
+      "claim_period": null
+    },
+    {
+      "source_paths": [
+        "association number - tas"
+      ],
+      "join_with": " ",
+      "when": null,
+      "target": "dyn.charity.state_association_number",
+      "valid_from_path": null,
+      "valid_to_path": null,
+      "validity_date_formats": null,
+      "claim_scope": null,
+      "steps": [
+        {
+          "op": "trim",
+          "args": {}
+        },
+        {
+          "op": "null_if",
+          "args": {
+            "values": [
+              "",
+              "n/a",
+              "na",
+              "none"
+            ]
+          }
+        }
+      ],
+      "confidence": 0.85,
+      "rationale": "TAS association number held by the charity, qualified by jurisdiction TAS.",
+      "entity": "charity",
+      "qualifiers": {
+        "jurisdiction": {
+          "source_path": null,
+          "value": "TAS",
+          "steps": []
+        }
+      },
+      "one_hot": null,
+      "claim_period": null
+    },
+    {
+      "source_paths": [
+        "association number - vic"
+      ],
+      "join_with": " ",
+      "when": null,
+      "target": "dyn.charity.state_association_number",
+      "valid_from_path": null,
+      "valid_to_path": null,
+      "validity_date_formats": null,
+      "claim_scope": null,
+      "steps": [
+        {
+          "op": "trim",
+          "args": {}
+        },
+        {
+          "op": "null_if",
+          "args": {
+            "values": [
+              "",
+              "n/a",
+              "na",
+              "none"
+            ]
+          }
+        }
+      ],
+      "confidence": 0.85,
+      "rationale": "VIC association number held by the charity, qualified by jurisdiction VIC.",
+      "entity": "charity",
+      "qualifiers": {
+        "jurisdiction": {
+          "source_path": null,
+          "value": "VIC",
+          "steps": []
+        }
+      },
+      "one_hot": null,
+      "claim_period": null
+    },
+    {
+      "source_paths": [
+        "association number - wa"
+      ],
+      "join_with": " ",
+      "when": null,
+      "target": "dyn.charity.state_association_number",
+      "valid_from_path": null,
+      "valid_to_path": null,
+      "validity_date_formats": null,
+      "claim_scope": null,
+      "steps": [
+        {
+          "op": "trim",
+          "args": {}
+        },
+        {
+          "op": "null_if",
+          "args": {
+            "values": [
+              "",
+              "n/a",
+              "na",
+              "none"
+            ]
+          }
+        }
+      ],
+      "confidence": 0.85,
+      "rationale": "WA association number held by the charity, qualified by jurisdiction WA.",
+      "entity": "charity",
+      "qualifiers": {
+        "jurisdiction": {
+          "source_path": null,
+          "value": "WA",
+          "steps": []
+        }
+      },
+      "one_hot": null,
+      "claim_period": null
+    }
+  ],
+  "unmapped": []
+}

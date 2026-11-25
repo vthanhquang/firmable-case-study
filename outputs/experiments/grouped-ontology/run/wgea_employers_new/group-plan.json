@@ -1,0 +1,90 @@
+{
+  "grain": "One row per employer reporting unit for the 2024-25 WGEA Gender Equality Reporting, identified by Employer name plus Employer ABN; each row also carries a contextual 2023-24 comparison block of four GPG columns, so a row is an employer-year-pair record rather than a single-year measure.",
+  "groups": [
+    {
+      "name": "employer_identity_and_classification",
+      "purpose": "Identifies the reporting employer and its reporting context: name, ABN reporting identifier, sector, employer size band and industry classification. These are the row's identity and scope qualifiers, not measures.",
+      "columns": [
+        "Employer name",
+        "Employer ABN",
+        "Sector",
+        "Employer size range (# employees)",
+        "Industry (ANZSIC Division)",
+        "Industry (ANZSIC Class)"
+      ]
+    },
+    {
+      "name": "workforce_representation_by_quartile",
+      "purpose": "Current-year (2024-25) female representation measures: total workforce % women and % women in each of the four pay quartiles. Stored as decimal fractions, not whole percentages.",
+      "columns": [
+        "Total workforce % women",
+        "Lower quartile % women",
+        "Lower-middle quartile % women",
+        "Upper-middle quartile % women",
+        "Upper quartile % women"
+      ]
+    },
+    {
+      "name": "remuneration_by_quartile",
+      "purpose": "Current-year (2024-25) average total remuneration in dollars for the total workforce and for each pay quartile. These are pay levels, not revenue or business income.",
+      "columns": [
+        "Total workforce - average total remuneration ($)*",
+        "Lower quartile - average total remuneration ($)",
+        "Lower-middle quartile - average total remuneration ($)",
+        "Upper-middle quartile - average total remuneration ($)",
+        "Upper quartile - average total remuneration ($)"
+      ]
+    },
+    {
+      "name": "current_year_gender_pay_gaps",
+      "purpose": "2024-25 gender pay gap measures (average and median, base salary and total remuneration) for the reporting employer. Stored as decimal fractions; negative values indicate a gap favouring women.",
+      "columns": [
+        "Average base salary GPG (%)",
+        "Average total remuneration GPG (%)",
+        "Median base salary GPG (%)",
+        "Median total remuneration GPG (%)"
+      ]
+    },
+    {
+      "name": "prior_year_gender_pay_gaps_comparison",
+      "purpose": "Contextual 2023-24 comparison block of the same four gender pay gap measures, kept separate from the current-year block. Blank means no prior-year comparison, not a zero gap.",
+      "columns": [
+        "Average base salary GPG (%)_2",
+        "Average total remuneration GPG (%)_2",
+        "Median base salary GPG (%)_2",
+        "Median total remuneration GPG (%)_2"
+      ]
+    }
+  ],
+  "entity_types": [
+    {
+      "name": "employer_reporting_unit",
+      "definition": "An employer reporting unit that submits WGEA Gender Equality Reporting results for a reporting year, identified by its reporting ABN; its legal form and company-wide scope are not established by this source."
+    }
+  ],
+  "entities": {
+    "employer": {
+      "kind": "employer_reporting_unit",
+      "key_paths": [
+        "Employer ABN",
+        "Employer name"
+      ],
+      "rationale": "The row's subject is the reporting employer; Employer ABN is the reporting identifier and Employer name is a non-unique label, so both are needed to bind identity. No legal form or group-wide scope is inferred."
+    }
+  },
+  "relationship_types": [],
+  "relationships": [],
+  "cautions": [
+    "Employer name is not a unique key; identity should bind on Employer ABN, which is a reporting identifier and not proof of legal form or company-wide scope.",
+    "The sheet name '2. Employers ' has a trailing space and must be preserved exactly.",
+    "Rows 1-3 are title/context rows; the real header is row 4 (skip_rows=3).",
+    "The header spans two year groups: columns F-I are 2024-25 and columns J-M are 2023-24 (headers carry a trailing space). The 2023-24 columns are contextual comparison values and must not be merged with the 2024-25 measures.",
+    "Duplicate-looking header labels appear twice; disambiguate by year group, not by position alone.",
+    "GPG and % women values are stored as decimal fractions (e.g. 0.244 = 24.4%), not whole percentages.",
+    "Blank cells in the 2023-24 block mean no prior-year comparison, not a zero gap.",
+    "Employer size range is a band, not an exact headcount; remuneration figures are pay, not revenue or business income.",
+    "This sheet is employer-level results; the '3. Corporate groups ' and '4. Corporate group info' sheets are separate grains and must not be joined as if employer rows were group rows.",
+    "The 'How to use the GPG Spreadsheet' sheet is documentation and must not be used as a data reader.",
+    "This workbook does not contain all dashboard policy/board indicators; absence here is not evidence of absence."
+  ]
+}

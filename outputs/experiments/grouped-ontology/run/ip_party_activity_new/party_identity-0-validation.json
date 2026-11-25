@@ -1,0 +1,119 @@
+{
+  "quality": {
+    "present_values": 385,
+    "emitted_observations": 385,
+    "withheld_missing_context": 0,
+    "abstention_reasons": {},
+    "malformed_values": 0,
+    "malformed_reasons": {},
+    "eligible_present_values": 385,
+    "malformed_rate": 0.0,
+    "abstention_rate": 0.0,
+    "record_errors": {},
+    "passes_technical_gate": true,
+    "semantic_precision": null,
+    "note": "Missing required context remains withheld. This gate does not establish semantic truth or useful coverage."
+  },
+  "raw_validation": {
+    "records_in": 120,
+    "records_with_output": 120,
+    "record_errors": {},
+    "fields": [
+      {
+        "target": "dyn.party.identifier",
+        "source_paths": [
+          "party_id"
+        ],
+        "records": 120,
+        "source_present": 120,
+        "emitted": 120,
+        "coverage_of_records": 1.0,
+        "error_rate_of_present": 0.0,
+        "errors": {},
+        "error_examples": {},
+        "entity": "party"
+      },
+      {
+        "target": "dyn.party.name",
+        "source_paths": [
+          "party_name"
+        ],
+        "records": 120,
+        "source_present": 120,
+        "emitted": 120,
+        "coverage_of_records": 1.0,
+        "error_rate_of_present": 0.0,
+        "errors": {},
+        "error_examples": {},
+        "entity": "party"
+      },
+      {
+        "target": "dyn.party.kind",
+        "source_paths": [
+          "party_type"
+        ],
+        "records": 120,
+        "source_present": 120,
+        "emitted": 120,
+        "coverage_of_records": 1.0,
+        "error_rate_of_present": 0.0,
+        "errors": {},
+        "error_examples": {},
+        "entity": "party"
+      },
+      {
+        "target": "dyn.party.abn",
+        "source_paths": [
+          "abn"
+        ],
+        "records": 120,
+        "source_present": 25,
+        "emitted": 25,
+        "coverage_of_records": 0.208,
+        "error_rate_of_present": 0.0,
+        "errors": {},
+        "error_examples": {},
+        "entity": "party"
+      }
+    ],
+    "relationships": {},
+    "input_records": 120,
+    "refused_records": 0,
+    "observations": 385,
+    "value_errors": 0,
+    "present_values": 385,
+    "error_rate": 0.0
+  },
+  "critic": {
+    "verdict": "accept",
+    "findings": [
+      "Held-out validation (120 records) shows dyn.party.identifier, dyn.party.name and dyn.party.kind each emitted on 120/120 present values with 0 rejected values; dyn.party.abn emitted on 25/25 present values (20.8% of records) with 0 rejected values. Coverage is honestly bounded and matches the sparse-ABN caution.",
+      "Semantics are defensible: party_id is mapped to a party-owned identifier explicitly disclaimed as not an ACN/ABN and not implying legal form; party_name to a party-owned unnormalised label explicitly not a join key; party_type to a party-owned organisation/individual classification explicitly not legal form or sole trader; abn to a party-owned sparse, unvalidated identifier explicitly not a business link.",
+      "Owner separation is correct: entity.acn, entity.abn, entity.legal_name, entity.trading_name, ext.entity.holder_kind and entity.entity_type are all business-subject-owned and were not reused; reuse would have changed owner and meaning.",
+      "Held-out example ordinal 39 confirms the agent case: party_role_category=applicant_agent, party_role=agent, party_type=organisation, party_name='adam law patent & trade mark attorney'. The emitted dyn.party.kind='organisation' and dyn.party.name are correct as party attributes and do not assert ownership of the right; the agent/owner distinction is preserved by leaving party_role and party_role_category unmapped in this group.",
+      "Held-out example ordinal 375 confirms sparse ABN handling: abn='' with party_type=organisation and party_name='nevro corp' emits no dyn.party.abn claim rather than a fabricated value; this is deliberate abstention, not an incorrect emission.",
+      "Grain statement is consistent with the data: one row per (ip_right_type, application_number, party_id, party_role_category, party_role, effective_from_date) episode, with no single-column key claimed; the prefix-cohort limitation (25,000 records) is stated and no population-level claim is made.",
+      "Reader configuration (delimited, utf-8-sig, comma, skip_rows=0) matches the inspection rationale; no bindings or indexed collections are consumed, so the singleton-array contract is not violated.",
+      "Unmapped entries for effective_from_date, effective_to_date, party_role, party_role_category, ip_right_type, application_number, state_code, post_code, country_code, is_current and is_founding are explicitly deferred to the final source mapping; this is honest scoping, not silent omission, and the ip_application entity key (ip_right_type, application_number) is declared for the edge.",
+      "No legal-form, incorporation-date, enforceability or population-accuracy claims are emitted; is_founding and is_current are left unmapped, avoiding the founding-date and enforceability traps."
+    ],
+    "semantic_risks": [
+      "dyn.party.name is marked personal_data=always, which conservatively suppresses it from profile views; this is appropriate for a mixed organisation/individual/agent population but will lose utility for organisation parties. This is a privacy-policy trade-off, not a semantic error.",
+      "dyn.party.abn is emitted without checksum validation by design; downstream consumers must not treat it as a validated business identifier. The concept definition states this, but the risk of misuse remains if the definition is not carried with the value.",
+      "The PARTY_INVOLVED_IN_APPLICATION edge emits only when both party and ip_application roles have emitted claims; since ip_application key paths are unmapped in this group, edge emission depends on the final reconciled mapping. This is a coverage dependency, not a semantic defect in this group.",
+      "party_name is lower-cased and unnormalised in the source; the mapping applies trim and collapse_whitespace only and does not claim case-folding or deduplication, which is correct, but consumers must not treat distinct spellings as distinct parties."
+    ],
+    "checked_reuse": [
+      "entity.acn — rejected: business-subject-owned registration identifier; party_id is a publisher party identifier, not an ACN.",
+      "entity.abn — rejected: business-subject-owned, checksum-validated; source abn is sparse, unvalidated and may belong to an individual or agent.",
+      "entity.legal_name — rejected: registered business name owned by business subject; party_name is an unnormalised party label that may be an individual or agent.",
+      "entity.trading_name — rejected: same owner/meaning mismatch as legal_name.",
+      "ext.entity.holder_kind — rejected: business-subject-owned holder classification; party_type is a party classification and must not assert business legal form.",
+      "entity.entity_type — rejected: business legal-structure guess; party_type is not a legal form.",
+      "ext.licence.number — rejected: identifies a licence, not an IP-application party."
+    ],
+    "rationale": "Held-out validation evidence shows zero rejected values across all four emitted fields, with full coverage on the three dense fields and honest 20.8% coverage on the sparse ABN field. The concept definitions, owners and disclaimers correctly separate party identity from business legal identity, preserve the agent/applicant/patentee distinction by leaving role fields unmapped in this group, and avoid legal-form, incorporation-date, enforceability and population-accuracy claims. The two held-out examples (agent organisation with ABN; applicant organisation with empty ABN) confirm correct behaviour including deliberate abstention on missing ABN. No blocking findings are identified; the noted semantic risks are policy trade-offs and downstream-consumer cautions rather than incorrect emitted meanings. This verdict is an automated group critique, not human approval.",
+    "blocking_findings": [],
+    "repair_scope": "none"
+  }
+}

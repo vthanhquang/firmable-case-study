@@ -1,0 +1,113 @@
+{
+  "fields": [
+    {
+      "source_paths": [
+        "party_activity.country_code"
+      ],
+      "join_with": " ",
+      "when": null,
+      "target": "dyn.party.address_country",
+      "valid_from_path": null,
+      "valid_to_path": null,
+      "validity_date_formats": null,
+      "claim_scope": null,
+      "steps": [
+        {
+          "op": "trim",
+          "args": {}
+        },
+        {
+          "op": "null_if",
+          "args": {
+            "values": [
+              "",
+              "null",
+              "n/a",
+              "na",
+              "-"
+            ]
+          }
+        }
+      ],
+      "confidence": 0.9,
+      "rationale": "Country component of the party's recorded address on the IP right application record; owned by the party role, not the business's own address. Kept as published (lower-cased) with blanks treated as missing rather than as an Australian address.",
+      "entity": "party",
+      "qualifiers": null,
+      "one_hot": null,
+      "claim_period": null
+    },
+    {
+      "source_paths": [
+        "party_activity.state_code"
+      ],
+      "join_with": " ",
+      "when": null,
+      "target": "dyn.party.address_state",
+      "valid_from_path": null,
+      "valid_to_path": null,
+      "validity_date_formats": null,
+      "claim_scope": null,
+      "steps": [
+        {
+          "op": "trim",
+          "args": {}
+        },
+        {
+          "op": "null_if",
+          "args": {
+            "values": [
+              "",
+              "null",
+              "n/a",
+              "na",
+              "-"
+            ]
+          }
+        }
+      ],
+      "confidence": 0.88,
+      "rationale": "State/province component of the party's recorded address. Not restricted to Australian states and frequently blank, so it is mapped to the party-owned raw state concept rather than the business-owned address.state enum; no state normalisation is applied to avoid asserting an Australian scope.",
+      "entity": "party",
+      "qualifiers": null,
+      "one_hot": null,
+      "claim_period": null
+    },
+    {
+      "source_paths": [
+        "party_activity.post_code"
+      ],
+      "join_with": " ",
+      "when": null,
+      "target": "dyn.party.address_postcode",
+      "valid_from_path": null,
+      "valid_to_path": null,
+      "validity_date_formats": null,
+      "claim_scope": null,
+      "steps": [
+        {
+          "op": "trim",
+          "args": {}
+        },
+        {
+          "op": "null_if",
+          "args": {
+            "values": [
+              "",
+              "null",
+              "n/a",
+              "na",
+              "-"
+            ]
+          }
+        }
+      ],
+      "confidence": 0.88,
+      "rationale": "Post code component of the party's recorded address, kept as the raw published string because formats are not uniform ('2106' vs 'gu14 0lx'). The postcode transform is deliberately not applied since it would force a 4-digit Australian assumption the source does not support.",
+      "entity": "party",
+      "qualifiers": null,
+      "one_hot": null,
+      "claim_period": null
+    }
+  ],
+  "unmapped": []
+}

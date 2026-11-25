@@ -1,0 +1,217 @@
+{
+  "request_sha256": "e6af92a3fd9c9320b213074dbcab17e457d0bd59e4f43d4af51ecc3699910998",
+  "role": "group_architect",
+  "model": "deepseek-v4-flash",
+  "seconds": 20.497,
+  "response": {
+    "concepts": [
+      {
+        "path": "dyn.charity.total_assets",
+        "type": "decimal",
+        "owner": "charity",
+        "definition": "Total assets the charity reports in its ACNC Annual Information Statement for its own financial reporting period, being the sum of current and non-current assets. A period-specific balance-sheet amount in Australian dollars, not a current attribute and not evidence of company scale.",
+        "values": [],
+        "multi": false,
+        "required_qualifiers": [
+          "currency",
+          "period"
+        ],
+        "source_paths": [
+          "total assets"
+        ],
+        "why_not_existing": "No shortlisted concept holds a charity balance-sheet total; ext.financial.total_income is an income measure owned by business, so reuse would change meaning, owner and units.",
+        "personal_data": "never"
+      },
+      {
+        "path": "dyn.charity.total_current_assets",
+        "type": "decimal",
+        "owner": "charity",
+        "definition": "Total current assets the charity reports in its ACNC Annual Information Statement for its own financial reporting period. A period-specific balance-sheet amount in Australian dollars, distinct from total assets and from non-current assets.",
+        "values": [],
+        "multi": false,
+        "required_qualifiers": [
+          "currency",
+          "period"
+        ],
+        "source_paths": [
+          "total current assets"
+        ],
+        "why_not_existing": "No shortlisted concept covers a charity's current-asset balance; ext.financial.total_income is a business-owned income measure, so reuse would change meaning, owner and units.",
+        "personal_data": "never"
+      },
+      {
+        "path": "dyn.charity.total_non_current_assets",
+        "type": "decimal",
+        "owner": "charity",
+        "definition": "Total non-current assets the charity reports in its ACNC Annual Information Statement for its own financial reporting period. A period-specific balance-sheet amount in Australian dollars, distinct from current assets and from the residual 'other non-current assets' line.",
+        "values": [],
+        "multi": false,
+        "required_qualifiers": [
+          "currency",
+          "period"
+        ],
+        "source_paths": [
+          "total non-current assets"
+        ],
+        "why_not_existing": "No shortlisted concept covers a charity's non-current-asset balance; ext.financial.total_income is a business-owned income measure, so reuse would change meaning, owner and units.",
+        "personal_data": "never"
+      },
+      {
+        "path": "dyn.charity.other_non_current_assets",
+        "type": "decimal",
+        "owner": "charity",
+        "definition": "The residual 'other non-current assets' amount the charity reports in its ACNC Annual Information Statement for its own financial reporting period, i.e. non-current assets not itemised in the named breakdown lines. A period-specific balance-sheet amount in Australian dollars; it is a component of, not a substitute for, total non-current assets.",
+        "values": [],
+        "multi": false,
+        "required_qualifiers": [
+          "currency",
+          "period"
+        ],
+        "source_paths": [
+          "other non-current assets"
+        ],
+        "why_not_existing": "No shortlisted concept holds a residual non-current-asset line; dyn.charity.total_non_current_assets (proposed) is the aggregate and reuse would change meaning and granularity.",
+        "personal_data": "never"
+      },
+      {
+        "path": "dyn.charity.total_liabilities",
+        "type": "decimal",
+        "owner": "charity",
+        "definition": "Total liabilities the charity reports in its ACNC Annual Information Statement for its own financial reporting period, being the sum of current and non-current liabilities. A period-specific balance-sheet amount in Australian dollars, not a tax payable figure.",
+        "values": [],
+        "multi": false,
+        "required_qualifiers": [
+          "currency",
+          "period"
+        ],
+        "source_paths": [
+          "total liabilities"
+        ],
+        "why_not_existing": "ext.financial.tax_payable is a business-owned tax liability for a period, not a charity's total liabilities; reuse would change meaning, owner and scope.",
+        "personal_data": "never"
+      },
+      {
+        "path": "dyn.charity.total_current_liabilities",
+        "type": "decimal",
+        "owner": "charity",
+        "definition": "Total current liabilities the charity reports in its ACNC Annual Information Statement for its own financial reporting period. A period-specific balance-sheet amount in Australian dollars, distinct from total liabilities and from non-current liabilities.",
+        "values": [],
+        "multi": false,
+        "required_qualifiers": [
+          "currency",
+          "period"
+        ],
+        "source_paths": [
+          "total current liabilities"
+        ],
+        "why_not_existing": "No shortlisted concept covers a charity's current-liability balance; ext.financial.tax_payable is a business-owned tax amount, so reuse would change meaning, owner and units.",
+        "personal_data": "never"
+      },
+      {
+        "path": "dyn.charity.total_non_current_liabilities",
+        "type": "decimal",
+        "owner": "charity",
+        "definition": "Total non-current liabilities the charity reports in its ACNC Annual Information Statement for its own financial reporting period. A period-specific balance-sheet amount in Australian dollars, distinct from current liabilities and from the residual 'other non-current liabilities' line.",
+        "values": [],
+        "multi": false,
+        "required_qualifiers": [
+          "currency",
+          "period"
+        ],
+        "source_paths": [
+          "total non-current liabilities"
+        ],
+        "why_not_existing": "No shortlisted concept covers a charity's non-current-liability balance; ext.financial.tax_payable is a business-owned tax amount, so reuse would change meaning, owner and units.",
+        "personal_data": "never"
+      },
+      {
+        "path": "dyn.charity.other_non_current_liabilities",
+        "type": "decimal",
+        "owner": "charity",
+        "definition": "The residual 'other non-current liabilities' amount the charity reports in its ACNC Annual Information Statement for its own financial reporting period, i.e. non-current liabilities not itemised in the named breakdown lines. A period-specific balance-sheet amount in Australian dollars; it is a component of, not a substitute for, total non-current liabilities.",
+        "values": [],
+        "multi": false,
+        "required_qualifiers": [
+          "currency",
+          "period"
+        ],
+        "source_paths": [
+          "other non-current liabilities"
+        ],
+        "why_not_existing": "No shortlisted concept holds a residual non-current-liability line; dyn.charity.total_non_current_liabilities (proposed) is the aggregate and reuse would change meaning and granularity.",
+        "personal_data": "never"
+      },
+      {
+        "path": "dyn.charity.non_current_loans_payable",
+        "type": "decimal",
+        "owner": "charity",
+        "definition": "The amount of non-current loans payable the charity reports in its ACNC Annual Information Statement for its own financial reporting period. A period-specific balance-sheet amount in Australian dollars owed by the charity; a reported zero is retained as published and is not evidence of no borrowings.",
+        "values": [],
+        "multi": false,
+        "required_qualifiers": [
+          "currency",
+          "period"
+        ],
+        "source_paths": [
+          "non-current loans payable"
+        ],
+        "why_not_existing": "No shortlisted concept covers charity borrowings; ext.financial.tax_payable is a business-owned tax amount and dyn.charity.total_non_current_liabilities (proposed) is the aggregate, so reuse would change meaning and granularity.",
+        "personal_data": "never"
+      },
+      {
+        "path": "dyn.charity.non_current_loans_receivable",
+        "type": "decimal",
+        "owner": "charity",
+        "definition": "The amount of non-current loans receivable the charity reports in its ACNC Annual Information Statement for its own financial reporting period. A period-specific balance-sheet amount in Australian dollars owed to the charity; a reported zero is retained as published and is not evidence of no lending.",
+        "values": [],
+        "multi": false,
+        "required_qualifiers": [
+          "currency",
+          "period"
+        ],
+        "source_paths": [
+          "non-current loans receivable"
+        ],
+        "why_not_existing": "No shortlisted concept covers charity loans receivable; ext.financial.total_income is a business-owned income measure and dyn.charity.total_non_current_assets (proposed) is the aggregate, so reuse would change meaning and granularity.",
+        "personal_data": "never"
+      },
+      {
+        "path": "dyn.charity.net_assets_liabilities",
+        "type": "decimal",
+        "owner": "charity",
+        "definition": "Net assets or net liabilities the charity reports in its ACNC Annual Information Statement for its own financial reporting period, i.e. total assets less total liabilities as published. A period-specific balance-sheet amount in Australian dollars; a negative value denotes net liabilities and is not a deficit for the period.",
+        "values": [],
+        "multi": false,
+        "required_qualifiers": [
+          "currency",
+          "period"
+        ],
+        "source_paths": [
+          "net assets/liabilities"
+        ],
+        "why_not_existing": "No shortlisted concept holds a charity's net asset position; ext.financial.total_income is a business-owned income measure and net surplus/deficit is a period result, not a balance-sheet residual, so reuse would change meaning.",
+        "personal_data": "never"
+      },
+      {
+        "path": "dyn.charity.assets_liabilities_description",
+        "type": "string",
+        "owner": "charity",
+        "definition": "Free-text narrative supplied by the charity in its ACNC Annual Information Statement describing its assets and liabilities for the reporting period. Self-reported narrative retained verbatim; amounts mentioned inside the text are illustrative and are not structured financial facts.",
+        "values": [],
+        "multi": false,
+        "required_qualifiers": [],
+        "source_paths": [
+          "assets and liabilities description"
+        ],
+        "why_not_existing": "No shortlisted concept holds charity-owned free-text describing its balance sheet; dyn.charity.purposes_pursued_description and dyn.charity.international_activity_details are narratives about activities, so reuse would change meaning.",
+        "personal_data": "never"
+      }
+    ],
+    "reuse": {
+      "dyn.charity.financial_report_period_start": "Reused as the period qualifier for all balance-sheet amounts in this group; the charity's own reporting period start date.",
+      "dyn.charity.financial_report_period_end": "Reused as the period qualifier for all balance-sheet amounts in this group; the charity's own reporting period end date.",
+      "dyn.charity.accounting_basis": "Reused as context for interpreting the reported balance-sheet amounts (cash vs accrual basis).",
+      "dyn.charity.report_consolidated_flag": "Reused as context: consolidated reports may include more than one entity, so balance-sheet amounts are not necessarily single-entity."
+    }
+  }
+}

@@ -1,0 +1,186 @@
+{
+  "request_sha256": "527d3a49144362a9e5f326889f2b4c3751e0fb92e8c734bbe8c39249446decb5",
+  "role": "group_mapper",
+  "model": "deepseek-v4-flash",
+  "seconds": 9.048,
+  "response": {
+    "fields": [
+      {
+        "source_paths": [
+          "Total workforce - average total remuneration ($)*"
+        ],
+        "join_with": " ",
+        "when": null,
+        "target": "dyn.remuneration.average_total_remuneration",
+        "valid_from_path": null,
+        "valid_to_path": null,
+        "validity_date_formats": null,
+        "claim_scope": null,
+        "steps": [
+          {
+            "op": "parse_decimal",
+            "args": {}
+          }
+        ],
+        "confidence": 0.9,
+        "rationale": "2024-25 total-workforce average total remuneration in dollars; a pay level owned by the employer reporting unit, not business income. Currency AUD by publisher convention; the reporting year appears only in sheet header context, not in a row column, so no claim_period is attached rather than inventing a date.",
+        "entity": "employer_reporting_unit",
+        "qualifiers": {
+          "currency": {
+            "source_path": null,
+            "value": "AUD",
+            "steps": []
+          },
+          "workforce_segment": {
+            "source_path": null,
+            "value": "total_workforce",
+            "steps": []
+          }
+        },
+        "one_hot": null,
+        "claim_period": null
+      },
+      {
+        "source_paths": [
+          "Lower quartile - average total remuneration ($)"
+        ],
+        "join_with": " ",
+        "when": null,
+        "target": "dyn.remuneration.average_total_remuneration",
+        "valid_from_path": null,
+        "valid_to_path": null,
+        "validity_date_formats": null,
+        "claim_scope": null,
+        "steps": [
+          {
+            "op": "parse_decimal",
+            "args": {}
+          }
+        ],
+        "confidence": 0.9,
+        "rationale": "Lower-quartile average total remuneration for the 2024-25 reporting year; the workforce_segment qualifier distinguishes it from the other quartile and total-workforce columns. No row-level date column exists, so no claim_period is attached.",
+        "entity": "employer_reporting_unit",
+        "qualifiers": {
+          "currency": {
+            "source_path": null,
+            "value": "AUD",
+            "steps": []
+          },
+          "workforce_segment": {
+            "source_path": null,
+            "value": "lower_quartile",
+            "steps": []
+          }
+        },
+        "one_hot": null,
+        "claim_period": null
+      },
+      {
+        "source_paths": [
+          "Lower-middle quartile - average total remuneration ($)"
+        ],
+        "join_with": " ",
+        "when": null,
+        "target": "dyn.remuneration.average_total_remuneration",
+        "valid_from_path": null,
+        "valid_to_path": null,
+        "validity_date_formats": null,
+        "claim_scope": null,
+        "steps": [
+          {
+            "op": "parse_decimal",
+            "args": {}
+          }
+        ],
+        "confidence": 0.9,
+        "rationale": "Lower-middle-quartile average total remuneration for the 2024-25 reporting year; the workforce_segment qualifier preserves the quartile meaning. No row-level date column exists, so no claim_period is attached.",
+        "entity": "employer_reporting_unit",
+        "qualifiers": {
+          "currency": {
+            "source_path": null,
+            "value": "AUD",
+            "steps": []
+          },
+          "workforce_segment": {
+            "source_path": null,
+            "value": "lower_middle_quartile",
+            "steps": []
+          }
+        },
+        "one_hot": null,
+        "claim_period": null
+      },
+      {
+        "source_paths": [
+          "Upper-middle quartile - average total remuneration ($)"
+        ],
+        "join_with": " ",
+        "when": null,
+        "target": "dyn.remuneration.average_total_remuneration",
+        "valid_from_path": null,
+        "valid_to_path": null,
+        "validity_date_formats": null,
+        "claim_scope": null,
+        "steps": [
+          {
+            "op": "parse_decimal",
+            "args": {}
+          }
+        ],
+        "confidence": 0.9,
+        "rationale": "Upper-middle-quartile average total remuneration for the 2024-25 reporting year; the workforce_segment qualifier preserves the quartile meaning. No row-level date column exists, so no claim_period is attached.",
+        "entity": "employer_reporting_unit",
+        "qualifiers": {
+          "currency": {
+            "source_path": null,
+            "value": "AUD",
+            "steps": []
+          },
+          "workforce_segment": {
+            "source_path": null,
+            "value": "upper_middle_quartile",
+            "steps": []
+          }
+        },
+        "one_hot": null,
+        "claim_period": null
+      },
+      {
+        "source_paths": [
+          "Upper quartile - average total remuneration ($)"
+        ],
+        "join_with": " ",
+        "when": null,
+        "target": "dyn.remuneration.average_total_remuneration",
+        "valid_from_path": null,
+        "valid_to_path": null,
+        "validity_date_formats": null,
+        "claim_scope": null,
+        "steps": [
+          {
+            "op": "parse_decimal",
+            "args": {}
+          }
+        ],
+        "confidence": 0.9,
+        "rationale": "Upper-quartile average total remuneration for the 2024-25 reporting year; the workforce_segment qualifier preserves the quartile meaning. No row-level date column exists, so no claim_period is attached.",
+        "entity": "employer_reporting_unit",
+        "qualifiers": {
+          "currency": {
+            "source_path": null,
+            "value": "AUD",
+            "steps": []
+          },
+          "workforce_segment": {
+            "source_path": null,
+            "value": "upper_quartile",
+            "steps": []
+          }
+        },
+        "one_hot": null,
+        "claim_period": null
+      }
+    ],
+    "unmapped": []
+  }
+}

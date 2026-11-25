@@ -1,0 +1,130 @@
+{
+  "quality": {
+    "present_values": 605,
+    "emitted_observations": 605,
+    "withheld_missing_context": 0,
+    "abstention_reasons": {},
+    "malformed_values": 0,
+    "malformed_reasons": {},
+    "eligible_present_values": 605,
+    "malformed_rate": 0.0,
+    "abstention_rate": 0.0,
+    "record_errors": {},
+    "passes_technical_gate": true,
+    "semantic_precision": null,
+    "note": "Missing required context remains withheld. This gate does not establish semantic truth or useful coverage."
+  },
+  "raw_validation": {
+    "records_in": 121,
+    "records_with_output": 121,
+    "record_errors": {},
+    "fields": [
+      {
+        "target": "dyn.employer_reporting_unit.total_workforce_average_total_remuneration",
+        "source_paths": [
+          "Total workforce - average total remuneration ($)*"
+        ],
+        "records": 121,
+        "source_present": 121,
+        "emitted": 121,
+        "coverage_of_records": 1.0,
+        "error_rate_of_present": 0.0,
+        "errors": {},
+        "error_examples": {},
+        "entity": "employer"
+      },
+      {
+        "target": "dyn.employer_reporting_unit.lower_quartile_average_total_remuneration",
+        "source_paths": [
+          "Lower quartile - average total remuneration ($)"
+        ],
+        "records": 121,
+        "source_present": 121,
+        "emitted": 121,
+        "coverage_of_records": 1.0,
+        "error_rate_of_present": 0.0,
+        "errors": {},
+        "error_examples": {},
+        "entity": "employer"
+      },
+      {
+        "target": "dyn.employer_reporting_unit.lower_middle_quartile_average_total_remuneration",
+        "source_paths": [
+          "Lower-middle quartile - average total remuneration ($)"
+        ],
+        "records": 121,
+        "source_present": 121,
+        "emitted": 121,
+        "coverage_of_records": 1.0,
+        "error_rate_of_present": 0.0,
+        "errors": {},
+        "error_examples": {},
+        "entity": "employer"
+      },
+      {
+        "target": "dyn.employer_reporting_unit.upper_middle_quartile_average_total_remuneration",
+        "source_paths": [
+          "Upper-middle quartile - average total remuneration ($)"
+        ],
+        "records": 121,
+        "source_present": 121,
+        "emitted": 121,
+        "coverage_of_records": 1.0,
+        "error_rate_of_present": 0.0,
+        "errors": {},
+        "error_examples": {},
+        "entity": "employer"
+      },
+      {
+        "target": "dyn.employer_reporting_unit.upper_quartile_average_total_remuneration",
+        "source_paths": [
+          "Upper quartile - average total remuneration ($)"
+        ],
+        "records": 121,
+        "source_present": 121,
+        "emitted": 121,
+        "coverage_of_records": 1.0,
+        "error_rate_of_present": 0.0,
+        "errors": {},
+        "error_examples": {},
+        "entity": "employer"
+      }
+    ],
+    "input_records": 121,
+    "refused_records": 0,
+    "observations": 605,
+    "value_errors": 0,
+    "present_values": 605,
+    "error_rate": 0.0
+  },
+  "critic": {
+    "verdict": "accept",
+    "findings": [
+      "All five emitted concepts are dollar pay levels owned by the employer reporting unit, matching the group purpose; none is labelled revenue, business income, or a pay gap.",
+      "Held-out validation shows 121/121 present and 0 error rate for each of the five fields, with raw values such as 147000, 179000, 130000 parsing cleanly to decimals; no malformed values.",
+      "Source paths match the 2024-25 block headers exactly, including the asterisk on the total-workforce column; the 2023-24 comparison block (columns J-M) is not consumed, so the year groups are not merged.",
+      "Currency AUD is carried as a literal qualifier and the rationale states it is inferred from the publisher's Australian-dollar reporting rather than cell-stated; this is an honest inference, not a source-stated claim.",
+      "Period is carried as a literal '2024-25' qualifier with an explicit statement that no per-row date column exists and therefore no claim_period is emitted; this is a deliberate, documented abstention rather than an invented date.",
+      "Identity binds on Employer ABN plus Employer name, with the caution that ABN is a reporting identifier and not proof of legal form or company-wide scope; no legal form or group-wide claim is made.",
+      "The grain correctly notes the row is an employer-year-pair record because of the contextual 2023-24 block, and the corporate-group sheets are excluded from this reader.",
+      "The trailing space in the sheet name '2. Employers ' is preserved and skip_rows=3 matches the three title/context rows before the header.",
+      "No reuse was attempted; the why_not_existing notes correctly distinguish pay levels from ext.financial.total_income/taxable_income (business income, owned by business) and from GPG gap concepts."
+    ],
+    "semantic_risks": [
+      "Currency AUD is inferred, not stated in the cells; if the publisher ever reports in another currency this qualifier would be wrong, though the Australian statutory context makes the inference defensible.",
+      "The '2024-25' period is a literal qualifier rather than a parsed claim_period; downstream consumers must not treat it as a machine-comparable date range.",
+      "Quartile remuneration values are per-quartile pay levels; they must not be summed or averaged into a workforce total, since the total-workforce column is a separate measure.",
+      "Employer name collisions across sheets are possible; identity relies on ABN, and ABN is a reporting identifier, not a legal-entity or group-scope assertion.",
+      "The asterisk on the total-workforce header likely signals a footnote in the publisher workbook; the footnote text is not captured here, so any caveat it carries is not represented."
+    ],
+    "checked_reuse": [
+      "ext.financial.total_income — business income owned by business; not reused for pay levels.",
+      "ext.financial.taxable_income — business income owned by business; not reused for pay levels.",
+      "Shortlisted GPG concepts — gaps, not dollar pay levels; not reused.",
+      "Total-workforce average vs quartile averages — different populations; kept as distinct concepts rather than collapsed."
+    ],
+    "rationale": "The group emits five dollar pay-level concepts owned by the employer reporting unit, sourced from the 2024-25 block only, with AUD and 2024-25 carried as explicit literal qualifiers and honestly described as inferred/literal rather than source-stated. Held-out validation shows full coverage of present values with zero parse errors, and the reader preserves the exact sheet name and header offset. Identity, grain, and the exclusion of the 2023-24 block and corporate-group sheets are all correctly bounded. No blocking semantic, ownership, unit, date, or legal-scope defect was found; the residual risks are inference and footnote caveats that do not require a mapping or ontology repair.",
+    "blocking_findings": [],
+    "repair_scope": "none"
+  }
+}

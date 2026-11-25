@@ -1,0 +1,3544 @@
+{
+  "request_sha256": "49397aea875fe5ba8686748f5b4290231d13a26b4337b1cf92a3be7f5903edf0",
+  "role": "mapper",
+  "model": "deepseek-v4-flash",
+  "seconds": 64.958,
+  "response": {
+    "source_id": "acnc_ais2024_new",
+    "record_grain": "One row per charity AIS lodgement for the 2024 reporting year, keyed by ABN.",
+    "grain_rationale": "The file is a single flat CSV with one row per charity AIS lodgement; the ABN is the only stable identifier in the header and the inspection shows no nested arrays, so no bindings are required and each row is one record.",
+    "reader": {
+      "format": "delimited",
+      "archive_member": null,
+      "encoding": "utf-8-sig",
+      "delimiter": ",",
+      "skip_rows": 0,
+      "sheet": null,
+      "record_path": null
+    },
+    "record_id": {
+      "strategy": "content_hash",
+      "source_paths": [],
+      "rationale": "The source has no publisher-assigned row key beyond the ABN, and the ABN alone does not distinguish multiple lodgements or versions; a deterministic content hash over the raw record gives a traceable record identifier."
+    },
+    "observed_at": {
+      "source_path": null,
+      "steps": [],
+      "fallback": "resource_last_modified"
+    },
+    "fields": [
+      {
+        "source_paths": [
+          "abn"
+        ],
+        "join_with": " ",
+        "when": null,
+        "target": "entity.abn",
+        "valid_from_path": null,
+        "valid_to_path": null,
+        "validity_date_formats": null,
+        "claim_scope": null,
+        "steps": [
+          {
+            "op": "trim",
+            "args": {}
+          },
+          {
+            "op": "abn",
+            "args": {}
+          }
+        ],
+        "confidence": 0.98,
+        "rationale": "The 'abn' column is an 11-digit Australian Business Number and is the sole stable identifier for the charity; validate with the ABN checksum transform.",
+        "entity": null,
+        "qualifiers": null,
+        "one_hot": null
+      },
+      {
+        "source_paths": [
+          "charity name"
+        ],
+        "join_with": " ",
+        "when": null,
+        "target": "entity.legal_name",
+        "valid_from_path": null,
+        "valid_to_path": null,
+        "validity_date_formats": null,
+        "claim_scope": null,
+        "steps": [
+          {
+            "op": "trim",
+            "args": {}
+          },
+          {
+            "op": "collapse_whitespace",
+            "args": {}
+          }
+        ],
+        "confidence": 0.9,
+        "rationale": "The 'charity name' column is the name the charity is registered under with the ACNC; map to the registered legal name without inferring legal form.",
+        "entity": null,
+        "qualifiers": null,
+        "one_hot": null
+      },
+      {
+        "source_paths": [
+          "charity website"
+        ],
+        "join_with": " ",
+        "when": null,
+        "target": "ext.contact.website_domain",
+        "valid_from_path": null,
+        "valid_to_path": null,
+        "validity_date_formats": null,
+        "claim_scope": null,
+        "steps": [
+          {
+            "op": "trim",
+            "args": {}
+          },
+          {
+            "op": "url_domain",
+            "args": {}
+          }
+        ],
+        "confidence": 0.85,
+        "rationale": "The 'charity website' column holds published website URLs; normalise to the registrable host using the url_domain transform.",
+        "entity": null,
+        "qualifiers": null,
+        "one_hot": null
+      },
+      {
+        "source_paths": [
+          "registration status"
+        ],
+        "join_with": " ",
+        "when": null,
+        "target": "dyn.charity.registration_status",
+        "valid_from_path": null,
+        "valid_to_path": null,
+        "validity_date_formats": null,
+        "claim_scope": null,
+        "steps": [
+          {
+            "op": "trim",
+            "args": {}
+          },
+          {
+            "op": "collapse_whitespace",
+            "args": {}
+          }
+        ],
+        "confidence": 0.9,
+        "rationale": "ACNC charity registration status as published; keep the ACNC's charity-specific wording rather than coercing into entity.status or ext.entity.status_detail.",
+        "entity": null,
+        "qualifiers": null,
+        "one_hot": null
+      },
+      {
+        "source_paths": [
+          "charity size"
+        ],
+        "join_with": " ",
+        "when": null,
+        "target": "dyn.charity.size",
+        "valid_from_path": null,
+        "valid_to_path": null,
+        "validity_date_formats": null,
+        "claim_scope": null,
+        "steps": [
+          {
+            "op": "trim",
+            "args": {}
+          },
+          {
+            "op": "map_enum",
+            "args": {
+              "mapping": {
+                "small": "Small",
+                "medium": "Medium",
+                "large": "Large"
+              },
+              "default": null,
+              "passthrough": false
+            }
+          }
+        ],
+        "confidence": 0.9,
+        "rationale": "ACNC charity size classification (Small, Medium, Large) as published; an administrative size band, not a revenue figure.",
+        "entity": null,
+        "qualifiers": null,
+        "one_hot": null
+      },
+      {
+        "source_paths": [
+          "basic religious charity"
+        ],
+        "join_with": " ",
+        "when": null,
+        "target": "dyn.charity.basic_religious_charity",
+        "valid_from_path": null,
+        "valid_to_path": null,
+        "validity_date_formats": null,
+        "claim_scope": null,
+        "steps": [
+          {
+            "op": "trim",
+            "args": {}
+          },
+          {
+            "op": "map_enum",
+            "args": {
+              "mapping": {
+                "y": "y",
+                "n": "n"
+              },
+              "default": null,
+              "passthrough": false
+            }
+          }
+        ],
+        "confidence": 0.9,
+        "rationale": "Whether the charity self-identifies as a basic religious charity in its AIS (y/n); a regulatory category, not a statement of religious activity.",
+        "entity": null,
+        "qualifiers": null,
+        "one_hot": null
+      },
+      {
+        "source_paths": [
+          "incorporated association"
+        ],
+        "join_with": " ",
+        "when": null,
+        "target": "dyn.charity.incorporated_association",
+        "valid_from_path": null,
+        "valid_to_path": null,
+        "validity_date_formats": null,
+        "claim_scope": null,
+        "steps": [
+          {
+            "op": "trim",
+            "args": {}
+          },
+          {
+            "op": "map_enum",
+            "args": {
+              "mapping": {
+                "y": "y",
+                "n": "n"
+              },
+              "default": null,
+              "passthrough": false
+            }
+          }
+        ],
+        "confidence": 0.9,
+        "rationale": "Whether the charity reports being an incorporated association (y/n) in the AIS; a self-reported indicator, not a legal-form determination.",
+        "entity": null,
+        "qualifiers": null,
+        "one_hot": null
+      },
+      {
+        "source_paths": [
+          "association number - act"
+        ],
+        "join_with": " ",
+        "when": null,
+        "target": "dyn.charity.association_number",
+        "valid_from_path": null,
+        "valid_to_path": null,
+        "validity_date_formats": null,
+        "claim_scope": null,
+        "steps": [
+          {
+            "op": "trim",
+            "args": {}
+          },
+          {
+            "op": "collapse_whitespace",
+            "args": {}
+          }
+        ],
+        "confidence": 0.85,
+        "rationale": "State or territory incorporated-association registration number as published; the state is carried in the scheme qualifier.",
+        "entity": null,
+        "qualifiers": {
+          "scheme": {
+            "source_path": null,
+            "value": "association_number_act",
+            "steps": []
+          }
+        },
+        "one_hot": null
+      },
+      {
+        "source_paths": [
+          "association number - nsw"
+        ],
+        "join_with": " ",
+        "when": null,
+        "target": "dyn.charity.association_number",
+        "valid_from_path": null,
+        "valid_to_path": null,
+        "validity_date_formats": null,
+        "claim_scope": null,
+        "steps": [
+          {
+            "op": "trim",
+            "args": {}
+          },
+          {
+            "op": "collapse_whitespace",
+            "args": {}
+          }
+        ],
+        "confidence": 0.85,
+        "rationale": "State or territory incorporated-association registration number as published; the state is carried in the scheme qualifier.",
+        "entity": null,
+        "qualifiers": {
+          "scheme": {
+            "source_path": null,
+            "value": "association_number_nsw",
+            "steps": []
+          }
+        },
+        "one_hot": null
+      },
+      {
+        "source_paths": [
+          "association number - nt"
+        ],
+        "join_with": " ",
+        "when": null,
+        "target": "dyn.charity.association_number",
+        "valid_from_path": null,
+        "valid_to_path": null,
+        "validity_date_formats": null,
+        "claim_scope": null,
+        "steps": [
+          {
+            "op": "trim",
+            "args": {}
+          },
+          {
+            "op": "collapse_whitespace",
+            "args": {}
+          }
+        ],
+        "confidence": 0.85,
+        "rationale": "State or territory incorporated-association registration number as published; the state is carried in the scheme qualifier.",
+        "entity": null,
+        "qualifiers": {
+          "scheme": {
+            "source_path": null,
+            "value": "association_number_nt",
+            "steps": []
+          }
+        },
+        "one_hot": null
+      },
+      {
+        "source_paths": [
+          "association number - qld"
+        ],
+        "join_with": " ",
+        "when": null,
+        "target": "dyn.charity.association_number",
+        "valid_from_path": null,
+        "valid_to_path": null,
+        "validity_date_formats": null,
+        "claim_scope": null,
+        "steps": [
+          {
+            "op": "trim",
+            "args": {}
+          },
+          {
+            "op": "collapse_whitespace",
+            "args": {}
+          }
+        ],
+        "confidence": 0.85,
+        "rationale": "State or territory incorporated-association registration number as published; the state is carried in the scheme qualifier.",
+        "entity": null,
+        "qualifiers": {
+          "scheme": {
+            "source_path": null,
+            "value": "association_number_qld",
+            "steps": []
+          }
+        },
+        "one_hot": null
+      },
+      {
+        "source_paths": [
+          "association number - sa"
+        ],
+        "join_with": " ",
+        "when": null,
+        "target": "dyn.charity.association_number",
+        "valid_from_path": null,
+        "valid_to_path": null,
+        "validity_date_formats": null,
+        "claim_scope": null,
+        "steps": [
+          {
+            "op": "trim",
+            "args": {}
+          },
+          {
+            "op": "collapse_whitespace",
+            "args": {}
+          }
+        ],
+        "confidence": 0.85,
+        "rationale": "State or territory incorporated-association registration number as published; the state is carried in the scheme qualifier.",
+        "entity": null,
+        "qualifiers": {
+          "scheme": {
+            "source_path": null,
+            "value": "association_number_sa",
+            "steps": []
+          }
+        },
+        "one_hot": null
+      },
+      {
+        "source_paths": [
+          "association number - tas"
+        ],
+        "join_with": " ",
+        "when": null,
+        "target": "dyn.charity.association_number",
+        "valid_from_path": null,
+        "valid_to_path": null,
+        "validity_date_formats": null,
+        "claim_scope": null,
+        "steps": [
+          {
+            "op": "trim",
+            "args": {}
+          },
+          {
+            "op": "collapse_whitespace",
+            "args": {}
+          }
+        ],
+        "confidence": 0.85,
+        "rationale": "State or territory incorporated-association registration number as published; the state is carried in the scheme qualifier.",
+        "entity": null,
+        "qualifiers": {
+          "scheme": {
+            "source_path": null,
+            "value": "association_number_tas",
+            "steps": []
+          }
+        },
+        "one_hot": null
+      },
+      {
+        "source_paths": [
+          "association number - vic"
+        ],
+        "join_with": " ",
+        "when": null,
+        "target": "dyn.charity.association_number",
+        "valid_from_path": null,
+        "valid_to_path": null,
+        "validity_date_formats": null,
+        "claim_scope": null,
+        "steps": [
+          {
+            "op": "trim",
+            "args": {}
+          },
+          {
+            "op": "collapse_whitespace",
+            "args": {}
+          }
+        ],
+        "confidence": 0.85,
+        "rationale": "State or territory incorporated-association registration number as published; the state is carried in the scheme qualifier.",
+        "entity": null,
+        "qualifiers": {
+          "scheme": {
+            "source_path": null,
+            "value": "association_number_vic",
+            "steps": []
+          }
+        },
+        "one_hot": null
+      },
+      {
+        "source_paths": [
+          "association number - wa"
+        ],
+        "join_with": " ",
+        "when": null,
+        "target": "dyn.charity.association_number",
+        "valid_from_path": null,
+        "valid_to_path": null,
+        "validity_date_formats": null,
+        "claim_scope": null,
+        "steps": [
+          {
+            "op": "trim",
+            "args": {}
+          },
+          {
+            "op": "collapse_whitespace",
+            "args": {}
+          }
+        ],
+        "confidence": 0.85,
+        "rationale": "State or territory incorporated-association registration number as published; the state is carried in the scheme qualifier.",
+        "entity": null,
+        "qualifiers": {
+          "scheme": {
+            "source_path": null,
+            "value": "association_number_wa",
+            "steps": []
+          }
+        },
+        "one_hot": null
+      },
+      {
+        "source_paths": [
+          "fundraising - act"
+        ],
+        "join_with": " ",
+        "when": null,
+        "target": "dyn.charity.fundraising_activity",
+        "valid_from_path": null,
+        "valid_to_path": null,
+        "validity_date_formats": null,
+        "claim_scope": null,
+        "steps": [
+          {
+            "op": "trim",
+            "args": {}
+          },
+          {
+            "op": "map_enum",
+            "args": {
+              "mapping": {
+                "y": "y",
+                "n": "n"
+              },
+              "default": null,
+              "passthrough": false
+            }
+          }
+        ],
+        "confidence": 0.9,
+        "rationale": "Whether the charity reports fundraising activity in a given jurisdiction or channel (y/n); the jurisdiction or channel is carried in the scheme qualifier.",
+        "entity": null,
+        "qualifiers": {
+          "scheme": {
+            "source_path": null,
+            "value": "fundraising_act",
+            "steps": []
+          }
+        },
+        "one_hot": null
+      },
+      {
+        "source_paths": [
+          "fundraising - nsw"
+        ],
+        "join_with": " ",
+        "when": null,
+        "target": "dyn.charity.fundraising_activity",
+        "valid_from_path": null,
+        "valid_to_path": null,
+        "validity_date_formats": null,
+        "claim_scope": null,
+        "steps": [
+          {
+            "op": "trim",
+            "args": {}
+          },
+          {
+            "op": "map_enum",
+            "args": {
+              "mapping": {
+                "y": "y",
+                "n": "n"
+              },
+              "default": null,
+              "passthrough": false
+            }
+          }
+        ],
+        "confidence": 0.9,
+        "rationale": "Whether the charity reports fundraising activity in a given jurisdiction or channel (y/n); the jurisdiction or channel is carried in the scheme qualifier.",
+        "entity": null,
+        "qualifiers": {
+          "scheme": {
+            "source_path": null,
+            "value": "fundraising_nsw",
+            "steps": []
+          }
+        },
+        "one_hot": null
+      },
+      {
+        "source_paths": [
+          "fundraising - nt"
+        ],
+        "join_with": " ",
+        "when": null,
+        "target": "dyn.charity.fundraising_activity",
+        "valid_from_path": null,
+        "valid_to_path": null,
+        "validity_date_formats": null,
+        "claim_scope": null,
+        "steps": [
+          {
+            "op": "trim",
+            "args": {}
+          },
+          {
+            "op": "map_enum",
+            "args": {
+              "mapping": {
+                "y": "y",
+                "n": "n"
+              },
+              "default": null,
+              "passthrough": false
+            }
+          }
+        ],
+        "confidence": 0.9,
+        "rationale": "Whether the charity reports fundraising activity in a given jurisdiction or channel (y/n); the jurisdiction or channel is carried in the scheme qualifier.",
+        "entity": null,
+        "qualifiers": {
+          "scheme": {
+            "source_path": null,
+            "value": "fundraising_nt",
+            "steps": []
+          }
+        },
+        "one_hot": null
+      },
+      {
+        "source_paths": [
+          "fundraising - qld"
+        ],
+        "join_with": " ",
+        "when": null,
+        "target": "dyn.charity.fundraising_activity",
+        "valid_from_path": null,
+        "valid_to_path": null,
+        "validity_date_formats": null,
+        "claim_scope": null,
+        "steps": [
+          {
+            "op": "trim",
+            "args": {}
+          },
+          {
+            "op": "map_enum",
+            "args": {
+              "mapping": {
+                "y": "y",
+                "n": "n"
+              },
+              "default": null,
+              "passthrough": false
+            }
+          }
+        ],
+        "confidence": 0.9,
+        "rationale": "Whether the charity reports fundraising activity in a given jurisdiction or channel (y/n); the jurisdiction or channel is carried in the scheme qualifier.",
+        "entity": null,
+        "qualifiers": {
+          "scheme": {
+            "source_path": null,
+            "value": "fundraising_qld",
+            "steps": []
+          }
+        },
+        "one_hot": null
+      },
+      {
+        "source_paths": [
+          "fundraising - sa"
+        ],
+        "join_with": " ",
+        "when": null,
+        "target": "dyn.charity.fundraising_activity",
+        "valid_from_path": null,
+        "valid_to_path": null,
+        "validity_date_formats": null,
+        "claim_scope": null,
+        "steps": [
+          {
+            "op": "trim",
+            "args": {}
+          },
+          {
+            "op": "map_enum",
+            "args": {
+              "mapping": {
+                "y": "y",
+                "n": "n"
+              },
+              "default": null,
+              "passthrough": false
+            }
+          }
+        ],
+        "confidence": 0.9,
+        "rationale": "Whether the charity reports fundraising activity in a given jurisdiction or channel (y/n); the jurisdiction or channel is carried in the scheme qualifier.",
+        "entity": null,
+        "qualifiers": {
+          "scheme": {
+            "source_path": null,
+            "value": "fundraising_sa",
+            "steps": []
+          }
+        },
+        "one_hot": null
+      },
+      {
+        "source_paths": [
+          "fundraising - tas"
+        ],
+        "join_with": " ",
+        "when": null,
+        "target": "dyn.charity.fundraising_activity",
+        "valid_from_path": null,
+        "valid_to_path": null,
+        "validity_date_formats": null,
+        "claim_scope": null,
+        "steps": [
+          {
+            "op": "trim",
+            "args": {}
+          },
+          {
+            "op": "map_enum",
+            "args": {
+              "mapping": {
+                "y": "y",
+                "n": "n"
+              },
+              "default": null,
+              "passthrough": false
+            }
+          }
+        ],
+        "confidence": 0.9,
+        "rationale": "Whether the charity reports fundraising activity in a given jurisdiction or channel (y/n); the jurisdiction or channel is carried in the scheme qualifier.",
+        "entity": null,
+        "qualifiers": {
+          "scheme": {
+            "source_path": null,
+            "value": "fundraising_tas",
+            "steps": []
+          }
+        },
+        "one_hot": null
+      },
+      {
+        "source_paths": [
+          "fundraising - vic"
+        ],
+        "join_with": " ",
+        "when": null,
+        "target": "dyn.charity.fundraising_activity",
+        "valid_from_path": null,
+        "valid_to_path": null,
+        "validity_date_formats": null,
+        "claim_scope": null,
+        "steps": [
+          {
+            "op": "trim",
+            "args": {}
+          },
+          {
+            "op": "map_enum",
+            "args": {
+              "mapping": {
+                "y": "y",
+                "n": "n"
+              },
+              "default": null,
+              "passthrough": false
+            }
+          }
+        ],
+        "confidence": 0.9,
+        "rationale": "Whether the charity reports fundraising activity in a given jurisdiction or channel (y/n); the jurisdiction or channel is carried in the scheme qualifier.",
+        "entity": null,
+        "qualifiers": {
+          "scheme": {
+            "source_path": null,
+            "value": "fundraising_vic",
+            "steps": []
+          }
+        },
+        "one_hot": null
+      },
+      {
+        "source_paths": [
+          "fundraising - wa"
+        ],
+        "join_with": " ",
+        "when": null,
+        "target": "dyn.charity.fundraising_activity",
+        "valid_from_path": null,
+        "valid_to_path": null,
+        "validity_date_formats": null,
+        "claim_scope": null,
+        "steps": [
+          {
+            "op": "trim",
+            "args": {}
+          },
+          {
+            "op": "map_enum",
+            "args": {
+              "mapping": {
+                "y": "y",
+                "n": "n"
+              },
+              "default": null,
+              "passthrough": false
+            }
+          }
+        ],
+        "confidence": 0.9,
+        "rationale": "Whether the charity reports fundraising activity in a given jurisdiction or channel (y/n); the jurisdiction or channel is carried in the scheme qualifier.",
+        "entity": null,
+        "qualifiers": {
+          "scheme": {
+            "source_path": null,
+            "value": "fundraising_wa",
+            "steps": []
+          }
+        },
+        "one_hot": null
+      },
+      {
+        "source_paths": [
+          "fundraising - online"
+        ],
+        "join_with": " ",
+        "when": null,
+        "target": "dyn.charity.fundraising_activity",
+        "valid_from_path": null,
+        "valid_to_path": null,
+        "validity_date_formats": null,
+        "claim_scope": null,
+        "steps": [
+          {
+            "op": "trim",
+            "args": {}
+          },
+          {
+            "op": "map_enum",
+            "args": {
+              "mapping": {
+                "y": "y",
+                "n": "n"
+              },
+              "default": null,
+              "passthrough": false
+            }
+          }
+        ],
+        "confidence": 0.9,
+        "rationale": "Whether the charity reports fundraising activity in a given jurisdiction or channel (y/n); the jurisdiction or channel is carried in the scheme qualifier.",
+        "entity": null,
+        "qualifiers": {
+          "scheme": {
+            "source_path": null,
+            "value": "fundraising_online",
+            "steps": []
+          }
+        },
+        "one_hot": null
+      },
+      {
+        "source_paths": [
+          "fundraising number - act"
+        ],
+        "join_with": " ",
+        "when": null,
+        "target": "dyn.charity.fundraising_number",
+        "valid_from_path": null,
+        "valid_to_path": null,
+        "validity_date_formats": null,
+        "claim_scope": null,
+        "steps": [
+          {
+            "op": "trim",
+            "args": {}
+          },
+          {
+            "op": "collapse_whitespace",
+            "args": {}
+          }
+        ],
+        "confidence": 0.85,
+        "rationale": "Fundraising licence or registration number issued by a state or territory regulator, as published; the jurisdiction is carried in the scheme qualifier.",
+        "entity": null,
+        "qualifiers": {
+          "scheme": {
+            "source_path": null,
+            "value": "fundraising_number_act",
+            "steps": []
+          }
+        },
+        "one_hot": null
+      },
+      {
+        "source_paths": [
+          "fundraising number - nsw"
+        ],
+        "join_with": " ",
+        "when": null,
+        "target": "dyn.charity.fundraising_number",
+        "valid_from_path": null,
+        "valid_to_path": null,
+        "validity_date_formats": null,
+        "claim_scope": null,
+        "steps": [
+          {
+            "op": "trim",
+            "args": {}
+          },
+          {
+            "op": "collapse_whitespace",
+            "args": {}
+          }
+        ],
+        "confidence": 0.85,
+        "rationale": "Fundraising licence or registration number issued by a state or territory regulator, as published; the jurisdiction is carried in the scheme qualifier.",
+        "entity": null,
+        "qualifiers": {
+          "scheme": {
+            "source_path": null,
+            "value": "fundraising_number_nsw",
+            "steps": []
+          }
+        },
+        "one_hot": null
+      },
+      {
+        "source_paths": [
+          "fundraising number - qld"
+        ],
+        "join_with": " ",
+        "when": null,
+        "target": "dyn.charity.fundraising_number",
+        "valid_from_path": null,
+        "valid_to_path": null,
+        "validity_date_formats": null,
+        "claim_scope": null,
+        "steps": [
+          {
+            "op": "trim",
+            "args": {}
+          },
+          {
+            "op": "collapse_whitespace",
+            "args": {}
+          }
+        ],
+        "confidence": 0.85,
+        "rationale": "Fundraising licence or registration number issued by a state or territory regulator, as published; the jurisdiction is carried in the scheme qualifier.",
+        "entity": null,
+        "qualifiers": {
+          "scheme": {
+            "source_path": null,
+            "value": "fundraising_number_qld",
+            "steps": []
+          }
+        },
+        "one_hot": null
+      },
+      {
+        "source_paths": [
+          "fundraising number - sa"
+        ],
+        "join_with": " ",
+        "when": null,
+        "target": "dyn.charity.fundraising_number",
+        "valid_from_path": null,
+        "valid_to_path": null,
+        "validity_date_formats": null,
+        "claim_scope": null,
+        "steps": [
+          {
+            "op": "trim",
+            "args": {}
+          },
+          {
+            "op": "collapse_whitespace",
+            "args": {}
+          }
+        ],
+        "confidence": 0.85,
+        "rationale": "Fundraising licence or registration number issued by a state or territory regulator, as published; the jurisdiction is carried in the scheme qualifier.",
+        "entity": null,
+        "qualifiers": {
+          "scheme": {
+            "source_path": null,
+            "value": "fundraising_number_sa",
+            "steps": []
+          }
+        },
+        "one_hot": null
+      },
+      {
+        "source_paths": [
+          "fundraising number - tas"
+        ],
+        "join_with": " ",
+        "when": null,
+        "target": "dyn.charity.fundraising_number",
+        "valid_from_path": null,
+        "valid_to_path": null,
+        "validity_date_formats": null,
+        "claim_scope": null,
+        "steps": [
+          {
+            "op": "trim",
+            "args": {}
+          },
+          {
+            "op": "collapse_whitespace",
+            "args": {}
+          }
+        ],
+        "confidence": 0.85,
+        "rationale": "Fundraising licence or registration number issued by a state or territory regulator, as published; the jurisdiction is carried in the scheme qualifier.",
+        "entity": null,
+        "qualifiers": {
+          "scheme": {
+            "source_path": null,
+            "value": "fundraising_number_tas",
+            "steps": []
+          }
+        },
+        "one_hot": null
+      },
+      {
+        "source_paths": [
+          "fundraising number - vic"
+        ],
+        "join_with": " ",
+        "when": null,
+        "target": "dyn.charity.fundraising_number",
+        "valid_from_path": null,
+        "valid_to_path": null,
+        "validity_date_formats": null,
+        "claim_scope": null,
+        "steps": [
+          {
+            "op": "trim",
+            "args": {}
+          },
+          {
+            "op": "collapse_whitespace",
+            "args": {}
+          }
+        ],
+        "confidence": 0.85,
+        "rationale": "Fundraising licence or registration number issued by a state or territory regulator, as published; the jurisdiction is carried in the scheme qualifier.",
+        "entity": null,
+        "qualifiers": {
+          "scheme": {
+            "source_path": null,
+            "value": "fundraising_number_vic",
+            "steps": []
+          }
+        },
+        "one_hot": null
+      },
+      {
+        "source_paths": [
+          "fundraising number - wa"
+        ],
+        "join_with": " ",
+        "when": null,
+        "target": "dyn.charity.fundraising_number",
+        "valid_from_path": null,
+        "valid_to_path": null,
+        "validity_date_formats": null,
+        "claim_scope": null,
+        "steps": [
+          {
+            "op": "trim",
+            "args": {}
+          },
+          {
+            "op": "collapse_whitespace",
+            "args": {}
+          }
+        ],
+        "confidence": 0.85,
+        "rationale": "Fundraising licence or registration number issued by a state or territory regulator, as published; the jurisdiction is carried in the scheme qualifier.",
+        "entity": null,
+        "qualifiers": {
+          "scheme": {
+            "source_path": null,
+            "value": "fundraising_number_wa",
+            "steps": []
+          }
+        },
+        "one_hot": null
+      },
+      {
+        "source_paths": [
+          "conducted activities"
+        ],
+        "join_with": " ",
+        "when": null,
+        "target": "dyn.charity.conducted_activities",
+        "valid_from_path": null,
+        "valid_to_path": null,
+        "validity_date_formats": null,
+        "claim_scope": null,
+        "steps": [
+          {
+            "op": "trim",
+            "args": {}
+          },
+          {
+            "op": "map_enum",
+            "args": {
+              "mapping": {
+                "y": "y",
+                "n": "n"
+              },
+              "default": null,
+              "passthrough": false
+            }
+          }
+        ],
+        "confidence": 0.9,
+        "rationale": "Whether the charity reports having conducted activities during the reporting period (y/n).",
+        "entity": null,
+        "qualifiers": null,
+        "one_hot": null
+      },
+      {
+        "source_paths": [
+          "why charity did not conduct activities"
+        ],
+        "join_with": " ",
+        "when": null,
+        "target": "dyn.charity.inactivity_reason",
+        "valid_from_path": null,
+        "valid_to_path": null,
+        "validity_date_formats": null,
+        "claim_scope": null,
+        "steps": [
+          {
+            "op": "trim",
+            "args": {}
+          },
+          {
+            "op": "collapse_whitespace",
+            "args": {}
+          },
+          {
+            "op": "null_if",
+            "args": {
+              "values": [
+                "",
+                " "
+              ]
+            }
+          }
+        ],
+        "confidence": 0.85,
+        "rationale": "Free-text explanation the charity gives for not conducting activities in the reporting period.",
+        "entity": null,
+        "qualifiers": null,
+        "one_hot": null
+      },
+      {
+        "source_paths": [
+          "how purposes were pursued"
+        ],
+        "join_with": " ",
+        "when": null,
+        "target": "dyn.charity.purpose_pursuit_description",
+        "valid_from_path": null,
+        "valid_to_path": null,
+        "validity_date_formats": null,
+        "claim_scope": null,
+        "steps": [
+          {
+            "op": "trim",
+            "args": {}
+          },
+          {
+            "op": "collapse_whitespace",
+            "args": {}
+          }
+        ],
+        "confidence": 0.85,
+        "rationale": "Free-text description of how the charity pursued its purposes during the reporting period, in the charity's own words.",
+        "entity": null,
+        "qualifiers": null,
+        "one_hot": null
+      },
+      {
+        "source_paths": [
+          "international activities undertaken - operating overseas including programs"
+        ],
+        "join_with": " ",
+        "when": null,
+        "target": "dyn.charity.international_activity",
+        "valid_from_path": null,
+        "valid_to_path": null,
+        "validity_date_formats": null,
+        "claim_scope": null,
+        "steps": [
+          {
+            "op": "trim",
+            "args": {}
+          },
+          {
+            "op": "map_enum",
+            "args": {
+              "mapping": {
+                "y": "y",
+                "n": "n"
+              },
+              "default": null,
+              "passthrough": false
+            }
+          }
+        ],
+        "confidence": 0.9,
+        "rationale": "Whether the charity reports a given kind of international activity (operating overseas including programs, transferring goods or services overseas, other); the kind is carried in the scheme qualifier.",
+        "entity": null,
+        "qualifiers": {
+          "scheme": {
+            "source_path": null,
+            "value": "international_operating_overseas",
+            "steps": []
+          }
+        },
+        "one_hot": null
+      },
+      {
+        "source_paths": [
+          "international activities undertaken - transferring goods or services overseas"
+        ],
+        "join_with": " ",
+        "when": null,
+        "target": "dyn.charity.international_activity",
+        "valid_from_path": null,
+        "valid_to_path": null,
+        "validity_date_formats": null,
+        "claim_scope": null,
+        "steps": [
+          {
+            "op": "trim",
+            "args": {}
+          },
+          {
+            "op": "map_enum",
+            "args": {
+              "mapping": {
+                "y": "y",
+                "n": "n"
+              },
+              "default": null,
+              "passthrough": false
+            }
+          }
+        ],
+        "confidence": 0.9,
+        "rationale": "Whether the charity reports a given kind of international activity (operating overseas including programs, transferring goods or services overseas, other); the kind is carried in the scheme qualifier.",
+        "entity": null,
+        "qualifiers": {
+          "scheme": {
+            "source_path": null,
+            "value": "international_transferring_goods_services",
+            "steps": []
+          }
+        },
+        "one_hot": null
+      },
+      {
+        "source_paths": [
+          "other international activities"
+        ],
+        "join_with": " ",
+        "when": null,
+        "target": "dyn.charity.international_activity",
+        "valid_from_path": null,
+        "valid_to_path": null,
+        "validity_date_formats": null,
+        "claim_scope": null,
+        "steps": [
+          {
+            "op": "trim",
+            "args": {}
+          },
+          {
+            "op": "map_enum",
+            "args": {
+              "mapping": {
+                "y": "y",
+                "n": "n"
+              },
+              "default": null,
+              "passthrough": false
+            }
+          }
+        ],
+        "confidence": 0.9,
+        "rationale": "Whether the charity reports a given kind of international activity (operating overseas including programs, transferring goods or services overseas, other); the kind is carried in the scheme qualifier.",
+        "entity": null,
+        "qualifiers": {
+          "scheme": {
+            "source_path": null,
+            "value": "international_other",
+            "steps": []
+          }
+        },
+        "one_hot": null
+      },
+      {
+        "source_paths": [
+          "international activities details"
+        ],
+        "join_with": " ",
+        "when": null,
+        "target": "dyn.charity.international_activity_description",
+        "valid_from_path": null,
+        "valid_to_path": null,
+        "validity_date_formats": null,
+        "claim_scope": null,
+        "steps": [
+          {
+            "op": "trim",
+            "args": {}
+          },
+          {
+            "op": "collapse_whitespace",
+            "args": {}
+          }
+        ],
+        "confidence": 0.85,
+        "rationale": "Free-text description of the charity's international activities, in the charity's own words.",
+        "entity": null,
+        "qualifiers": null,
+        "one_hot": null
+      },
+      {
+        "source_paths": [
+          "other international activities description"
+        ],
+        "join_with": " ",
+        "when": null,
+        "target": "dyn.charity.international_activity_description",
+        "valid_from_path": null,
+        "valid_to_path": null,
+        "validity_date_formats": null,
+        "claim_scope": null,
+        "steps": [
+          {
+            "op": "trim",
+            "args": {}
+          },
+          {
+            "op": "collapse_whitespace",
+            "args": {}
+          }
+        ],
+        "confidence": 0.85,
+        "rationale": "Free-text description of the charity's international activities, in the charity's own words.",
+        "entity": null,
+        "qualifiers": null,
+        "one_hot": null
+      },
+      {
+        "source_paths": [
+          "charity has reportable related party transactions"
+        ],
+        "join_with": " ",
+        "when": null,
+        "target": "dyn.charity.reportable_related_party_transactions",
+        "valid_from_path": null,
+        "valid_to_path": null,
+        "validity_date_formats": null,
+        "claim_scope": null,
+        "steps": [
+          {
+            "op": "trim",
+            "args": {}
+          },
+          {
+            "op": "map_enum",
+            "args": {
+              "mapping": {
+                "y": "y",
+                "n": "n"
+              },
+              "default": null,
+              "passthrough": false
+            }
+          }
+        ],
+        "confidence": 0.9,
+        "rationale": "Whether the charity reports having reportable related party transactions in the period (y/n).",
+        "entity": null,
+        "qualifiers": null,
+        "one_hot": null
+      },
+      {
+        "source_paths": [
+          "Relevant transactions"
+        ],
+        "join_with": " ",
+        "when": null,
+        "target": "dyn.charity.related_party_transaction_type",
+        "valid_from_path": null,
+        "valid_to_path": null,
+        "validity_date_formats": null,
+        "claim_scope": null,
+        "steps": [
+          {
+            "op": "trim",
+            "args": {}
+          },
+          {
+            "op": "collapse_whitespace",
+            "args": {}
+          },
+          {
+            "op": "split_regex",
+            "args": {
+              "pattern": ";"
+            }
+          }
+        ],
+        "confidence": 0.8,
+        "rationale": "One type of related party transaction the charity reports, split from the publisher's semicolon list.",
+        "entity": null,
+        "qualifiers": null,
+        "one_hot": null
+      },
+      {
+        "source_paths": [
+          "Other details"
+        ],
+        "join_with": " ",
+        "when": null,
+        "target": "dyn.charity.related_party_transaction_detail",
+        "valid_from_path": null,
+        "valid_to_path": null,
+        "validity_date_formats": null,
+        "claim_scope": null,
+        "steps": [
+          {
+            "op": "trim",
+            "args": {}
+          },
+          {
+            "op": "collapse_whitespace",
+            "args": {}
+          }
+        ],
+        "confidence": 0.8,
+        "rationale": "Free-text detail the charity gives about related party transactions or other relevant matters, in the charity's own words.",
+        "entity": null,
+        "qualifiers": null,
+        "one_hot": null
+      },
+      {
+        "source_paths": [
+          "Other Relevant details"
+        ],
+        "join_with": " ",
+        "when": null,
+        "target": "dyn.charity.related_party_transaction_detail",
+        "valid_from_path": null,
+        "valid_to_path": null,
+        "validity_date_formats": null,
+        "claim_scope": null,
+        "steps": [
+          {
+            "op": "trim",
+            "args": {}
+          },
+          {
+            "op": "collapse_whitespace",
+            "args": {}
+          }
+        ],
+        "confidence": 0.8,
+        "rationale": "Free-text detail the charity gives about related party transactions or other relevant matters, in the charity's own words.",
+        "entity": null,
+        "qualifiers": null,
+        "one_hot": null
+      },
+      {
+        "source_paths": [
+          "Key Management Personnel"
+        ],
+        "join_with": " ",
+        "when": null,
+        "target": "dyn.charity.key_management_personnel_reported",
+        "valid_from_path": null,
+        "valid_to_path": null,
+        "validity_date_formats": null,
+        "claim_scope": null,
+        "steps": [
+          {
+            "op": "trim",
+            "args": {}
+          },
+          {
+            "op": "map_enum",
+            "args": {
+              "mapping": {
+                "yes": "Yes",
+                "no": "No"
+              },
+              "default": null,
+              "passthrough": false
+            }
+          }
+        ],
+        "confidence": 0.9,
+        "rationale": "Whether the charity reports key management personnel in its AIS (Yes/No).",
+        "entity": null,
+        "qualifiers": null,
+        "one_hot": null
+      },
+      {
+        "source_paths": [
+          "Number of Key Management Personnel"
+        ],
+        "join_with": " ",
+        "when": null,
+        "target": "dyn.charity.key_management_personnel_count",
+        "valid_from_path": null,
+        "valid_to_path": null,
+        "validity_date_formats": null,
+        "claim_scope": null,
+        "steps": [
+          {
+            "op": "trim",
+            "args": {}
+          },
+          {
+            "op": "parse_integer",
+            "args": {}
+          }
+        ],
+        "confidence": 0.9,
+        "rationale": "Number of key management personnel the charity reports in its AIS.",
+        "entity": null,
+        "qualifiers": null,
+        "one_hot": null
+      },
+      {
+        "source_paths": [
+          "Total paid to Key Management Personnel"
+        ],
+        "join_with": " ",
+        "when": null,
+        "target": "dyn.charity.key_management_personnel_remuneration",
+        "valid_from_path": null,
+        "valid_to_path": null,
+        "validity_date_formats": null,
+        "claim_scope": null,
+        "steps": [
+          {
+            "op": "trim",
+            "args": {}
+          },
+          {
+            "op": "parse_decimal",
+            "args": {}
+          }
+        ],
+        "confidence": 0.85,
+        "rationale": "Total amount paid to key management personnel as reported in the AIS for the reporting period; currency is AUD as stated by the ACNC AIS guide and the period is the charity's financial reporting period.",
+        "entity": null,
+        "qualifiers": {
+          "currency": {
+            "source_path": null,
+            "value": "AUD",
+            "steps": []
+          },
+          "period": {
+            "source_path": "fin report to",
+            "value": null,
+            "steps": [
+              {
+                "op": "trim",
+                "args": {}
+              },
+              {
+                "op": "parse_date",
+                "args": {
+                  "formats": [
+                    "%d/%m/%Y"
+                  ]
+                }
+              }
+            ]
+          }
+        },
+        "one_hot": null
+      },
+      {
+        "source_paths": [
+          "assets and liabilities description"
+        ],
+        "join_with": " ",
+        "when": null,
+        "target": "dyn.charity.assets_liabilities_description",
+        "valid_from_path": null,
+        "valid_to_path": null,
+        "validity_date_formats": null,
+        "claim_scope": null,
+        "steps": [
+          {
+            "op": "trim",
+            "args": {}
+          },
+          {
+            "op": "collapse_whitespace",
+            "args": {}
+          }
+        ],
+        "confidence": 0.85,
+        "rationale": "Free-text description of the charity's assets and liabilities as reported in the AIS.",
+        "entity": null,
+        "qualifiers": null,
+        "one_hot": null
+      },
+      {
+        "source_paths": [
+          "cash or accrual"
+        ],
+        "join_with": " ",
+        "when": null,
+        "target": "dyn.charity.financial_report_basis",
+        "valid_from_path": null,
+        "valid_to_path": null,
+        "validity_date_formats": null,
+        "claim_scope": null,
+        "steps": [
+          {
+            "op": "trim",
+            "args": {}
+          },
+          {
+            "op": "map_enum",
+            "args": {
+              "mapping": {
+                "cash": "Cash",
+                "accrual": "Accrual"
+              },
+              "default": null,
+              "passthrough": false
+            }
+          }
+        ],
+        "confidence": 0.9,
+        "rationale": "Accounting basis the charity reports for its AIS financial information (Cash or Accrual).",
+        "entity": null,
+        "qualifiers": null,
+        "one_hot": null
+      },
+      {
+        "source_paths": [
+          "type of financial statement"
+        ],
+        "join_with": " ",
+        "when": null,
+        "target": "dyn.charity.financial_statement_type",
+        "valid_from_path": null,
+        "valid_to_path": null,
+        "validity_date_formats": null,
+        "claim_scope": null,
+        "steps": [
+          {
+            "op": "trim",
+            "args": {}
+          },
+          {
+            "op": "collapse_whitespace",
+            "args": {}
+          }
+        ],
+        "confidence": 0.85,
+        "rationale": "Type of financial statement the charity reports, in the publisher's wording.",
+        "entity": null,
+        "qualifiers": null,
+        "one_hot": null
+      },
+      {
+        "source_paths": [
+          "report consolidated with more than one entity"
+        ],
+        "join_with": " ",
+        "when": null,
+        "target": "dyn.charity.report_consolidated",
+        "valid_from_path": null,
+        "valid_to_path": null,
+        "validity_date_formats": null,
+        "claim_scope": null,
+        "steps": [
+          {
+            "op": "trim",
+            "args": {}
+          },
+          {
+            "op": "map_enum",
+            "args": {
+              "mapping": {
+                "y": "y",
+                "n": "n"
+              },
+              "default": null,
+              "passthrough": false
+            }
+          }
+        ],
+        "confidence": 0.9,
+        "rationale": "Whether the charity's financial report is consolidated with more than one entity (y/n).",
+        "entity": null,
+        "qualifiers": null,
+        "one_hot": null
+      },
+      {
+        "source_paths": [
+          "charity report has a modification"
+        ],
+        "join_with": " ",
+        "when": null,
+        "target": "dyn.charity.report_modified",
+        "valid_from_path": null,
+        "valid_to_path": null,
+        "validity_date_formats": null,
+        "claim_scope": null,
+        "steps": [
+          {
+            "op": "trim",
+            "args": {}
+          },
+          {
+            "op": "map_enum",
+            "args": {
+              "mapping": {
+                "y": "y",
+                "n": "n"
+              },
+              "default": null,
+              "passthrough": false
+            }
+          }
+        ],
+        "confidence": 0.9,
+        "rationale": "Whether the charity's financial report has a modification (y/n).",
+        "entity": null,
+        "qualifiers": null,
+        "one_hot": null
+      },
+      {
+        "source_paths": [
+          "type of report modification"
+        ],
+        "join_with": " ",
+        "when": null,
+        "target": "dyn.charity.report_modification_type",
+        "valid_from_path": null,
+        "valid_to_path": null,
+        "validity_date_formats": null,
+        "claim_scope": null,
+        "steps": [
+          {
+            "op": "trim",
+            "args": {}
+          },
+          {
+            "op": "collapse_whitespace",
+            "args": {}
+          }
+        ],
+        "confidence": 0.85,
+        "rationale": "Type of financial report modification reported, in the publisher's wording.",
+        "entity": null,
+        "qualifiers": null,
+        "one_hot": null
+      },
+      {
+        "source_paths": [
+          "coop financial report submitted to regulator"
+        ],
+        "join_with": " ",
+        "when": null,
+        "target": "dyn.charity.coop_financial_report_submitted",
+        "valid_from_path": null,
+        "valid_to_path": null,
+        "validity_date_formats": null,
+        "claim_scope": null,
+        "steps": [
+          {
+            "op": "trim",
+            "args": {}
+          },
+          {
+            "op": "map_enum",
+            "args": {
+              "mapping": {
+                "y": "y",
+                "n": "n"
+              },
+              "default": null,
+              "passthrough": false
+            }
+          }
+        ],
+        "confidence": 0.9,
+        "rationale": "Whether a cooperative financial report was submitted to the regulator (y/n), as reported in the AIS.",
+        "entity": null,
+        "qualifiers": null,
+        "one_hot": null
+      },
+      {
+        "source_paths": [
+          "ais due date"
+        ],
+        "join_with": " ",
+        "when": null,
+        "target": "dyn.charity.ais_due_date",
+        "valid_from_path": null,
+        "valid_to_path": null,
+        "validity_date_formats": null,
+        "claim_scope": null,
+        "steps": [
+          {
+            "op": "trim",
+            "args": {}
+          },
+          {
+            "op": "parse_date",
+            "args": {
+              "formats": [
+                "%d/%m/%Y"
+              ]
+            }
+          }
+        ],
+        "confidence": 0.9,
+        "rationale": "Date the Annual Information Statement was due to the ACNC; an administrative lodgement deadline, not an incorporation or licence date.",
+        "entity": null,
+        "qualifiers": null,
+        "one_hot": null
+      },
+      {
+        "source_paths": [
+          "date ais received"
+        ],
+        "join_with": " ",
+        "when": null,
+        "target": "dyn.charity.ais_received_date",
+        "valid_from_path": null,
+        "valid_to_path": null,
+        "validity_date_formats": null,
+        "claim_scope": null,
+        "steps": [
+          {
+            "op": "trim",
+            "args": {}
+          },
+          {
+            "op": "parse_date",
+            "args": {
+              "formats": [
+                "%d/%m/%Y"
+              ]
+            }
+          }
+        ],
+        "confidence": 0.9,
+        "rationale": "Date the ACNC received the Annual Information Statement; an administrative lodgement date, not an incorporation or licence date.",
+        "entity": null,
+        "qualifiers": null,
+        "one_hot": null
+      },
+      {
+        "source_paths": [
+          "financial report date received"
+        ],
+        "join_with": " ",
+        "when": null,
+        "target": "dyn.charity.financial_report_received_date",
+        "valid_from_path": null,
+        "valid_to_path": null,
+        "validity_date_formats": null,
+        "claim_scope": null,
+        "steps": [
+          {
+            "op": "trim",
+            "args": {}
+          },
+          {
+            "op": "parse_date",
+            "args": {
+              "formats": [
+                "%d/%m/%Y"
+              ]
+            }
+          }
+        ],
+        "confidence": 0.9,
+        "rationale": "Date the ACNC received the charity's financial report; an administrative lodgement date, not an incorporation or licence date.",
+        "entity": null,
+        "qualifiers": null,
+        "one_hot": null
+      },
+      {
+        "source_paths": [
+          "fin report from"
+        ],
+        "join_with": " ",
+        "when": null,
+        "target": "dyn.charity.reporting_period_start",
+        "valid_from_path": null,
+        "valid_to_path": null,
+        "validity_date_formats": null,
+        "claim_scope": null,
+        "steps": [
+          {
+            "op": "trim",
+            "args": {}
+          },
+          {
+            "op": "parse_date",
+            "args": {
+              "formats": [
+                "%d/%m/%Y"
+              ]
+            }
+          }
+        ],
+        "confidence": 0.9,
+        "rationale": "Start date of the charity's financial reporting period covered by the AIS financial information.",
+        "entity": null,
+        "qualifiers": null,
+        "one_hot": null
+      },
+      {
+        "source_paths": [
+          "fin report to"
+        ],
+        "join_with": " ",
+        "when": null,
+        "target": "dyn.charity.reporting_period_end",
+        "valid_from_path": null,
+        "valid_to_path": null,
+        "validity_date_formats": null,
+        "claim_scope": null,
+        "steps": [
+          {
+            "op": "trim",
+            "args": {}
+          },
+          {
+            "op": "parse_date",
+            "args": {
+              "formats": [
+                "%d/%m/%Y"
+              ]
+            }
+          }
+        ],
+        "confidence": 0.9,
+        "rationale": "End date of the charity's financial reporting period covered by the AIS financial information.",
+        "entity": null,
+        "qualifiers": null,
+        "one_hot": null
+      },
+      {
+        "source_paths": [
+          "staff - full time"
+        ],
+        "join_with": " ",
+        "when": null,
+        "target": "dyn.charity.staff_full_time",
+        "valid_from_path": null,
+        "valid_to_path": null,
+        "validity_date_formats": null,
+        "claim_scope": null,
+        "steps": [
+          {
+            "op": "trim",
+            "args": {}
+          },
+          {
+            "op": "parse_integer",
+            "args": {}
+          }
+        ],
+        "confidence": 0.9,
+        "rationale": "Number of full-time staff the charity reports for the reporting period.",
+        "entity": null,
+        "qualifiers": null,
+        "one_hot": null
+      },
+      {
+        "source_paths": [
+          "staff - part time"
+        ],
+        "join_with": " ",
+        "when": null,
+        "target": "dyn.charity.staff_part_time",
+        "valid_from_path": null,
+        "valid_to_path": null,
+        "validity_date_formats": null,
+        "claim_scope": null,
+        "steps": [
+          {
+            "op": "trim",
+            "args": {}
+          },
+          {
+            "op": "parse_integer",
+            "args": {}
+          }
+        ],
+        "confidence": 0.9,
+        "rationale": "Number of part-time staff the charity reports for the reporting period.",
+        "entity": null,
+        "qualifiers": null,
+        "one_hot": null
+      },
+      {
+        "source_paths": [
+          "staff - casual"
+        ],
+        "join_with": " ",
+        "when": null,
+        "target": "dyn.charity.staff_casual",
+        "valid_from_path": null,
+        "valid_to_path": null,
+        "validity_date_formats": null,
+        "claim_scope": null,
+        "steps": [
+          {
+            "op": "trim",
+            "args": {}
+          },
+          {
+            "op": "parse_integer",
+            "args": {}
+          }
+        ],
+        "confidence": 0.9,
+        "rationale": "Number of casual staff the charity reports for the reporting period.",
+        "entity": null,
+        "qualifiers": null,
+        "one_hot": null
+      },
+      {
+        "source_paths": [
+          "staff - volunteers"
+        ],
+        "join_with": " ",
+        "when": null,
+        "target": "dyn.charity.staff_volunteers",
+        "valid_from_path": null,
+        "valid_to_path": null,
+        "validity_date_formats": null,
+        "claim_scope": null,
+        "steps": [
+          {
+            "op": "trim",
+            "args": {}
+          },
+          {
+            "op": "parse_integer",
+            "args": {}
+          }
+        ],
+        "confidence": 0.9,
+        "rationale": "Number of volunteers the charity reports for the reporting period.",
+        "entity": null,
+        "qualifiers": null,
+        "one_hot": null
+      },
+      {
+        "source_paths": [
+          "total full time equivalent staff"
+        ],
+        "join_with": " ",
+        "when": null,
+        "target": "dyn.charity.staff_full_time_equivalent",
+        "valid_from_path": null,
+        "valid_to_path": null,
+        "validity_date_formats": null,
+        "claim_scope": null,
+        "steps": [
+          {
+            "op": "trim",
+            "args": {}
+          },
+          {
+            "op": "parse_decimal",
+            "args": {}
+          }
+        ],
+        "confidence": 0.9,
+        "rationale": "Total full-time-equivalent staff the charity reports for the reporting period.",
+        "entity": null,
+        "qualifiers": null,
+        "one_hot": null
+      },
+      {
+        "source_paths": [
+          "revenue from government"
+        ],
+        "join_with": " ",
+        "when": null,
+        "target": "dyn.charity.revenue_government",
+        "valid_from_path": null,
+        "valid_to_path": null,
+        "validity_date_formats": null,
+        "claim_scope": null,
+        "steps": [
+          {
+            "op": "trim",
+            "args": {}
+          },
+          {
+            "op": "parse_decimal",
+            "args": {}
+          }
+        ],
+        "confidence": 0.9,
+        "rationale": "Revenue from government as reported in the AIS for the charity's reporting period; currency is AUD as stated by the ACNC AIS guide.",
+        "entity": null,
+        "qualifiers": {
+          "currency": {
+            "source_path": null,
+            "value": "AUD",
+            "steps": []
+          },
+          "period": {
+            "source_path": "fin report to",
+            "value": null,
+            "steps": [
+              {
+                "op": "trim",
+                "args": {}
+              },
+              {
+                "op": "parse_date",
+                "args": {
+                  "formats": [
+                    "%d/%m/%Y"
+                  ]
+                }
+              }
+            ]
+          }
+        },
+        "one_hot": null
+      },
+      {
+        "source_paths": [
+          "donations and bequests"
+        ],
+        "join_with": " ",
+        "when": null,
+        "target": "dyn.charity.revenue_donations_bequests",
+        "valid_from_path": null,
+        "valid_to_path": null,
+        "validity_date_formats": null,
+        "claim_scope": null,
+        "steps": [
+          {
+            "op": "trim",
+            "args": {}
+          },
+          {
+            "op": "parse_decimal",
+            "args": {}
+          }
+        ],
+        "confidence": 0.9,
+        "rationale": "Donations and bequests revenue as reported in the AIS for the charity's reporting period; currency is AUD as stated by the ACNC AIS guide.",
+        "entity": null,
+        "qualifiers": {
+          "currency": {
+            "source_path": null,
+            "value": "AUD",
+            "steps": []
+          },
+          "period": {
+            "source_path": "fin report to",
+            "value": null,
+            "steps": [
+              {
+                "op": "trim",
+                "args": {}
+              },
+              {
+                "op": "parse_date",
+                "args": {
+                  "formats": [
+                    "%d/%m/%Y"
+                  ]
+                }
+              }
+            ]
+          }
+        },
+        "one_hot": null
+      },
+      {
+        "source_paths": [
+          "revenue from goods and services"
+        ],
+        "join_with": " ",
+        "when": null,
+        "target": "dyn.charity.revenue_goods_and_services",
+        "valid_from_path": null,
+        "valid_to_path": null,
+        "validity_date_formats": null,
+        "claim_scope": null,
+        "steps": [
+          {
+            "op": "trim",
+            "args": {}
+          },
+          {
+            "op": "parse_decimal",
+            "args": {}
+          }
+        ],
+        "confidence": 0.9,
+        "rationale": "Revenue from goods and services as reported in the AIS for the charity's reporting period; currency is AUD as stated by the ACNC AIS guide.",
+        "entity": null,
+        "qualifiers": {
+          "currency": {
+            "source_path": null,
+            "value": "AUD",
+            "steps": []
+          },
+          "period": {
+            "source_path": "fin report to",
+            "value": null,
+            "steps": [
+              {
+                "op": "trim",
+                "args": {}
+              },
+              {
+                "op": "parse_date",
+                "args": {
+                  "formats": [
+                    "%d/%m/%Y"
+                  ]
+                }
+              }
+            ]
+          }
+        },
+        "one_hot": null
+      },
+      {
+        "source_paths": [
+          "revenue from investments"
+        ],
+        "join_with": " ",
+        "when": null,
+        "target": "dyn.charity.revenue_investments",
+        "valid_from_path": null,
+        "valid_to_path": null,
+        "validity_date_formats": null,
+        "claim_scope": null,
+        "steps": [
+          {
+            "op": "trim",
+            "args": {}
+          },
+          {
+            "op": "parse_decimal",
+            "args": {}
+          }
+        ],
+        "confidence": 0.9,
+        "rationale": "Revenue from investments as reported in the AIS for the charity's reporting period; currency is AUD as stated by the ACNC AIS guide.",
+        "entity": null,
+        "qualifiers": {
+          "currency": {
+            "source_path": null,
+            "value": "AUD",
+            "steps": []
+          },
+          "period": {
+            "source_path": "fin report to",
+            "value": null,
+            "steps": [
+              {
+                "op": "trim",
+                "args": {}
+              },
+              {
+                "op": "parse_date",
+                "args": {
+                  "formats": [
+                    "%d/%m/%Y"
+                  ]
+                }
+              }
+            ]
+          }
+        },
+        "one_hot": null
+      },
+      {
+        "source_paths": [
+          "all other revenue"
+        ],
+        "join_with": " ",
+        "when": null,
+        "target": "dyn.charity.revenue_other",
+        "valid_from_path": null,
+        "valid_to_path": null,
+        "validity_date_formats": null,
+        "claim_scope": null,
+        "steps": [
+          {
+            "op": "trim",
+            "args": {}
+          },
+          {
+            "op": "parse_decimal",
+            "args": {}
+          }
+        ],
+        "confidence": 0.9,
+        "rationale": "All other revenue as reported in the AIS for the charity's reporting period; currency is AUD as stated by the ACNC AIS guide.",
+        "entity": null,
+        "qualifiers": {
+          "currency": {
+            "source_path": null,
+            "value": "AUD",
+            "steps": []
+          },
+          "period": {
+            "source_path": "fin report to",
+            "value": null,
+            "steps": [
+              {
+                "op": "trim",
+                "args": {}
+              },
+              {
+                "op": "parse_date",
+                "args": {
+                  "formats": [
+                    "%d/%m/%Y"
+                  ]
+                }
+              }
+            ]
+          }
+        },
+        "one_hot": null
+      },
+      {
+        "source_paths": [
+          "total revenue"
+        ],
+        "join_with": " ",
+        "when": null,
+        "target": "dyn.charity.revenue_total",
+        "valid_from_path": null,
+        "valid_to_path": null,
+        "validity_date_formats": null,
+        "claim_scope": null,
+        "steps": [
+          {
+            "op": "trim",
+            "args": {}
+          },
+          {
+            "op": "parse_decimal",
+            "args": {}
+          }
+        ],
+        "confidence": 0.9,
+        "rationale": "Total revenue as reported in the AIS for the charity's reporting period; currency is AUD as stated by the ACNC AIS guide.",
+        "entity": null,
+        "qualifiers": {
+          "currency": {
+            "source_path": null,
+            "value": "AUD",
+            "steps": []
+          },
+          "period": {
+            "source_path": "fin report to",
+            "value": null,
+            "steps": [
+              {
+                "op": "trim",
+                "args": {}
+              },
+              {
+                "op": "parse_date",
+                "args": {
+                  "formats": [
+                    "%d/%m/%Y"
+                  ]
+                }
+              }
+            ]
+          }
+        },
+        "one_hot": null
+      },
+      {
+        "source_paths": [
+          "other income"
+        ],
+        "join_with": " ",
+        "when": null,
+        "target": "dyn.charity.income_other",
+        "valid_from_path": null,
+        "valid_to_path": null,
+        "validity_date_formats": null,
+        "claim_scope": null,
+        "steps": [
+          {
+            "op": "trim",
+            "args": {}
+          },
+          {
+            "op": "parse_decimal",
+            "args": {}
+          }
+        ],
+        "confidence": 0.9,
+        "rationale": "Other income as reported in the AIS for the charity's reporting period; currency is AUD as stated by the ACNC AIS guide.",
+        "entity": null,
+        "qualifiers": {
+          "currency": {
+            "source_path": null,
+            "value": "AUD",
+            "steps": []
+          },
+          "period": {
+            "source_path": "fin report to",
+            "value": null,
+            "steps": [
+              {
+                "op": "trim",
+                "args": {}
+              },
+              {
+                "op": "parse_date",
+                "args": {
+                  "formats": [
+                    "%d/%m/%Y"
+                  ]
+                }
+              }
+            ]
+          }
+        },
+        "one_hot": null
+      },
+      {
+        "source_paths": [
+          "total gross income"
+        ],
+        "join_with": " ",
+        "when": null,
+        "target": "dyn.charity.income_gross_total",
+        "valid_from_path": null,
+        "valid_to_path": null,
+        "validity_date_formats": null,
+        "claim_scope": null,
+        "steps": [
+          {
+            "op": "trim",
+            "args": {}
+          },
+          {
+            "op": "parse_decimal",
+            "args": {}
+          }
+        ],
+        "confidence": 0.9,
+        "rationale": "Total gross income as reported in the AIS for the charity's reporting period; currency is AUD as stated by the ACNC AIS guide.",
+        "entity": null,
+        "qualifiers": {
+          "currency": {
+            "source_path": null,
+            "value": "AUD",
+            "steps": []
+          },
+          "period": {
+            "source_path": "fin report to",
+            "value": null,
+            "steps": [
+              {
+                "op": "trim",
+                "args": {}
+              },
+              {
+                "op": "parse_date",
+                "args": {
+                  "formats": [
+                    "%d/%m/%Y"
+                  ]
+                }
+              }
+            ]
+          }
+        },
+        "one_hot": null
+      },
+      {
+        "source_paths": [
+          "employee expenses"
+        ],
+        "join_with": " ",
+        "when": null,
+        "target": "dyn.charity.expense_employee",
+        "valid_from_path": null,
+        "valid_to_path": null,
+        "validity_date_formats": null,
+        "claim_scope": null,
+        "steps": [
+          {
+            "op": "trim",
+            "args": {}
+          },
+          {
+            "op": "parse_decimal",
+            "args": {}
+          }
+        ],
+        "confidence": 0.9,
+        "rationale": "Employee expenses as reported in the AIS for the charity's reporting period; currency is AUD as stated by the ACNC AIS guide.",
+        "entity": null,
+        "qualifiers": {
+          "currency": {
+            "source_path": null,
+            "value": "AUD",
+            "steps": []
+          },
+          "period": {
+            "source_path": "fin report to",
+            "value": null,
+            "steps": [
+              {
+                "op": "trim",
+                "args": {}
+              },
+              {
+                "op": "parse_date",
+                "args": {
+                  "formats": [
+                    "%d/%m/%Y"
+                  ]
+                }
+              }
+            ]
+          }
+        },
+        "one_hot": null
+      },
+      {
+        "source_paths": [
+          "interest expenses"
+        ],
+        "join_with": " ",
+        "when": null,
+        "target": "dyn.charity.expense_interest",
+        "valid_from_path": null,
+        "valid_to_path": null,
+        "validity_date_formats": null,
+        "claim_scope": null,
+        "steps": [
+          {
+            "op": "trim",
+            "args": {}
+          },
+          {
+            "op": "parse_decimal",
+            "args": {}
+          }
+        ],
+        "confidence": 0.9,
+        "rationale": "Interest expenses as reported in the AIS for the charity's reporting period; currency is AUD as stated by the ACNC AIS guide.",
+        "entity": null,
+        "qualifiers": {
+          "currency": {
+            "source_path": null,
+            "value": "AUD",
+            "steps": []
+          },
+          "period": {
+            "source_path": "fin report to",
+            "value": null,
+            "steps": [
+              {
+                "op": "trim",
+                "args": {}
+              },
+              {
+                "op": "parse_date",
+                "args": {
+                  "formats": [
+                    "%d/%m/%Y"
+                  ]
+                }
+              }
+            ]
+          }
+        },
+        "one_hot": null
+      },
+      {
+        "source_paths": [
+          "grants and donations made for use in Australia"
+        ],
+        "join_with": " ",
+        "when": null,
+        "target": "dyn.charity.grants_donations_made_domestic",
+        "valid_from_path": null,
+        "valid_to_path": null,
+        "validity_date_formats": null,
+        "claim_scope": null,
+        "steps": [
+          {
+            "op": "trim",
+            "args": {}
+          },
+          {
+            "op": "parse_decimal",
+            "args": {}
+          }
+        ],
+        "confidence": 0.9,
+        "rationale": "Grants and donations made for use in Australia as reported in the AIS for the charity's reporting period; currency is AUD as stated by the ACNC AIS guide.",
+        "entity": null,
+        "qualifiers": {
+          "currency": {
+            "source_path": null,
+            "value": "AUD",
+            "steps": []
+          },
+          "period": {
+            "source_path": "fin report to",
+            "value": null,
+            "steps": [
+              {
+                "op": "trim",
+                "args": {}
+              },
+              {
+                "op": "parse_date",
+                "args": {
+                  "formats": [
+                    "%d/%m/%Y"
+                  ]
+                }
+              }
+            ]
+          }
+        },
+        "one_hot": null
+      },
+      {
+        "source_paths": [
+          "grants and donations made for use outside Australia"
+        ],
+        "join_with": " ",
+        "when": null,
+        "target": "dyn.charity.grants_donations_made_overseas",
+        "valid_from_path": null,
+        "valid_to_path": null,
+        "validity_date_formats": null,
+        "claim_scope": null,
+        "steps": [
+          {
+            "op": "trim",
+            "args": {}
+          },
+          {
+            "op": "parse_decimal",
+            "args": {}
+          }
+        ],
+        "confidence": 0.9,
+        "rationale": "Grants and donations made for use outside Australia as reported in the AIS for the charity's reporting period; currency is AUD as stated by the ACNC AIS guide.",
+        "entity": null,
+        "qualifiers": {
+          "currency": {
+            "source_path": null,
+            "value": "AUD",
+            "steps": []
+          },
+          "period": {
+            "source_path": "fin report to",
+            "value": null,
+            "steps": [
+              {
+                "op": "trim",
+                "args": {}
+              },
+              {
+                "op": "parse_date",
+                "args": {
+                  "formats": [
+                    "%d/%m/%Y"
+                  ]
+                }
+              }
+            ]
+          }
+        },
+        "one_hot": null
+      },
+      {
+        "source_paths": [
+          "all other expenses"
+        ],
+        "join_with": " ",
+        "when": null,
+        "target": "dyn.charity.expense_other",
+        "valid_from_path": null,
+        "valid_to_path": null,
+        "validity_date_formats": null,
+        "claim_scope": null,
+        "steps": [
+          {
+            "op": "trim",
+            "args": {}
+          },
+          {
+            "op": "parse_decimal",
+            "args": {}
+          }
+        ],
+        "confidence": 0.9,
+        "rationale": "All other expenses as reported in the AIS for the charity's reporting period; currency is AUD as stated by the ACNC AIS guide.",
+        "entity": null,
+        "qualifiers": {
+          "currency": {
+            "source_path": null,
+            "value": "AUD",
+            "steps": []
+          },
+          "period": {
+            "source_path": "fin report to",
+            "value": null,
+            "steps": [
+              {
+                "op": "trim",
+                "args": {}
+              },
+              {
+                "op": "parse_date",
+                "args": {
+                  "formats": [
+                    "%d/%m/%Y"
+                  ]
+                }
+              }
+            ]
+          }
+        },
+        "one_hot": null
+      },
+      {
+        "source_paths": [
+          "total expenses"
+        ],
+        "join_with": " ",
+        "when": null,
+        "target": "dyn.charity.expense_total",
+        "valid_from_path": null,
+        "valid_to_path": null,
+        "validity_date_formats": null,
+        "claim_scope": null,
+        "steps": [
+          {
+            "op": "trim",
+            "args": {}
+          },
+          {
+            "op": "parse_decimal",
+            "args": {}
+          }
+        ],
+        "confidence": 0.9,
+        "rationale": "Total expenses as reported in the AIS for the charity's reporting period; currency is AUD as stated by the ACNC AIS guide.",
+        "entity": null,
+        "qualifiers": {
+          "currency": {
+            "source_path": null,
+            "value": "AUD",
+            "steps": []
+          },
+          "period": {
+            "source_path": "fin report to",
+            "value": null,
+            "steps": [
+              {
+                "op": "trim",
+                "args": {}
+              },
+              {
+                "op": "parse_date",
+                "args": {
+                  "formats": [
+                    "%d/%m/%Y"
+                  ]
+                }
+              }
+            ]
+          }
+        },
+        "one_hot": null
+      },
+      {
+        "source_paths": [
+          "net surplus/deficit"
+        ],
+        "join_with": " ",
+        "when": null,
+        "target": "dyn.charity.net_surplus_deficit",
+        "valid_from_path": null,
+        "valid_to_path": null,
+        "validity_date_formats": null,
+        "claim_scope": null,
+        "steps": [
+          {
+            "op": "trim",
+            "args": {}
+          },
+          {
+            "op": "parse_decimal",
+            "args": {}
+          }
+        ],
+        "confidence": 0.9,
+        "rationale": "Net surplus or deficit as reported in the AIS for the charity's reporting period; currency is AUD as stated by the ACNC AIS guide.",
+        "entity": null,
+        "qualifiers": {
+          "currency": {
+            "source_path": null,
+            "value": "AUD",
+            "steps": []
+          },
+          "period": {
+            "source_path": "fin report to",
+            "value": null,
+            "steps": [
+              {
+                "op": "trim",
+                "args": {}
+              },
+              {
+                "op": "parse_date",
+                "args": {
+                  "formats": [
+                    "%d/%m/%Y"
+                  ]
+                }
+              }
+            ]
+          }
+        },
+        "one_hot": null
+      },
+      {
+        "source_paths": [
+          "other comprehensive income"
+        ],
+        "join_with": " ",
+        "when": null,
+        "target": "dyn.charity.other_comprehensive_income",
+        "valid_from_path": null,
+        "valid_to_path": null,
+        "validity_date_formats": null,
+        "claim_scope": null,
+        "steps": [
+          {
+            "op": "trim",
+            "args": {}
+          },
+          {
+            "op": "parse_decimal",
+            "args": {}
+          }
+        ],
+        "confidence": 0.9,
+        "rationale": "Other comprehensive income as reported in the AIS for the charity's reporting period; currency is AUD as stated by the ACNC AIS guide.",
+        "entity": null,
+        "qualifiers": {
+          "currency": {
+            "source_path": null,
+            "value": "AUD",
+            "steps": []
+          },
+          "period": {
+            "source_path": "fin report to",
+            "value": null,
+            "steps": [
+              {
+                "op": "trim",
+                "args": {}
+              },
+              {
+                "op": "parse_date",
+                "args": {
+                  "formats": [
+                    "%d/%m/%Y"
+                  ]
+                }
+              }
+            ]
+          }
+        },
+        "one_hot": null
+      },
+      {
+        "source_paths": [
+          "total comprehensive income"
+        ],
+        "join_with": " ",
+        "when": null,
+        "target": "dyn.charity.total_comprehensive_income",
+        "valid_from_path": null,
+        "valid_to_path": null,
+        "validity_date_formats": null,
+        "claim_scope": null,
+        "steps": [
+          {
+            "op": "trim",
+            "args": {}
+          },
+          {
+            "op": "parse_decimal",
+            "args": {}
+          }
+        ],
+        "confidence": 0.9,
+        "rationale": "Total comprehensive income as reported in the AIS for the charity's reporting period; currency is AUD as stated by the ACNC AIS guide.",
+        "entity": null,
+        "qualifiers": {
+          "currency": {
+            "source_path": null,
+            "value": "AUD",
+            "steps": []
+          },
+          "period": {
+            "source_path": "fin report to",
+            "value": null,
+            "steps": [
+              {
+                "op": "trim",
+                "args": {}
+              },
+              {
+                "op": "parse_date",
+                "args": {
+                  "formats": [
+                    "%d/%m/%Y"
+                  ]
+                }
+              }
+            ]
+          }
+        },
+        "one_hot": null
+      },
+      {
+        "source_paths": [
+          "total current assets"
+        ],
+        "join_with": " ",
+        "when": null,
+        "target": "dyn.charity.assets_current_total",
+        "valid_from_path": null,
+        "valid_to_path": null,
+        "validity_date_formats": null,
+        "claim_scope": null,
+        "steps": [
+          {
+            "op": "trim",
+            "args": {}
+          },
+          {
+            "op": "parse_decimal",
+            "args": {}
+          }
+        ],
+        "confidence": 0.9,
+        "rationale": "Total current assets as reported in the AIS at the end of the charity's reporting period; currency is AUD as stated by the ACNC AIS guide.",
+        "entity": null,
+        "qualifiers": {
+          "currency": {
+            "source_path": null,
+            "value": "AUD",
+            "steps": []
+          },
+          "period": {
+            "source_path": "fin report to",
+            "value": null,
+            "steps": [
+              {
+                "op": "trim",
+                "args": {}
+              },
+              {
+                "op": "parse_date",
+                "args": {
+                  "formats": [
+                    "%d/%m/%Y"
+                  ]
+                }
+              }
+            ]
+          }
+        },
+        "one_hot": null
+      },
+      {
+        "source_paths": [
+          "non-current loans receivable"
+        ],
+        "join_with": " ",
+        "when": null,
+        "target": "dyn.charity.assets_noncurrent_loans_receivable",
+        "valid_from_path": null,
+        "valid_to_path": null,
+        "validity_date_formats": null,
+        "claim_scope": null,
+        "steps": [
+          {
+            "op": "trim",
+            "args": {}
+          },
+          {
+            "op": "parse_decimal",
+            "args": {}
+          }
+        ],
+        "confidence": 0.9,
+        "rationale": "Non-current loans receivable as reported in the AIS at the end of the charity's reporting period; currency is AUD as stated by the ACNC AIS guide.",
+        "entity": null,
+        "qualifiers": {
+          "currency": {
+            "source_path": null,
+            "value": "AUD",
+            "steps": []
+          },
+          "period": {
+            "source_path": "fin report to",
+            "value": null,
+            "steps": [
+              {
+                "op": "trim",
+                "args": {}
+              },
+              {
+                "op": "parse_date",
+                "args": {
+                  "formats": [
+                    "%d/%m/%Y"
+                  ]
+                }
+              }
+            ]
+          }
+        },
+        "one_hot": null
+      },
+      {
+        "source_paths": [
+          "other non-current assets"
+        ],
+        "join_with": " ",
+        "when": null,
+        "target": "dyn.charity.assets_noncurrent_other",
+        "valid_from_path": null,
+        "valid_to_path": null,
+        "validity_date_formats": null,
+        "claim_scope": null,
+        "steps": [
+          {
+            "op": "trim",
+            "args": {}
+          },
+          {
+            "op": "parse_decimal",
+            "args": {}
+          }
+        ],
+        "confidence": 0.9,
+        "rationale": "Other non-current assets as reported in the AIS at the end of the charity's reporting period; currency is AUD as stated by the ACNC AIS guide.",
+        "entity": null,
+        "qualifiers": {
+          "currency": {
+            "source_path": null,
+            "value": "AUD",
+            "steps": []
+          },
+          "period": {
+            "source_path": "fin report to",
+            "value": null,
+            "steps": [
+              {
+                "op": "trim",
+                "args": {}
+              },
+              {
+                "op": "parse_date",
+                "args": {
+                  "formats": [
+                    "%d/%m/%Y"
+                  ]
+                }
+              }
+            ]
+          }
+        },
+        "one_hot": null
+      },
+      {
+        "source_paths": [
+          "total non-current assets"
+        ],
+        "join_with": " ",
+        "when": null,
+        "target": "dyn.charity.assets_noncurrent_total",
+        "valid_from_path": null,
+        "valid_to_path": null,
+        "validity_date_formats": null,
+        "claim_scope": null,
+        "steps": [
+          {
+            "op": "trim",
+            "args": {}
+          },
+          {
+            "op": "parse_decimal",
+            "args": {}
+          }
+        ],
+        "confidence": 0.9,
+        "rationale": "Total non-current assets as reported in the AIS at the end of the charity's reporting period; currency is AUD as stated by the ACNC AIS guide.",
+        "entity": null,
+        "qualifiers": {
+          "currency": {
+            "source_path": null,
+            "value": "AUD",
+            "steps": []
+          },
+          "period": {
+            "source_path": "fin report to",
+            "value": null,
+            "steps": [
+              {
+                "op": "trim",
+                "args": {}
+              },
+              {
+                "op": "parse_date",
+                "args": {
+                  "formats": [
+                    "%d/%m/%Y"
+                  ]
+                }
+              }
+            ]
+          }
+        },
+        "one_hot": null
+      },
+      {
+        "source_paths": [
+          "total assets"
+        ],
+        "join_with": " ",
+        "when": null,
+        "target": "dyn.charity.assets_total",
+        "valid_from_path": null,
+        "valid_to_path": null,
+        "validity_date_formats": null,
+        "claim_scope": null,
+        "steps": [
+          {
+            "op": "trim",
+            "args": {}
+          },
+          {
+            "op": "parse_decimal",
+            "args": {}
+          }
+        ],
+        "confidence": 0.9,
+        "rationale": "Total assets as reported in the AIS at the end of the charity's reporting period; currency is AUD as stated by the ACNC AIS guide.",
+        "entity": null,
+        "qualifiers": {
+          "currency": {
+            "source_path": null,
+            "value": "AUD",
+            "steps": []
+          },
+          "period": {
+            "source_path": "fin report to",
+            "value": null,
+            "steps": [
+              {
+                "op": "trim",
+                "args": {}
+              },
+              {
+                "op": "parse_date",
+                "args": {
+                  "formats": [
+                    "%d/%m/%Y"
+                  ]
+                }
+              }
+            ]
+          }
+        },
+        "one_hot": null
+      },
+      {
+        "source_paths": [
+          "total current liabilities"
+        ],
+        "join_with": " ",
+        "when": null,
+        "target": "dyn.charity.liabilities_current_total",
+        "valid_from_path": null,
+        "valid_to_path": null,
+        "validity_date_formats": null,
+        "claim_scope": null,
+        "steps": [
+          {
+            "op": "trim",
+            "args": {}
+          },
+          {
+            "op": "parse_decimal",
+            "args": {}
+          }
+        ],
+        "confidence": 0.9,
+        "rationale": "Total current liabilities as reported in the AIS at the end of the charity's reporting period; currency is AUD as stated by the ACNC AIS guide.",
+        "entity": null,
+        "qualifiers": {
+          "currency": {
+            "source_path": null,
+            "value": "AUD",
+            "steps": []
+          },
+          "period": {
+            "source_path": "fin report to",
+            "value": null,
+            "steps": [
+              {
+                "op": "trim",
+                "args": {}
+              },
+              {
+                "op": "parse_date",
+                "args": {
+                  "formats": [
+                    "%d/%m/%Y"
+                  ]
+                }
+              }
+            ]
+          }
+        },
+        "one_hot": null
+      },
+      {
+        "source_paths": [
+          "non-current loans payable"
+        ],
+        "join_with": " ",
+        "when": null,
+        "target": "dyn.charity.liabilities_noncurrent_loans_payable",
+        "valid_from_path": null,
+        "valid_to_path": null,
+        "validity_date_formats": null,
+        "claim_scope": null,
+        "steps": [
+          {
+            "op": "trim",
+            "args": {}
+          },
+          {
+            "op": "parse_decimal",
+            "args": {}
+          }
+        ],
+        "confidence": 0.9,
+        "rationale": "Non-current loans payable as reported in the AIS at the end of the charity's reporting period; currency is AUD as stated by the ACNC AIS guide.",
+        "entity": null,
+        "qualifiers": {
+          "currency": {
+            "source_path": null,
+            "value": "AUD",
+            "steps": []
+          },
+          "period": {
+            "source_path": "fin report to",
+            "value": null,
+            "steps": [
+              {
+                "op": "trim",
+                "args": {}
+              },
+              {
+                "op": "parse_date",
+                "args": {
+                  "formats": [
+                    "%d/%m/%Y"
+                  ]
+                }
+              }
+            ]
+          }
+        },
+        "one_hot": null
+      },
+      {
+        "source_paths": [
+          "other non-current liabilities"
+        ],
+        "join_with": " ",
+        "when": null,
+        "target": "dyn.charity.liabilities_noncurrent_other",
+        "valid_from_path": null,
+        "valid_to_path": null,
+        "validity_date_formats": null,
+        "claim_scope": null,
+        "steps": [
+          {
+            "op": "trim",
+            "args": {}
+          },
+          {
+            "op": "parse_decimal",
+            "args": {}
+          }
+        ],
+        "confidence": 0.9,
+        "rationale": "Other non-current liabilities as reported in the AIS at the end of the charity's reporting period; currency is AUD as stated by the ACNC AIS guide.",
+        "entity": null,
+        "qualifiers": {
+          "currency": {
+            "source_path": null,
+            "value": "AUD",
+            "steps": []
+          },
+          "period": {
+            "source_path": "fin report to",
+            "value": null,
+            "steps": [
+              {
+                "op": "trim",
+                "args": {}
+              },
+              {
+                "op": "parse_date",
+                "args": {
+                  "formats": [
+                    "%d/%m/%Y"
+                  ]
+                }
+              }
+            ]
+          }
+        },
+        "one_hot": null
+      },
+      {
+        "source_paths": [
+          "total non-current liabilities"
+        ],
+        "join_with": " ",
+        "when": null,
+        "target": "dyn.charity.liabilities_noncurrent_total",
+        "valid_from_path": null,
+        "valid_to_path": null,
+        "validity_date_formats": null,
+        "claim_scope": null,
+        "steps": [
+          {
+            "op": "trim",
+            "args": {}
+          },
+          {
+            "op": "parse_decimal",
+            "args": {}
+          }
+        ],
+        "confidence": 0.9,
+        "rationale": "Total non-current liabilities as reported in the AIS at the end of the charity's reporting period; currency is AUD as stated by the ACNC AIS guide.",
+        "entity": null,
+        "qualifiers": {
+          "currency": {
+            "source_path": null,
+            "value": "AUD",
+            "steps": []
+          },
+          "period": {
+            "source_path": "fin report to",
+            "value": null,
+            "steps": [
+              {
+                "op": "trim",
+                "args": {}
+              },
+              {
+                "op": "parse_date",
+                "args": {
+                  "formats": [
+                    "%d/%m/%Y"
+                  ]
+                }
+              }
+            ]
+          }
+        },
+        "one_hot": null
+      },
+      {
+        "source_paths": [
+          "total liabilities"
+        ],
+        "join_with": " ",
+        "when": null,
+        "target": "dyn.charity.liabilities_total",
+        "valid_from_path": null,
+        "valid_to_path": null,
+        "validity_date_formats": null,
+        "claim_scope": null,
+        "steps": [
+          {
+            "op": "trim",
+            "args": {}
+          },
+          {
+            "op": "parse_decimal",
+            "args": {}
+          }
+        ],
+        "confidence": 0.9,
+        "rationale": "Total liabilities as reported in the AIS at the end of the charity's reporting period; currency is AUD as stated by the ACNC AIS guide.",
+        "entity": null,
+        "qualifiers": {
+          "currency": {
+            "source_path": null,
+            "value": "AUD",
+            "steps": []
+          },
+          "period": {
+            "source_path": "fin report to",
+            "value": null,
+            "steps": [
+              {
+                "op": "trim",
+                "args": {}
+              },
+              {
+                "op": "parse_date",
+                "args": {
+                  "formats": [
+                    "%d/%m/%Y"
+                  ]
+                }
+              }
+            ]
+          }
+        },
+        "one_hot": null
+      },
+      {
+        "source_paths": [
+          "net assets/liabilities"
+        ],
+        "join_with": " ",
+        "when": null,
+        "target": "dyn.charity.net_assets_liabilities",
+        "valid_from_path": null,
+        "valid_to_path": null,
+        "validity_date_formats": null,
+        "claim_scope": null,
+        "steps": [
+          {
+            "op": "trim",
+            "args": {}
+          },
+          {
+            "op": "parse_decimal",
+            "args": {}
+          }
+        ],
+        "confidence": 0.9,
+        "rationale": "Net assets or liabilities as reported in the AIS at the end of the charity's reporting period; currency is AUD as stated by the ACNC AIS guide.",
+        "entity": null,
+        "qualifiers": {
+          "currency": {
+            "source_path": null,
+            "value": "AUD",
+            "steps": []
+          },
+          "period": {
+            "source_path": "fin report to",
+            "value": null,
+            "steps": [
+              {
+                "op": "trim",
+                "args": {}
+              },
+              {
+                "op": "parse_date",
+                "args": {
+                  "formats": [
+                    "%d/%m/%Y"
+                  ]
+                }
+              }
+            ]
+          }
+        },
+        "one_hot": null
+      }
+    ],
+    "entities": {},
+    "relationships": [],
+    "unmapped": [],
+    "notes": "All 90 source columns are consumed by field rules. The ABN is the sole stable identifier and is validated with the ABN checksum. Charity name is mapped to entity.legal_name without inferring legal form. Registration status, charity size, and incorporated-association indicators are kept as ACNC administrative classifications rather than coerced into entity.status or ext.entity.legal_form. Financial amounts are self-reported AIS values for the charity's reporting period, with currency AUD and period qualifiers; they are not audited business income. Dates are administrative lodgement or reporting-period dates, not incorporation or licence dates. The dataset excludes charities with withheld information, so no population-completeness claim is made. The file is updated weekly; the snapshot hash identifies this version only.",
+    "constants": [],
+    "profile_context": null,
+    "extensions": "dynamic"
+  }
+}

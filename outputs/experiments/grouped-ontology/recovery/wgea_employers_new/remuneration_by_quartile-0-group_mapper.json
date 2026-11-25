@@ -1,0 +1,261 @@
+{
+  "request_sha256": "b750dbdf49bfbd78bf2f6f5eea46c231bd34a1c108db5c25a7956981d66f4103",
+  "role": "group_mapper",
+  "model": "deepseek-v4-flash",
+  "seconds": 8.185,
+  "response": {
+    "fields": [
+      {
+        "source_paths": [
+          "Total workforce - average total remuneration ($)*"
+        ],
+        "join_with": " ",
+        "when": null,
+        "target": "dyn.employer_reporting_unit.total_workforce_average_total_remuneration",
+        "valid_from_path": null,
+        "valid_to_path": null,
+        "validity_date_formats": null,
+        "claim_scope": null,
+        "steps": [
+          {
+            "op": "trim",
+            "args": {}
+          },
+          {
+            "op": "null_if",
+            "args": {
+              "values": [
+                "",
+                "-",
+                "n/a",
+                "N/A"
+              ]
+            }
+          },
+          {
+            "op": "parse_decimal",
+            "args": {}
+          }
+        ],
+        "confidence": 0.88,
+        "rationale": "Column is the 2024-25 block's total-workforce average total remuneration in dollars; concept is owned by the employer reporting unit and requires currency and period. Currency AUD is inferred from the publisher's Australian dollar reporting, not stated in the cell. The reporting year is carried as a literal period qualifier because the sheet has no per-row date column to attach as a claim_period; no claim_period is emitted.",
+        "entity": "employer",
+        "qualifiers": {
+          "currency": {
+            "source_path": null,
+            "value": "AUD",
+            "steps": []
+          },
+          "period": {
+            "source_path": null,
+            "value": "2024-25",
+            "steps": []
+          }
+        },
+        "one_hot": null,
+        "claim_period": null
+      },
+      {
+        "source_paths": [
+          "Lower quartile - average total remuneration ($)"
+        ],
+        "join_with": " ",
+        "when": null,
+        "target": "dyn.employer_reporting_unit.lower_quartile_average_total_remuneration",
+        "valid_from_path": null,
+        "valid_to_path": null,
+        "validity_date_formats": null,
+        "claim_scope": null,
+        "steps": [
+          {
+            "op": "trim",
+            "args": {}
+          },
+          {
+            "op": "null_if",
+            "args": {
+              "values": [
+                "",
+                "-",
+                "n/a",
+                "N/A"
+              ]
+            }
+          },
+          {
+            "op": "parse_decimal",
+            "args": {}
+          }
+        ],
+        "confidence": 0.88,
+        "rationale": "Lower pay quartile average total remuneration in dollars for the 2024-25 block; a pay level for one quartile, not a gap and not business income. Currency inferred as AUD. Reporting year carried as a literal period qualifier; no date column exists, so no claim_period is emitted.",
+        "entity": "employer",
+        "qualifiers": {
+          "currency": {
+            "source_path": null,
+            "value": "AUD",
+            "steps": []
+          },
+          "period": {
+            "source_path": null,
+            "value": "2024-25",
+            "steps": []
+          }
+        },
+        "one_hot": null,
+        "claim_period": null
+      },
+      {
+        "source_paths": [
+          "Lower-middle quartile - average total remuneration ($)"
+        ],
+        "join_with": " ",
+        "when": null,
+        "target": "dyn.employer_reporting_unit.lower_middle_quartile_average_total_remuneration",
+        "valid_from_path": null,
+        "valid_to_path": null,
+        "validity_date_formats": null,
+        "claim_scope": null,
+        "steps": [
+          {
+            "op": "trim",
+            "args": {}
+          },
+          {
+            "op": "null_if",
+            "args": {
+              "values": [
+                "",
+                "-",
+                "n/a",
+                "N/A"
+              ]
+            }
+          },
+          {
+            "op": "parse_decimal",
+            "args": {}
+          }
+        ],
+        "confidence": 0.88,
+        "rationale": "Lower-middle pay quartile average total remuneration in dollars for the 2024-25 block; a pay level for one quartile, not a gap and not business income. Currency inferred as AUD. Reporting year carried as a literal period qualifier; no date column exists, so no claim_period is emitted.",
+        "entity": "employer",
+        "qualifiers": {
+          "currency": {
+            "source_path": null,
+            "value": "AUD",
+            "steps": []
+          },
+          "period": {
+            "source_path": null,
+            "value": "2024-25",
+            "steps": []
+          }
+        },
+        "one_hot": null,
+        "claim_period": null
+      },
+      {
+        "source_paths": [
+          "Upper-middle quartile - average total remuneration ($)"
+        ],
+        "join_with": " ",
+        "when": null,
+        "target": "dyn.employer_reporting_unit.upper_middle_quartile_average_total_remuneration",
+        "valid_from_path": null,
+        "valid_to_path": null,
+        "validity_date_formats": null,
+        "claim_scope": null,
+        "steps": [
+          {
+            "op": "trim",
+            "args": {}
+          },
+          {
+            "op": "null_if",
+            "args": {
+              "values": [
+                "",
+                "-",
+                "n/a",
+                "N/A"
+              ]
+            }
+          },
+          {
+            "op": "parse_decimal",
+            "args": {}
+          }
+        ],
+        "confidence": 0.88,
+        "rationale": "Upper-middle pay quartile average total remuneration in dollars for the 2024-25 block; a pay level for one quartile, not a gap and not business income. Currency inferred as AUD. Reporting year carried as a literal period qualifier; no date column exists, so no claim_period is emitted.",
+        "entity": "employer",
+        "qualifiers": {
+          "currency": {
+            "source_path": null,
+            "value": "AUD",
+            "steps": []
+          },
+          "period": {
+            "source_path": null,
+            "value": "2024-25",
+            "steps": []
+          }
+        },
+        "one_hot": null,
+        "claim_period": null
+      },
+      {
+        "source_paths": [
+          "Upper quartile - average total remuneration ($)"
+        ],
+        "join_with": " ",
+        "when": null,
+        "target": "dyn.employer_reporting_unit.upper_quartile_average_total_remuneration",
+        "valid_from_path": null,
+        "valid_to_path": null,
+        "validity_date_formats": null,
+        "claim_scope": null,
+        "steps": [
+          {
+            "op": "trim",
+            "args": {}
+          },
+          {
+            "op": "null_if",
+            "args": {
+              "values": [
+                "",
+                "-",
+                "n/a",
+                "N/A"
+              ]
+            }
+          },
+          {
+            "op": "parse_decimal",
+            "args": {}
+          }
+        ],
+        "confidence": 0.88,
+        "rationale": "Upper pay quartile average total remuneration in dollars for the 2024-25 block; a pay level for one quartile, not a gap and not business income. Currency inferred as AUD. Reporting year carried as a literal period qualifier; no date column exists, so no claim_period is emitted.",
+        "entity": "employer",
+        "qualifiers": {
+          "currency": {
+            "source_path": null,
+            "value": "AUD",
+            "steps": []
+          },
+          "period": {
+            "source_path": null,
+            "value": "2024-25",
+            "steps": []
+          }
+        },
+        "one_hot": null,
+        "claim_period": null
+      }
+    ],
+    "unmapped": []
+  }
+}

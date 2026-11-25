@@ -1,0 +1,419 @@
+{
+  "entity_types": [
+    {
+      "name": "party",
+      "definition": "A person or organisation recorded as acting in a role on an IP right application; identified by party_id, with party_type as a party classification only and no legal-form inference."
+    },
+    {
+      "name": "ip_application",
+      "definition": "An IP right application identified by ip_right_type plus application_number, carrying its own status, dates and description."
+    },
+    {
+      "name": "party_activity",
+      "definition": "The association of one party in one role on one IP right application, with its own validity window (effective_from_date, effective_to_date, is_current)."
+    }
+  ],
+  "concepts": [
+    {
+      "path": "dyn.party.party_key",
+      "type": "string",
+      "owner": "party",
+      "definition": "Publisher's identifier for the party named on an IP right application record (party_activity.party_id). Identifies the party across applications and roles; it is not a business registration number, ABN or ACN, and does not by itself establish a legal entity.",
+      "values": [],
+      "multi": false,
+      "required_qualifiers": [],
+      "source_paths": [
+        "party_activity.party_id"
+      ],
+      "why_not_existing": "No shortlisted concept covers an IP-office party key; entity.abn and entity.acn are checksummed business/company registrations with different owners and meaning, and entity.legal_name is a registered name, not an identifier.",
+      "personal_data": "never"
+    },
+    {
+      "path": "dyn.party.party_name",
+      "type": "string",
+      "owner": "party",
+      "definition": "Party name as published on the IP right application record (party_activity.party_name), free text and lower-cased. It may be an organisation name variant or a personal name; it is not asserted to be a registered legal name or a trading name.",
+      "values": [],
+      "multi": false,
+      "required_qualifiers": [],
+      "source_paths": [
+        "party_activity.party_name"
+      ],
+      "why_not_existing": "entity.legal_name and entity.trading_name are owned by business and assert registered/trading status; this value is an unverified IP-office party label owned by the party role, so reuse would change meaning and owner.",
+      "personal_data": "always"
+    },
+    {
+      "path": "dyn.party.party_kind",
+      "type": "enum",
+      "owner": "party",
+      "definition": "Publisher's classification of the party on the IP right application record as an organisation or an individual (party_activity.party_type). This is a party classification only; it does not state a company legal form, sole-trader status or beneficial ownership.",
+      "values": [
+        "organisation",
+        "individual"
+      ],
+      "multi": false,
+      "required_qualifiers": [],
+      "source_paths": [
+        "party_activity.party_type"
+      ],
+      "why_not_existing": "ext.entity.holder_kind is owned by business and is matching evidence about a licence/registration holder; entity.entity_type and ext.entity.legal_form assert business legal structure. A party-level organisation/individual flag with no legal-form implication is a distinct meaning on a different owner.",
+      "personal_data": "never"
+    },
+    {
+      "path": "dyn.party.abn_supplied",
+      "type": "string",
+      "owner": "party",
+      "definition": "Australian Business Number as supplied on the IP right application party record (party_activity.abn), recorded as an 11-digit string. It is frequently blank, and a blank must not be read as absence of a business or of an Australian presence; it is not validated here and does not establish the party's legal identity.",
+      "values": [],
+      "multi": false,
+      "required_qualifiers": [],
+      "source_paths": [
+        "party_activity.abn"
+      ],
+      "why_not_existing": "entity.abn is owned by business and is defined as a validated business identifier; this value is an unvalidated, often-missing party-record attribute whose absence is not evidence, so reuse would change meaning, owner and validation scope.",
+      "personal_data": "never"
+    },
+    {
+      "path": "dyn.party_activity.role_category",
+      "type": "enum",
+      "owner": "party_activity",
+      "definition": "Publisher's broad category of the role the party holds on the IP right application record (party_activity.party_role_category), e.g. applicant, applicant_agent, opposition, mortgagee. Describes the party-role record only; it does not imply ownership, beneficial interest or enforceability of the application.",
+      "values": [
+        "applicant",
+        "applicant_agent",
+        "opposition",
+        "mortgagee"
+      ],
+      "multi": false,
+      "required_qualifiers": [],
+      "source_paths": [
+        "party_activity.party_role_category"
+      ],
+      "why_not_existing": "No shortlisted concept covers an IP-office party-role category; ext.licence.category and ext.licence.status are owned by licence and describe an authorisation, not a party's role on an application, so reuse would change owner and meaning.",
+      "personal_data": "never"
+    },
+    {
+      "path": "dyn.party_activity.role",
+      "type": "enum",
+      "owner": "party_activity",
+      "definition": "Publisher's specific role the party holds on the IP right application record (party_activity.party_role), e.g. applicant, patentee, agent, opponent. A finer-grained companion to the role category; it describes the party-role record, not the application or the business lifecycle.",
+      "values": [
+        "applicant",
+        "patentee",
+        "agent",
+        "opponent"
+      ],
+      "multi": false,
+      "required_qualifiers": [],
+      "source_paths": [
+        "party_activity.party_role"
+      ],
+      "why_not_existing": "No shortlisted concept expresses a party's specific role on an IP application; ext.licence.category is a licence category owned by licence, so reuse would change owner and meaning.",
+      "personal_data": "never"
+    },
+    {
+      "path": "dyn.party_activity.is_founding",
+      "type": "enum",
+      "owner": "party_activity",
+      "definition": "Publisher's flag on the party-role record stating whether the party is recorded as founding (party_activity.is_founding, true/false). It is a party-role attribute and must not be read as a business establishment date or as evidence of incorporation.",
+      "values": [
+        "true",
+        "false"
+      ],
+      "multi": false,
+      "required_qualifiers": [],
+      "source_paths": [
+        "party_activity.is_founding"
+      ],
+      "why_not_existing": "ext.entity.date_established is a business establishment date owned by business; a boolean founding flag on a party-role record has a different owner, type and meaning, so reuse would change meaning.",
+      "personal_data": "never"
+    },
+    {
+      "path": "dyn.party_activity.is_current",
+      "type": "enum",
+      "owner": "party_activity",
+      "definition": "Publisher's flag stating whether the party-role record is currently valid (party_activity.is_current, true/false). It describes the validity of the party-role association, not the application's status or the business's lifecycle.",
+      "values": [
+        "true",
+        "false"
+      ],
+      "multi": false,
+      "required_qualifiers": [],
+      "source_paths": [
+        "party_activity.is_current"
+      ],
+      "why_not_existing": "ext.licence.status is a licence status owned by licence; a boolean currency flag on a party-role record has a different owner, type and meaning, so reuse would change meaning.",
+      "personal_data": "never"
+    },
+    {
+      "path": "dyn.party_activity.effective_from_date",
+      "type": "date",
+      "owner": "party_activity",
+      "definition": "Publisher-stated start of the validity window of the party-role record (party_activity.effective_from_date). It is the commencement of the party's role association on the application, not the application filing/priority date and not the business establishment date.",
+      "values": [],
+      "multi": false,
+      "required_qualifiers": [],
+      "source_paths": [
+        "party_activity.effective_from_date"
+      ],
+      "why_not_existing": "ext.licence.start_date is owned by licence and ext.entity.date_established is owned by business; neither covers the validity start of a party-role association, so reuse would change owner and meaning.",
+      "personal_data": "never"
+    },
+    {
+      "path": "dyn.party_activity.effective_to_date",
+      "type": "date",
+      "owner": "party_activity",
+      "definition": "Publisher-stated end of the validity window of the party-role record (party_activity.effective_to_date), frequently blank when the role is open-ended. It is the end of the party's role association on the application, not the application termination date and not the end of the business.",
+      "values": [],
+      "multi": false,
+      "required_qualifiers": [],
+      "source_paths": [
+        "party_activity.effective_to_date"
+      ],
+      "why_not_existing": "ext.licence.end_date is owned by licence and describes a licence's end; the end of a party-role association has a different owner and meaning, so reuse would change meaning.",
+      "personal_data": "never"
+    },
+    {
+      "path": "dyn.party.address_country",
+      "type": "string",
+      "owner": "party",
+      "definition": "Country component of the address recorded for the party on the IP right application record (party_activity.country_code), as published and lower-cased (e.g. 'au', 'us', 'cn'). It is frequently blank, and a blank must not be read as an Australian address or as absence of a country. It is a party-record address attribute, not a statement of the party's place of incorporation or of the business's registered office.",
+      "values": [],
+      "multi": false,
+      "required_qualifiers": [],
+      "source_paths": [
+        "party_activity.country_code"
+      ],
+      "why_not_existing": "address.country is owned by business and describes the business's own stated address; this value is an unverified, often-missing address attribute of an IP-office party record, so reuse would change owner and meaning.",
+      "personal_data": "never"
+    },
+    {
+      "path": "dyn.party.address_state",
+      "type": "string",
+      "owner": "party",
+      "definition": "State or province component of the address recorded for the party on the IP right application record (party_activity.state_code), as published and lower-cased (e.g. 'nsw', 'vic'). Values are not restricted to Australian states and are frequently blank; it is a party-record address attribute, not a business operating region or a statement of incorporation.",
+      "values": [],
+      "multi": false,
+      "required_qualifiers": [],
+      "source_paths": [
+        "party_activity.state_code"
+      ],
+      "why_not_existing": "address.state is owned by business, is an enum of Australian/NZ/OTHER codes and describes the business's own address; this raw, lower-cased, non-Australian-only party-record value has a different owner and scope, so reuse would change meaning.",
+      "personal_data": "never"
+    },
+    {
+      "path": "dyn.party.address_postcode",
+      "type": "string",
+      "owner": "party",
+      "definition": "Post code component of the address recorded for the party on the IP right application record (party_activity.post_code), kept as the raw published string because formats are not uniform (e.g. '2106' vs 'gu14 0lx'). It is a party-record address attribute and is not normalised to an Australian postcode.",
+      "values": [],
+      "multi": false,
+      "required_qualifiers": [],
+      "source_paths": [
+        "party_activity.post_code"
+      ],
+      "why_not_existing": "address.postcode is owned by business and describes the business's own address; this unnormalised, mixed-format party-record value has a different owner and no guaranteed Australian scope, so reuse would change meaning.",
+      "personal_data": "never"
+    },
+    {
+      "path": "dyn.ip_application.application_number",
+      "type": "string",
+      "owner": "ip_application",
+      "definition": "Publisher's identifier for the IP right application (application.application_number, repeated as party_activity.application_number), as published. It identifies the application only in combination with the IP right type; it is not a business registration number, ABN or ACN, and does not identify the party or the business.",
+      "values": [],
+      "multi": false,
+      "required_qualifiers": [],
+      "source_paths": [
+        "application.application_number",
+        "party_activity.application_number"
+      ],
+      "why_not_existing": "No shortlisted concept covers an IP-office application number; ext.licence.number and ext.licence.related_licence_number are owned by licence and identify authorisations, and ext.entity.prior_registration_number is a legacy business registration number, so reuse would change owner and meaning.",
+      "personal_data": "never"
+    },
+    {
+      "path": "dyn.ip_application.ip_right_type",
+      "type": "enum",
+      "owner": "ip_application",
+      "definition": "Publisher's classification of the kind of IP right the application seeks (application.ip_right_type, repeated as party_activity.ip_right_type), e.g. patent. It classifies the application, not the party or the business, and does not state that any right has been granted or is enforceable. The value list reflects the patent-prefix cohort in this snapshot and is not a general IP-right-type vocabulary.",
+      "values": [
+        "patent"
+      ],
+      "multi": false,
+      "required_qualifiers": [],
+      "source_paths": [
+        "application.ip_right_type",
+        "party_activity.ip_right_type"
+      ],
+      "why_not_existing": "No shortlisted concept classifies an IP right application; ext.licence.category and ext.licence.authorisation are owned by licence and describe an authorisation held by a business, so reuse would change owner and meaning.",
+      "personal_data": "never"
+    },
+    {
+      "path": "dyn.ip_application.ip_right_sub_type",
+      "type": "enum",
+      "owner": "ip_application",
+      "definition": "Publisher's sub-classification of the IP right application within its IP right type (application.ip_right_sub_type). For patents the observed vocabulary includes standard_complete, innovation, provisional and petty; the list is not asserted to be exhaustive of the publisher's vocabulary. It describes the application's own category and does not imply grant, enforceability or a business attribute.",
+      "values": [
+        "standard_complete",
+        "innovation",
+        "provisional",
+        "petty"
+      ],
+      "multi": false,
+      "required_qualifiers": [],
+      "source_paths": [
+        "application.ip_right_sub_type"
+      ],
+      "why_not_existing": "No shortlisted concept expresses an application sub-type; ext.licence.category is a licence category owned by licence, so reuse would change owner and meaning.",
+      "personal_data": "never"
+    },
+    {
+      "path": "dyn.ip_application.status",
+      "type": "enum",
+      "owner": "ip_application",
+      "definition": "Publisher-stated lifecycle status of the IP right application (application.status), e.g. filed, accepted, granted, lapsed, withdrawn, expired, ceased, unknown. It describes the application's own administrative state at the snapshot; it is not a business status, not evidence of grant or enforceability beyond the stated value, and not a statement about any party. 'ceased' is a publisher-stated application lifecycle state and must not be read as business cessation or as a party's status; 'unknown' is a legitimate publisher-stated state, not a parse failure.",
+      "values": [
+        "filed",
+        "accepted",
+        "granted",
+        "lapsed",
+        "withdrawn",
+        "expired",
+        "ceased",
+        "unknown"
+      ],
+      "multi": false,
+      "required_qualifiers": [],
+      "source_paths": [
+        "application.status"
+      ],
+      "why_not_existing": "ext.licence.status is owned by licence and describes an authorisation held by a business; an IP-office application status has a different owner, subject and meaning, so reuse would change meaning.",
+      "personal_data": "never"
+    },
+    {
+      "path": "dyn.ip_application.application_date",
+      "type": "date",
+      "owner": "ip_application",
+      "definition": "Publisher-stated date the IP right application was filed/lodged (application.application_date). It is the application's own filing date, not the party-role validity start, not the business establishment date and not a registration date.",
+      "values": [],
+      "multi": false,
+      "required_qualifiers": [],
+      "source_paths": [
+        "application.application_date"
+      ],
+      "why_not_existing": "ext.licence.start_date is owned by licence and ext.entity.date_established is owned by business; neither covers the filing date of an IP right application, so reuse would change owner and meaning.",
+      "personal_data": "never"
+    },
+    {
+      "path": "dyn.ip_application.earliest_filed_date",
+      "type": "date",
+      "owner": "ip_application",
+      "definition": "Publisher-stated earliest filing date recorded for the IP right application (application.earliest_filed_date), which may precede the current application's own filing date where an earlier filing is carried forward. It is an application-level date, not the party-role validity start and not a business date.",
+      "values": [],
+      "multi": false,
+      "required_qualifiers": [],
+      "source_paths": [
+        "application.earliest_filed_date"
+      ],
+      "why_not_existing": "No shortlisted concept covers an earliest-filing date of an IP application; ext.licence.start_date and ext.entity.date_established have different owners and meanings, so reuse would change meaning.",
+      "personal_data": "never"
+    },
+    {
+      "path": "dyn.ip_application.priority_date",
+      "type": "date",
+      "owner": "ip_application",
+      "definition": "Publisher-stated priority date of the IP right application (application.priority_date), the date from which priority is claimed. It is an application-level legal date, not the filing date, not a grant date and not a business date.",
+      "values": [],
+      "multi": false,
+      "required_qualifiers": [],
+      "source_paths": [
+        "application.priority_date"
+      ],
+      "why_not_existing": "No shortlisted concept expresses a priority date; ext.licence.start_date and ext.entity.date_established are owned by licence and business respectively, so reuse would change owner and meaning.",
+      "personal_data": "never"
+    },
+    {
+      "path": "dyn.ip_application.registration_status_date",
+      "type": "date",
+      "owner": "ip_application",
+      "definition": "Publisher-stated date on which the IP right application gained registered status (application.gained_registration_status_date). Frequently blank; a blank must not be read as 'never registered'. It is an application-level milestone, not a business incorporation or registration date.",
+      "values": [],
+      "multi": false,
+      "required_qualifiers": [],
+      "source_paths": [
+        "application.gained_registration_status_date"
+      ],
+      "why_not_existing": "ext.entity.date_established and ext.entity.prior_registration_state concern business establishment/registration; a registration milestone of an IP application has a different owner and meaning, so reuse would change meaning.",
+      "personal_data": "never"
+    },
+    {
+      "path": "dyn.ip_application.enforceable_status_date",
+      "type": "date",
+      "owner": "ip_application",
+      "definition": "Publisher-stated date on which the IP right application gained enforceable status (application.gained_enforceable_status_date). Frequently blank; a blank must not be read as 'not enforceable'. It is an application-level milestone and does not assert that any right is in fact enforceable against any party.",
+      "values": [],
+      "multi": false,
+      "required_qualifiers": [],
+      "source_paths": [
+        "application.gained_enforceable_status_date"
+      ],
+      "why_not_existing": "No shortlisted concept covers an enforceability milestone of an IP application; ext.licence.start_date/end_date are licence validity dates with a different owner and meaning, so reuse would change meaning.",
+      "personal_data": "never"
+    },
+    {
+      "path": "dyn.ip_application.enforceable_from_date",
+      "type": "date",
+      "owner": "ip_application",
+      "definition": "Publisher-stated date from which the IP right application is enforceable (application.enforceable_from_date). The column is entirely empty in this snapshot, so the concept is defined for schema completeness only and no value is asserted; it is not the same as the date enforceable status was gained.",
+      "values": [],
+      "multi": false,
+      "required_qualifiers": [],
+      "source_paths": [
+        "application.enforceable_from_date"
+      ],
+      "why_not_existing": "No shortlisted concept covers an enforceability start date of an IP application, and ext.licence.start_date is a licence validity start owned by licence, so reuse would change owner and meaning.",
+      "personal_data": "never"
+    },
+    {
+      "path": "dyn.ip_application.deemed_retired_date",
+      "type": "date",
+      "owner": "ip_application",
+      "definition": "Publisher-stated date on which the IP right application is deemed retired (application.deemed_retired_date). Frequently blank; a blank must not be read as 'still active'. It is an application-level date, not the end of a party-role association and not the end of the business.",
+      "values": [],
+      "multi": false,
+      "required_qualifiers": [],
+      "source_paths": [
+        "application.deemed_retired_date"
+      ],
+      "why_not_existing": "ext.licence.end_date is owned by licence and dyn.party_activity.effective_to_date is owned by party_activity; a deemed-retirement date of an IP application has a different owner and meaning, so reuse would change meaning.",
+      "personal_data": "never"
+    }
+  ],
+  "relationships": [
+    {
+      "name": "PARTY_ACTS_ON_APPLICATION",
+      "from_type": "party",
+      "to_type": "ip_application",
+      "definition": "A party is recorded in a role on an IP right application, via a party-activity record; the role does not imply ownership, beneficial interest or enforceability."
+    },
+    {
+      "name": "PARTY_ACTIVITY_RECORDS_PARTY",
+      "from_type": "party_activity",
+      "to_type": "party",
+      "definition": "A party-activity record names the party that holds the recorded role."
+    },
+    {
+      "name": "PARTY_ACTIVITY_CONCERNS_APPLICATION",
+      "from_type": "party_activity",
+      "to_type": "ip_application",
+      "definition": "A party-activity record concerns the IP right application identified by its application number and IP right type."
+    },
+    {
+      "name": "APPLICATION_HAS_DESCRIPTION",
+      "from_type": "ip_application",
+      "to_type": "ip_application",
+      "definition": "An IP right application has at most one description record, linked by application number and IP right type."
+    }
+  ],
+  "reuse": {},
+  "unmapped": []
+}

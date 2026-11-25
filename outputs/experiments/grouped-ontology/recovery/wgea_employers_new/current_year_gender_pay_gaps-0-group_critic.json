@@ -1,0 +1,66 @@
+{
+  "request_sha256": "ad876b40ddc9512a98bb94f36f50ece66e4f308636ef16e7263627f75bfa662b",
+  "role": "group_critic",
+  "model": "deepseek-v4-flash",
+  "seconds": 19.025,
+  "response": {
+    "verdict": "reject",
+    "findings": [
+      "Semantics of the four proposed concepts are defensible: they are gender pay gaps (not pay levels, not business income), owned by employer_reporting_unit, with the decimal-fraction storage convention and negative-favouring-women direction stated explicitly.",
+      "Year-group disambiguation is correct: the 2024-25 block (F-I) is consumed and the 2023-24 block (J-M) is explicitly unmapped with a period reason, so the duplicate header labels are not merged.",
+      "Identity handling is sound: Employer ABN plus Employer name as key_paths, with an explicit caution that ABN is a reporting identifier and not proof of legal form or group-wide scope; no legal-form or consolidated-scope claim is made.",
+      "Grain is honestly described as an employer-year-pair record because each row carries a contextual prior-year block; the group purpose is bounded to 2024-25.",
+      "Reader configuration matches inspection: sheet '2. Employers ' with trailing space preserved, skip_rows=3, header at row 4, data from row 5.",
+      "Coverage is honestly bounded: 121 validation records per field, 0 emitted, 0 withheld for missing context, and the quality note does not claim semantic truth or population accuracy.",
+      "However, the technical gate fails: every present value is rejected as INVALID_DECIMAL_INVALID (484/484, error_rate 1.0), so no claim reaches the ontology despite correct semantics. This is a blocking defect, not a coverage limitation."
+    ],
+    "semantic_risks": [
+      "The decimal type rejects the publisher's decimal-fraction strings (e.g. '0.068', '0', '0.221'), so the storage convention is documented but not executable; if the type is loosened carelessly, whole-percentage relabelling could be introduced.",
+      "Zero values ('0') are legitimate zero gaps, not missing data; any coercion that treats 0 or blank alike would misstate the measure.",
+      "The 2023-24 block is correctly unmapped, but the unmapped source_paths use synthetic '_2' suffixes; if the reader ever renames duplicate headers, the unmapped reasons could silently stop matching the actual columns.",
+      "Period is carried as a literal qualifier because no date column exists; this is acceptable, but it must not be described as a publisher-stated claim period.",
+      "Total remuneration is pay, not revenue; the definitions say so, but downstream joins to financial income concepts must not be inferred from the word 'remuneration'."
+    ],
+    "checked_reuse": [
+      "dyn.employer_reporting_unit.total_workforce_women_share — same owner, meaning, units and 2024-25 period; reuse acceptable.",
+      "dyn.employer_reporting_unit.total_workforce_average_total_remuneration — dollar pay level, not a gap; correctly not reused for the GPG concepts.",
+      "dyn.employer_reporting_unit.lower_quartile_women_share and other quartile women shares — composition shares, not gaps; correctly not reused.",
+      "dyn.employer_reporting_unit.lower_quartile_average_total_remuneration and other quartile remuneration levels — pay levels, not gaps; correctly not reused.",
+      "dyn.employer_reporting_unit.reporting_name and reporting_abn — identity columns, same owner and meaning; reuse acceptable.",
+      "dyn.employer_reporting_unit.sector, anzsic_division, anzsic_class, size_band — context columns, same owner and meaning; reuse acceptable, with size_band remaining a band and not an exact headcount.",
+      "ext.financial.total_income — business income owned by business; correctly rejected for GPG reuse."
+    ],
+    "rationale": "The group's semantic modelling is largely correct: the four concepts are genuine gender pay gaps owned by the employer reporting unit, the decimal-fraction convention and negative-direction meaning are stated, the 2024-25 versus 2023-24 year groups are separated with explicit unmapped reasons, identity rests on ABN plus name without inferring legal form or group scope, and the grain honestly notes the prior-year block. Coverage is honestly bounded at 121 validation records with no invented fallback dates. The blocking problem is executable, not semantic: the decimal type rejects every present value as INVALID_DECIMAL_INVALID (484/484, error_rate 1.0, passes_technical_gate false), so the documented storage convention is not actually applied and zero emitted observations result. Because an accepting verdict with blocking findings would be rejected, and because the defect is a concrete mapping/type correction rather than a hypothetical feature, the verdict is reject with repair_scope both: the decimal parsing must accept the publisher's decimal-fraction strings (including '0') without relabelling to whole percentages, and the concept type/definition must remain consistent with that executable behaviour.",
+    "blocking_findings": [
+      {
+        "field": "dyn.employer_reporting_unit.average_base_salary_gpg",
+        "actual": "0 emitted of 121 present; 121 INVALID_DECIMAL_INVALID errors (error_rate_of_present 1.0); examples '0.068', '0.221', '0.203', '0.381'",
+        "expected": "Decimal-fraction strings such as '0.068' and '0' parsed as decimals (0.068, 0.0) and emitted as 2024-25 average base salary GPG observations, without multiplication or whole-percentage relabelling",
+        "evidence": "validation_fields for dyn.employer_reporting_unit.average_base_salary_gpg: records 121, source_present 121, emitted 0, errors {INVALID_DECIMAL_INVALID: 121}; quality malformed_rate 1.0 and passes_technical_gate false; heldout row 13 shows 'Average base salary GPG (%)': '0.068'",
+        "correction": "Fix the decimal parsing/type for this field so the publisher's decimal-fraction strings (including '0') are accepted as decimals; re-run validation and confirm emitted > 0 with error_rate_of_present near 0, keeping the 2024-25 period qualifier and the decimal-fraction definition unchanged."
+      },
+      {
+        "field": "dyn.employer_reporting_unit.average_total_remuneration_gpg",
+        "actual": "0 emitted of 121 present; 121 INVALID_DECIMAL_INVALID errors (error_rate_of_present 1.0); examples '0.044', '0.221', '0.199', '0.402'",
+        "expected": "Decimal-fraction strings parsed as decimals and emitted as 2024-25 average total remuneration GPG observations, with total remuneration treated as pay, not revenue",
+        "evidence": "validation_fields for dyn.employer_reporting_unit.average_total_remuneration_gpg: records 121, source_present 121, emitted 0, errors {INVALID_DECIMAL_INVALID: 121}; heldout row 13 shows 'Average total remuneration GPG (%)': '0.044'",
+        "correction": "Apply the same decimal parsing fix to this field so decimal-fraction strings are accepted; re-run validation and confirm emitted > 0 with error_rate_of_present near 0, preserving the 2024-25 period qualifier and the pay-not-income definition."
+      },
+      {
+        "field": "dyn.employer_reporting_unit.median_base_salary_gpg",
+        "actual": "0 emitted of 121 present; 121 INVALID_DECIMAL_INVALID errors (error_rate_of_present 1.0); examples '0', '0.034', '0.251', '0.108'",
+        "expected": "Decimal-fraction strings including '0' parsed as decimals (0.0) and emitted as 2024-25 median base salary GPG observations, with zero treated as a legitimate zero gap rather than missing",
+        "evidence": "validation_fields for dyn.employer_reporting_unit.median_base_salary_gpg: records 121, source_present 121, emitted 0, errors {INVALID_DECIMAL_INVALID: 121}; heldout row 13 shows 'Median base salary GPG (%)': '0'",
+        "correction": "Fix decimal parsing for this field so '0' and decimal-fraction strings are accepted as decimals; re-run validation and confirm emitted > 0 with error_rate_of_present near 0, keeping the 2024-25 period qualifier."
+      },
+      {
+        "field": "dyn.employer_reporting_unit.median_total_remuneration_gpg",
+        "actual": "0 emitted of 121 present; 121 INVALID_DECIMAL_INVALID errors (error_rate_of_present 1.0); examples '0', '0.034', '0.205', '0.134'",
+        "expected": "Decimal-fraction strings including '0' parsed as decimals and emitted as 2024-25 median total remuneration GPG observations, with total remuneration treated as pay, not revenue",
+        "evidence": "validation_fields for dyn.employer_reporting_unit.median_total_remuneration_gpg: records 121, source_present 121, emitted 0, errors {INVALID_DECIMAL_INVALID: 121}; heldout row 13 shows 'Median total remuneration GPG (%)': '0'",
+        "correction": "Apply the same decimal parsing fix to this field so '0' and decimal-fraction strings are accepted; re-run validation and confirm emitted > 0 with error_rate_of_present near 0, preserving the 2024-25 period qualifier and the pay-not-income definition."
+      }
+    ],
+    "repair_scope": "both"
+  }
+}

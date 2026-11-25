@@ -1,0 +1,103 @@
+{
+  "request_sha256": "3ef14ecbc4a398bb07df7e02a711ae44f45407af61020820ca2a997e6d82db11",
+  "role": "group_architect",
+  "model": "deepseek-v4-flash",
+  "seconds": 10.874,
+  "response": {
+    "concepts": [
+      {
+        "path": "dyn.employer_reporting_unit.reporting_name",
+        "type": "string",
+        "owner": "employer_reporting_unit",
+        "definition": "The employer name as stated by the employer reporting unit in its WGEA Gender Equality Reporting submission for the reporting year. This is the reporting label, not a verified legal name or trading name, and is not a unique identifier on its own.",
+        "values": [],
+        "multi": false,
+        "required_qualifiers": [],
+        "source_paths": [
+          "Employer name"
+        ],
+        "why_not_existing": "entity.legal_name and entity.trading_name are owned by business and assert a registered legal or trading name; this value is an unverified reporting label owned by the employer_reporting_unit role, so reuse would change both owner and meaning.",
+        "personal_data": "never"
+      },
+      {
+        "path": "dyn.employer_reporting_unit.reporting_abn",
+        "type": "string",
+        "owner": "employer_reporting_unit",
+        "definition": "The Australian Business Number the employer reporting unit uses to identify itself in WGEA Gender Equality Reporting. It is a reporting identifier for the reporting unit; it does not establish legal form, and the reporting unit's scope may be narrower than the whole ABN holder.",
+        "values": [],
+        "multi": false,
+        "required_qualifiers": [],
+        "source_paths": [
+          "Employer ABN"
+        ],
+        "why_not_existing": "entity.abn is owned by business and asserts the ABN of the legal person; here the ABN identifies a reporting unit whose scope is not established as company-wide, so owner and meaning differ.",
+        "personal_data": "never"
+      },
+      {
+        "path": "dyn.employer_reporting_unit.sector",
+        "type": "enum",
+        "owner": "employer_reporting_unit",
+        "definition": "The sector classification the employer reporting unit reports in WGEA Gender Equality Reporting, distinguishing private-sector from public-sector employers. It is a reporting-scope attribute, not a legal form or ownership statement.",
+        "values": [
+          "Private",
+          "Public"
+        ],
+        "multi": false,
+        "required_qualifiers": [],
+        "source_paths": [
+          "Sector"
+        ],
+        "why_not_existing": "No shortlisted concept captures a private/public sector reporting classification; ext.entity.sector_tag is a scheme-tagged activity or beneficiary tag with a different meaning and would misrepresent this value.",
+        "personal_data": "never"
+      },
+      {
+        "path": "dyn.employer_reporting_unit.employee_size_band",
+        "type": "enum",
+        "owner": "employer_reporting_unit",
+        "definition": "The employee headcount band the employer reporting unit falls into for the reporting year, as published by WGEA (e.g. '<250', '250-499', '500-999', '1000-4999'). It is a band, not an exact headcount, and is not a revenue band.",
+        "values": [
+          "<250",
+          "250-499",
+          "500-999",
+          "1000-4999"
+        ],
+        "multi": false,
+        "required_qualifiers": [],
+        "source_paths": [
+          "Employer size range (# employees)"
+        ],
+        "why_not_existing": "ext.financial.revenue_band is a revenue/turnover band under a financial scheme and would change meaning; no shortlisted concept represents an employee headcount band.",
+        "personal_data": "never"
+      },
+      {
+        "path": "dyn.employer_reporting_unit.anzsic_division",
+        "type": "string",
+        "owner": "employer_reporting_unit",
+        "definition": "The ANZSIC 2006 division name the employer reporting unit reports for its main industry activity in WGEA Gender Equality Reporting, in the publisher's wording (e.g. 'Transport, Postal and Warehousing'). It is a self-reported classification of the reporting unit, not a verified company-wide industry code.",
+        "values": [],
+        "multi": false,
+        "required_qualifiers": [],
+        "source_paths": [
+          "Industry (ANZSIC Division)"
+        ],
+        "why_not_existing": "ext.entity.industry_code and entity.industry_code expect ANZSIC codes (division letter, subdivision, group or class) produced via a reviewed crosswalk, and are owned by business; this is a publisher-stated division name owned by the reporting unit, so reuse would change type, owner and provenance.",
+        "personal_data": "never"
+      },
+      {
+        "path": "dyn.employer_reporting_unit.anzsic_class",
+        "type": "string",
+        "owner": "employer_reporting_unit",
+        "definition": "The ANZSIC 2006 class name the employer reporting unit reports for its main industry activity in WGEA Gender Equality Reporting, in the publisher's wording (e.g. 'Computer System Design and Related Services'). It is a self-reported classification of the reporting unit, not a verified company-wide industry code.",
+        "values": [],
+        "multi": false,
+        "required_qualifiers": [],
+        "source_paths": [
+          "Industry (ANZSIC Class)"
+        ],
+        "why_not_existing": "ext.entity.industry_code and entity.industry_code expect ANZSIC codes produced via a reviewed crosswalk and are owned by business; this is a publisher-stated class name owned by the reporting unit, so reuse would change type, owner and provenance.",
+        "personal_data": "never"
+      }
+    ],
+    "reuse": {}
+  }
+}

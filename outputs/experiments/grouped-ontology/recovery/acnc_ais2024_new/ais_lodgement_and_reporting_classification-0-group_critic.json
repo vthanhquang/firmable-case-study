@@ -1,0 +1,47 @@
+{
+  "request_sha256": "3b1127679b4ead9cd5975eec2044f7f21f0c21cf7eb3b089dc5aea8d7ce4227c",
+  "role": "group_critic",
+  "model": "deepseek-v4-flash",
+  "seconds": 15.59,
+  "response": {
+    "verdict": "revise",
+    "findings": [
+      "All 12 emitted fields pass the technical gate with 0.0 error rate on present values except dyn.charity.report_modification_type, which has one ENUM_UNMAPPED rejection ('Adverse') out of 3 present values (0.333 error rate of present).",
+      "Coverage is honestly bounded: financial_report_period_start/end 0.814, financial_report_received_date 0.607, financial_statement_type 0.264, report_consolidated_flag 0.264, accounting_basis 0.55, report_modification_type 0.014. These reflect genuine source sparsity (small charities not required to lodge financials), not mapping failure.",
+      "Date parsing is correct: dd/mm/yyyy raw values (e.g. '30/06/2025', '01/07/2023') parse to ISO dates with no day/month inversion visible in examples.",
+      "Semantic separation is defensible: AIS due/received dates, financial-report period start/end, and financial-report received date are kept as distinct concepts rather than collapsed into registration/licence dates.",
+      "size_band is correctly modelled as a charity-role reporting classification, not a business revenue band; accounting_basis and financial_statement_type are kept distinct.",
+      "report_modification_type is correctly guarded on the modification flag being 'y', and the guard is expressible in the config (when.equals).",
+      "The 'Adverse' modification type is a real ACNC value that the enum omits; the mapping withholds it (ENUM_UNMAPPED) rather than mislabelling, which is the correct conservative behaviour but leaves the enum incomplete.",
+      "Reuse of dyn.charity.registration_status and dyn.charity.basic_religious_charity is declared but neither is a column in this group; this is harmless but should not be presented as coverage of this group.",
+      "The mapping declares a fundraising_authorisation entity and HOLDS_FUNDRAISING_AUTHORISATION edge, but no field in this group's 12 columns targets that role; the edge is out of scope for this group and emits nothing here."
+    ],
+    "semantic_risks": [
+      "dyn.charity.report_modification_type enum is incomplete: 'Adverse' (a standard audit opinion type) is not in values, so a genuine modification kind is silently withheld. This is a coverage gap, not a wrong value, but the enum should be extended.",
+      "dyn.charity.financial_statement_type enum lists only three labels; other ACNC statement-type values (if present) would be withheld. Not evidenced as wrong, but the enum is narrow.",
+      "dyn.charity.coop_financial_report_submitted_flag definition says 'instead of the ACNC'; the source column name is 'coop financial report submitted to regulator' and the exact semantics (cooperative vs state regulator, and whether it replaces ACNC lodgement) are not confirmed from the visible bytes. The definition may over-specify.",
+      "dyn.charity.report_consolidated_flag is correctly framed as a reporting-scope indicator, not group ownership; this framing must be preserved in any downstream use.",
+      "Charity size is a reporting classification with regulator-specific thresholds; it must not be read as company scale or revenue band."
+    ],
+    "checked_reuse": [
+      "dyn.charity.registration_status: reused unchanged, charity-owned, not a column here; no meaning conflict.",
+      "dyn.charity.basic_religious_charity: reused unchanged, charity-owned, not a column here; no meaning conflict.",
+      "Rejected reuse of ext.licence.start_date/end_date for AIS/report dates: correct, different owner and meaning.",
+      "Rejected reuse of entity.date_registered / ext.entity.date_established for AIS dates: correct, different meaning.",
+      "Rejected reuse of ext.financial.revenue_band for charity size: correct, different owner and thresholds.",
+      "Rejected reuse of ext.entity.financial_year_end for financial_report_period_end: correct, recurring attribute vs specific period end.",
+      "Rejected reuse of entity.entity_type / ext.entity.legal_form for financial_statement_type: correct, legal structure vs reporting framework."
+    ],
+    "rationale": "The group's emitted meanings are defensible and the technical gate passes with near-zero error on present values. Dates are parsed correctly, lodgement dates are kept distinct from registration/licence dates, and reporting classifications (size band, statement type, accounting basis, consolidation, modification flag) are modelled as charity-role reporting attributes rather than business scale or legal form. Coverage is honestly bounded by genuine source sparsity. The one substantive defect is an incomplete enum for report_modification_type: the held-out value 'Adverse' is a real ACNC modification type that the enum omits, causing a withheld (not wrong) value. This is a mapping/ontology completeness issue, not a semantic mislabel, so the verdict is revise rather than reject. The out-of-scope fundraising_authorisation edge and the unused reuse declarations are noted but not blocking for this group.",
+    "blocking_findings": [
+      {
+        "field": "dyn.charity.report_modification_type",
+        "actual": "enum values are only ['Qualified/qualification', 'Disclaimed/disclaimer']; held-out value 'Adverse' is rejected as ENUM_UNMAPPED",
+        "expected": "enum should include the full set of ACNC modification types observed in the source, including 'Adverse' (and any other standard opinion types such as 'Except for'/'Emphasis of matter' if present)",
+        "evidence": "validation_fields for dyn.charity.report_modification_type: source_present 3, emitted 2, error_rate_of_present 0.333, error_examples ENUM_UNMAPPED: ['Adverse']; field_evidence shows only 'Disclaimed/disclaimer' emitted.",
+        "correction": "Add 'Adverse' to dyn.charity.report_modification_type.values and to the map_enum mapping (e.g. 'adverse' -> 'Adverse'); re-run the mapping so the previously withheld value is emitted. If other ACNC modification labels exist in the source, enumerate them from the distinct values of 'type of report modification' and add them too."
+      }
+    ],
+    "repair_scope": "both"
+  }
+}

@@ -1,0 +1,139 @@
+{
+  "request_sha256": "0c3ea99477a276dd4157100040751ced023a253814d80a30189232009873b743",
+  "role": "group_architect",
+  "model": "deepseek-v4-flash",
+  "seconds": 12.258,
+  "response": {
+    "concepts": [
+      {
+        "path": "dyn.ip_application.status",
+        "type": "enum",
+        "owner": "ip_application",
+        "definition": "Publisher-stated lifecycle status of the IP right application (application.status), e.g. filed, accepted, granted, lapsed, withdrawn, expired, ceased, unknown. It describes the application's own administrative state at the snapshot; it is not a business status, not evidence of grant or enforceability beyond the stated value, and not a statement about any party. 'ceased' is a publisher-stated application lifecycle state and must not be read as business cessation or as a party's status; 'unknown' is a legitimate publisher-stated state, not a parse failure.",
+        "values": [
+          "filed",
+          "accepted",
+          "granted",
+          "lapsed",
+          "withdrawn",
+          "expired",
+          "ceased",
+          "unknown"
+        ],
+        "multi": false,
+        "required_qualifiers": [],
+        "source_paths": [
+          "application.status"
+        ],
+        "why_not_existing": "ext.licence.status is owned by licence and describes an authorisation held by a business; an IP-office application status has a different owner, subject and meaning, so reuse would change meaning.",
+        "personal_data": "never"
+      },
+      {
+        "path": "dyn.ip_application.application_date",
+        "type": "date",
+        "owner": "ip_application",
+        "definition": "Publisher-stated date the IP right application was filed/lodged (application.application_date). It is the application's own filing date, not the party-role validity start, not the business establishment date and not a registration date.",
+        "values": [],
+        "multi": false,
+        "required_qualifiers": [],
+        "source_paths": [
+          "application.application_date"
+        ],
+        "why_not_existing": "ext.licence.start_date is owned by licence and ext.entity.date_established is owned by business; neither covers the filing date of an IP right application, so reuse would change owner and meaning.",
+        "personal_data": "never"
+      },
+      {
+        "path": "dyn.ip_application.earliest_filed_date",
+        "type": "date",
+        "owner": "ip_application",
+        "definition": "Publisher-stated earliest filing date recorded for the IP right application (application.earliest_filed_date), which may precede the current application's own filing date where an earlier filing is carried forward. It is an application-level date, not the party-role validity start and not a business date.",
+        "values": [],
+        "multi": false,
+        "required_qualifiers": [],
+        "source_paths": [
+          "application.earliest_filed_date"
+        ],
+        "why_not_existing": "No shortlisted concept covers an earliest-filing date of an IP application; ext.licence.start_date and ext.entity.date_established have different owners and meanings, so reuse would change meaning.",
+        "personal_data": "never"
+      },
+      {
+        "path": "dyn.ip_application.priority_date",
+        "type": "date",
+        "owner": "ip_application",
+        "definition": "Publisher-stated priority date of the IP right application (application.priority_date), the date from which priority is claimed. It is an application-level legal date, not the filing date, not a grant date and not a business date.",
+        "values": [],
+        "multi": false,
+        "required_qualifiers": [],
+        "source_paths": [
+          "application.priority_date"
+        ],
+        "why_not_existing": "No shortlisted concept expresses a priority date; ext.licence.start_date and ext.entity.date_established are owned by licence and business respectively, so reuse would change owner and meaning.",
+        "personal_data": "never"
+      },
+      {
+        "path": "dyn.ip_application.registration_status_date",
+        "type": "date",
+        "owner": "ip_application",
+        "definition": "Publisher-stated date on which the IP right application gained registered status (application.gained_registration_status_date). Frequently blank; a blank must not be read as 'never registered'. It is an application-level milestone, not a business incorporation or registration date.",
+        "values": [],
+        "multi": false,
+        "required_qualifiers": [],
+        "source_paths": [
+          "application.gained_registration_status_date"
+        ],
+        "why_not_existing": "ext.entity.date_established and ext.entity.prior_registration_state concern business establishment/registration; a registration milestone of an IP application has a different owner and meaning, so reuse would change meaning.",
+        "personal_data": "never"
+      },
+      {
+        "path": "dyn.ip_application.enforceable_status_date",
+        "type": "date",
+        "owner": "ip_application",
+        "definition": "Publisher-stated date on which the IP right application gained enforceable status (application.gained_enforceable_status_date). Frequently blank; a blank must not be read as 'not enforceable'. It is an application-level milestone and does not assert that any right is in fact enforceable against any party.",
+        "values": [],
+        "multi": false,
+        "required_qualifiers": [],
+        "source_paths": [
+          "application.gained_enforceable_status_date"
+        ],
+        "why_not_existing": "No shortlisted concept covers an enforceability milestone of an IP application; ext.licence.start_date/end_date are licence validity dates with a different owner and meaning, so reuse would change meaning.",
+        "personal_data": "never"
+      },
+      {
+        "path": "dyn.ip_application.enforceable_from_date",
+        "type": "date",
+        "owner": "ip_application",
+        "definition": "Publisher-stated date from which the IP right application is enforceable (application.enforceable_from_date). The column is entirely empty in this snapshot, so the concept is defined for schema completeness only and no value is asserted; it is not the same as the date enforceable status was gained.",
+        "values": [],
+        "multi": false,
+        "required_qualifiers": [],
+        "source_paths": [
+          "application.enforceable_from_date"
+        ],
+        "why_not_existing": "No shortlisted concept covers an enforceability start date of an IP application, and ext.licence.start_date is a licence validity start owned by licence, so reuse would change owner and meaning.",
+        "personal_data": "never"
+      },
+      {
+        "path": "dyn.ip_application.deemed_retired_date",
+        "type": "date",
+        "owner": "ip_application",
+        "definition": "Publisher-stated date on which the IP right application is deemed retired (application.deemed_retired_date). Frequently blank; a blank must not be read as 'still active'. It is an application-level date, not the end of a party-role association and not the end of the business.",
+        "values": [],
+        "multi": false,
+        "required_qualifiers": [],
+        "source_paths": [
+          "application.deemed_retired_date"
+        ],
+        "why_not_existing": "ext.licence.end_date is owned by licence and dyn.party_activity.effective_to_date is owned by party_activity; a deemed-retirement date of an IP application has a different owner and meaning, so reuse would change meaning.",
+        "personal_data": "never"
+      }
+    ],
+    "reuse": {
+      "dyn.ip_application.application_number": "Reused: same owner (ip_application), same meaning (IP-office application identifier), same source paths.",
+      "dyn.ip_application.ip_right_type": "Reused: same owner and meaning; the application-level classification needed to key the application.",
+      "dyn.ip_application.ip_right_sub_type": "Reused: same owner and meaning; application-level sub-classification.",
+      "dyn.party_activity.effective_from_date": "Reused: party-role validity start, distinct from the application dates defined here.",
+      "dyn.party_activity.effective_to_date": "Reused: party-role validity end, distinct from application.deemed_retired_date.",
+      "dyn.party_activity.is_current": "Reused: party-role currency flag, not an application status."
+    }
+  }
+}

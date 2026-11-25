@@ -1,0 +1,34 @@
+{
+  "request_sha256": "8f096d9c5c635c5a0d97f713c57be96440965c160fac4bea01a6189c3ae0ebd4",
+  "role": "group_critic",
+  "model": "deepseek-v4-flash",
+  "seconds": 10.721,
+  "response": {
+    "verdict": "accept",
+    "findings": [
+      "All four emitted concepts are owned by the party role and scoped to a party-role episode on an IP application; none is mapped to ext.entity.date_established, ext.licence.start_date, ext.licence.end_date or ext.licence.status, so the incorporation/licence/expiry conflations the group was asked to avoid are not present.",
+      "Held-out validation shows 0 errors of present values on all four targets (120/120 for effective_from, is_current and is_founding; 41/41 for effective_to), and the 0.342 coverage on effective_to is honest abstention on blank open-ended episodes, not a wrong value.",
+      "The is_founding mapping correctly carries party_role and party_role_category as qualifiers: held-out ordinal 39 is an agent row (party_role=agent, party_role_category=applicant_agent) with is_founding=true, so the flag is not generalised to the party-application pair without role scope.",
+      "is_current is defined as currency of the party record in the extract, explicitly not enforceability of the right and not company status; the held-out agent row with is_current=false and the applicant row with is_current=true are consistent with that reading.",
+      "effective_from/effective_to are defined as party-activity validity dates, explicitly not incorporation, grant, expiry or dissolution dates; the ISO-8601 Z timestamps are parsed as datetimes with a null_if on blank effective_to, matching the observed raw values.",
+      "Grain, prefix-cohort limitation and the absence of population-level claims are stated in the mapping record_grain and identity_cautions; no full-archive or population accuracy claim is made.",
+      "Unmapped entries for abn, party_name, party_type, address fields and the identity/role columns are explicitly deferred to the final source mapping rather than silently dropped or mis-mapped."
+    ],
+    "semantic_risks": [
+      "The definition of dyn.party.is_founding_party_flag ('recorded as a founding party on the IP application record') is a plausible but unverified gloss on the publisher's is_founding semantics; the source documentation does not state what 'founding' means here, and the held-out agent row carrying is_founding=true suggests the flag may not mean 'founding applicant'. The definition should stay as narrow as the publisher flag and avoid asserting a specific interpretation.",
+      "effective_to coverage of 0.342 reflects blanks treated as open-ended; the concept definition says 'blank where the episode is open-ended', which is an interpretation of missingness rather than a publisher-stated fact. This is bounded and does not emit a value, but the wording should not be read as a publisher assertion.",
+      "The PARTY_INVOLVED_IN_APPLICATION edge emits only when both roles have emitted claims; because the party and ip_application keys are carried as qualifiers rather than as separate entity claims in this group, edge emission depends on the final source mapping and should not be described as validated here.",
+      "party_id is used as the party key; the identity_cautions correctly note it is not a company registration number and that abn is sparse, but downstream consumers could still read party_id as a legal-entity identifier if the caution is not propagated."
+    ],
+    "checked_reuse": [
+      "ext.entity.date_established — correctly not reused for effective_from_date, effective_to_date or is_founding; owner (business), type (date) and meaning (incorporation/founding date) all differ.",
+      "ext.licence.start_date — correctly not reused for effective_from_date; owner is licence and scope is licence commencement, not a party-role episode.",
+      "ext.licence.end_date — correctly not reused for effective_to_date; owner is licence and scope is licence end, not a party-role episode end.",
+      "ext.licence.status — correctly not reused for is_current; a licence status is not currency of a party-role episode on an IP application.",
+      "No existing concept was found that matches owner=party, scope=party-role episode on an IP application, for any of the four fields; new dyn.party.* concepts are justified."
+    ],
+    "rationale": "Held-out validation shows zero errors of present values across all four targets, with the only coverage gap (effective_to at 0.342) explained by blank open-ended episodes and handled as abstention rather than a wrong value. The four concepts are owned by the party role, scoped to a party-role episode, and explicitly disclaim incorporation, grant/expiry, enforceability and legal-form meanings; the is_founding mapping correctly carries party_role and party_role_category because a held-out agent row carries the flag. Reuse checks against ext.entity.date_established and the ext.licence.* concepts are sound. The remaining concerns are definitional wording (the 'founding party' gloss and the open-ended reading of blank effective_to) and a downstream edge-emission dependency, none of which is a blocking semantic error in an emitted value. Accept with no repair required; the semantic risks are noted for the final source mapping.",
+    "blocking_findings": [],
+    "repair_scope": "none"
+  }
+}

@@ -1,0 +1,138 @@
+{
+  "quality": {
+    "present_values": 700,
+    "emitted_observations": 570,
+    "withheld_missing_context": 130,
+    "abstention_reasons": {
+      "QUALIFIER_MISSING_PERIOD": 130
+    },
+    "malformed_values": 0,
+    "malformed_reasons": {},
+    "eligible_present_values": 570,
+    "malformed_rate": 0.0,
+    "abstention_rate": 0.18571428571428572,
+    "record_errors": {},
+    "passes_technical_gate": true,
+    "semantic_precision": null,
+    "note": "Missing required context remains withheld. This gate does not establish semantic truth or useful coverage."
+  },
+  "raw_validation": {
+    "records_in": 140,
+    "records_with_output": 114,
+    "record_errors": {},
+    "fields": [
+      {
+        "target": "dyn.charity.staff_headcount",
+        "source_paths": [
+          "staff - full time"
+        ],
+        "records": 140,
+        "source_present": 140,
+        "emitted": 114,
+        "coverage_of_records": 0.814,
+        "error_rate_of_present": 0.186,
+        "errors": {
+          "QUALIFIER_MISSING_PERIOD": 26
+        },
+        "error_examples": {},
+        "entity": "charity"
+      },
+      {
+        "target": "dyn.charity.staff_headcount",
+        "source_paths": [
+          "staff - part time"
+        ],
+        "records": 140,
+        "source_present": 140,
+        "emitted": 114,
+        "coverage_of_records": 0.814,
+        "error_rate_of_present": 0.186,
+        "errors": {
+          "QUALIFIER_MISSING_PERIOD": 26
+        },
+        "error_examples": {},
+        "entity": "charity"
+      },
+      {
+        "target": "dyn.charity.staff_headcount",
+        "source_paths": [
+          "staff - casual"
+        ],
+        "records": 140,
+        "source_present": 140,
+        "emitted": 114,
+        "coverage_of_records": 0.814,
+        "error_rate_of_present": 0.186,
+        "errors": {
+          "QUALIFIER_MISSING_PERIOD": 26
+        },
+        "error_examples": {},
+        "entity": "charity"
+      },
+      {
+        "target": "dyn.charity.volunteer_count",
+        "source_paths": [
+          "staff - volunteers"
+        ],
+        "records": 140,
+        "source_present": 140,
+        "emitted": 114,
+        "coverage_of_records": 0.814,
+        "error_rate_of_present": 0.186,
+        "errors": {
+          "QUALIFIER_MISSING_PERIOD": 26
+        },
+        "error_examples": {},
+        "entity": "charity"
+      },
+      {
+        "target": "dyn.charity.full_time_equivalent_staff",
+        "source_paths": [
+          "total full time equivalent staff"
+        ],
+        "records": 140,
+        "source_present": 140,
+        "emitted": 114,
+        "coverage_of_records": 0.814,
+        "error_rate_of_present": 0.186,
+        "errors": {
+          "QUALIFIER_MISSING_PERIOD": 26
+        },
+        "error_examples": {},
+        "entity": "charity"
+      }
+    ],
+    "relationships": {},
+    "input_records": 140,
+    "refused_records": 26,
+    "observations": 570,
+    "value_errors": 130,
+    "present_values": 700,
+    "error_rate": 0.18571428571428572
+  },
+  "critic": {
+    "verdict": "revise",
+    "findings": [
+      "All five workforce columns are present in every validation record (140/140) and 114/140 emit; the 26 non-emits per column are QUALIFIER_MISSING_PERIOD abstentions where 'fin report from' is blank, which is honest abstention rather than an incorrect value.",
+      "No malformed values: parse_integer/parse_decimal succeeded on all emitted values, including fractional FTE (0.3, 1.5) and published zeros (0 staff, 0 FTE).",
+      "Semantic split is defensible: paid staff headcount by employment_category, volunteers as a separate unpaid count, and FTE as a decimal workload-equivalent are three distinct meanings with distinct units; folding them would change meaning.",
+      "Owner is consistently 'charity' and the row subject is the charity keyed on ABN, matching the source grain of one row per charity.",
+      "The period qualifier is sourced from the charity's own 'fin report from' date, correctly reflecting period-specific rather than calendar-2024 figures; held-out rows show 01/01/2024 and 01/07/2023 periods, confirming the qualifier is not a fixed year.",
+      "The mapping's 'unmapped' list and the fundraising_authorisation entity/relationship are outside this group's five columns and are reconciled elsewhere; they do not affect the workforce claims under review."
+    ],
+    "semantic_risks": [
+      "The 'period' qualifier carries only the period start date ('fin report from'), not the end date; a consumer could read it as a point-in-time observation rather than the start of a reporting window. This is a labelling risk, not a wrong value, since valid_from/valid_to are also bound.",
+      "Zeros are retained as published; for small charities not required to report detailed financials, a 0 headcount/FTE is a reported value and must not be read as evidence of no activity — the concept definitions state this, but downstream consumers must honour it.",
+      "Volunteer counts and staff headcounts are self-reported AIS figures with no independent verification; they are not audited headcounts."
+    ],
+    "checked_reuse": [
+      "ext.financial.total_income — rejected: monetary business-owned measure, wrong owner and units for headcounts.",
+      "employee expenses — rejected: a money amount, not a person count.",
+      "dyn.charity.staff_headcount vs dyn.charity.volunteer_count — kept separate: volunteers are unpaid and reported in a distinct column; merging would change meaning.",
+      "dyn.charity.staff_headcount vs dyn.charity.full_time_equivalent_staff — kept separate: integer headcount of people vs decimal FTE workload-equivalent; merging would change units."
+    ],
+    "rationale": "The group's five workforce claims are semantically sound: correct owner (charity), correct units (people for headcounts, decimal FTE for the equivalent measure), period taken from each charity's own reporting period, and honest abstention (26/140 per column) where the period start is missing rather than invented. No malformed values and no incorrect emitted values are evidenced. The only issue warranting revision is a labelling/scope clarity point on the 'period' qualifier (start-only), which is a mapping/ontology clarification rather than a wrong value; coverage is honestly bounded and acceptable. No blocking findings are raised, so the verdict is revise for the qualifier-scope clarification rather than accept outright.",
+    "blocking_findings": [],
+    "repair_scope": "ontology"
+  }
+}

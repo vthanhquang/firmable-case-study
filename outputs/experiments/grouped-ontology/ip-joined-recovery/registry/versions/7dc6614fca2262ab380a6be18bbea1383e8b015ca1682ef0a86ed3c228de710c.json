@@ -1,0 +1,1270 @@
+{
+  "parent": "db7f01dab23e6f042a75c6df261be2b61dfa1ceba7daff6afe5eab3543256f1b",
+  "legacy_ontology_sha256": "3c341084a48a93659b3dd47ff6b91cf8a76a6a4936e0439279fed9370e782be4",
+  "entity_types": {
+    "business": "The source's business/legal-person subject; legal form remains unknown unless stated.",
+    "licence": "An authorisation held by a business.",
+    "establishment": "A physical operating facility, separate from its operator.",
+    "party": "A person or organisation recorded as acting in a role on an IP right application; identified by party_id, with party_type as a party classification only and no legal-form inference.",
+    "ip_application": "An IP right application identified by ip_right_type plus application_number, carrying its own status, dates and description.",
+    "party_activity": "The association of one party in one role on one IP right application, with its own validity window (effective_from_date, effective_to_date, is_current)."
+  },
+  "concepts": {
+    "ext.entity.former_name": {
+      "path": "ext.entity.former_name",
+      "type": "string",
+      "owner": "business",
+      "definition": "A legal name the business held before its current one. Use valid_from/valid_to paths when the source dates the name. Never a trading name.",
+      "values": [],
+      "multi": true,
+      "required_qualifiers": [],
+      "personal_data": "never",
+      "pattern": null
+    },
+    "ext.entity.legal_form": {
+      "path": "ext.entity.legal_form",
+      "type": "enum",
+      "owner": "business",
+      "definition": "Registrar's company type, decoded through a crosswalk table. Unknown codes -> unknown.",
+      "values": [
+        "proprietary_company",
+        "public_company",
+        "listed_public_company",
+        "foreign_company",
+        "registered_body",
+        "incorporated_association",
+        "cooperative",
+        "other",
+        "unknown"
+      ],
+      "multi": false,
+      "required_qualifiers": [],
+      "personal_data": "never",
+      "pattern": null
+    },
+    "ext.entity.legal_form_detail": {
+      "path": "ext.entity.legal_form_detail",
+      "type": "string",
+      "owner": "business",
+      "definition": "Finer legal structure stated by the registrar (limited by shares/guarantee, listed, superannuation trustee, non-profit). Value is \"CODE: label\" from a crosswalk table.",
+      "values": [],
+      "multi": true,
+      "required_qualifiers": [],
+      "personal_data": "never",
+      "pattern": null
+    },
+    "ext.entity.status_detail": {
+      "path": "ext.entity.status_detail",
+      "type": "string",
+      "owner": "business",
+      "definition": "The registrar's full status code and label (\"EXAD: External administration\"). The core entity.status enum stays coarse; distress codes live here.",
+      "values": [],
+      "multi": false,
+      "required_qualifiers": [],
+      "personal_data": "never",
+      "pattern": null
+    },
+    "ext.entity.date_established": {
+      "path": "ext.entity.date_established",
+      "type": "date",
+      "owner": "business",
+      "definition": "Founding / establishment date. Not a registration date.",
+      "values": [],
+      "multi": false,
+      "required_qualifiers": [],
+      "personal_data": "never",
+      "pattern": null
+    },
+    "ext.entity.sector_tag": {
+      "path": "ext.entity.sector_tag",
+      "type": "string",
+      "owner": "business",
+      "definition": "A source-stated activity or beneficiary tag, e.g. scheme acnc_purpose or acnc_beneficiary. Keep the publisher's wording.",
+      "values": [],
+      "multi": true,
+      "required_qualifiers": [
+        "scheme"
+      ],
+      "personal_data": "never",
+      "pattern": null
+    },
+    "ext.entity.industry_code": {
+      "path": "ext.entity.industry_code",
+      "type": "string",
+      "owner": "business",
+      "definition": "ANZSIC 2006 division letter, subdivision, group or class, produced only through a reviewed crosswalk table from a source-stated activity (trade class, licence category, purpose). The raw source value is kept in raw_value. scheme = anzsic2006.",
+      "values": [],
+      "multi": true,
+      "required_qualifiers": [
+        "scheme"
+      ],
+      "personal_data": "never",
+      "pattern": "^(?:[A-S]|[0-9]{2,4})$"
+    },
+    "ext.entity.operating_region": {
+      "path": "ext.entity.operating_region",
+      "type": "enum",
+      "owner": "business",
+      "definition": "Where the business says it operates (service footprint), not where it is registered.",
+      "values": [
+        "ACT",
+        "NSW",
+        "NT",
+        "QLD",
+        "SA",
+        "TAS",
+        "VIC",
+        "WA",
+        "NATIONAL",
+        "OVERSEAS"
+      ],
+      "multi": true,
+      "required_qualifiers": [],
+      "personal_data": "never",
+      "pattern": null
+    },
+    "ext.entity.operating_country": {
+      "path": "ext.entity.operating_country",
+      "type": "string",
+      "owner": "business",
+      "definition": "Country the business says it operates in, as the source writes it (one per observation).",
+      "values": [],
+      "multi": true,
+      "required_qualifiers": [],
+      "personal_data": "never",
+      "pattern": null
+    },
+    "ext.entity.tax_concession": {
+      "path": "ext.entity.tax_concession",
+      "type": "enum",
+      "owner": "business",
+      "definition": "Tax-concession status stated by the regulator (Public Benevolent Institution, Health Promotion Charity).",
+      "values": [
+        "PBI",
+        "HPC",
+        "DGR"
+      ],
+      "multi": true,
+      "required_qualifiers": [],
+      "personal_data": "never",
+      "pattern": null
+    },
+    "ext.entity.responsible_persons": {
+      "path": "ext.entity.responsible_persons",
+      "type": "integer",
+      "owner": "business",
+      "definition": "Number of responsible persons (board size) the regulator reports.",
+      "values": [],
+      "multi": false,
+      "required_qualifiers": [],
+      "personal_data": "never",
+      "pattern": null
+    },
+    "ext.entity.financial_year_end": {
+      "path": "ext.entity.financial_year_end",
+      "type": "string",
+      "owner": "business",
+      "definition": "Reporting-cycle end as dd-Mon (e.g. 30-Jun). Used to schedule refreshes.",
+      "values": [],
+      "multi": false,
+      "required_qualifiers": [],
+      "personal_data": "never",
+      "pattern": "^[0-9]{2}-[A-Z][a-z]{2}$"
+    },
+    "ext.entity.prior_registration_state": {
+      "path": "ext.entity.prior_registration_state",
+      "type": "string",
+      "owner": "business",
+      "definition": "State of original incorporation before national registration. Not an address.",
+      "values": [],
+      "multi": false,
+      "required_qualifiers": [],
+      "personal_data": "never",
+      "pattern": null
+    },
+    "ext.entity.prior_registration_number": {
+      "path": "ext.entity.prior_registration_number",
+      "type": "string",
+      "owner": "business",
+      "definition": "Legacy state registration number.",
+      "values": [],
+      "multi": false,
+      "required_qualifiers": [],
+      "personal_data": "never",
+      "pattern": null
+    },
+    "ext.entity.address_point": {
+      "path": "ext.entity.address_point",
+      "type": "point",
+      "owner": "business",
+      "definition": "lat,lon of the business's OWN stated address (e.g. a licensee's business address). A premises or site location is ext.establishment.geo on an establishment role instead.",
+      "values": [],
+      "multi": false,
+      "required_qualifiers": [],
+      "personal_data": "never",
+      "pattern": null
+    },
+    "ext.entity.holder_kind": {
+      "path": "ext.entity.holder_kind",
+      "type": "enum",
+      "owner": "business",
+      "definition": "Whether the source says the record's holder is a natural person or an organisation. This is matching evidence. It never implies sole_trader.",
+      "values": [
+        "individual",
+        "organisation",
+        "unknown"
+      ],
+      "multi": false,
+      "required_qualifiers": [],
+      "personal_data": "never",
+      "pattern": null
+    },
+    "ext.financial.total_income": {
+      "path": "ext.financial.total_income",
+      "type": "decimal",
+      "owner": "business",
+      "definition": "Total income as published for a stated reporting period. A fact for a period, not a current attribute.",
+      "values": [],
+      "multi": false,
+      "required_qualifiers": [
+        "currency",
+        "period"
+      ],
+      "personal_data": "never",
+      "pattern": null
+    },
+    "ext.financial.taxable_income": {
+      "path": "ext.financial.taxable_income",
+      "type": "decimal",
+      "owner": "business",
+      "definition": "Taxable income for the period. Missing is not zero.",
+      "values": [],
+      "multi": false,
+      "required_qualifiers": [
+        "currency",
+        "period"
+      ],
+      "personal_data": "never",
+      "pattern": null
+    },
+    "ext.financial.tax_payable": {
+      "path": "ext.financial.tax_payable",
+      "type": "decimal",
+      "owner": "business",
+      "definition": "Tax payable for the period.",
+      "values": [],
+      "multi": false,
+      "required_qualifiers": [
+        "currency",
+        "period"
+      ],
+      "personal_data": "never",
+      "pattern": null
+    },
+    "ext.financial.revenue_band": {
+      "path": "ext.financial.revenue_band",
+      "type": "string",
+      "owner": "business",
+      "definition": "A revenue/turnover band from a named scheme (acnc_size_2022, qbcc_mfr). The value must be a label of that scheme's crosswalk table; band thresholds live in the table, not in the claim.",
+      "values": [],
+      "multi": false,
+      "required_qualifiers": [
+        "scheme"
+      ],
+      "personal_data": "never",
+      "pattern": null
+    },
+    "ext.licence.number": {
+      "path": "ext.licence.number",
+      "type": "string",
+      "owner": "licence",
+      "definition": "Publisher-assigned licence number. Identifies the licence across snapshots.",
+      "values": [],
+      "multi": false,
+      "required_qualifiers": [],
+      "personal_data": "never",
+      "pattern": null
+    },
+    "ext.licence.issuer": {
+      "path": "ext.licence.issuer",
+      "type": "string",
+      "owner": "licence",
+      "definition": "Licensing body.",
+      "values": [],
+      "multi": false,
+      "required_qualifiers": [],
+      "personal_data": "never",
+      "pattern": null
+    },
+    "ext.licence.class": {
+      "path": "ext.licence.class",
+      "type": "string",
+      "owner": "licence",
+      "definition": "Licence class / licensed trade in the publisher's wording.",
+      "values": [],
+      "multi": true,
+      "required_qualifiers": [],
+      "personal_data": "never",
+      "pattern": null
+    },
+    "ext.licence.grade": {
+      "path": "ext.licence.grade",
+      "type": "string",
+      "owner": "licence",
+      "definition": "Kind of licence (contractor, supervisor, nominee ...).",
+      "values": [],
+      "multi": false,
+      "required_qualifiers": [],
+      "personal_data": "never",
+      "pattern": null
+    },
+    "ext.licence.category": {
+      "path": "ext.licence.category",
+      "type": "string",
+      "owner": "licence",
+      "definition": "Licence category in the publisher's wording.",
+      "values": [],
+      "multi": false,
+      "required_qualifiers": [],
+      "personal_data": "never",
+      "pattern": null
+    },
+    "ext.licence.authorisation": {
+      "path": "ext.licence.authorisation",
+      "type": "string",
+      "owner": "licence",
+      "definition": "One authorised activity per observation (split the publisher's list).",
+      "values": [],
+      "multi": true,
+      "required_qualifiers": [],
+      "personal_data": "never",
+      "pattern": null
+    },
+    "ext.licence.authorisation_text": {
+      "path": "ext.licence.authorisation_text",
+      "type": "string",
+      "owner": "licence",
+      "definition": "Complete publisher authorisation text, including headings and conditions. Unparsed source evidence, not independent permission claims.",
+      "values": [],
+      "multi": false,
+      "required_qualifiers": [],
+      "personal_data": "never",
+      "pattern": null
+    },
+    "ext.licence.start_date": {
+      "path": "ext.licence.start_date",
+      "type": "date",
+      "owner": "licence",
+      "definition": "Publisher-stated commencement of the licence, not the business establishment or registration date.",
+      "values": [],
+      "multi": false,
+      "required_qualifiers": [],
+      "personal_data": "never",
+      "pattern": null
+    },
+    "ext.licence.end_date": {
+      "path": "ext.licence.end_date",
+      "type": "date",
+      "owner": "licence",
+      "definition": "Publisher-stated end of the licence, not the end of the business or all its claims.",
+      "values": [],
+      "multi": false,
+      "required_qualifiers": [],
+      "personal_data": "never",
+      "pattern": null
+    },
+    "ext.licence.status": {
+      "path": "ext.licence.status",
+      "type": "string",
+      "owner": "licence",
+      "definition": "Licence status as published (licence status, not company status).",
+      "values": [],
+      "multi": false,
+      "required_qualifiers": [],
+      "personal_data": "never",
+      "pattern": null
+    },
+    "ext.licence.condition": {
+      "path": "ext.licence.condition",
+      "type": "string",
+      "owner": "licence",
+      "definition": "Licence condition such as trading hours.",
+      "values": [],
+      "multi": true,
+      "required_qualifiers": [],
+      "personal_data": "never",
+      "pattern": null
+    },
+    "ext.licence.status_event": {
+      "path": "ext.licence.status_event",
+      "type": "string",
+      "owner": "licence",
+      "definition": "A dated status-history entry (e.g. a contravention of a licence condition).",
+      "values": [],
+      "multi": true,
+      "required_qualifiers": [],
+      "personal_data": "never",
+      "pattern": null
+    },
+    "ext.licence.edr_scheme": {
+      "path": "ext.licence.edr_scheme",
+      "type": "string",
+      "owner": "licence",
+      "definition": "External dispute-resolution scheme membership.",
+      "values": [],
+      "multi": true,
+      "required_qualifiers": [],
+      "personal_data": "never",
+      "pattern": null
+    },
+    "ext.licence.related_licence_number": {
+      "path": "ext.licence.related_licence_number",
+      "type": "string",
+      "owner": "licence",
+      "definition": "Number of another licence the same holder holds (e.g. an AFS licence number). 0 / blank = none.",
+      "values": [],
+      "multi": false,
+      "required_qualifiers": [],
+      "personal_data": "never",
+      "pattern": null
+    },
+    "ext.establishment.name": {
+      "path": "ext.establishment.name",
+      "type": "string",
+      "owner": "establishment",
+      "definition": "Site or premises name.",
+      "values": [],
+      "multi": false,
+      "required_qualifiers": [],
+      "personal_data": "never",
+      "pattern": null
+    },
+    "ext.establishment.source_key": {
+      "path": "ext.establishment.source_key",
+      "type": "string",
+      "owner": "establishment",
+      "definition": "Publisher's site code. Identifies the site across snapshots.",
+      "values": [],
+      "multi": false,
+      "required_qualifiers": [],
+      "personal_data": "never",
+      "pattern": null
+    },
+    "ext.establishment.geo": {
+      "path": "ext.establishment.geo",
+      "type": "point",
+      "owner": "establishment",
+      "definition": "\"lat,lon\" in decimal degrees inside Australia. The literal NULL is missing.",
+      "values": [],
+      "multi": false,
+      "required_qualifiers": [],
+      "personal_data": "never",
+      "pattern": null
+    },
+    "ext.establishment.lga": {
+      "path": "ext.establishment.lga",
+      "type": "string",
+      "owner": "establishment",
+      "definition": "Local government area.",
+      "values": [],
+      "multi": false,
+      "required_qualifiers": [],
+      "personal_data": "never",
+      "pattern": null
+    },
+    "ext.establishment.region": {
+      "path": "ext.establishment.region",
+      "type": "string",
+      "owner": "establishment",
+      "definition": "Publisher's region (licensing region, metro/regional, employment services area).",
+      "values": [],
+      "multi": true,
+      "required_qualifiers": [],
+      "personal_data": "never",
+      "pattern": null
+    },
+    "ext.establishment.capacity": {
+      "path": "ext.establishment.capacity",
+      "type": "integer",
+      "owner": "establishment",
+      "definition": "Published maximum patron count or similar capacity.",
+      "values": [],
+      "multi": false,
+      "required_qualifiers": [],
+      "personal_data": "never",
+      "pattern": null
+    },
+    "ext.establishment.program": {
+      "path": "ext.establishment.program",
+      "type": "string",
+      "owner": "establishment",
+      "definition": "Government programme or contract code delivered at this site.",
+      "values": [],
+      "multi": true,
+      "required_qualifiers": [],
+      "personal_data": "never",
+      "pattern": null
+    },
+    "ext.contact.phone": {
+      "path": "ext.contact.phone",
+      "type": "phone",
+      "owner": "any",
+      "definition": "Phone number normalised to E.164 (+61...). Numbers shorter than 8 digits or without an area code are rejected. Mobiles are personal data unless published as a business line.",
+      "values": [],
+      "multi": true,
+      "required_qualifiers": [],
+      "personal_data": "mobile_numbers",
+      "pattern": null
+    },
+    "ext.contact.email_domain": {
+      "path": "ext.contact.email_domain",
+      "type": "domain",
+      "owner": "any",
+      "definition": "The domain of a published email address. Personal local parts are never stored.",
+      "values": [],
+      "multi": true,
+      "required_qualifiers": [],
+      "personal_data": "never",
+      "pattern": null
+    },
+    "ext.contact.role_email": {
+      "path": "ext.contact.role_email",
+      "type": "email",
+      "owner": "any",
+      "definition": "A role mailbox (info@, enquiries@, admin@ ...). Personal mailboxes are dropped by the transform.",
+      "values": [],
+      "multi": true,
+      "required_qualifiers": [],
+      "personal_data": "never",
+      "pattern": null
+    },
+    "ext.contact.website_domain": {
+      "path": "ext.contact.website_domain",
+      "type": "domain",
+      "owner": "any",
+      "definition": "Registrable host of a published website (www. removed).",
+      "values": [],
+      "multi": true,
+      "required_qualifiers": [],
+      "personal_data": "never",
+      "pattern": null
+    },
+    "entity.legal_name": {
+      "path": "entity.legal_name",
+      "type": "string",
+      "owner": "business",
+      "definition": "As registered. Not the trading name.",
+      "values": [],
+      "multi": false,
+      "required_qualifiers": [],
+      "personal_data": "never",
+      "pattern": null
+    },
+    "entity.trading_name": {
+      "path": "entity.trading_name",
+      "type": "string",
+      "owner": "business",
+      "definition": "May be multiple. Emit one observation each.",
+      "values": [],
+      "multi": false,
+      "required_qualifiers": [],
+      "personal_data": "never",
+      "pattern": null
+    },
+    "entity.abn": {
+      "path": "entity.abn",
+      "type": "string",
+      "owner": "business",
+      "definition": "Australian Business Number. Has a checksum — validate it, do not just length-check.",
+      "values": [],
+      "multi": false,
+      "required_qualifiers": [],
+      "personal_data": "never",
+      "pattern": "^\\d{11}$"
+    },
+    "entity.acn": {
+      "path": "entity.acn",
+      "type": "string",
+      "owner": "business",
+      "definition": "Australian Company Number. Also checksummed. The last 9 digits of an ABN are often the ACN, but not always.",
+      "values": [],
+      "multi": false,
+      "required_qualifiers": [],
+      "personal_data": "never",
+      "pattern": "^\\d{9}$"
+    },
+    "entity.nzbn": {
+      "path": "entity.nzbn",
+      "type": "string",
+      "owner": "business",
+      "definition": "New Zealand Business Number, if you happen to hit an NZ source.",
+      "values": [],
+      "multi": false,
+      "required_qualifiers": [],
+      "personal_data": "never",
+      "pattern": "^\\d{13}$"
+    },
+    "entity.entity_type": {
+      "path": "entity.entity_type",
+      "type": "enum",
+      "owner": "business",
+      "definition": "Default to unknown. Guessing here causes downstream harm.",
+      "values": [
+        "company",
+        "sole_trader",
+        "partnership",
+        "trust",
+        "incorporated_association",
+        "government",
+        "other",
+        "unknown"
+      ],
+      "multi": false,
+      "required_qualifiers": [],
+      "personal_data": "never",
+      "pattern": null
+    },
+    "entity.status": {
+      "path": "entity.status",
+      "type": "enum",
+      "owner": "business",
+      "definition": "",
+      "values": [
+        "active",
+        "deregistered",
+        "in_liquidation",
+        "suspended",
+        "unknown"
+      ],
+      "multi": false,
+      "required_qualifiers": [],
+      "personal_data": "never",
+      "pattern": null
+    },
+    "entity.website": {
+      "path": "entity.website",
+      "type": "string",
+      "owner": "business",
+      "definition": "",
+      "values": [],
+      "multi": false,
+      "required_qualifiers": [],
+      "personal_data": "never",
+      "pattern": null
+    },
+    "entity.industry_code": {
+      "path": "entity.industry_code",
+      "type": "string",
+      "owner": "business",
+      "definition": "ANZSIC where available. Record the raw source value too.",
+      "values": [],
+      "multi": false,
+      "required_qualifiers": [],
+      "personal_data": "never",
+      "pattern": null
+    },
+    "entity.date_registered": {
+      "path": "entity.date_registered",
+      "type": "date",
+      "owner": "business",
+      "definition": "",
+      "values": [],
+      "multi": false,
+      "required_qualifiers": [],
+      "personal_data": "never",
+      "pattern": null
+    },
+    "address.full": {
+      "path": "address.full",
+      "type": "string",
+      "owner": "business",
+      "definition": "",
+      "values": [],
+      "multi": false,
+      "required_qualifiers": [],
+      "personal_data": "never",
+      "pattern": null
+    },
+    "address.locality": {
+      "path": "address.locality",
+      "type": "string",
+      "owner": "business",
+      "definition": "",
+      "values": [],
+      "multi": false,
+      "required_qualifiers": [],
+      "personal_data": "never",
+      "pattern": null
+    },
+    "address.state": {
+      "path": "address.state",
+      "type": "enum",
+      "owner": "business",
+      "definition": "",
+      "values": [
+        "NSW",
+        "VIC",
+        "QLD",
+        "WA",
+        "SA",
+        "TAS",
+        "ACT",
+        "NT",
+        "NZ",
+        "OTHER"
+      ],
+      "multi": false,
+      "required_qualifiers": [],
+      "personal_data": "never",
+      "pattern": null
+    },
+    "address.postcode": {
+      "path": "address.postcode",
+      "type": "string",
+      "owner": "business",
+      "definition": "",
+      "values": [],
+      "multi": false,
+      "required_qualifiers": [],
+      "personal_data": "never",
+      "pattern": null
+    },
+    "address.country": {
+      "path": "address.country",
+      "type": "string",
+      "owner": "business",
+      "definition": "",
+      "values": [],
+      "multi": false,
+      "required_qualifiers": [],
+      "personal_data": "never",
+      "pattern": null
+    },
+    "observation.source_id": {
+      "path": "observation.source_id",
+      "type": "string",
+      "owner": "business",
+      "definition": "Stable identifier for the dataset the claim came from.",
+      "values": [],
+      "multi": false,
+      "required_qualifiers": [],
+      "personal_data": "never",
+      "pattern": null
+    },
+    "observation.source_record_id": {
+      "path": "observation.source_record_id",
+      "type": "string",
+      "owner": "business",
+      "definition": "Must be traceable back to the exact raw record. If the source has no key, construct a deterministic one and document how.",
+      "values": [],
+      "multi": false,
+      "required_qualifiers": [],
+      "personal_data": "never",
+      "pattern": null
+    },
+    "observation.observed_at": {
+      "path": "observation.observed_at",
+      "type": "datetime",
+      "owner": "business",
+      "definition": "When the source stated it.",
+      "values": [],
+      "multi": false,
+      "required_qualifiers": [],
+      "personal_data": "never",
+      "pattern": null
+    },
+    "observation.ingested_at": {
+      "path": "observation.ingested_at",
+      "type": "datetime",
+      "owner": "business",
+      "definition": "When you read it. These are different and both matter.",
+      "values": [],
+      "multi": false,
+      "required_qualifiers": [],
+      "personal_data": "never",
+      "pattern": null
+    },
+    "observation.valid_from": {
+      "path": "observation.valid_from",
+      "type": "date",
+      "owner": "business",
+      "definition": "When the claim became true in the world, if the source says.",
+      "values": [],
+      "multi": false,
+      "required_qualifiers": [],
+      "personal_data": "never",
+      "pattern": null
+    },
+    "observation.valid_to": {
+      "path": "observation.valid_to",
+      "type": "date",
+      "owner": "business",
+      "definition": "Null means still current as far as this source knows.",
+      "values": [],
+      "multi": false,
+      "required_qualifiers": [],
+      "personal_data": "never",
+      "pattern": null
+    },
+    "observation.licence": {
+      "path": "observation.licence",
+      "type": "string",
+      "owner": "business",
+      "definition": "From the dataset metadata. CKAN exposes it. If a source has no clear licence, that is a finding, not a blocker — record 'unknown' and flag it.",
+      "values": [],
+      "multi": false,
+      "required_qualifiers": [],
+      "personal_data": "never",
+      "pattern": null
+    },
+    "observation.extractor_version": {
+      "path": "observation.extractor_version",
+      "type": "string",
+      "owner": "business",
+      "definition": "Which version of your mapping config and engine produced this. You will be glad of it later.",
+      "values": [],
+      "multi": false,
+      "required_qualifiers": [],
+      "personal_data": "never",
+      "pattern": null
+    },
+    "confidence.source_reliability": {
+      "path": "confidence.source_reliability",
+      "type": "float",
+      "owner": "business",
+      "definition": "How much do we trust this publisher on this kind of claim.",
+      "values": [],
+      "multi": false,
+      "required_qualifiers": [],
+      "personal_data": "never",
+      "pattern": null
+    },
+    "confidence.field_confidence": {
+      "path": "confidence.field_confidence",
+      "type": "float",
+      "owner": "business",
+      "definition": "How sure are we that we mapped and parsed this field correctly.",
+      "values": [],
+      "multi": false,
+      "required_qualifiers": [],
+      "personal_data": "never",
+      "pattern": null
+    },
+    "confidence.link_confidence": {
+      "path": "confidence.link_confidence",
+      "type": "float",
+      "owner": "business",
+      "definition": "How sure are we that this record refers to that entity. Only on links.",
+      "values": [],
+      "multi": false,
+      "required_qualifiers": [],
+      "personal_data": "never",
+      "pattern": null
+    },
+    "dyn.party.party_key": {
+      "path": "dyn.party.party_key",
+      "type": "string",
+      "owner": "party",
+      "definition": "Publisher's identifier for the party named on an IP right application record (party_activity.party_id). Identifies the party across applications and roles; it is not a business registration number, ABN or ACN, and does not by itself establish a legal entity.",
+      "values": [],
+      "multi": false,
+      "required_qualifiers": [],
+      "source_paths": [
+        "party_activity.party_id"
+      ],
+      "why_not_existing": "No shortlisted concept covers an IP-office party key; entity.abn and entity.acn are checksummed business/company registrations with different owners and meaning, and entity.legal_name is a registered name, not an identifier.",
+      "personal_data": "never"
+    },
+    "dyn.party.party_name": {
+      "path": "dyn.party.party_name",
+      "type": "string",
+      "owner": "party",
+      "definition": "Party name as published on the IP right application record (party_activity.party_name), free text and lower-cased. It may be an organisation name variant or a personal name; it is not asserted to be a registered legal name or a trading name.",
+      "values": [],
+      "multi": false,
+      "required_qualifiers": [],
+      "source_paths": [
+        "party_activity.party_name"
+      ],
+      "why_not_existing": "entity.legal_name and entity.trading_name are owned by business and assert registered/trading status; this value is an unverified IP-office party label owned by the party role, so reuse would change meaning and owner.",
+      "personal_data": "always"
+    },
+    "dyn.party.party_kind": {
+      "path": "dyn.party.party_kind",
+      "type": "enum",
+      "owner": "party",
+      "definition": "Publisher's classification of the party on the IP right application record as an organisation or an individual (party_activity.party_type). This is a party classification only; it does not state a company legal form, sole-trader status or beneficial ownership.",
+      "values": [
+        "organisation",
+        "individual"
+      ],
+      "multi": false,
+      "required_qualifiers": [],
+      "source_paths": [
+        "party_activity.party_type"
+      ],
+      "why_not_existing": "ext.entity.holder_kind is owned by business and is matching evidence about a licence/registration holder; entity.entity_type and ext.entity.legal_form assert business legal structure. A party-level organisation/individual flag with no legal-form implication is a distinct meaning on a different owner.",
+      "personal_data": "never"
+    },
+    "dyn.party.abn_supplied": {
+      "path": "dyn.party.abn_supplied",
+      "type": "string",
+      "owner": "party",
+      "definition": "Australian Business Number as supplied on the IP right application party record (party_activity.abn), recorded as an 11-digit string. It is frequently blank, and a blank must not be read as absence of a business or of an Australian presence; it is not validated here and does not establish the party's legal identity.",
+      "values": [],
+      "multi": false,
+      "required_qualifiers": [],
+      "source_paths": [
+        "party_activity.abn"
+      ],
+      "why_not_existing": "entity.abn is owned by business and is defined as a validated business identifier; this value is an unvalidated, often-missing party-record attribute whose absence is not evidence, so reuse would change meaning, owner and validation scope.",
+      "personal_data": "never"
+    },
+    "dyn.party_activity.role_category": {
+      "path": "dyn.party_activity.role_category",
+      "type": "enum",
+      "owner": "party_activity",
+      "definition": "Publisher's broad category of the role the party holds on the IP right application record (party_activity.party_role_category), e.g. applicant, applicant_agent, opposition, mortgagee. Describes the party-role record only; it does not imply ownership, beneficial interest or enforceability of the application.",
+      "values": [
+        "applicant",
+        "applicant_agent",
+        "opposition",
+        "mortgagee"
+      ],
+      "multi": false,
+      "required_qualifiers": [],
+      "source_paths": [
+        "party_activity.party_role_category"
+      ],
+      "why_not_existing": "No shortlisted concept covers an IP-office party-role category; ext.licence.category and ext.licence.status are owned by licence and describe an authorisation, not a party's role on an application, so reuse would change owner and meaning.",
+      "personal_data": "never"
+    },
+    "dyn.party_activity.role": {
+      "path": "dyn.party_activity.role",
+      "type": "enum",
+      "owner": "party_activity",
+      "definition": "Publisher's specific role the party holds on the IP right application record (party_activity.party_role), e.g. applicant, patentee, agent, opponent. A finer-grained companion to the role category; it describes the party-role record, not the application or the business lifecycle.",
+      "values": [
+        "applicant",
+        "patentee",
+        "agent",
+        "opponent"
+      ],
+      "multi": false,
+      "required_qualifiers": [],
+      "source_paths": [
+        "party_activity.party_role"
+      ],
+      "why_not_existing": "No shortlisted concept expresses a party's specific role on an IP application; ext.licence.category is a licence category owned by licence, so reuse would change owner and meaning.",
+      "personal_data": "never"
+    },
+    "dyn.party_activity.is_founding": {
+      "path": "dyn.party_activity.is_founding",
+      "type": "enum",
+      "owner": "party_activity",
+      "definition": "Publisher's flag on the party-role record stating whether the party is recorded as founding (party_activity.is_founding, true/false). It is a party-role attribute and must not be read as a business establishment date or as evidence of incorporation.",
+      "values": [
+        "true",
+        "false"
+      ],
+      "multi": false,
+      "required_qualifiers": [],
+      "source_paths": [
+        "party_activity.is_founding"
+      ],
+      "why_not_existing": "ext.entity.date_established is a business establishment date owned by business; a boolean founding flag on a party-role record has a different owner, type and meaning, so reuse would change meaning.",
+      "personal_data": "never"
+    },
+    "dyn.party_activity.is_current": {
+      "path": "dyn.party_activity.is_current",
+      "type": "enum",
+      "owner": "party_activity",
+      "definition": "Publisher's flag stating whether the party-role record is currently valid (party_activity.is_current, true/false). It describes the validity of the party-role association, not the application's status or the business's lifecycle.",
+      "values": [
+        "true",
+        "false"
+      ],
+      "multi": false,
+      "required_qualifiers": [],
+      "source_paths": [
+        "party_activity.is_current"
+      ],
+      "why_not_existing": "ext.licence.status is a licence status owned by licence; a boolean currency flag on a party-role record has a different owner, type and meaning, so reuse would change meaning.",
+      "personal_data": "never"
+    },
+    "dyn.party_activity.effective_from_date": {
+      "path": "dyn.party_activity.effective_from_date",
+      "type": "date",
+      "owner": "party_activity",
+      "definition": "Publisher-stated start of the validity window of the party-role record (party_activity.effective_from_date). It is the commencement of the party's role association on the application, not the application filing/priority date and not the business establishment date.",
+      "values": [],
+      "multi": false,
+      "required_qualifiers": [],
+      "source_paths": [
+        "party_activity.effective_from_date"
+      ],
+      "why_not_existing": "ext.licence.start_date is owned by licence and ext.entity.date_established is owned by business; neither covers the validity start of a party-role association, so reuse would change owner and meaning.",
+      "personal_data": "never"
+    },
+    "dyn.party_activity.effective_to_date": {
+      "path": "dyn.party_activity.effective_to_date",
+      "type": "date",
+      "owner": "party_activity",
+      "definition": "Publisher-stated end of the validity window of the party-role record (party_activity.effective_to_date), frequently blank when the role is open-ended. It is the end of the party's role association on the application, not the application termination date and not the end of the business.",
+      "values": [],
+      "multi": false,
+      "required_qualifiers": [],
+      "source_paths": [
+        "party_activity.effective_to_date"
+      ],
+      "why_not_existing": "ext.licence.end_date is owned by licence and describes a licence's end; the end of a party-role association has a different owner and meaning, so reuse would change meaning.",
+      "personal_data": "never"
+    },
+    "dyn.party.address_country": {
+      "path": "dyn.party.address_country",
+      "type": "string",
+      "owner": "party",
+      "definition": "Country component of the address recorded for the party on the IP right application record (party_activity.country_code), as published and lower-cased (e.g. 'au', 'us', 'cn'). It is frequently blank, and a blank must not be read as an Australian address or as absence of a country. It is a party-record address attribute, not a statement of the party's place of incorporation or of the business's registered office.",
+      "values": [],
+      "multi": false,
+      "required_qualifiers": [],
+      "source_paths": [
+        "party_activity.country_code"
+      ],
+      "why_not_existing": "address.country is owned by business and describes the business's own stated address; this value is an unverified, often-missing address attribute of an IP-office party record, so reuse would change owner and meaning.",
+      "personal_data": "never"
+    },
+    "dyn.party.address_state": {
+      "path": "dyn.party.address_state",
+      "type": "string",
+      "owner": "party",
+      "definition": "State or province component of the address recorded for the party on the IP right application record (party_activity.state_code), as published and lower-cased (e.g. 'nsw', 'vic'). Values are not restricted to Australian states and are frequently blank; it is a party-record address attribute, not a business operating region or a statement of incorporation.",
+      "values": [],
+      "multi": false,
+      "required_qualifiers": [],
+      "source_paths": [
+        "party_activity.state_code"
+      ],
+      "why_not_existing": "address.state is owned by business, is an enum of Australian/NZ/OTHER codes and describes the business's own address; this raw, lower-cased, non-Australian-only party-record value has a different owner and scope, so reuse would change meaning.",
+      "personal_data": "never"
+    },
+    "dyn.party.address_postcode": {
+      "path": "dyn.party.address_postcode",
+      "type": "string",
+      "owner": "party",
+      "definition": "Post code component of the address recorded for the party on the IP right application record (party_activity.post_code), kept as the raw published string because formats are not uniform (e.g. '2106' vs 'gu14 0lx'). It is a party-record address attribute and is not normalised to an Australian postcode.",
+      "values": [],
+      "multi": false,
+      "required_qualifiers": [],
+      "source_paths": [
+        "party_activity.post_code"
+      ],
+      "why_not_existing": "address.postcode is owned by business and describes the business's own address; this unnormalised, mixed-format party-record value has a different owner and no guaranteed Australian scope, so reuse would change meaning.",
+      "personal_data": "never"
+    },
+    "dyn.ip_application.application_number": {
+      "path": "dyn.ip_application.application_number",
+      "type": "string",
+      "owner": "ip_application",
+      "definition": "Publisher's identifier for the IP right application (application.application_number, repeated as party_activity.application_number), as published. It identifies the application only in combination with the IP right type; it is not a business registration number, ABN or ACN, and does not identify the party or the business.",
+      "values": [],
+      "multi": false,
+      "required_qualifiers": [],
+      "source_paths": [
+        "application.application_number",
+        "party_activity.application_number"
+      ],
+      "why_not_existing": "No shortlisted concept covers an IP-office application number; ext.licence.number and ext.licence.related_licence_number are owned by licence and identify authorisations, and ext.entity.prior_registration_number is a legacy business registration number, so reuse would change owner and meaning.",
+      "personal_data": "never"
+    },
+    "dyn.ip_application.ip_right_type": {
+      "path": "dyn.ip_application.ip_right_type",
+      "type": "enum",
+      "owner": "ip_application",
+      "definition": "Publisher's classification of the kind of IP right the application seeks (application.ip_right_type, repeated as party_activity.ip_right_type), e.g. patent. It classifies the application, not the party or the business, and does not state that any right has been granted or is enforceable. The value list reflects the patent-prefix cohort in this snapshot and is not a general IP-right-type vocabulary.",
+      "values": [
+        "patent"
+      ],
+      "multi": false,
+      "required_qualifiers": [],
+      "source_paths": [
+        "application.ip_right_type",
+        "party_activity.ip_right_type"
+      ],
+      "why_not_existing": "No shortlisted concept classifies an IP right application; ext.licence.category and ext.licence.authorisation are owned by licence and describe an authorisation held by a business, so reuse would change owner and meaning.",
+      "personal_data": "never"
+    },
+    "dyn.ip_application.ip_right_sub_type": {
+      "path": "dyn.ip_application.ip_right_sub_type",
+      "type": "enum",
+      "owner": "ip_application",
+      "definition": "Publisher's sub-classification of the IP right application within its IP right type (application.ip_right_sub_type). For patents the observed vocabulary includes standard_complete, innovation, provisional and petty; the list is not asserted to be exhaustive of the publisher's vocabulary. It describes the application's own category and does not imply grant, enforceability or a business attribute.",
+      "values": [
+        "standard_complete",
+        "innovation",
+        "provisional",
+        "petty"
+      ],
+      "multi": false,
+      "required_qualifiers": [],
+      "source_paths": [
+        "application.ip_right_sub_type"
+      ],
+      "why_not_existing": "No shortlisted concept expresses an application sub-type; ext.licence.category is a licence category owned by licence, so reuse would change owner and meaning.",
+      "personal_data": "never"
+    },
+    "dyn.ip_application.status": {
+      "path": "dyn.ip_application.status",
+      "type": "enum",
+      "owner": "ip_application",
+      "definition": "Publisher-stated lifecycle status of the IP right application (application.status), e.g. filed, accepted, granted, lapsed, withdrawn, expired, ceased, unknown. It describes the application's own administrative state at the snapshot; it is not a business status, not evidence of grant or enforceability beyond the stated value, and not a statement about any party. 'ceased' is a publisher-stated application lifecycle state and must not be read as business cessation or as a party's status; 'unknown' is a legitimate publisher-stated state, not a parse failure.",
+      "values": [
+        "filed",
+        "accepted",
+        "granted",
+        "lapsed",
+        "withdrawn",
+        "expired",
+        "ceased",
+        "unknown"
+      ],
+      "multi": false,
+      "required_qualifiers": [],
+      "source_paths": [
+        "application.status"
+      ],
+      "why_not_existing": "ext.licence.status is owned by licence and describes an authorisation held by a business; an IP-office application status has a different owner, subject and meaning, so reuse would change meaning.",
+      "personal_data": "never"
+    },
+    "dyn.ip_application.application_date": {
+      "path": "dyn.ip_application.application_date",
+      "type": "date",
+      "owner": "ip_application",
+      "definition": "Publisher-stated date the IP right application was filed/lodged (application.application_date). It is the application's own filing date, not the party-role validity start, not the business establishment date and not a registration date.",
+      "values": [],
+      "multi": false,
+      "required_qualifiers": [],
+      "source_paths": [
+        "application.application_date"
+      ],
+      "why_not_existing": "ext.licence.start_date is owned by licence and ext.entity.date_established is owned by business; neither covers the filing date of an IP right application, so reuse would change owner and meaning.",
+      "personal_data": "never"
+    },
+    "dyn.ip_application.earliest_filed_date": {
+      "path": "dyn.ip_application.earliest_filed_date",
+      "type": "date",
+      "owner": "ip_application",
+      "definition": "Publisher-stated earliest filing date recorded for the IP right application (application.earliest_filed_date), which may precede the current application's own filing date where an earlier filing is carried forward. It is an application-level date, not the party-role validity start and not a business date.",
+      "values": [],
+      "multi": false,
+      "required_qualifiers": [],
+      "source_paths": [
+        "application.earliest_filed_date"
+      ],
+      "why_not_existing": "No shortlisted concept covers an earliest-filing date of an IP application; ext.licence.start_date and ext.entity.date_established have different owners and meanings, so reuse would change meaning.",
+      "personal_data": "never"
+    },
+    "dyn.ip_application.priority_date": {
+      "path": "dyn.ip_application.priority_date",
+      "type": "date",
+      "owner": "ip_application",
+      "definition": "Publisher-stated priority date of the IP right application (application.priority_date), the date from which priority is claimed. It is an application-level legal date, not the filing date, not a grant date and not a business date.",
+      "values": [],
+      "multi": false,
+      "required_qualifiers": [],
+      "source_paths": [
+        "application.priority_date"
+      ],
+      "why_not_existing": "No shortlisted concept expresses a priority date; ext.licence.start_date and ext.entity.date_established are owned by licence and business respectively, so reuse would change owner and meaning.",
+      "personal_data": "never"
+    },
+    "dyn.ip_application.registration_status_date": {
+      "path": "dyn.ip_application.registration_status_date",
+      "type": "date",
+      "owner": "ip_application",
+      "definition": "Publisher-stated date on which the IP right application gained registered status (application.gained_registration_status_date). Frequently blank; a blank must not be read as 'never registered'. It is an application-level milestone, not a business incorporation or registration date.",
+      "values": [],
+      "multi": false,
+      "required_qualifiers": [],
+      "source_paths": [
+        "application.gained_registration_status_date"
+      ],
+      "why_not_existing": "ext.entity.date_established and ext.entity.prior_registration_state concern business establishment/registration; a registration milestone of an IP application has a different owner and meaning, so reuse would change meaning.",
+      "personal_data": "never"
+    },
+    "dyn.ip_application.enforceable_status_date": {
+      "path": "dyn.ip_application.enforceable_status_date",
+      "type": "date",
+      "owner": "ip_application",
+      "definition": "Publisher-stated date on which the IP right application gained enforceable status (application.gained_enforceable_status_date). Frequently blank; a blank must not be read as 'not enforceable'. It is an application-level milestone and does not assert that any right is in fact enforceable against any party.",
+      "values": [],
+      "multi": false,
+      "required_qualifiers": [],
+      "source_paths": [
+        "application.gained_enforceable_status_date"
+      ],
+      "why_not_existing": "No shortlisted concept covers an enforceability milestone of an IP application; ext.licence.start_date/end_date are licence validity dates with a different owner and meaning, so reuse would change meaning.",
+      "personal_data": "never"
+    },
+    "dyn.ip_application.enforceable_from_date": {
+      "path": "dyn.ip_application.enforceable_from_date",
+      "type": "date",
+      "owner": "ip_application",
+      "definition": "Publisher-stated date from which the IP right application is enforceable (application.enforceable_from_date). The column is entirely empty in this snapshot, so the concept is defined for schema completeness only and no value is asserted; it is not the same as the date enforceable status was gained.",
+      "values": [],
+      "multi": false,
+      "required_qualifiers": [],
+      "source_paths": [
+        "application.enforceable_from_date"
+      ],
+      "why_not_existing": "No shortlisted concept covers an enforceability start date of an IP application, and ext.licence.start_date is a licence validity start owned by licence, so reuse would change owner and meaning.",
+      "personal_data": "never"
+    },
+    "dyn.ip_application.deemed_retired_date": {
+      "path": "dyn.ip_application.deemed_retired_date",
+      "type": "date",
+      "owner": "ip_application",
+      "definition": "Publisher-stated date on which the IP right application is deemed retired (application.deemed_retired_date). Frequently blank; a blank must not be read as 'still active'. It is an application-level date, not the end of a party-role association and not the end of the business.",
+      "values": [],
+      "multi": false,
+      "required_qualifiers": [],
+      "source_paths": [
+        "application.deemed_retired_date"
+      ],
+      "why_not_existing": "ext.licence.end_date is owned by licence and dyn.party_activity.effective_to_date is owned by party_activity; a deemed-retirement date of an IP application has a different owner and meaning, so reuse would change meaning.",
+      "personal_data": "never"
+    }
+  },
+  "relationships": {
+    "HOLDS_LICENCE": {
+      "from_type": "business",
+      "to_type": "licence",
+      "definition": "Business holds this licence."
+    },
+    "OPERATES_ESTABLISHMENT": {
+      "from_type": "business",
+      "to_type": "establishment",
+      "definition": "Business operates this facility."
+    },
+    "PARTY_ACTS_ON_APPLICATION": {
+      "from_type": "party",
+      "to_type": "ip_application",
+      "definition": "A party is recorded in a role on an IP right application, via a party-activity record; the role does not imply ownership, beneficial interest or enforceability."
+    },
+    "PARTY_ACTIVITY_RECORDS_PARTY": {
+      "from_type": "party_activity",
+      "to_type": "party",
+      "definition": "A party-activity record names the party that holds the recorded role."
+    },
+    "PARTY_ACTIVITY_CONCERNS_APPLICATION": {
+      "from_type": "party_activity",
+      "to_type": "ip_application",
+      "definition": "A party-activity record concerns the IP right application identified by its application number and IP right type."
+    },
+    "APPLICATION_HAS_DESCRIPTION": {
+      "from_type": "ip_application",
+      "to_type": "ip_application",
+      "definition": "An IP right application has at most one description record, linked by application number and IP right type."
+    }
+  }
+}

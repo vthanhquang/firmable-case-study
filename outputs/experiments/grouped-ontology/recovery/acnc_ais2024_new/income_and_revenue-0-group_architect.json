@@ -1,0 +1,183 @@
+{
+  "request_sha256": "e410bcd8726e2d8d418af6e03f2fad101219e62aebbb4c6a591c7b7b3d32bbdb",
+  "role": "group_architect",
+  "model": "deepseek-v4-flash",
+  "seconds": 17.329,
+  "response": {
+    "concepts": [
+      {
+        "path": "dyn.charity.total_gross_income",
+        "type": "decimal",
+        "owner": "charity",
+        "definition": "Total gross income the charity reports in its ACNC Annual Information Statement for its own financial reporting period, in Australian dollars. A period-specific monetary measure of the charity's income before expenses; it is not a business's taxable income or turnover and a blank or zero is not evidence of nil activity.",
+        "values": [],
+        "multi": false,
+        "required_qualifiers": [
+          "currency",
+          "period"
+        ],
+        "source_paths": [
+          "total gross income"
+        ],
+        "why_not_existing": "ext.financial.total_income is a business-owned total income fact for a business subject; this is a charity-role self-reported AIS figure with its own reporting period, so reuse would change owner and reporting scope. ext.financial.taxable_income is a tax concept, not gross income.",
+        "personal_data": "never"
+      },
+      {
+        "path": "dyn.charity.total_revenue",
+        "type": "decimal",
+        "owner": "charity",
+        "definition": "Total revenue the charity reports in its ACNC Annual Information Statement for its own financial reporting period, in Australian dollars, being the sum of its reported revenue components. A period-specific monetary measure distinct from total gross income, which also includes other income.",
+        "values": [],
+        "multi": false,
+        "required_qualifiers": [
+          "currency",
+          "period"
+        ],
+        "source_paths": [
+          "total revenue"
+        ],
+        "why_not_existing": "No shortlisted concept holds a charity's reported total revenue; ext.financial.total_income is business-owned and does not distinguish revenue from other income, so reuse would change owner and meaning.",
+        "personal_data": "never"
+      },
+      {
+        "path": "dyn.charity.revenue_from_government",
+        "type": "decimal",
+        "owner": "charity",
+        "definition": "Revenue the charity reports in its ACNC Annual Information Statement as received from government sources during its own financial reporting period, in Australian dollars. A revenue component, not a grant amount received by a business and not evidence of a government contract.",
+        "values": [],
+        "multi": false,
+        "required_qualifiers": [
+          "currency",
+          "period"
+        ],
+        "source_paths": [
+          "revenue from government"
+        ],
+        "why_not_existing": "No shortlisted concept covers charity government-sourced revenue; ext.financial.total_income is a business-owned aggregate and a contract/grant amount is not business income, so reuse would change owner, meaning and granularity.",
+        "personal_data": "never"
+      },
+      {
+        "path": "dyn.charity.revenue_from_goods_and_services",
+        "type": "decimal",
+        "owner": "charity",
+        "definition": "Revenue the charity reports in its ACNC Annual Information Statement from providing goods and services during its own financial reporting period, in Australian dollars. A revenue component, not total sales or turnover of a business.",
+        "values": [],
+        "multi": false,
+        "required_qualifiers": [
+          "currency",
+          "period"
+        ],
+        "source_paths": [
+          "revenue from goods and services"
+        ],
+        "why_not_existing": "No shortlisted concept holds charity goods-and-services revenue; ext.financial.total_income is a business-owned aggregate, so reuse would change owner, meaning and granularity.",
+        "personal_data": "never"
+      },
+      {
+        "path": "dyn.charity.revenue_from_investments",
+        "type": "decimal",
+        "owner": "charity",
+        "definition": "Revenue the charity reports in its ACNC Annual Information Statement from investments during its own financial reporting period, in Australian dollars. A revenue component covering investment returns, not the value of the investments held.",
+        "values": [],
+        "multi": false,
+        "required_qualifiers": [
+          "currency",
+          "period"
+        ],
+        "source_paths": [
+          "revenue from investments"
+        ],
+        "why_not_existing": "No shortlisted concept covers charity investment revenue; ext.financial.total_income is a business-owned aggregate and no shortlisted concept represents investment income for a charity role.",
+        "personal_data": "never"
+      },
+      {
+        "path": "dyn.charity.donations_and_bequests_revenue",
+        "type": "decimal",
+        "owner": "charity",
+        "definition": "Revenue the charity reports in its ACNC Annual Information Statement as donations and bequests received during its own financial reporting period, in Australian dollars. A revenue component, distinct from grants and donations the charity itself makes to others.",
+        "values": [],
+        "multi": false,
+        "required_qualifiers": [
+          "currency",
+          "period"
+        ],
+        "source_paths": [
+          "donations and bequests"
+        ],
+        "why_not_existing": "No shortlisted concept holds charity donation and bequest revenue; the AIS also has separate outbound 'grants and donations made' columns with opposite direction, so a single reused concept would conflate inflow and outflow.",
+        "personal_data": "never"
+      },
+      {
+        "path": "dyn.charity.other_revenue",
+        "type": "decimal",
+        "owner": "charity",
+        "definition": "Residual revenue the charity reports in its ACNC Annual Information Statement as all other revenue not captured by the named revenue components, for its own financial reporting period, in Australian dollars. A revenue component, not a catch-all for other income.",
+        "values": [],
+        "multi": false,
+        "required_qualifiers": [
+          "currency",
+          "period"
+        ],
+        "source_paths": [
+          "all other revenue"
+        ],
+        "why_not_existing": "No shortlisted concept covers residual charity revenue; ext.financial.total_income is a business-owned aggregate and dyn.charity.other_income (this patch) is a separate AIS line outside revenue, so reuse would change meaning.",
+        "personal_data": "never"
+      },
+      {
+        "path": "dyn.charity.other_income",
+        "type": "decimal",
+        "owner": "charity",
+        "definition": "Other income the charity reports in its ACNC Annual Information Statement for its own financial reporting period, in Australian dollars, being income outside the reported revenue components. A period-specific monetary measure distinct from other revenue and from other comprehensive income.",
+        "values": [],
+        "multi": false,
+        "required_qualifiers": [
+          "currency",
+          "period"
+        ],
+        "source_paths": [
+          "other income"
+        ],
+        "why_not_existing": "No shortlisted concept holds charity other income; ext.financial.total_income is a business-owned aggregate and dyn.charity.other_revenue (this patch) is a separate revenue line, so reuse would change meaning and granularity.",
+        "personal_data": "never"
+      },
+      {
+        "path": "dyn.charity.other_comprehensive_income",
+        "type": "decimal",
+        "owner": "charity",
+        "definition": "Other comprehensive income the charity reports in its ACNC Annual Information Statement for its own financial reporting period, in Australian dollars, covering gains and losses recognised outside profit or loss. A period-specific monetary measure, not revenue and not other income.",
+        "values": [],
+        "multi": false,
+        "required_qualifiers": [
+          "currency",
+          "period"
+        ],
+        "source_paths": [
+          "other comprehensive income"
+        ],
+        "why_not_existing": "No shortlisted concept covers charity other comprehensive income; ext.financial.total_income is a business-owned aggregate and dyn.charity.other_income (this patch) is a different AIS line, so reuse would change meaning.",
+        "personal_data": "never"
+      },
+      {
+        "path": "dyn.charity.total_comprehensive_income",
+        "type": "decimal",
+        "owner": "charity",
+        "definition": "Total comprehensive income the charity reports in its ACNC Annual Information Statement for its own financial reporting period, in Australian dollars, combining its surplus or deficit with other comprehensive income. A period-specific monetary measure that may be negative; it is not total gross income.",
+        "values": [],
+        "multi": false,
+        "required_qualifiers": [
+          "currency",
+          "period"
+        ],
+        "source_paths": [
+          "total comprehensive income"
+        ],
+        "why_not_existing": "No shortlisted concept holds charity total comprehensive income; ext.financial.total_income is a business-owned income aggregate and dyn.charity.total_gross_income (this patch) is a different AIS line, so reuse would change meaning.",
+        "personal_data": "never"
+      }
+    ],
+    "reuse": {
+      "ext.financial.total_income": "Not reused for the charity income lines: owner is business and the AIS figures are charity-role self-reported amounts for the charity's own reporting period, so owner and scope differ."
+    }
+  }
+}

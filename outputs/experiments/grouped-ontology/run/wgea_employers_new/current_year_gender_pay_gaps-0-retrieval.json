@@ -1,0 +1,70 @@
+{
+  "concepts": {
+    "ext.financial.total_income": {
+      "path": "ext.financial.total_income",
+      "type": "decimal",
+      "owner": "business",
+      "definition": "Total income as published for a stated reporting period. A fact for a period, not a current attribute.",
+      "values": [],
+      "multi": false,
+      "required_qualifiers": [
+        "currency",
+        "period"
+      ],
+      "personal_data": "never",
+      "pattern": null
+    },
+    "ext.contact.email_domain": {
+      "path": "ext.contact.email_domain",
+      "type": "domain",
+      "owner": "any",
+      "definition": "The domain of a published email address. Personal local parts are never stored.",
+      "values": [],
+      "multi": true,
+      "required_qualifiers": [],
+      "personal_data": "never",
+      "pattern": null
+    },
+    "ext.establishment.geo": {
+      "path": "ext.establishment.geo",
+      "type": "point",
+      "owner": "establishment",
+      "definition": "\"lat,lon\" in decimal degrees inside Australia. The literal NULL is missing.",
+      "values": [],
+      "multi": false,
+      "required_qualifiers": [],
+      "personal_data": "never",
+      "pattern": null
+    },
+    "ext.entity.financial_year_end": {
+      "path": "ext.entity.financial_year_end",
+      "type": "string",
+      "owner": "business",
+      "definition": "Reporting-cycle end as dd-Mon (e.g. 30-Jun). Used to schedule refreshes.",
+      "values": [],
+      "multi": false,
+      "required_qualifiers": [],
+      "personal_data": "never",
+      "pattern": "^[0-9]{2}-[A-Z][a-z]{2}$"
+    }
+  },
+  "entity_types": {
+    "business": "The source's business/legal-person subject; legal form remains unknown unless stated.",
+    "licence": "An authorisation held by a business.",
+    "establishment": "A physical operating facility, separate from its operator.",
+    "employer_reporting_unit": "An employer reporting unit that submits WGEA Gender Equality Reporting results for a reporting year, identified by its reporting ABN; its legal form and company-wide scope are not established by this source."
+  },
+  "relationships": {
+    "HOLDS_LICENCE": {
+      "from_type": "business",
+      "to_type": "licence",
+      "definition": "Business holds this licence."
+    },
+    "OPERATES_ESTABLISHMENT": {
+      "from_type": "business",
+      "to_type": "establishment",
+      "definition": "Business operates this facility."
+    }
+  },
+  "retrieval": "Lexical shortlist only; reuse requires identical meaning, owner, units and scope. Missing candidates can be requested with a narrower task."
+}

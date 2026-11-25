@@ -1,0 +1,129 @@
+{
+  "concepts": [
+    {
+      "path": "dyn.ip_application.status",
+      "type": "string",
+      "owner": "ip_application",
+      "definition": "Publisher-stated lifecycle status of the IP right application (application.status), as published and lower-cased, e.g. filed, accepted, granted, lapsed, withdrawn, expired, unknown. It describes the application only, not the party, the business, or whether any right is currently enforceable. The observed values are cohort-observed in this patent-prefix snapshot and are not asserted to be the publisher's complete or closed status vocabulary, so the field is carried as a status code rather than a closed enum.",
+      "values": [
+        "filed",
+        "accepted",
+        "granted",
+        "lapsed",
+        "withdrawn",
+        "expired",
+        "unknown"
+      ],
+      "multi": false,
+      "required_qualifiers": [],
+      "source_paths": [
+        "application.status"
+      ],
+      "why_not_existing": "ext.licence.status is owned by licence and describes an authorisation held by a business; an IP application's own lifecycle status has a different owner and meaning, so reuse would change meaning.",
+      "personal_data": "never"
+    },
+    {
+      "path": "dyn.ip_application.application_date",
+      "type": "date",
+      "owner": "ip_application",
+      "definition": "Publisher-stated date the IP right application was filed with the IP office (application.application_date). It is an application date, not the business establishment date, not a registration date, and not the party-role validity start.",
+      "values": [],
+      "multi": false,
+      "required_qualifiers": [],
+      "source_paths": [
+        "application.application_date"
+      ],
+      "why_not_existing": "ext.licence.start_date is owned by licence and ext.entity.date_established is owned by business; an IP application's filing date has a different owner and meaning, so reuse would change meaning.",
+      "personal_data": "never"
+    },
+    {
+      "path": "dyn.ip_application.earliest_filed_date",
+      "type": "date",
+      "owner": "ip_application",
+      "definition": "Publisher-stated earliest filing date of the IP right application (application.earliest_filed_date), which may precede the current application's own filing date where an earlier application is relied on. It is an application-level date, not a business establishment date and not a grant date.",
+      "values": [],
+      "multi": false,
+      "required_qualifiers": [],
+      "source_paths": [
+        "application.earliest_filed_date"
+      ],
+      "why_not_existing": "No shortlisted concept covers an earliest filing date of an IP application; ext.licence.start_date is owned by licence and describes a licence commencement, so reuse would change owner and meaning.",
+      "personal_data": "never"
+    },
+    {
+      "path": "dyn.ip_application.priority_date",
+      "type": "date",
+      "owner": "ip_application",
+      "definition": "Publisher-stated priority date of the IP right application (application.priority_date), the date from which priority is claimed. It is an application-level date and is not the filing date, the grant date, or any business date.",
+      "values": [],
+      "multi": false,
+      "required_qualifiers": [],
+      "source_paths": [
+        "application.priority_date"
+      ],
+      "why_not_existing": "No shortlisted concept covers an IP priority date; ext.licence.start_date is owned by licence and describes a licence commencement, so reuse would change owner and meaning.",
+      "personal_data": "never"
+    },
+    {
+      "path": "dyn.ip_application.registration_status_date",
+      "type": "date",
+      "owner": "ip_application",
+      "definition": "Publisher-stated date on which the IP right application gained registration status (application.gained_registration_status_date). Frequently blank where registration has not occurred or the join did not match. It is an application-level milestone date, not a business registration date and not a grant date unless the publisher states so.",
+      "values": [],
+      "multi": false,
+      "required_qualifiers": [],
+      "source_paths": [
+        "application.gained_registration_status_date"
+      ],
+      "why_not_existing": "ext.entity.date_established and ext.entity.prior_registration_state are owned by business and concern the business's own registration history; an application-level registration-status milestone has a different owner and meaning, so reuse would change meaning.",
+      "personal_data": "never"
+    },
+    {
+      "path": "dyn.ip_application.enforceable_status_date",
+      "type": "date",
+      "owner": "ip_application",
+      "definition": "Publisher-stated date on which the IP right application gained enforceable status (application.gained_enforceable_status_date). Frequently blank. It is an application-level milestone date and does not by itself assert that the right is currently enforceable or that any party holds an enforceable interest.",
+      "values": [],
+      "multi": false,
+      "required_qualifiers": [],
+      "source_paths": [
+        "application.gained_enforceable_status_date"
+      ],
+      "why_not_existing": "No shortlisted concept covers an IP application's enforceability milestone; ext.licence.start_date and ext.licence.end_date are owned by licence and bound a licence term, so reuse would change owner and meaning.",
+      "personal_data": "never"
+    },
+    {
+      "path": "dyn.ip_application.enforceable_from_date",
+      "type": "date",
+      "owner": "ip_application",
+      "definition": "Publisher-stated date from which the IP right is enforceable (application.enforceable_from_date). The column is entirely empty in this snapshot, so the concept is defined for schema completeness only and no value is asserted; it is an application-level date, not a licence start date.",
+      "values": [],
+      "multi": false,
+      "required_qualifiers": [],
+      "source_paths": [
+        "application.enforceable_from_date"
+      ],
+      "why_not_existing": "ext.licence.start_date is owned by licence and describes a licence commencement; an application-level enforceability start has a different owner and meaning, so reuse would change meaning. The column is empty in this snapshot, so no values are claimed.",
+      "personal_data": "never"
+    },
+    {
+      "path": "dyn.ip_application.deemed_retired_date",
+      "type": "date",
+      "owner": "ip_application",
+      "definition": "Publisher-stated date on which the IP right application is deemed retired (application.deemed_retired_date), e.g. for failure to pay a fee or to progress. Frequently blank. It is an application-level date and is not the end of the business, the end of a licence, or the end of a party-role association.",
+      "values": [],
+      "multi": false,
+      "required_qualifiers": [],
+      "source_paths": [
+        "application.deemed_retired_date"
+      ],
+      "why_not_existing": "ext.licence.end_date is owned by licence and dyn.party_activity.effective_to_date is owned by party_activity; a deemed-retirement date of an IP application has a different owner and meaning, so reuse would change meaning.",
+      "personal_data": "never"
+    }
+  ],
+  "reuse": {
+    "dyn.ip_application.application_number": "Existing concept: publisher's application identifier, owner ip_application, string, no units or period; matches application.application_number / party_activity.application_number in this group's grain.",
+    "dyn.ip_application.ip_right_type": "Existing concept: classifies the application's IP right type, owner ip_application; the application-level column application.ip_right_type is the same meaning and owner.",
+    "dyn.ip_application.ip_right_sub_type": "Existing concept: application sub-type, owner ip_application; application.ip_right_sub_type is the same meaning and owner."
+  }
+}

@@ -1,0 +1,30 @@
+{
+  "request_sha256": "20820e494afa91f7ca7f3c2833fa746d54b2ce57b57a869be0eb66495e76f344",
+  "role": "inspector",
+  "model": "deepseek-v4-flash",
+  "seconds": 11.808,
+  "response": {
+    "reader": {
+      "format": "delimited",
+      "archive_member": null,
+      "encoding": "utf-8-sig",
+      "delimiter": ",",
+      "skip_rows": 0,
+      "sheet": null,
+      "record_path": null
+    },
+    "bindings": [],
+    "grain": "One row per charity AIS lodgement for the 2024 reporting year, keyed by ABN (Australian Business Number) as the apparent primary identifier; the file is a single flat CSV with no nested arrays, so no bindings are required.",
+    "identity_cautions": [
+      "ABN is the only stable identifier visible in the header; charity name is free text and may repeat or vary across entities, so name must not be used as a key.",
+      "ABN is an organisational identifier, not a legal-form indicator; do not infer company type, incorporation status, or legal structure from the ABN or from a personal-looking charity name.",
+      "Registration status and charity size are ACNC administrative classifications, not company-wide business facts; they should not be treated as legal form or as financial measures.",
+      "Financial fields (e.g. revenue, expenses, assets) are self-reported AIS values for a specific reporting period; they are not audited business income and periods vary by charity (period start/end columns differ per row).",
+      "Dates such as AIS due date, date received, and financial report date are lodgement/administrative dates, not incorporation or licence dates.",
+      "The dataset excludes charities that have had information withheld, so absence of a row does not imply non-registration; no population-completeness claim can be made.",
+      "The file is updated weekly; the snapshot hash identifies this version only and later versions may differ.",
+      "Quoted fields contain embedded commas and semicolons, so naive delimiter splitting would corrupt values; a proper CSV parser is required."
+    ],
+    "rationale": "Byte inspection shows a plain UTF-8 (BOM) text file whose first line is a comma-delimited header with 90-95 commas per line and no tabs or pipes, so format is delimited with ',' and utf-8-sig encoding, no skipped rows. The header begins with 'abn,charity name,...' and each subsequent line starts with an 11-digit ABN, indicating a flat one-row-per-charity AIS record structure with no nested arrays; therefore no bindings are needed. The record_path field is not applicable to delimited files and is left null. Identity cautions flag that ABN is the sole reliable key, that names and administrative classifications must not be read as legal form, and that financial and date fields are self-reported AIS values rather than audited business income or incorporation dates."
+  }
+}

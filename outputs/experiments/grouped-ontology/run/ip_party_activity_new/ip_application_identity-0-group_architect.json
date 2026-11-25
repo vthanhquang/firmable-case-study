@@ -1,0 +1,48 @@
+{
+  "request_sha256": "54cfdc92bcbfdbb00aa442bea95a693b72694dc28998a3bc95ff75873a74a2cc",
+  "role": "group_architect",
+  "model": "deepseek-v4-flash",
+  "seconds": 5.759,
+  "response": {
+    "concepts": [
+      {
+        "path": "dyn.ip_application.right_type",
+        "type": "enum",
+        "owner": "ip_application",
+        "definition": "The kind of intellectual property right the application is for (e.g. patent), as published by IP Australia. It scopes the application number, so the pair (right type, application number) identifies the application; it is not a statement about the party or the company.",
+        "values": [
+          "patent",
+          "trade_mark",
+          "design",
+          "plant_breeder_right",
+          "other",
+          "unknown"
+        ],
+        "multi": false,
+        "required_qualifiers": [],
+        "source_paths": [
+          "ip_right_type"
+        ],
+        "why_not_existing": "The shortlist has no concept for IP right type; ext.licence.* concepts describe a licence held by a business, not an IP application's right type, and entity.entity_type describes the business subject, not the application.",
+        "personal_data": "never"
+      },
+      {
+        "path": "dyn.ip_application.number",
+        "type": "string",
+        "owner": "ip_application",
+        "definition": "Publisher-assigned application number for an IP application, unique only within a given right type; it must be read together with the right type and is not a company registration number.",
+        "values": [],
+        "multi": false,
+        "required_qualifiers": [
+          "right_type"
+        ],
+        "source_paths": [
+          "application_number"
+        ],
+        "why_not_existing": "ext.licence.number identifies a licence held by a business, not an IP application; no shortlisted concept covers IP application identifiers, and the number is only meaningful scoped by right type.",
+        "personal_data": "never"
+      }
+    ],
+    "reuse": {}
+  }
+}

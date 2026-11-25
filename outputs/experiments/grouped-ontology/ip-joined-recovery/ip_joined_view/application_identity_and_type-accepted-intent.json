@@ -1,0 +1,119 @@
+{
+  "fields": [
+    {
+      "source_paths": [
+        "application.application_number"
+      ],
+      "join_with": " ",
+      "when": null,
+      "target": "dyn.ip_application.application_number",
+      "valid_from_path": null,
+      "valid_to_path": null,
+      "validity_date_formats": null,
+      "claim_scope": null,
+      "steps": [
+        {
+          "op": "trim",
+          "args": {}
+        },
+        {
+          "op": "collapse_whitespace",
+          "args": {}
+        },
+        {
+          "op": "null_if",
+          "args": {
+            "values": [
+              ""
+            ]
+          }
+        }
+      ],
+      "confidence": 0.9,
+      "rationale": "The publisher's application number for the application. party_activity.application_number is the same value repeated on every party row of the same application, so it is not joined (joining produced duplicated identifiers); it is declined as a redundant repetition of this column. The number identifies the application only together with the IP right type.",
+      "entity": "ip_application",
+      "qualifiers": null,
+      "one_hot": null,
+      "claim_period": null
+    },
+    {
+      "source_paths": [
+        "application.ip_right_type"
+      ],
+      "join_with": " ",
+      "when": null,
+      "target": "dyn.ip_application.ip_right_type",
+      "valid_from_path": null,
+      "valid_to_path": null,
+      "validity_date_formats": null,
+      "claim_scope": null,
+      "steps": [
+        {
+          "op": "trim",
+          "args": {}
+        },
+        {
+          "op": "map_enum",
+          "args": {
+            "mapping": {
+              "patent": "patent"
+            },
+            "default": null
+          }
+        }
+      ],
+      "confidence": 0.9,
+      "rationale": "Classifies the kind of IP right applied for; the observed value is 'patent'. party_activity.ip_right_type repeats the same application-level value and is declined as redundant (joining it produced 'patent patent', which failed the enum map). This classifies the application, not the party or the business, and does not assert grant or enforceability.",
+      "entity": "ip_application",
+      "qualifiers": null,
+      "one_hot": null,
+      "claim_period": null
+    },
+    {
+      "source_paths": [
+        "application.ip_right_sub_type"
+      ],
+      "join_with": " ",
+      "when": null,
+      "target": "dyn.ip_application.ip_right_sub_type",
+      "valid_from_path": null,
+      "valid_to_path": null,
+      "validity_date_formats": null,
+      "claim_scope": null,
+      "steps": [
+        {
+          "op": "trim",
+          "args": {}
+        },
+        {
+          "op": "map_enum",
+          "args": {
+            "mapping": {
+              "standard_complete": "standard_complete",
+              "innovation": "innovation",
+              "provisional": "provisional",
+              "petty": "petty"
+            },
+            "default": null
+          }
+        }
+      ],
+      "confidence": 0.85,
+      "rationale": "The sub-type column classifies the application within its IP right type. The observed vocabulary includes 'petty' in addition to standard_complete, innovation and provisional, so it is mapped explicitly rather than silently dropped; any other unlisted value yields no claim. It is an application attribute, not a business attribute.",
+      "entity": "ip_application",
+      "qualifiers": null,
+      "one_hot": null,
+      "claim_period": null
+    }
+  ],
+  "unmapped": [
+    {
+      "source_path": "party_activity.application_number",
+      "reason": "Redundant repetition of application.application_number on the same application row; joining the two produced duplicated identifiers, so only the application-level column is used as the value."
+    },
+    {
+      "source_path": "party_activity.ip_right_type",
+      "reason": "Redundant repetition of application.ip_right_type on the same application row; joining the two produced 'patent patent' and failed the enum map, so only the application-level column is used as the value."
+    }
+  ]
+}

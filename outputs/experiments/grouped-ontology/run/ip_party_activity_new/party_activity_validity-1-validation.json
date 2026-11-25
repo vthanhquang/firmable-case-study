@@ -1,0 +1,132 @@
+{
+  "quality": {
+    "present_values": 401,
+    "emitted_observations": 401,
+    "withheld_missing_context": 0,
+    "abstention_reasons": {},
+    "malformed_values": 0,
+    "malformed_reasons": {},
+    "eligible_present_values": 401,
+    "malformed_rate": 0.0,
+    "abstention_rate": 0.0,
+    "record_errors": {},
+    "passes_technical_gate": true,
+    "semantic_precision": null,
+    "note": "Missing required context remains withheld. This gate does not establish semantic truth or useful coverage."
+  },
+  "raw_validation": {
+    "records_in": 120,
+    "records_with_output": 120,
+    "record_errors": {},
+    "fields": [
+      {
+        "target": "dyn.party.activity_effective_from",
+        "source_paths": [
+          "effective_from_date"
+        ],
+        "records": 120,
+        "source_present": 120,
+        "emitted": 120,
+        "coverage_of_records": 1.0,
+        "error_rate_of_present": 0.0,
+        "errors": {},
+        "error_examples": {},
+        "entity": "party"
+      },
+      {
+        "target": "dyn.party.activity_effective_to",
+        "source_paths": [
+          "effective_to_date"
+        ],
+        "records": 120,
+        "source_present": 41,
+        "emitted": 41,
+        "coverage_of_records": 0.342,
+        "error_rate_of_present": 0.0,
+        "errors": {},
+        "error_examples": {},
+        "entity": "party"
+      },
+      {
+        "target": "dyn.party.activity_is_current",
+        "source_paths": [
+          "is_current"
+        ],
+        "records": 120,
+        "source_present": 120,
+        "emitted": 120,
+        "coverage_of_records": 1.0,
+        "error_rate_of_present": 0.0,
+        "errors": {},
+        "error_examples": {},
+        "entity": "party"
+      },
+      {
+        "target": "dyn.party.is_founding_party_flag",
+        "source_paths": [
+          "is_founding"
+        ],
+        "records": 120,
+        "source_present": 120,
+        "emitted": 120,
+        "coverage_of_records": 1.0,
+        "error_rate_of_present": 0.0,
+        "errors": {},
+        "error_examples": {},
+        "entity": "party"
+      }
+    ],
+    "relationships": {},
+    "input_records": 120,
+    "refused_records": 0,
+    "observations": 401,
+    "value_errors": 0,
+    "present_values": 401,
+    "error_rate": 0.0
+  },
+  "critic": {
+    "verdict": "revise",
+    "findings": [
+      "Semantic scope of the four concepts is defensible: effective_from_date/effective_to_date are described as party-role episode validity dates, explicitly not incorporation, grant, expiry or enforceability dates; is_current is scoped to the party record, not the right; is_founding is described as a supplied flag, not incorporation evidence.",
+      "Owner is consistently 'party' and each concept carries required qualifiers (party_id, ip_right_type, application_number, party_role) so the claim stays scoped to the party-role episode; the is_founding mapping additionally carries party_role_category, which is consistent with the held-out agent row (ordinal 39, party_role=agent, party_role_category=applicant_agent, is_founding=true).",
+      "Units/dates: ISO-8601 Z timestamps are parsed as datetimes with a %Y-%m-%d fallback; held-out examples show raw '2017-07-07T00:00:00.000Z' -> '2017-07-07', which is a lossless date-level parse of a midnight timestamp. No percentage or currency handling is needed.",
+      "Provenance: source_paths are single-column and match the header; record_id uses content_hash; observed_at falls back to resource_last_modified/retrieved_at, which is observation-at-retrieval and is not described as a publisher update.",
+      "Coverage: effective_to_date is 41/120 present (0.342) with 0 errors; this is honest partial coverage of a genuinely sparse column, not a defect. effective_from_date, is_current and is_founding are 120/120 with 0 errors.",
+      "Repeated/missing data: the grain is correctly stated as non-unique (no single key), and the prefix-cohort limitation is stated; no population-level claims are made.",
+      "Unmapped list marks party_id, ip_right_type, application_number, party_role and party_role_category as 'Outside this group; reconciled in the final source mapping' even though these columns are consumed as qualifiers/keys in this group's own fields. This is a bookkeeping inconsistency, not a semantic error, but it is misleading provenance.",
+      "The is_founding concept's required_qualifiers (party_id, ip_right_type, application_number) omit party_role and party_role_category, while the mapping supplies them and the rationale argues they are needed to avoid generalising an agent-row flag to the party-application pair. Concept and mapping disagree on the required scope."
+    ],
+    "semantic_risks": [
+      "is_founding=true on an agent row (ordinal 39) shows the flag is not a clean 'founding applicant' attribute; if downstream consumers read dyn.party.is_founding_party_flag without the role qualifier they may misattribute it to the applicant/owner. The mapping guards this; the concept's required_qualifiers do not.",
+      "effective_to_date values in the future relative to retrieval (e.g. 2026-10-08 on ordinal 375) are publisher-stated episode ends, not evidence of current enforceability; the definition already says so, but consumers may still conflate it with right expiry.",
+      "is_current=false on rows with a future effective_to_date (ordinal 375) shows is_current is not a simple date-derived flag; the definition correctly limits it to the party record, but any downstream derivation from dates would be wrong.",
+      "party_id is not a company registration number and abn is sparse; no concept here infers legal form, which is correct, but the party entity key rationale should keep that caution visible."
+    ],
+    "checked_reuse": [
+      "ext.entity.date_established rejected for effective_from_date: business-owned founding date vs party-role episode start; owner and meaning differ.",
+      "ext.licence.start_date rejected for effective_from_date: licence-owned commencement vs party-role episode start.",
+      "ext.licence.end_date rejected for effective_to_date: licence-owned end vs party-role episode end.",
+      "ext.licence.status rejected for activity_is_current: licence status vs currency of a party-role episode.",
+      "ext.entity.date_established rejected for is_founding_party_flag: date vs boolean supplied flag; reuse would assert incorporation evidence the source does not provide.",
+      "No existing concept found that is owned by an IP-application party and scoped to a party-role episode, so new dyn.party.* concepts are justified."
+    ],
+    "rationale": "The four emitted concepts are semantically well-bounded: dates are party-activity validity dates, is_current is scoped to the party record, and is_founding is a supplied flag explicitly not incorporation evidence. Held-out validation shows 0 errors on all four fields, with honest partial coverage on the sparse effective_to_date. Two internal inconsistencies require correction before acceptance: (1) the is_founding concept's required_qualifiers omit party_role and party_role_category even though the mapping supplies them and the rationale argues they are necessary to avoid misattributing an agent-row flag; (2) the unmapped list marks columns that this group actually consumes as qualifiers/keys as 'outside this group', which misstates provenance. Both are fixable without new data or hypothetical guards.",
+    "blocking_findings": [
+      {
+        "field": "ontology.concepts['dyn.party.is_founding_party_flag'].required_qualifiers",
+        "actual": "[\"party_id\", \"ip_right_type\", \"application_number\"]",
+        "expected": "[\"party_id\", \"ip_right_type\", \"application_number\", \"party_role\", \"party_role_category\"]",
+        "evidence": "Held-out ordinal 39 has party_role=agent, party_role_category=applicant_agent, is_founding=true; the mapping for dyn.party.is_founding_party_flag supplies party_role and party_role_category as qualifiers and its rationale states the flag 'cannot be safely generalised to the party-application pair without role scope'. The concept's required_qualifiers contradict that.",
+        "correction": "Set required_qualifiers for dyn.party.is_founding_party_flag to include party_role and party_role_category, matching the qualifiers emitted by the mapping field for is_founding; re-run the ontology/mapping consistency check so concept and mapping agree."
+      },
+      {
+        "field": "mapping.unmapped (entries for party_id, ip_right_type, application_number, party_role, party_role_category)",
+        "actual": "Each listed with reason 'Outside this group; reconciled in the final source mapping'",
+        "expected": "These columns removed from this group's unmapped list (or re-reasoned as 'consumed as qualifiers/keys in this group'), since they are used as qualifiers and entity key paths in this group's own fields.",
+        "evidence": "mapping.fields for all four targets carry qualifiers sourced from party_id, ip_right_type, application_number and party_role; the is_founding field also carries party_role_category; entities.ip_application.key_paths are [ip_right_type, application_number] and entities.party.key_paths are [party_id]. Listing them as unmapped/outside-group misstates provenance.",
+        "correction": "Remove party_id, ip_right_type, application_number, party_role and party_role_category from mapping.unmapped for this group, or change their reason to state they are consumed as qualifiers/keys here; keep genuinely out-of-group columns (abn, party_name, party_type, state_code, post_code, country_code) as unmapped with the existing reason."
+      }
+    ],
+    "repair_scope": "both"
+  }
+}

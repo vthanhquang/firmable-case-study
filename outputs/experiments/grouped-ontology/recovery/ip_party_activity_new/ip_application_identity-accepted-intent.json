@@ -1,0 +1,109 @@
+{
+  "fields": [
+    {
+      "source_paths": [
+        "ip_right_type"
+      ],
+      "join_with": " ",
+      "when": null,
+      "target": "dyn.ip_application.right_type",
+      "valid_from_path": null,
+      "valid_to_path": null,
+      "validity_date_formats": null,
+      "claim_scope": null,
+      "steps": [
+        {
+          "op": "trim",
+          "args": {}
+        },
+        {
+          "op": "map_enum",
+          "args": {
+            "mapping": {
+              "patent": "patent",
+              "trade mark": "trade_mark",
+              "trade_mark": "trade_mark",
+              "trademark": "trade_mark",
+              "design": "design",
+              "designs": "design",
+              "plant breeder right": "plant_breeder_right",
+              "plant_breeder_right": "plant_breeder_right",
+              "pbr": "plant_breeder_right"
+            },
+            "default": "unknown"
+          }
+        }
+      ],
+      "confidence": 0.9,
+      "rationale": "ip_right_type is the publisher's kind of IP right for the application; mapped to the enumerated right_type concept with unlisted values falling back to unknown rather than being guessed.",
+      "entity": "ip_application",
+      "qualifiers": null,
+      "one_hot": null,
+      "claim_period": null
+    },
+    {
+      "source_paths": [
+        "application_number"
+      ],
+      "join_with": " ",
+      "when": null,
+      "target": "dyn.ip_application.number",
+      "valid_from_path": null,
+      "valid_to_path": null,
+      "validity_date_formats": null,
+      "claim_scope": null,
+      "steps": [
+        {
+          "op": "trim",
+          "args": {}
+        },
+        {
+          "op": "null_if",
+          "args": {
+            "values": [
+              "",
+              "null",
+              "n/a",
+              "na"
+            ]
+          }
+        }
+      ],
+      "confidence": 0.88,
+      "rationale": "application_number is the publisher-assigned IP application number; it is only unique within a right type, so the required right_type qualifier is carried from ip_right_type. The number is not a company registration number and is not mapped to entity.acn or ext.licence.number.",
+      "entity": "ip_application",
+      "qualifiers": {
+        "right_type": {
+          "source_path": "ip_right_type",
+          "value": null,
+          "steps": [
+            {
+              "op": "trim",
+              "args": {}
+            },
+            {
+              "op": "map_enum",
+              "args": {
+                "mapping": {
+                  "patent": "patent",
+                  "trade mark": "trade_mark",
+                  "trade_mark": "trade_mark",
+                  "trademark": "trade_mark",
+                  "design": "design",
+                  "designs": "design",
+                  "plant breeder right": "plant_breeder_right",
+                  "plant_breeder_right": "plant_breeder_right",
+                  "pbr": "plant_breeder_right"
+                },
+                "default": "unknown"
+              }
+            }
+          ]
+        }
+      },
+      "one_hot": null,
+      "claim_period": null
+    }
+  ],
+  "unmapped": []
+}

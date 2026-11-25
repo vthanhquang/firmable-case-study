@@ -49,6 +49,27 @@ def _clean_key(k) -> str:
     return " ".join(str(k).replace("﻿", "").split()) if k is not None else ""
 
 
+def _unique_headers(cells) -> list[str]:
+    """Preserve every column, including repeated labels and existing suffixes.
+
+    Suffixes identify positions only; their business meaning (for example, a
+    reporting year in a preceding row) still needs to be inferred from evidence.
+    """
+    names = [_clean_key(cell) or f"column_{i}" for i, cell in enumerate(cells)]
+    reserved, used, result = set(names), set(), []
+    for name in names:
+        candidate, suffix = name, 2
+        if name in used:
+            while True:
+                candidate = f"{name}_{suffix}"
+                suffix += 1
+                if candidate not in reserved and candidate not in used:
+                    break
+        result.append(candidate)
+        used.add(candidate)
+    return result
+
+
 def _flatten(obj, prefix="", out=None) -> dict:
     out = {} if out is None else out
     if isinstance(obj, dict):
@@ -73,13 +94,7 @@ def _read_delimited(fh, spec: ReaderSpec) -> Iterator[dict]:
     header = next(reader, None)
     if not header:
         raise ReaderError("EMPTY_FILE", "no header row")
-    header = [_clean_key(h) or f"column_{i}" for i, h in enumerate(header)]
-    if len(set(header)) != len(header):  # disambiguate duplicate column names deterministically
-        seen = {}
-        for i, h in enumerate(header):
-            seen[h] = seen.get(h, 0) + 1
-            if seen[h] > 1:
-                header[i] = f"{h}_{seen[h]}"
+    header = _unique_headers(header)
     for row in reader:
         if not any(c.strip() for c in row):
             continue
@@ -102,7 +117,7 @@ def _read_xlsx(path: Path, spec: ReaderSpec) -> Iterator[dict]:
         header = next(rows, None)
         if not header:
             raise ReaderError("EMPTY_SHEET", ws.title)
-        header = [_clean_key(h) or f"column_{i}" for i, h in enumerate(header)]
+        header = _unique_headers(header)
         for row in rows:
             if row is None or all(c is None or str(c).strip() == "" for c in row):
                 continue

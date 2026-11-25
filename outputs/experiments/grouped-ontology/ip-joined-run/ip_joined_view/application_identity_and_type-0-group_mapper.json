@@ -1,0 +1,109 @@
+{
+  "request_sha256": "db5b6efb6ed8dd363a92573f41526220c0cd8de551dfe77b54d349aff0367abb",
+  "role": "group_mapper",
+  "model": "deepseek-v4-flash",
+  "seconds": 6.255,
+  "response": {
+    "fields": [
+      {
+        "source_paths": [
+          "application.application_number",
+          "party_activity.application_number"
+        ],
+        "join_with": " ",
+        "when": null,
+        "target": "dyn.ip_application.application_number",
+        "valid_from_path": null,
+        "valid_to_path": null,
+        "validity_date_formats": null,
+        "claim_scope": null,
+        "steps": [
+          {
+            "op": "trim",
+            "args": {}
+          },
+          {
+            "op": "collapse_whitespace",
+            "args": {}
+          }
+        ],
+        "confidence": 0.9,
+        "rationale": "Both columns carry the publisher's application number for the same application; the ontology concept explicitly lists both source paths. The two are the same value repeated across party rows, so joining them is only a fallback when one is blank; the application number identifies the application only together with the IP right type.",
+        "entity": "ip_application",
+        "qualifiers": null,
+        "one_hot": null,
+        "claim_period": null
+      },
+      {
+        "source_paths": [
+          "application.ip_right_type",
+          "party_activity.ip_right_type"
+        ],
+        "join_with": " ",
+        "when": null,
+        "target": "dyn.ip_application.ip_right_type",
+        "valid_from_path": null,
+        "valid_to_path": null,
+        "validity_date_formats": null,
+        "claim_scope": null,
+        "steps": [
+          {
+            "op": "trim",
+            "args": {}
+          },
+          {
+            "op": "map_enum",
+            "args": {
+              "mapping": {
+                "patent": "patent"
+              },
+              "default": null
+            }
+          }
+        ],
+        "confidence": 0.9,
+        "rationale": "Both columns classify the kind of IP right applied for; the ontology concept lists both source paths and the observed value is 'patent'. This classifies the application, not the party or the business, and does not assert grant or enforceability.",
+        "entity": "ip_application",
+        "qualifiers": null,
+        "one_hot": null,
+        "claim_period": null
+      },
+      {
+        "source_paths": [
+          "application.ip_right_sub_type"
+        ],
+        "join_with": " ",
+        "when": null,
+        "target": "dyn.ip_application.ip_right_sub_type",
+        "valid_from_path": null,
+        "valid_to_path": null,
+        "validity_date_formats": null,
+        "claim_scope": null,
+        "steps": [
+          {
+            "op": "trim",
+            "args": {}
+          },
+          {
+            "op": "map_enum",
+            "args": {
+              "mapping": {
+                "standard_complete": "standard_complete",
+                "innovation": "innovation",
+                "provisional": "provisional"
+              },
+              "default": null
+            }
+          }
+        ],
+        "confidence": 0.85,
+        "rationale": "The sub-type column classifies the application within its IP right type (standard_complete, innovation, provisional), matching the ontology concept's definition and owner. It is an application attribute, not a business attribute.",
+        "entity": "ip_application",
+        "qualifiers": null,
+        "one_hot": null,
+        "claim_period": null
+      }
+    ],
+    "unmapped": []
+  }
+}

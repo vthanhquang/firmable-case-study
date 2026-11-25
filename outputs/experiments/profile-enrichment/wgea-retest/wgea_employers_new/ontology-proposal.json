@@ -1,0 +1,200 @@
+{
+  "entity_types": [],
+  "concepts": [
+    {
+      "path": "dyn.workforce.employer_name",
+      "type": "string",
+      "owner": "business",
+      "definition": "The employer/reporting-unit name as stated by the publisher for this row. This is a publisher-reported employer name, not a registrar-stated legal name; it is not unique and may coincide with a corporate group name.",
+      "values": [],
+      "multi": false,
+      "required_qualifiers": [],
+      "source_paths": [
+        "Employer name"
+      ],
+      "why_not_existing": "entity.legal_name asserts a registrar-stated legal name, which this WGEA employer spreadsheet does not state; the inspector warns employer names are not unique and can also be corporate group names. A distinct publisher-reported employer-name concept avoids conflating a reporting-unit name with a legal name.",
+      "personal_data": "never"
+    },
+    {
+      "path": "dyn.workforce.employer_size_band",
+      "type": "enum",
+      "owner": "business",
+      "definition": "The employer size band stated by the publisher for the reporting employer, kept as the publisher's band label rather than an exact headcount. Values are the WGEA bands as written in the source.",
+      "values": [
+        "<250",
+        "250-499",
+        "500-999",
+        "1000-4999",
+        "5000+"
+      ],
+      "multi": false,
+      "required_qualifiers": [
+        "scheme"
+      ],
+      "source_paths": [
+        "Employer size range (# employees)"
+      ],
+      "why_not_existing": "No existing concept carries an employer headcount band. ext.financial.revenue_band is a revenue/turnover band, not a workforce band, and reusing it would change meaning. The band is not an exact employee count, so it must not be stored as an integer headcount.",
+      "personal_data": "never"
+    },
+    {
+      "path": "dyn.workforce.sector_classification",
+      "type": "string",
+      "owner": "business",
+      "definition": "The publisher's sector classification for the reporting employer (e.g. Private, Public). This is a WGEA sector classification, not a legal form and not an ANZSIC industry.",
+      "values": [],
+      "multi": false,
+      "required_qualifiers": [
+        "scheme"
+      ],
+      "source_paths": [
+        "Sector"
+      ],
+      "why_not_existing": "ext.entity.sector_tag is a source-stated activity or beneficiary tag (e.g. acnc_purpose), not a public/private sector classification. ext.entity.legal_form is a registrar legal form and must not be inferred from this value. A new concept with an explicit scheme qualifier keeps the publisher's classification distinct.",
+      "personal_data": "never"
+    },
+    {
+      "path": "dyn.workforce.anzsic_division",
+      "type": "string",
+      "owner": "business",
+      "definition": "The ANZSIC Division name stated by the publisher for the employer (e.g. Transport, Postal and Warehousing). Kept as the publisher's division label. Same ANZSIC 2006 scheme as dyn.workforce.anzsic_class, at the coarser division level; neither is crosswalked to a code.",
+      "values": [],
+      "multi": false,
+      "required_qualifiers": [
+        "scheme"
+      ],
+      "source_paths": [
+        "Industry (ANZSIC Division)"
+      ],
+      "why_not_existing": "ext.entity.industry_code is restricted to ANZSIC division letters/subdivision/group/class codes produced through a reviewed crosswalk, and entity.industry_code is a single unqualified code. The source states a division name, not a code, so a name-valued concept with scheme=anzsic2006 is needed rather than forcing a code.",
+      "personal_data": "never"
+    },
+    {
+      "path": "dyn.workforce.anzsic_class",
+      "type": "string",
+      "owner": "business",
+      "definition": "The ANZSIC Class name stated by the publisher for the employer (e.g. Computer System Design and Related Services). Kept as the publisher's class label. Same ANZSIC 2006 scheme as dyn.workforce.anzsic_division, at the finer class level; neither is crosswalked to a code.",
+      "values": [],
+      "multi": false,
+      "required_qualifiers": [
+        "scheme"
+      ],
+      "source_paths": [
+        "Industry (ANZSIC Class)"
+      ],
+      "why_not_existing": "ext.entity.industry_code holds codes only and entity.industry_code is a single unqualified code. The source states a class name, so a separate name-valued concept with scheme=anzsic2006 avoids inventing a code and avoids overloading the code concept.",
+      "personal_data": "never"
+    },
+    {
+      "path": "dyn.workforce.total_workforce_women_share",
+      "type": "decimal",
+      "owner": "business",
+      "definition": "Share of the employer's total workforce who are women, as a proportion (0-1) stated by the publisher for the reporting period.",
+      "values": [],
+      "multi": false,
+      "required_qualifiers": [
+        "period"
+      ],
+      "source_paths": [
+        "Total workforce % women"
+      ],
+      "why_not_existing": "No existing concept captures a workforce gender composition share. It is not a pay gap, not a remuneration amount, and not a headcount, so no existing financial or entity concept fits.",
+      "personal_data": "never"
+    },
+    {
+      "path": "dyn.workforce.quartile_women_share",
+      "type": "decimal",
+      "owner": "business",
+      "definition": "Share of women (0-1) in a named pay quartile of the employer's workforce, as stated by the publisher for the reporting period. The quartile is identified by the quartile qualifier.",
+      "values": [],
+      "multi": true,
+      "required_qualifiers": [
+        "quartile",
+        "period"
+      ],
+      "source_paths": [
+        "Lower quartile % women",
+        "Lower-middle quartile % women",
+        "Upper-middle quartile % women",
+        "Upper quartile % women"
+      ],
+      "why_not_existing": "No existing concept represents gender composition within a pay quartile. It is distinct from the total workforce share and from remuneration amounts, so a new concept with an explicit quartile qualifier is required.",
+      "personal_data": "never"
+    },
+    {
+      "path": "dyn.workforce.quartile_average_total_remuneration",
+      "type": "decimal",
+      "owner": "business",
+      "definition": "Average total remuneration in dollars for a named pay quartile of the employer's workforce, as stated by the publisher for the reporting period. This is remuneration, not revenue or business income. Currency is inferred as AUD from the Australian federal publisher; the source header states only '($)'.",
+      "values": [],
+      "multi": true,
+      "required_qualifiers": [
+        "quartile",
+        "currency",
+        "currency_basis",
+        "period"
+      ],
+      "source_paths": [
+        "Lower quartile - average total remuneration ($)",
+        "Lower-middle quartile - average total remuneration ($)",
+        "Upper-middle quartile - average total remuneration ($)",
+        "Upper quartile - average total remuneration ($)"
+      ],
+      "why_not_existing": "ext.financial.total_income, taxable_income and tax_payable are business income/tax measures, not employee remuneration. No existing concept holds per-quartile average remuneration, so a new money concept with currency, currency_basis and period qualifiers is needed.",
+      "personal_data": "never"
+    },
+    {
+      "path": "dyn.workforce.total_workforce_average_total_remuneration",
+      "type": "decimal",
+      "owner": "business",
+      "definition": "Average total remuneration in dollars across the employer's total workforce, as stated by the publisher for the reporting period. Remuneration, not revenue or business income. Currency is inferred as AUD from the Australian federal publisher; the source header states only '($)'.",
+      "values": [],
+      "multi": false,
+      "required_qualifiers": [
+        "currency",
+        "currency_basis",
+        "period"
+      ],
+      "source_paths": [
+        "Total workforce - average total remuneration ($)*"
+      ],
+      "why_not_existing": "Existing financial concepts are business income/tax measures. This is an employee remuneration average for the whole workforce, distinct from the per-quartile concept, so it needs its own concept.",
+      "personal_data": "never"
+    },
+    {
+      "path": "dyn.workforce.gender_pay_gap",
+      "type": "decimal",
+      "owner": "business",
+      "definition": "Gender pay gap as a proportion (0-1, may be negative) stated by the publisher for the reporting period, identified by the remuneration basis (base salary or total remuneration) and the statistic (average or median) qualifiers. A derived gap measure, not a pay level. The publisher already expresses the gap as a proportion despite the '(%)' header (observed values like 0.044, 0.221); a future percent-formatted value would need a percent-to-proportion step.",
+      "values": [],
+      "multi": true,
+      "required_qualifiers": [
+        "remuneration_basis",
+        "statistic",
+        "period"
+      ],
+      "source_paths": [
+        "Average base salary GPG (%)",
+        "Average total remuneration GPG (%)",
+        "Median base salary GPG (%)",
+        "Median total remuneration GPG (%)",
+        "Average base salary GPG (%)_2",
+        "Average total remuneration GPG (%)_2",
+        "Median base salary GPG (%)_2",
+        "Median total remuneration GPG (%)_2"
+      ],
+      "why_not_existing": "No existing concept represents a gender pay gap. It is a derived percentage measure, not a remuneration amount, not business income, and not a workforce share, so none of the existing financial or workforce concepts fit.",
+      "personal_data": "never"
+    }
+  ],
+  "relationships": [],
+  "reuse": {
+    "entity.abn": "Employer ABN is the stable employer identifier and matches the existing ABN concept (11-digit checksummed).",
+    "observation.source_id": "Dataset identity for the WGEA employer spreadsheet.",
+    "observation.source_record_id": "Deterministic record identity for each employer row (content hash per execution contract).",
+    "observation.observed_at": "Observation timestamp; fallback is retrieved_at because the source has no publisher-stated modification metadata.",
+    "observation.ingested_at": "Ingestion timestamp for the snapshot.",
+    "observation.licence": "CC-BY licence from dataset metadata."
+  },
+  "unmapped": []
+}

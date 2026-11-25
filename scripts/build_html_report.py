@@ -49,6 +49,7 @@ svg = (ROOT / "frontend/public/system-architecture.svg").read_text(encoding="utf
 sections.append('<section id="architecture"><h2>System architecture</h2><p>Discovery, agent onboarding, review, extraction, linking and profile assembly.</p>' + svg + '</section>')
 navigation = " · ".join(f'<a href="#{escape(p["id"])}">Part {i}</a>' for i, p in enumerate(data["parts"], 1))
 navigation += ' · <a href="#part-5">Part 5</a> · <a href="#architecture">Architecture</a>'
+navigation += ' · <a href="dataset-onboarding.html">Dataset onboarding experiment</a>'
 document = '''<!doctype html>
 <html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
 <title>Firmable case study — Parts 1–5</title><style>

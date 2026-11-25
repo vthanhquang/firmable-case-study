@@ -1,0 +1,125 @@
+{
+  "fields": [
+    {
+      "source_paths": [
+        "party_id"
+      ],
+      "join_with": " ",
+      "when": null,
+      "target": "dyn.party.identifier",
+      "valid_from_path": null,
+      "valid_to_path": null,
+      "validity_date_formats": null,
+      "claim_scope": null,
+      "steps": [
+        {
+          "op": "trim",
+          "args": {}
+        }
+      ],
+      "confidence": 0.9,
+      "rationale": "party_id is the publisher-assigned party identifier on an IP application; it is not an ACN/ABN and does not imply legal form, so the party-owned identifier concept is the correct target.",
+      "entity": "party",
+      "qualifiers": null,
+      "one_hot": null,
+      "claim_period": null
+    },
+    {
+      "source_paths": [
+        "party_name"
+      ],
+      "join_with": " ",
+      "when": null,
+      "target": "dyn.party.name",
+      "valid_from_path": null,
+      "valid_to_path": null,
+      "validity_date_formats": null,
+      "claim_scope": null,
+      "steps": [
+        {
+          "op": "trim",
+          "args": {}
+        },
+        {
+          "op": "collapse_whitespace",
+          "args": {}
+        }
+      ],
+      "confidence": 0.85,
+      "rationale": "party_name is the unnormalised free-text label for the party; mapped to the party-owned name concept, not to business legal/trading name. No case-folding or deduplication is claimed.",
+      "entity": "party",
+      "qualifiers": null,
+      "one_hot": null,
+      "claim_period": null
+    },
+    {
+      "source_paths": [
+        "party_type"
+      ],
+      "join_with": " ",
+      "when": null,
+      "target": "dyn.party.kind",
+      "valid_from_path": null,
+      "valid_to_path": null,
+      "validity_date_formats": null,
+      "claim_scope": null,
+      "steps": [
+        {
+          "op": "trim",
+          "args": {}
+        },
+        {
+          "op": "map_enum",
+          "args": {
+            "mapping": {
+              "organisation": "organisation",
+              "individual": "individual"
+            },
+            "default": "unknown"
+          }
+        }
+      ],
+      "confidence": 0.9,
+      "rationale": "party_type states whether the party is an organisation or individual; this is a party classification only and must not be read as legal form or company status, so the party-owned kind concept is used rather than holder_kind or entity_type.",
+      "entity": "party",
+      "qualifiers": null,
+      "one_hot": null,
+      "claim_period": null
+    },
+    {
+      "source_paths": [
+        "abn"
+      ],
+      "join_with": " ",
+      "when": null,
+      "target": "dyn.party.abn",
+      "valid_from_path": null,
+      "valid_to_path": null,
+      "validity_date_formats": null,
+      "claim_scope": null,
+      "steps": [
+        {
+          "op": "trim",
+          "args": {}
+        },
+        {
+          "op": "null_if",
+          "args": {
+            "values": [
+              "",
+              "null",
+              "n/a"
+            ]
+          }
+        }
+      ],
+      "confidence": 0.75,
+      "rationale": "abn is a sparse, unvalidated party attribute; mapped to the party-owned ABN concept. No checksum validation is applied because the source is unvalidated and sparse, and it is not used to infer legal form or a business link.",
+      "entity": "party",
+      "qualifiers": null,
+      "one_hot": null,
+      "claim_period": null
+    }
+  ],
+  "unmapped": []
+}

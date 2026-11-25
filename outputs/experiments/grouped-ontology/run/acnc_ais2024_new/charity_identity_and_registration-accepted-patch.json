@@ -1,0 +1,85 @@
+{
+  "concepts": [
+    {
+      "path": "dyn.charity.registration_status",
+      "type": "enum",
+      "owner": "charity",
+      "definition": "The ACNC registration status of the charity as published in the Annual Information Statement, including revocation reasons such as voluntary revocation or double defaulter. This is a charity-regulator status, not a company legal status or a licence status.",
+      "values": [
+        "Registered",
+        "Voluntarily Revoked Not Entitled To Be A Charity",
+        "Voluntarily Revoked No Longer Operating",
+        "Revoked Double Defaulter"
+      ],
+      "multi": false,
+      "required_qualifiers": [],
+      "source_paths": [
+        "registration status"
+      ],
+      "why_not_existing": "entity.status is a coarse company-lifecycle enum (active/deregistered/in_liquidation/suspended/unknown) owned by business; ACNC charity registration states carry regulator-specific revocation reasons and belong to the charity role, so reuse would change meaning and owner. ext.licence.status is a licence status, not charity registration.",
+      "personal_data": "never"
+    },
+    {
+      "path": "dyn.charity.basic_religious_charity",
+      "type": "enum",
+      "owner": "charity",
+      "definition": "Flag published by the ACNC indicating whether the charity is a basic religious charity for the reporting year, recorded as y/n in the source.",
+      "values": [
+        "y",
+        "n"
+      ],
+      "multi": false,
+      "required_qualifiers": [],
+      "source_paths": [
+        "basic religious charity"
+      ],
+      "why_not_existing": "No shortlisted concept covers ACNC basic religious charity classification; ext.entity.tax_concession covers PBI/HPC/DGR concessions, a different regulatory attribute.",
+      "personal_data": "never"
+    },
+    {
+      "path": "dyn.charity.incorporated_association",
+      "type": "enum",
+      "owner": "charity",
+      "definition": "Flag published by the ACNC indicating whether the charity is an incorporated association, recorded as y/n. This is a self-reported association attribute, not an inference of legal form from the charity name.",
+      "values": [
+        "y",
+        "n"
+      ],
+      "multi": false,
+      "required_qualifiers": [],
+      "source_paths": [
+        "incorporated association"
+      ],
+      "why_not_existing": "No shortlisted concept records incorporated-association status; entity legal form is not otherwise modelled and must not be inferred from names.",
+      "personal_data": "never"
+    },
+    {
+      "path": "dyn.charity.state_association_number",
+      "type": "string",
+      "owner": "charity",
+      "definition": "State or territory incorporated-association registration number held by the charity, qualified by the jurisdiction whose association-number column supplied it. Values are publisher-formatted strings (e.g. INC9886754, A0005374L) and are not normalised across states.",
+      "values": [],
+      "multi": true,
+      "required_qualifiers": [
+        "jurisdiction"
+      ],
+      "source_paths": [
+        "association number - act",
+        "association number - nsw",
+        "association number - nt",
+        "association number - qld",
+        "association number - sa",
+        "association number - tas",
+        "association number - vic",
+        "association number - wa"
+      ],
+      "why_not_existing": "ext.entity.prior_registration_number is a single legacy state registration number with no jurisdiction qualifier and no multi-value scope; the ACNC file holds up to eight jurisdiction-specific association numbers per charity, so reuse would lose the jurisdiction and multiplicity. ext.entity.prior_registration_state is a state name, not a number.",
+      "personal_data": "never"
+    }
+  ],
+  "reuse": {
+    "entity.abn": "abn",
+    "entity.legal_name": "charity name",
+    "entity.website": "charity website"
+  }
+}

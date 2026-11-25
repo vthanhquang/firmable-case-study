@@ -1,0 +1,145 @@
+{
+  "request_sha256": "a3bf10c161b6eb600043ef6ffd674f3be84d0f6fbb82091a3f88709c8f61c96a",
+  "role": "group_mapper",
+  "model": "deepseek-v4-flash",
+  "seconds": 7.749,
+  "response": {
+    "fields": [
+      {
+        "source_paths": [
+          "party_activity.party_id"
+        ],
+        "join_with": " ",
+        "when": null,
+        "target": "dyn.party.party_key",
+        "valid_from_path": null,
+        "valid_to_path": null,
+        "validity_date_formats": null,
+        "claim_scope": null,
+        "steps": [
+          {
+            "op": "trim",
+            "args": {}
+          },
+          {
+            "op": "null_if",
+            "args": {
+              "values": [
+                ""
+              ]
+            }
+          }
+        ],
+        "confidence": 0.95,
+        "rationale": "Publisher's party identifier on the party-activity record; identifies the party across applications and roles, not a business registration number.",
+        "entity": "party",
+        "qualifiers": null,
+        "one_hot": null,
+        "claim_period": null
+      },
+      {
+        "source_paths": [
+          "party_activity.party_name"
+        ],
+        "join_with": " ",
+        "when": null,
+        "target": "dyn.party.party_name",
+        "valid_from_path": null,
+        "valid_to_path": null,
+        "validity_date_formats": null,
+        "claim_scope": null,
+        "steps": [
+          {
+            "op": "trim",
+            "args": {}
+          },
+          {
+            "op": "collapse_whitespace",
+            "args": {}
+          },
+          {
+            "op": "null_if",
+            "args": {
+              "values": [
+                ""
+              ]
+            }
+          }
+        ],
+        "confidence": 0.9,
+        "rationale": "Free-text, lower-cased party label as published. Not asserted to be a registered legal name or trading name; personal_data=always so it is suppressed from profile views for the mixed person/organisation population.",
+        "entity": "party",
+        "qualifiers": null,
+        "one_hot": null,
+        "claim_period": null
+      },
+      {
+        "source_paths": [
+          "party_activity.party_type"
+        ],
+        "join_with": " ",
+        "when": null,
+        "target": "dyn.party.party_kind",
+        "valid_from_path": null,
+        "valid_to_path": null,
+        "validity_date_formats": null,
+        "claim_scope": null,
+        "steps": [
+          {
+            "op": "trim",
+            "args": {}
+          },
+          {
+            "op": "map_enum",
+            "args": {
+              "mapping": {
+                "organisation": "organisation",
+                "individual": "individual"
+              },
+              "default": null
+            }
+          }
+        ],
+        "confidence": 0.9,
+        "rationale": "Publisher's organisation/individual party classification only; no legal-form, sole-trader or beneficial-ownership inference. Unlisted values become missing rather than guessed.",
+        "entity": "party",
+        "qualifiers": null,
+        "one_hot": null,
+        "claim_period": null
+      },
+      {
+        "source_paths": [
+          "party_activity.abn"
+        ],
+        "join_with": " ",
+        "when": null,
+        "target": "dyn.party.abn_supplied",
+        "valid_from_path": null,
+        "valid_to_path": null,
+        "validity_date_formats": null,
+        "claim_scope": null,
+        "steps": [
+          {
+            "op": "trim",
+            "args": {}
+          },
+          {
+            "op": "null_if",
+            "args": {
+              "values": [
+                ""
+              ]
+            }
+          }
+        ],
+        "confidence": 0.85,
+        "rationale": "ABN as supplied on the party record, kept as a string without checksum validation because the concept is explicitly unvalidated; blanks are frequent and must not be read as absence of a business or Australian presence. Not mapped to entity.abn, which is a validated business-owned identifier.",
+        "entity": "party",
+        "qualifiers": null,
+        "one_hot": null,
+        "claim_period": null
+      }
+    ],
+    "unmapped": []
+  }
+}

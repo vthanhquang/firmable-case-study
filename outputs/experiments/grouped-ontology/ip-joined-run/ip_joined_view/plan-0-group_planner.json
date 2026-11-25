@@ -1,0 +1,183 @@
+{
+  "request_sha256": "77f2da78e779cd74ba2af9da1877b9c61f5754bff5ebebc18a525bdb5f4376a1",
+  "role": "group_planner",
+  "model": "deepseek-v4-flash",
+  "seconds": 13.621,
+  "response": {
+    "grain": "One row per party-activity record: a single party (party_activity.party_id, with party_activity.abn where supplied) in a single role (party_activity.party_role_category / party_activity.party_role) on a single IP right application (party_activity.ip_right_type + party_activity.application_number). Application-level columns repeat for every party row on the same application, so a row is neither one application nor one party.",
+    "groups": [
+      {
+        "name": "party_identity",
+        "purpose": "Identity and classification of the party named on the record: party key, name, party type, and the ABN where supplied. Party type is a party classification, not a legal form.",
+        "columns": [
+          "party_activity.party_id",
+          "party_activity.party_name",
+          "party_activity.party_type",
+          "party_activity.abn"
+        ]
+      },
+      {
+        "name": "party_role_on_application",
+        "purpose": "The role the party holds on the application (applicant, patentee, agent, opponent, mortgagee etc.) and the validity window of that party-role record. These describe the party-role record, not the application or the business lifecycle.",
+        "columns": [
+          "party_activity.party_role_category",
+          "party_activity.party_role",
+          "party_activity.is_founding",
+          "party_activity.is_current",
+          "party_activity.effective_from_date",
+          "party_activity.effective_to_date"
+        ]
+      },
+      {
+        "name": "party_address",
+        "purpose": "Address attributes of the party as recorded on the record: country, state and post code. Post code formats are not uniform and country is not always present.",
+        "columns": [
+          "party_activity.country_code",
+          "party_activity.state_code",
+          "party_activity.post_code"
+        ]
+      },
+      {
+        "name": "application_identity_and_type",
+        "purpose": "Identity and classification of the IP right application the party is acting on: application number, IP right type and sub-type. Repeated across party rows of the same application.",
+        "columns": [
+          "application.application_number",
+          "application.ip_right_type",
+          "application.ip_right_sub_type",
+          "party_activity.application_number",
+          "party_activity.ip_right_type"
+        ]
+      },
+      {
+        "name": "application_status_and_dates",
+        "purpose": "Application-level lifecycle: status and the filing, priority, registration, enforceability, retirement and termination dates. These describe the application, not the party or the business.",
+        "columns": [
+          "application.status",
+          "application.application_date",
+          "application.earliest_filed_date",
+          "application.priority_date",
+          "application.gained_registration_status_date",
+          "application.gained_enforceable_status_date",
+          "application.enforceable_from_date",
+          "application.deemed_retired_date"
+        ]
+      },
+      {
+        "name": "application_description",
+        "purpose": "The description text attached to the application, with its description type and the application/right-type keys that link it back to the application. At most one description per application.",
+        "columns": [
+          "application_description.application_number",
+          "application_description.ip_right_type",
+          "application_description.description_type",
+          "application_description.description_value"
+        ]
+      }
+    ],
+    "entity_types": [
+      {
+        "name": "party",
+        "definition": "A person or organisation recorded as acting in a role on an IP right application; identified by party_id, with party_type as a party classification only and no legal-form inference."
+      },
+      {
+        "name": "ip_application",
+        "definition": "An IP right application identified by ip_right_type plus application_number, carrying its own status, dates and description."
+      },
+      {
+        "name": "party_activity",
+        "definition": "The association of one party in one role on one IP right application, with its own validity window (effective_from_date, effective_to_date, is_current)."
+      }
+    ],
+    "entities": {
+      "party": {
+        "kind": "party",
+        "key_paths": [
+          "party_activity.party_id"
+        ],
+        "rationale": "party_id is the party key; party_name and abn are attributes of the party where supplied. party_type is a party classification, not a legal form, and a personal name must not be used to infer a company legal form or ABN."
+      },
+      "ip_application": {
+        "kind": "ip_application",
+        "key_paths": [
+          "application.application_number",
+          "application.ip_right_type"
+        ],
+        "rationale": "The application is identified by its number together with the IP right type; application-level status, dates and description belong to the application, not to the party or business."
+      },
+      "party_activity": {
+        "kind": "party_activity",
+        "key_paths": [
+          "party_activity.party_id",
+          "party_activity.party_role_category",
+          "party_activity.party_role",
+          "party_activity.application_number",
+          "party_activity.ip_right_type"
+        ],
+        "rationale": "The record grain is a party in a role on an application; the same party_id can hold different roles across rows, so the role and application keys are needed alongside the party key."
+      }
+    },
+    "relationship_types": [
+      {
+        "name": "PARTY_ACTS_ON_APPLICATION",
+        "from_type": "party",
+        "to_type": "ip_application",
+        "definition": "A party is recorded in a role on an IP right application, via a party-activity record; the role does not imply ownership, beneficial interest or enforceability."
+      },
+      {
+        "name": "PARTY_ACTIVITY_RECORDS_PARTY",
+        "from_type": "party_activity",
+        "to_type": "party",
+        "definition": "A party-activity record names the party that holds the recorded role."
+      },
+      {
+        "name": "PARTY_ACTIVITY_CONCERNS_APPLICATION",
+        "from_type": "party_activity",
+        "to_type": "ip_application",
+        "definition": "A party-activity record concerns the IP right application identified by its application number and IP right type."
+      },
+      {
+        "name": "APPLICATION_HAS_DESCRIPTION",
+        "from_type": "ip_application",
+        "to_type": "ip_application",
+        "definition": "An IP right application has at most one description record, linked by application number and IP right type."
+      }
+    ],
+    "relationships": [
+      {
+        "type": "PARTY_ACTIVITY_RECORDS_PARTY",
+        "from_role": "party_activity",
+        "to_role": "party",
+        "rationale": "party_activity.party_id is the party key carried on each party-activity row."
+      },
+      {
+        "type": "PARTY_ACTIVITY_CONCERNS_APPLICATION",
+        "from_role": "party_activity",
+        "to_role": "ip_application",
+        "rationale": "party_activity.application_number and party_activity.ip_right_type identify the application the party-role record concerns."
+      },
+      {
+        "type": "PARTY_ACTS_ON_APPLICATION",
+        "from_role": "party",
+        "to_role": "ip_application",
+        "rationale": "Derived from the party-activity record linking party_id to application_number and ip_right_type; the role (applicant, patentee, agent, opponent, mortgagee) is recorded on the party-activity record and does not imply ownership or enforceability."
+      },
+      {
+        "type": "APPLICATION_HAS_DESCRIPTION",
+        "from_role": "ip_application",
+        "to_role": "ip_application",
+        "rationale": "application_description.application_number and application_description.ip_right_type link the description to the application; the description table contributes at most one description per application."
+      }
+    ],
+    "cautions": [
+      "party_activity.abn is frequently blank; absence of an ABN must not be read as absence of a business or as a non-Australian entity.",
+      "party_activity.party_name is free text and lower-cased; the same organisation may appear under name variants, and a personal name must not be used to infer a company legal form or an ABN.",
+      "party_activity.party_type (organisation/individual) is a party classification, not a company legal form or beneficial-ownership statement.",
+      "party_activity.party_id alone does not identify a unique business relationship: the same party_id can hold different roles across rows.",
+      "party_activity.state_code, post_code and country_code are party address attributes; post_code formats are not uniform and country_code is not always present.",
+      "patent/application status, dates and description describe the application, not the party or the business; a grant or registration date is not a business incorporation date.",
+      "party_activity.effective_from_date / effective_to_date / is_current describe the party-role record's validity, not the application's or the business's lifecycle.",
+      "The cohort is a patent-prefix subset, not a population sample; no population-level accuracy or completeness claim can be made.",
+      "Model-proposed joins were checked on full right tables and missing/ambiguous matches are null, so blank application-level fields may reflect an unmatched join rather than a true absence of data.",
+      "application.enforceable_from_date is entirely empty in the observed profile and is retained only as an application-level date column."
+    ]
+  }
+}

@@ -1,0 +1,58 @@
+{
+  "request_sha256": "4c4c1216e2556a102c0c3b02a0df9e8be5c80f4b0331307a6239d53788970712",
+  "role": "join_planner",
+  "model": "deepseek-v4-flash",
+  "seconds": 9.281,
+  "response": {
+    "anchor": "party_activity",
+    "steps": [
+      {
+        "left_table": "party_activity",
+        "right_table": "application",
+        "left_columns": [
+          "ip_right_type",
+          "application_number"
+        ],
+        "right_columns": [
+          "ip_right_type",
+          "application_number"
+        ],
+        "cardinality": "many_to_one",
+        "meaning": "Each reported party role row on a right is matched to the single application record for the same right type and application number, so analysts can attach source-stated status and dates to each party role.",
+        "cautions": [
+          "Composite key required because application numbers are scoped by ip_right_type; joining on application_number alone could match a different right type.",
+          "Assumes application is unique per (ip_right_type, application_number); duplicates in the full right table will cause the join to be refused rather than silently deduplicated.",
+          "Party role presence does not imply ownership, entitlement, or current enforceability of the right.",
+          "Status and dates are source-stated values, not derived legal conclusions."
+        ]
+      },
+      {
+        "left_table": "party_activity",
+        "right_table": "application_description",
+        "left_columns": [
+          "ip_right_type",
+          "application_number"
+        ],
+        "right_columns": [
+          "ip_right_type",
+          "application_number"
+        ],
+        "cardinality": "many_to_one",
+        "meaning": "Each party role row is matched to the description record for the same right type and application number, giving a human-readable description of the right alongside the party role.",
+        "cautions": [
+          "Only valid as many_to_one if application_description holds at most one row per (ip_right_type, application_number); the schema includes description_type, so multiple description types per application would break this and the join must be refused.",
+          "If multiple description types exist, a description_type filter (e.g. 'description') would be needed, which is a selection not a star join.",
+          "Description text is source-stated and may be truncated or absent; it is not a legal scope of the right."
+        ]
+      }
+    ],
+    "unsupported_requests": [
+      "Questions about ownership, beneficial entitlement, or current enforceability of a right based on party role.",
+      "Questions requiring a representative sample of all IP rights: this is a patent-prefix pilot only.",
+      "Questions needing party identity resolution across party_id/ABN beyond what party_activity states.",
+      "Questions requiring multiple description types per application (would need a filtered or one-to-many join, not executable as a star join).",
+      "Questions about rights whose application_number collides across ip_right_type without the composite key.",
+      "Any claim of population-level accuracy or completeness."
+    ]
+  }
+}
