@@ -1,0 +1,30 @@
+{
+  "request_sha256": "cee7a403fe963ed1c4b6c7fd9a86c1168c1712bcd516399e1189a74cf1e7f5a9",
+  "role": "inspector",
+  "model": "qwen3.8-max",
+  "seconds": 66.747,
+  "response": {
+    "reader": {
+      "format": "delimited",
+      "archive_member": null,
+      "encoding": "utf-8-sig",
+      "delimiter": ",",
+      "skip_rows": 0,
+      "sheet": null,
+      "record_path": null
+    },
+    "bindings": [],
+    "grain": "One row is one Modern Slavery Register statement-search record, identified by IDX and Link. It is not one row per legal entity, ABN/ACN/ARBN, industry sector, or related statement; multi-valued cells are embedded in the row and must be parsed as lists where needed.",
+    "identity_cautions": [
+      "IDX (e.g. 2026-2165) is a register/export statement index; its leading year is an identifier component, not the reporting year, incorporation date, or licence date.",
+      "Link is a statement URL, not an entity identifier; RelatedStatements values are references to other statement IDs, not parent/child, ownership, or successor links.",
+      "ReportingEntities and IncludedEntities can each contain several named entities in one quoted cell; keep their distinction and do not treat the row as one legal entity or join on names.",
+      "ABN, ACN and ARBN may be blank or comma-separated multi-values and are not one-to-one with rows; do not infer legal form from an ABN/ACN/ARBN or from a personal-looking name.",
+      "PeriodStart and PeriodEnd supply the reporting-period context (calendar or financial year varies by row); registered_at is snapshot provenance only, not a business date.",
+      "Type and VoluntaryCompliance are source-reported labels; with no linked PDFs downloaded they are not independently verified compliance findings.",
+      "AnnualRevenue is a categorical band such as '0-99M', not an exact amount and not a percentage; no percent columns or percent-formatted cells are visible in the inspected bytes, so percentage storage is unmapped.",
+      "Commas inside quoted cells are embedded list separators; parse with a CSV reader rather than splitting on every comma."
+    ],
+    "rationale": "Byte inspection shows a plain UTF-8-SIG CSV (magic \"IDX,Peri\", no ZIP or workbook container); the first line is the header, so skip_rows=0 and delimiter=',' with standard quoting. No XLSX sheet exists, so sheet is null and no documentation sheet was selected; if sheet names were present they would be preserved verbatim. Headers fall into four groups: statement identity/linkage (IDX, Link, RelatedStatements), reporting-period context (PeriodStart, PeriodEnd), source classification/coverage (Type, VoluntaryCompliance, HeadquarteredCountries, AnnualRevenue, IndustrySectors), and entity/identifier fields (ReportingEntities, IncludedEntities, ABN, ACN, ARBN). The grain is the statement-search row: embedded lists are not separate records. Contextual years appear in IDX prefixes and in RelatedStatements IDs, while the actual period is only PeriodStart/PeriodEnd; these must not be conflated. AnnualRevenue is stored as a band, not a numeric or percentage value; no percent columns or percent-formatted values are visible in the inspected lines, so percentage semantics are explicitly unmapped. Bindings is empty because the selected resource is flat CSV with no nested objects in its record bytes; the provenance-only licence_detail object is not dataset content and is not bound. Export filters and download time were not supplied and linked PDFs were not downloaded, so scope and compliance labels remain source-reported, not verified."
+  }
+}

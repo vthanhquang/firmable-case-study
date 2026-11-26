@@ -1,0 +1,31 @@
+{
+  "request_sha256": "75565d1d241e2b845cb32395c11d2142d65f4cac9da235c7dfa840953944936c",
+  "role": "statement_router",
+  "model": "qwen3.8-max",
+  "seconds": 14.164,
+  "response": {
+    "route": "statement_business",
+    "rationale": "Actual rows match the statement_business contract: IDX is the statement ID, Link is the statement URL, ABN contains one or more comma-separated Australian ABNs, ReportingEntities/IncludedEntities are role-specific name lists with parenthesized ABNs, and RelatedStatements holds related statement IDs. Feedback is addressed by keeping the column contract unchanged but requiring the role columns to be preserved verbatim in full and parsed complementarily for names and ABNs; no truncation, separator rewriting, unbound-name matching, ownership inference, or human-review labeling. Every column is assigned once: six to the statement/role contract and the remaining nine as statement-scoped facts, including ACN/ARBN because no separate business-key field is defined.",
+    "plan": {
+      "statement_key": "IDX",
+      "url": "Link",
+      "abn_column": "ABN",
+      "related": "RelatedStatements",
+      "entity_columns": {
+        "ReportingEntities": "REPORTS_STATEMENT",
+        "IncludedEntities": "INCLUDED_IN_STATEMENT"
+      },
+      "statement_columns": [
+        "PeriodStart",
+        "PeriodEnd",
+        "Type",
+        "VoluntaryCompliance",
+        "HeadquarteredCountries",
+        "AnnualRevenue",
+        "ACN",
+        "ARBN",
+        "IndustrySectors"
+      ]
+    }
+  }
+}

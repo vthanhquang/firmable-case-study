@@ -1,0 +1,18 @@
+{
+  "request_sha256": "eb1a4a32168d5ac665b7ce759154eaad7a88442a873005486aca98da783662a9",
+  "role": "statement_critic",
+  "model": "deepseek-v4.1-flash",
+  "seconds": 24.109,
+  "response": {
+    "verdict": "accept",
+    "findings": [
+      "Statement identity is consistent: IDX keys, ordinals 683/500, record_ids, URLs (11129 / 15893) and related keys line up with raw rows; ABNs of the two statements are disjoint and not merged.",
+      "Role binding is correct: 2022-2370 has 9 reporting ABNs and 9 REPORTS_STATEMENT edges with no IncludedEntities; 2023-2719 has 5 reporting ABNs plus 2 INCLUDED_IN_STATEMENT edges, preserving dual reporting/included roles for 64008425214 and 83000558627 via explicit parenthesized ABNs.",
+      "Duplicate ABNs in the raw ABN column of 2023-2719 are collapsed to 5 distinct associated_abns while the raw string is retained verbatim; repeated included names on one ABN (HMA Geotechnical, HMA Materials Handling) map to a single edge but all three names survive as name claims.",
+      "Scoped facts are preserved without promotion: AnnualRevenue band '0-99M', VoluntaryCompliance 'Not assessed', HeadquarteredCountries and the newline-separated IndustrySectors stay as statement-level raw values; empty ACN/ARBN are kept empty, and no personal-name or ABN-based legal-form inference appears.",
+      "Unparsed-value evidence is thin: queue_examples is empty and the stated 162 review_items are not represented in this batch, so the 'withheld and queued' half of the parser policy cannot be verified here (non-blocking, since both supplied rows parsed fully).",
+      "Aggregate counts (941 statements / 1019 profiles / 1566 relationships) exceed what these two rows evidence and are not independently checkable in this batch; no accuracy claim is made from them."
+    ],
+    "blocking_findings": []
+  }
+}

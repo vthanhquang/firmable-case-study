@@ -1,0 +1,22 @@
+{
+  "request_sha256": "f6e4174f5081bfec847c461cf6ba91da0ddbd686715068bb62146d201c1327d6",
+  "role": "statement_critic",
+  "model": "qwen3.8-max",
+  "seconds": 57.548,
+  "response": {
+    "verdict": "revise",
+    "findings": [
+      "Role-column ABN binding is otherwise sound: all 17 role edges (8 REPORTS_STATEMENT for 2025-1203, 9 INCLUDED_IN_STATEMENT for 2024-1231) trace to parenthesized ABNs present in the source role column, and the statement ABN column matches those ABN sets exactly.",
+      "Distinct ABNs are kept separate where they should be: 86149408702, 32131370931 and the ABN-less 'APEX FUND SERVICES PTY LTD' are not merged, and no ABN-less foreign entities (Ausenco Chile, Canada ULC, Peru, Vector Argentina etc.) received ABN edges.",
+      "Statement-scoped facts stay statement-scoped: AnnualRevenue band '0-99M', IndustrySectors, HeadquarteredCountries and VoluntaryCompliance 'Not assessed' are not pushed onto entity nodes or read as compliance certification.",
+      "2024-1231 has no REPORTS_STATEMENT edge because its only reporting entity carries no ABN; that gap is explicit in the queue, but downstream 'who reported' remains unresolved for this statement.",
+      "Name extraction is uneven across identically formatted reporting entries: 98096016849, 47100042153, 99649690399 and 31114541114 get edges but no name claim, while 11071372597, 64640238633, 46075179387 and 82011057837 get name claims but are absent from the queue text.",
+      "Bounded extraction with an explicit queue is the right posture here and no item is described as human-reviewed; the defect is in what the queue preserves, not in the queue existing."
+    ],
+    "blocking_findings": [
+      "2025-1203 ReportingEntities queue raw is not the source value: the AUSENCO MANAGEMENT, RYLSON ASSET OPTIMISATION, RYLSON and SERVICES entries are stripped out and comma separators replaced with newlines, so a reviewer cannot reconcile the queued text against raw_record or detect what was removed.",
+      "2024-1231 IncludedEntities queue raw is a two-entity fragment ('APEX FUND SERVICES PTY LTD, APEX FUND SERVICES (SYDNEY) PTY LIMITED (32 131 370 931)') that drops the eight preceding and following included entities from the source cell, so unparsed text is not preserved verbatim in review.",
+      "The same four ABNs that lose their names (98096016849, 47100042153, 99649690399, 31114541114) are the ones retained in queue raw, while the four retained in name claims are the ones dropped from queue raw — the name/queue split is inverted rather than complementary, leaving those reporting entities unreconcilable across claims and review items."
+    ]
+  }
+}

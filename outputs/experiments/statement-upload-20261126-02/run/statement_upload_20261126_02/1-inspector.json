@@ -1,0 +1,29 @@
+{
+  "request_sha256": "d13a98823b7575d466494b902992a0cd0443926d3da157e2876e5b226ab2447b",
+  "role": "inspector",
+  "model": "qwen3.8-max",
+  "seconds": 56.997,
+  "response": {
+    "reader": {
+      "format": "delimited",
+      "archive_member": null,
+      "encoding": "utf-8-sig",
+      "delimiter": ",",
+      "skip_rows": 0,
+      "sheet": null,
+      "record_path": null
+    },
+    "bindings": [],
+    "grain": "One row per Modern Slavery Register statement-search listing, keyed by IDX together with the Link statement URL; PeriodStart/PeriodEnd describe that listing's reporting period, while entity-name and identifier cells may contain multiple comma-separated values inside the same row.",
+    "identity_cautions": [
+      "IDX values such as 2026-2165 and the /statements/<number>/ Link are register statement identifiers, not ABNs, ACNs, ARBNs, or legal-entity identifiers; the leading year is register/year context, not proof of incorporation or licence date.",
+      "ABN, ACN and ARBN are separate identifier columns; blank ACN/ARBN cells in the preview are not evidence that an entity lacks those identifiers, and ABN digits should not be used to infer ACN/ARBN or legal form.",
+      "ReportingEntities and IncludedEntities are different roles; a name in one is not automatically the same reporting entity in the other, and parenthesised ABNs are labels within the cell rather than separate rows.",
+      "ABN and RelatedStatements cells can contain comma-separated lists; do not silently expand them into rows or treat RelatedStatements IDs as ownership or control links.",
+      "PeriodStart and PeriodEnd are reporting-period dates for the statement, not business incorporation, licence, contract, or grant dates.",
+      "HeadquarteredCountries is a source-reported headquarters field, not a facility classification or proof of company-wide operations.",
+      "AnnualRevenue is a band such as 0-99M, not a numeric amount or percentage; Type and VoluntaryCompliance are source-reported labels, not independently verified compliance findings."
+    ],
+    "rationale": "The actual bytes are plain text beginning with the header 'IDX,PeriodStart,...' and use commas; tab, pipe and semicolon counts are zero, and the higher comma counts per physical line are consistent with quoted multi-value cells. A single shared comma-delimited reader with skip_rows=0 is therefore used for the whole file; there is no ZIP member, no workbook sheet, and no documentation sheet selected, so sheet is null and no sheet name is altered. Header groups are: statement identity (IDX, Link), reporting period (PeriodStart, PeriodEnd), source classifications (Type, VoluntaryCompliance, HeadquarteredCountries, AnnualRevenue, IndustrySectors), entity and identifier lists (ReportingEntities, IncludedEntities, ABN, ACN, ARBN), and relationships (RelatedStatements). Years appear contextually in IDX prefixes, PeriodStart/PeriodEnd and RelatedStatements IDs; they describe register or reporting-period context, not company formation or licence dates. No percentage-valued column is visible in the header or first lines; AnnualRevenue '0-99M' is a band and VoluntaryCompliance 'Transparency Disclosure' is a label, so neither should be stored as a percentage. Bindings are empty because the CSV rows contain no singleton nested objects to select; multi-valued cells are not nested objects, and the only singleton object in the evidence wrapper is licence_detail provenance metadata rather than row-level data."
+  }
+}

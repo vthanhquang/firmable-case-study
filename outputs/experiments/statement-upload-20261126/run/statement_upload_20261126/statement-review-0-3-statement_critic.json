@@ -1,0 +1,18 @@
+{
+  "request_sha256": "6c8730712cf46d9ab73c8d234ebf9c14b2dc87a4c9238d767ae6417a8c420dcf",
+  "role": "statement_critic",
+  "model": "qwen3.8-max",
+  "seconds": 48.267,
+  "response": {
+    "verdict": "accept",
+    "findings": [
+      "Statement identity holds: IDX 2023-2719 binds to .../15893/ and 2022-2370 to .../11129/, with RelatedStatements kept as separate keys rather than folded into this batch.",
+      "Role separation is source-faithful: ABN 64008425214 and 83000558627 each carry both REPORTS_STATEMENT and INCLUDED_IN_STATEMENT edges, distinct ABNs stay separate, and repeated ABN-column values collapse into associated_abns without losing any role edge (8 ABN values -> 5 unique for 2023-2719, all 9 for 2022-2370).",
+      "AnnualRevenue '0-99M' is a banded, statement-level value for a Joint statement; it must not be converted to a numeric figure nor attributed to each of the 5 or 9 associated ABNs.",
+      "IndustrySectors for 2023-2719 is three newline-delimited sectors; retain as a multi-valued, statement-scoped attribute rather than one sector or a per-entity sector.",
+      "VoluntaryCompliance 'Not assessed' means no assessment, not non-compliance; Type 'Joint' is a statement attribute, not entity legal form, and trustee/trust designations (unit trusts in 2022-2370) must not be read as company legal form.",
+      "queue_examples is empty while parser_policy asserts ambiguous names are withheld and queued; no withheld values appear in this batch, so unparsed-value preservation is unverified here, and review_items are machine queues, not human review."
+    ],
+    "blocking_findings": []
+  }
+}

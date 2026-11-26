@@ -1,0 +1,102 @@
+{
+  "controller_result": {
+    "source_id": "statement_upload_20261126",
+    "status": "NEEDS_REVIEW",
+    "error": "Per-source request reservation exhausted; other sources retain their allowances"
+  },
+  "sealed_run_verification": {
+    "statement_upload_20261126": {
+      "status": "NEEDS_REVIEW",
+      "observations": 0
+    }
+  },
+  "candidate_preview": {
+    "statements": 941,
+    "profile_candidates": 1019,
+    "new_candidates": 1017,
+    "existing_matches": 2,
+    "relationships": 1566,
+    "review_items": 162,
+    "review_reasons": {
+      "UNPARSED_ENTITY_TEXT": 158,
+      "INVALID_ABN": 4
+    },
+    "profiles_without_bound_names": 49,
+    "repeat_extraction_identical": true,
+    "accepted": false
+  },
+  "calls": 10,
+  "input_tokens": 109989,
+  "output_tokens": 48555,
+  "critic_decisions": [
+    {
+      "step": "statement-review-0-0-statement_critic",
+      "verdict": "accept",
+      "findings": [
+        "Statement keys, URLs, ordinals, and record IDs match the two source rows.",
+        "2026-1757 correctly binds the parenthesized ABN as INCLUDED_IN_STATEMENT; no REPORTS_STATEMENT role inferred.",
+        "2026-1639 keeps ACN separate from ABN; associated_abns is empty and the included name is queued with raw text.",
+        "Revenue band, industry, and compliance values remain statement-scoped and unnormalized.",
+        "Related-statement keys preserve both IDs for 2026-1757; no cross-ABN merge observed."
+      ],
+      "blocking_findings": []
+    },
+    {
+      "step": "statement-review-0-1-statement_critic",
+      "verdict": "revise",
+      "findings": [
+        "Role-column ABN binding is otherwise sound: all 17 role edges (8 REPORTS_STATEMENT for 2025-1203, 9 INCLUDED_IN_STATEMENT for 2024-1231) trace to parenthesized ABNs present in the source role column, and the statement ABN column matches those ABN sets exactly.",
+        "Distinct ABNs are kept separate where they should be: 86149408702, 32131370931 and the ABN-less 'APEX FUND SERVICES PTY LTD' are not merged, and no ABN-less foreign entities (Ausenco Chile, Canada ULC, Peru, Vector Argentina etc.) received ABN edges.",
+        "Statement-scoped facts stay statement-scoped: AnnualRevenue band '0-99M', IndustrySectors, HeadquarteredCountries and VoluntaryCompliance 'Not assessed' are not pushed onto entity nodes or read as compliance certification.",
+        "2024-1231 has no REPORTS_STATEMENT edge because its only reporting entity carries no ABN; that gap is explicit in the queue, but downstream 'who reported' remains unresolved for this statement.",
+        "Name extraction is uneven across identically formatted reporting entries: 98096016849, 47100042153, 99649690399 and 31114541114 get edges but no name claim, while 11071372597, 64640238633, 46075179387 and 82011057837 get name claims but are absent from the queue text.",
+        "Bounded extraction with an explicit queue is the right posture here and no item is described as human-reviewed; the defect is in what the queue preserves, not in the queue existing."
+      ],
+      "blocking_findings": [
+        "2025-1203 ReportingEntities queue raw is not the source value: the AUSENCO MANAGEMENT, RYLSON ASSET OPTIMISATION, RYLSON and SERVICES entries are stripped out and comma separators replaced with newlines, so a reviewer cannot reconcile the queued text against raw_record or detect what was removed.",
+        "2024-1231 IncludedEntities queue raw is a two-entity fragment ('APEX FUND SERVICES PTY LTD, APEX FUND SERVICES (SYDNEY) PTY LIMITED (32 131 370 931)') that drops the eight preceding and following included entities from the source cell, so unparsed text is not preserved verbatim in review.",
+        "The same four ABNs that lose their names (98096016849, 47100042153, 99649690399, 31114541114) are the ones retained in queue raw, while the four retained in name claims are the ones dropped from queue raw â€” the name/queue split is inverted rather than complementary, leaving those reporting entities unreconcilable across claims and review items."
+      ]
+    },
+    {
+      "step": "statement-review-0-2-statement_critic",
+      "verdict": "accept",
+      "findings": [
+        "Statement identity is consistent: both statement_keys are the IDX values with the source prefix, and related_statement_keys match RelatedStatements exactly in order and count (4 for 2024-1473, 2 for 2023-2639).",
+        "Reporting versus included roles are separated correctly: 79628374210 and 86649953980 each have exactly one REPORTS_STATEMENT edge from the ReportingEntities column and are absent from the included set, while all other role-column ABNs carry INCLUDED_IN_STATEMENT only.",
+        "ABN binding holds: every one of the 17 name claims and 17 edges matches a parenthesized ABN in its role column, and each row's associated_abns equals the ABN column list (9 and 9) with no ABN shared or merged across the two rows; the reporting ABN appearing again in the ABN list is reconciled, not double-counted.",
+        "Unparsed preservation is bounded and queued rather than guessed: INCEPTION GROUP PTY LTD has no ABN, so it receives no edge and no name claim; non-blocking clarity issue - the queue raw text also spans WGANSW PTY LTD (64 659 565 714), which is already bound via its ABN, so the unparsed span is wider than the actual withheld text.",
+        "Scoped facts stay scoped: AnnualRevenue is kept as the band 0-99M, VoluntaryCompliance as 'Not assessed', and HeadquarteredCountries, IndustrySectors and ACN 154515009 remain statement-level facts with no attribution to an individual included ABN, no exact-revenue or company-wide industry inference, and no legal-form inference from names.",
+        "No human-review claim is made: the output describes automated extraction with a 162-item review queue, and provenance marks export/reuse licence terms as unverified; the queue items should continue to be treated as machine-flagged, not adjudicated."
+      ],
+      "blocking_findings": []
+    },
+    {
+      "step": "statement-review-0-3-statement_critic",
+      "verdict": "accept",
+      "findings": [
+        "Statement identity holds: IDX 2023-2719 binds to .../15893/ and 2022-2370 to .../11129/, with RelatedStatements kept as separate keys rather than folded into this batch.",
+        "Role separation is source-faithful: ABN 64008425214 and 83000558627 each carry both REPORTS_STATEMENT and INCLUDED_IN_STATEMENT edges, distinct ABNs stay separate, and repeated ABN-column values collapse into associated_abns without losing any role edge (8 ABN values -> 5 unique for 2023-2719, all 9 for 2022-2370).",
+        "AnnualRevenue '0-99M' is a banded, statement-level value for a Joint statement; it must not be converted to a numeric figure nor attributed to each of the 5 or 9 associated ABNs.",
+        "IndustrySectors for 2023-2719 is three newline-delimited sectors; retain as a multi-valued, statement-scoped attribute rather than one sector or a per-entity sector.",
+        "VoluntaryCompliance 'Not assessed' means no assessment, not non-compliance; Type 'Joint' is a statement attribute, not entity legal form, and trustee/trust designations (unit trusts in 2022-2370) must not be read as company legal form.",
+        "queue_examples is empty while parser_policy asserts ambiguous names are withheld and queued; no withheld values appear in this batch, so unparsed-value preservation is unverified here, and review_items are machine queues, not human review."
+      ],
+      "blocking_findings": []
+    },
+    {
+      "step": "statement-review-1-0-statement_critic",
+      "verdict": "accept",
+      "findings": [
+        "Statement keys, URLs, ordinals, record IDs and related-statement keys match the source rows.",
+        "2026-1757 uses IncludedEntities only; edge and name claim are INCLUDED_IN_STATEMENT, not reporting.",
+        "Parenthesized ABN 60 606 777 164 normalizes to 60606777164 and binds explicitly; no generic-only link.",
+        "2026-1639 keeps ACN 141075201 as ACN with no associated ABN; unbound included text is queued with raw value preserved.",
+        "Revenue band, industry string and 'Not assessed' compliance remain statement-scoped facts."
+      ],
+      "blocking_findings": []
+    }
+  ],
+  "production_promoted": false,
+  "human_semantic_precision": null
+}

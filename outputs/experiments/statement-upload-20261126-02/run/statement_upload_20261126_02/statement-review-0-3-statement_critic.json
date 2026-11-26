@@ -1,0 +1,18 @@
+{
+  "request_sha256": "eb1a4a32168d5ac665b7ce759154eaad7a88442a873005486aca98da783662a9",
+  "role": "statement_critic",
+  "model": "qwen3.8-max",
+  "seconds": 42.074,
+  "response": {
+    "verdict": "accept",
+    "findings": [
+      "Statement keys match IDX (2023-2719, 2022-2370); provenance ordinals 500/683, record IDs, snapshot hash and URLs match the raw rows; related_statement_keys mirror RelatedStatements verbatim.",
+      "Roles preserved independently of name parsing: ABNs 64008425214 and 83000558627 each carry both REPORTS_STATEMENT and INCLUDED_IN_STATEMENT edges exactly as the two role columns state; ABN-column order was not used to assign roles.",
+      "ABN binding is explicit parenthesized ABN in role column for every edge; 5 distinct ABNs for 2023-2719 and 9 for 2022-2370; duplicate ABNs keep multiple names (83000558627 x3, 64008425214 x2) without merging different ABNs.",
+      "Scoped facts kept at statement level and verbatim: AnnualRevenue band '0-99M', multi-line IndustrySectors, VoluntaryCompliance 'Not assessed', HeadquarteredCountries 'Australia'; no revenue precision, legal-form or company-wide industry claim.",
+      "Raw records retain unparsed/empty values (ACN, ARBN, and empty IncludedEntities for 2022-2370); licence_detail marked known:false and publisher_observed_at null, so no unverified licence or observation date asserted.",
+      "No ambiguous/consortium names occur in this batch, so empty queue_examples is consistent with the stated withhold-and-queue policy; 'review_items' is an explicit queue, not labelled human review."
+    ],
+    "blocking_findings": []
+  }
+}

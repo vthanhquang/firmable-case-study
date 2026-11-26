@@ -1,0 +1,31 @@
+{
+  "request_sha256": "7368febbbef0b516815ab416cb1cc5baf8bb6efb2700ca5051ec0d60e92e5958",
+  "role": "statement_router",
+  "model": "qwen3.8-max",
+  "seconds": 9.385,
+  "response": {
+    "route": "statement_business",
+    "rationale": "Rows are Modern Slavery Register statement listings keyed by IDX and Link, with comma-separated ABNs, parenthesized ABN name lists in ReportingEntities/IncludedEntities, and RelatedStatements IDs; all other columns are statement-scoped facts.",
+    "plan": {
+      "statement_key": "IDX",
+      "url": "Link",
+      "abn_column": "ABN",
+      "related": "RelatedStatements",
+      "entity_columns": {
+        "ReportingEntities": "REPORTS_STATEMENT",
+        "IncludedEntities": "INCLUDED_IN_STATEMENT"
+      },
+      "statement_columns": [
+        "PeriodStart",
+        "PeriodEnd",
+        "Type",
+        "VoluntaryCompliance",
+        "HeadquarteredCountries",
+        "AnnualRevenue",
+        "ACN",
+        "ARBN",
+        "IndustrySectors"
+      ]
+    }
+  }
+}

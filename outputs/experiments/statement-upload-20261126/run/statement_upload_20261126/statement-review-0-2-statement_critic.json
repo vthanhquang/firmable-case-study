@@ -1,0 +1,18 @@
+{
+  "request_sha256": "e3378cc818e0e829f6dc2e3636d2ee6db72b1a293ea6a10a339f1bc73a6e0c87",
+  "role": "statement_critic",
+  "model": "qwen3.8-max",
+  "seconds": 35.696,
+  "response": {
+    "verdict": "accept",
+    "findings": [
+      "Statement identity is consistent: both statement_keys are the IDX values with the source prefix, and related_statement_keys match RelatedStatements exactly in order and count (4 for 2024-1473, 2 for 2023-2639).",
+      "Reporting versus included roles are separated correctly: 79628374210 and 86649953980 each have exactly one REPORTS_STATEMENT edge from the ReportingEntities column and are absent from the included set, while all other role-column ABNs carry INCLUDED_IN_STATEMENT only.",
+      "ABN binding holds: every one of the 17 name claims and 17 edges matches a parenthesized ABN in its role column, and each row's associated_abns equals the ABN column list (9 and 9) with no ABN shared or merged across the two rows; the reporting ABN appearing again in the ABN list is reconciled, not double-counted.",
+      "Unparsed preservation is bounded and queued rather than guessed: INCEPTION GROUP PTY LTD has no ABN, so it receives no edge and no name claim; non-blocking clarity issue - the queue raw text also spans WGANSW PTY LTD (64 659 565 714), which is already bound via its ABN, so the unparsed span is wider than the actual withheld text.",
+      "Scoped facts stay scoped: AnnualRevenue is kept as the band 0-99M, VoluntaryCompliance as 'Not assessed', and HeadquarteredCountries, IndustrySectors and ACN 154515009 remain statement-level facts with no attribution to an individual included ABN, no exact-revenue or company-wide industry inference, and no legal-form inference from names.",
+      "No human-review claim is made: the output describes automated extraction with a 162-item review queue, and provenance marks export/reuse licence terms as unverified; the queue items should continue to be treated as machine-flagged, not adjudicated."
+    ],
+    "blocking_findings": []
+  }
+}

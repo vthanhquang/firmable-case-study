@@ -1,0 +1,15 @@
+{
+  "request_sha256": "4dc87332a1625fe42fba8a5c10d69013b34e494066b0743ee7d9ded34a426a18",
+  "role": "statement_critic",
+  "model": "qwen3.8-max",
+  "seconds": 51.415,
+  "response": {
+    "verdict": "accept",
+    "findings": [
+      "Statement keys match IDX (2024-1473, 2023-2639); period, Type, VoluntaryCompliance, HeadquarteredCountries, AnnualRevenue band, ACN/ARBN and IndustrySectors copied verbatim into statement-scoped facts, not entity-wide.",
+      "All 9 ABNs per row are bound from parenthesized role-column ABNs; reporting roles (79628374210, 86649953980) vs included roles are correct and no ABN is reused across the two statements.",
+      "Name claims match source strings exactly; WGANSW ABN 64659565714 keeps its INCLUDED edge while its comma-ambiguous name text is withheld and preserved in the UNPARSED_ENTITY_TEXT queue — bounded extraction, not human review."
+    ],
+    "blocking_findings": []
+  }
+}

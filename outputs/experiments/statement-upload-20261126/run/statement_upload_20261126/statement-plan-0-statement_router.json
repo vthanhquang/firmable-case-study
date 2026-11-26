@@ -1,0 +1,31 @@
+{
+  "request_sha256": "b97d9d257d89db8facdd86da99f74c6e73ed4ac5f11f0f8bf25ef5dce3f17081",
+  "role": "statement_router",
+  "model": "qwen3.8-max",
+  "seconds": 33.104,
+  "response": {
+    "route": "statement_business",
+    "rationale": "The evidence rows are Modern Slavery Register statement-search records whose grain is one statement (identified by IDX and Link), not one row per legal entity. They exhibit every trigger for the statement_business route: a statement ID (IDX), a statement URL (Link), comma-separated Australian ABNs in ABN (e.g. '17608552496, 11107772761, 33611053751'), name lists with explicit parenthesized ABNs split by role (ReportingEntities and IncludedEntities, e.g. 'COMMERCIAL PROPERTY CLEANING PTY. LTD. (72 069 158 710)'), and comma-separated related-statement IDs (RelatedStatements). Column contract inferred solely from the actual rows: IDX is the statement key, Link is the URL, ABN is the ABN-keyed candidate column, RelatedStatements holds related-statement IDs, ReportingEntities maps to REPORTS_STATEMENT and IncludedEntities to INCLUDED_IN_STATEMENT. Every remaining column is assigned exactly once as a statement-scoped fact: PeriodStart, PeriodEnd, Type, VoluntaryCompliance, HeadquarteredCountries, AnnualRevenue, ACN, ARBN, IndustrySectors. AnnualRevenue and VoluntaryCompliance remain at statement scope and are never attributed as individual business revenue or compliance. ACN and ARBN are blank in every observed row and are retained as statement-scoped facts rather than used as business keys, since only ABN keys business candidates. No ownership is inferred between reporting and included entities, and names without a bound ABN are not matched to businesses.",
+    "plan": {
+      "statement_key": "IDX",
+      "url": "Link",
+      "abn_column": "ABN",
+      "related": "RelatedStatements",
+      "entity_columns": {
+        "ReportingEntities": "REPORTS_STATEMENT",
+        "IncludedEntities": "INCLUDED_IN_STATEMENT"
+      },
+      "statement_columns": [
+        "PeriodStart",
+        "PeriodEnd",
+        "Type",
+        "VoluntaryCompliance",
+        "HeadquarteredCountries",
+        "AnnualRevenue",
+        "ACN",
+        "ARBN",
+        "IndustrySectors"
+      ]
+    }
+  }
+}

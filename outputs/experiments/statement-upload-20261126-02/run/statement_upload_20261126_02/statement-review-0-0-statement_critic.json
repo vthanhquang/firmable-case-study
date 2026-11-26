@@ -1,0 +1,20 @@
+{
+  "request_sha256": "5f3dc256c6c0a2d3fe6c942f9ff2bd08dc6c926965e4616cb06a4bc49f7e8e99",
+  "role": "statement_critic",
+  "model": "qwen3.8-max",
+  "seconds": 28.413,
+  "response": {
+    "verdict": "revise",
+    "findings": [
+      "Row 37 (2026-1757): ABN column is populated (60606777164) while ReportingEntities is blank; only an INCLUDED_IN_STATEMENT edge was emitted and no REPORTS_STATEMENT edge or review item covers the blank reporting role.",
+      "Row 39 (2026-1639): no ABN in source; ACN 141075201 retained as a statement fact and not promoted to an ABN, and 'ATLAS ARTERIA LIMITED' preserved in the unparsed queue rather than aliased — correct handling.",
+      "Row 39: revenue band '0-99M', sector 'Transport, Postal and Warehousing' and 'Not assessed' compliance kept verbatim as scoped statement facts, not reinterpreted — correct.",
+      "Row 37: name claim BARED TRADING PTY LTD is sourced from IncludedEntities and matches its parenthesized ABN 60 606 777 164; no inferred alias or legal-form claim added — consistent.",
+      "Row 37: RelatedStatements keys 2024-3379 and 2023-1764 are emitted as references but have no statement records in this batch, so their identity is unverifiable here.",
+      "Counts (941 statements / 1019 profiles / 1566 relationships / 162 review items) are batch-level aggregates not testable from these two rows; no population accuracy is claimed."
+    ],
+    "blocking_findings": [
+      "Row 37 reporting-role gap: with ABN column populated and ReportingEntities empty, the statement's own reporting entity is unbound; either bind that ABN as REPORTS_STATEMENT or queue the blank reporting role explicitly, instead of recording only INCLUDED_IN_STATEMENT."
+    ]
+  }
+}

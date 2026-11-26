@@ -1,0 +1,18 @@
+{
+  "request_sha256": "9f57f7c9691709048d596f4a2e2455434576967ef9ab22bd42e8d7c44a1974f4",
+  "role": "statement_critic",
+  "model": "qwen3.8-max",
+  "seconds": 87.599,
+  "response": {
+    "verdict": "accept",
+    "findings": [
+      "Statement 1: all 8 ABN-column ABNs are bound REPORTS_STATEMENT; statement 2: all 9 are bound INCLUDED_IN_STATEMENT; no cross-role or cross-statement ABN leakage.",
+      "Statement 2 has no REPORTS_STATEMENT edge: reporting entity APEX FUND HOLDINGS AUSTRALIA PTY LIMITED has no source ABN and is queued; none of the 9 included ABNs may be reassigned to it.",
+      "Name extraction is partial (statement 1: 4 of 8; statement 2: 1 of 9 parenthesized names left in the UNPARSED_ENTITY_TEXT queue); bounded extraction is acceptable, but those ABN profiles must stay nameless pending queue resolution rather than receive inferred names.",
+      "Statement-scoped facts (AnnualRevenue band '0-99M', multi-sector IndustrySectors, HeadquarteredCountries 'Australia', VoluntaryCompliance 'Not assessed') must not be denormalized to individual ABNs or read as exact revenue or compliance status.",
+      "Statement 2 ACNs 649344507 and 118902891 are statement-level and unbound; do not attach them to a specific included entity or infer legal form from them.",
+      "Statement 1 queue raw is a reconstructed remainder (commas replaced by newlines, extracted names removed), not the verbatim cell; the original text survives only in raw_record."
+    ],
+    "blocking_findings": []
+  }
+}

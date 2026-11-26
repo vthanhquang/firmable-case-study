@@ -1,0 +1,18 @@
+{
+  "request_sha256": "4dc87332a1625fe42fba8a5c10d69013b34e494066b0743ee7d9ded34a426a18",
+  "role": "statement_critic",
+  "model": "qwen3.8-max",
+  "seconds": 42.904,
+  "response": {
+    "verdict": "accept",
+    "findings": [
+      "ABN reconciliation is exact on both rows: the 9 ABNs in each ABN column map 1:1 to named entities in the role columns, and every ABN has one edge with role-appropriate type (79628374210 and 86649953980 as REPORTS_STATEMENT; the rest INCLUDED_IN_STATEMENT). No orphan ABNs, so no generic association links were needed.",
+      "Name claims match the parenthesized ABNs in ReportingEntities/IncludedEntities for both statements; no role inversion between the reporting entity and included entities.",
+      "A near-collision pair is handled correctly: 42628470066 (US Holdings) and 46628470084 (Europe Holdings) are kept as distinct ABN nodes, and no ABN is shared between 2024-1473 and 2023-2639, so no cross-statement name merging occurred.",
+      "The ABN-less entity INCEPTION GROUP PTY LTD correctly receives no profile or edge, and its text is retained in the review queue rather than being given an inferred ABN.",
+      "Queue hygiene issue (non-blocking): the queue raw for 2023-2639/IncludedEntities spans two entities, 'INCEPTION GROUP PTY LTD, WGANSW PTY LTD (64 659 565 714)', although WGANSW is already bound via abn:64659565714. Trim the raw to the unparsed token so the queue does not read as though WGANSW were unparsed.",
+      "Scope check: AnnualRevenue '0-99M', HeadquarteredCountries 'Australia', VoluntaryCompliance 'Not assessed' and the four IndustrySectors remain statement-level facts; they must not be copied onto the individual ABN profiles, especially the US/EU holdings subsidiaries. Type 'Joint' with a single listed reporter shows no evidence of lost reporters in this row, but warrants a queue note if joint filings normally list more."
+    ],
+    "blocking_findings": []
+  }
+}

@@ -1,0 +1,31 @@
+{
+  "request_sha256": "c782a7a1a0e117b4b2191ea6eb78e8fceab0ccf6100b6c5bad1ba38455821285",
+  "role": "statement_router",
+  "model": "qwen3.8-max",
+  "seconds": 272.851,
+  "response": {
+    "route": "statement_business",
+    "rationale": "Every row is a Modern Slavery Register statement listing keyed by IDX with a statement Link URL, RelatedStatements references, and name cells that carry multiple comma-separated entities with explicit parenthesized ABNs (e.g. the three-ABN IncludedEntities row), plus explicit reporting vs included roles. That matches the statement/document pattern, so the statement executor applies rather than grouped. Column contract from actual rows: IDX is the statement key; Link is the statement URL; ABN holds the comma-separated ABNs that key business candidates; RelatedStatements holds related statement IDs; ReportingEntities maps to REPORTS_STATEMENT and IncludedEntities maps to INCLUDED_IN_STATEMENT, with names bound to business candidates only via their own parenthesized ABNs (no ownership, no unbound-name matching, no alias inference from trading names). All remaining columns are assigned once as statement-scoped facts: PeriodStart, PeriodEnd, Type, VoluntaryCompliance, HeadquarteredCountries, AnnualRevenue, ACN, ARBN, IndustrySectors. Per feedback, rows where ReportingEntities is blank while the ABN column is populated (e.g. 2026-1757) must not be left with only an INCLUDED_IN_STATEMENT edge: the statement's own reporting role is either bound from that ABN as REPORTS_STATEMENT or queued as an explicit blank-reporting-role review item, and neither is recorded as human review. ACN values stay statement facts and are never promoted to ABNs; revenue bands, sector labels and compliance text stay verbatim statement facts and are never treated as business income or compliance. RelatedStatements keys with no statement record in the batch remain unverifiable references here, and no population-level accuracy is claimed.",
+    "plan": {
+      "statement_key": "IDX",
+      "url": "Link",
+      "abn_column": "ABN",
+      "related": "RelatedStatements",
+      "entity_columns": {
+        "ReportingEntities": "REPORTS_STATEMENT",
+        "IncludedEntities": "INCLUDED_IN_STATEMENT"
+      },
+      "statement_columns": [
+        "PeriodStart",
+        "PeriodEnd",
+        "Type",
+        "VoluntaryCompliance",
+        "HeadquarteredCountries",
+        "AnnualRevenue",
+        "ACN",
+        "ARBN",
+        "IndustrySectors"
+      ]
+    }
+  }
+}

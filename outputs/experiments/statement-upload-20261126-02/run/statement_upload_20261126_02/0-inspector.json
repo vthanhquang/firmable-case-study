@@ -1,0 +1,36 @@
+{
+  "request_sha256": "6a39a5833839cfae5cc9c722f07be402b84870fb8d90997e1c253d5642b2adf6",
+  "role": "inspector",
+  "model": "qwen3.8-max",
+  "seconds": 18.152,
+  "response": {
+    "reader": {
+      "format": "delimited",
+      "archive_member": null,
+      "encoding": "utf-8-sig",
+      "delimiter": ",",
+      "skip_rows": 0,
+      "sheet": null,
+      "record_path": null
+    },
+    "bindings": [
+      {
+        "name": "licence_detail",
+        "collection": "metadata.licence_detail",
+        "filter_path": null,
+        "filter_value": null
+      }
+    ],
+    "grain": "One row per Modern Slavery Register statement-search record (one statement submission), apparently keyed by IDX together with the statement Link; PeriodStart and PeriodEnd are the reporting-period bounds of that statement, not row-creation, incorporation or download dates.",
+    "identity_cautions": [
+      "IDX (for example 2026-2165) is a register statement-search identifier, not an ABN, ACN, ARBN or legal-entity key; its leading year is contextual register metadata and can differ from the PeriodStart and PeriodEnd reporting period.",
+      "Link is the statement URL and carries a different statement number (for example /statements/30164/ against IDX 2026-2165); do not equate the two, and do not treat the URL as a company website.",
+      "ABN, ACN and ARBN are multi-valued and may be blank; row 2026-2078 carries three ABNs aligned with three IncludedEntities while ReportingEntities is empty, so do not assume one entity per row or attach those ABNs to ReportingEntities.",
+      "Entity-name fields embed parenthetical ABNs with spaces (for example 72 069 158 710 inside parentheses); treat them as source-reported labels, normalise digits for matching, and do not infer legal form from a personal name or from an ABN alone.",
+      "RelatedStatements is a comma-separated list of other statement IDs with their own year prefixes; it is not a parent-child hierarchy, not the current row identifier and not a date.",
+      "PeriodStart and PeriodEnd bound the reporting period only; they are not incorporation, licence or retrieval dates.",
+      "IndustrySectors and the entity lists contain quoted commas (for example Transport, Postal and Warehousing), so use a real CSV parser; the observed maximum of 22 commas per line is not a 22-column layout."
+    ],
+    "rationale": "Actual bytes begin with magic_hex 4944582c50657269, which decodes to IDX,Peri, so the header sits at byte 0 with no leading BOM; utf-8-sig remains a safe shared encoding. Tab, pipe and semicolon counts are all zero while commas reach 22 per line because quoted fields contain commas, so one comma-delimited CSV reader with skip_rows 0 and quote handling is correct. The resource is a plain CSV, so there is no archive member, no record path and no sheet: no sheet names need preserving and no documentation sheet is selected. The 15 headers group into four blocks: statement identity and period (IDX, PeriodStart, PeriodEnd, Type, VoluntaryCompliance); geography and revenue (HeadquarteredCountries, AnnualRevenue); entity and identifier (ReportingEntities, IncludedEntities, ABN, ACN, ARBN); and linkage and classification (Link, IndustrySectors, RelatedStatements). Contextual years appear in IDX and in the RelatedStatements IDs, so use PeriodStart and PeriodEnd for the actual reporting period. No percentage-valued column appears in the inspected header or first rows, and AnnualRevenue is a banded range rather than a stored percentage or currency figure. Only metadata.licence_detail is bound, as it is a single nested object; the delimiter count map is a per-delimiter tally rather than a record and is left unbound."
+  }
+}
